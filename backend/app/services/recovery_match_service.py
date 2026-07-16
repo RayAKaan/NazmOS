@@ -55,6 +55,18 @@ def _distance_km(lat1, lon1, lat2, lon2) -> float | None:
     return radius * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
 
+def _compute_match_score(listing_barcode: str | None, listing_sku: str | None, days_left: float, distance: float | None) -> int:
+    score = 40
+    if listing_barcode:
+        score += 40
+    elif listing_sku:
+        score += 25
+    score += max(0, 20 - int(days_left * 2))
+    if distance is not None and distance <= 3:
+        score += 5
+    return min(score, 100)
+
+
 async def log_recovery_event(db: AsyncSession, event_type: str, *, listing_id=None, match_id=None, actor_business_id=None, notes=None, payload=None) -> None:
     await db.execute(text("""
         INSERT INTO stock_recovery_events (id, listing_id, match_id, actor_business_id, event_type, notes, payload, created_at)
@@ -235,6 +247,12 @@ async def suggest_matches_for_listing(db: AsyncSession, listing_id: UUID | str, 
     if not listing:
         raise ValueError("Listing not found")
 
+    settings_res = await db.execute(text(
+        "SELECT max_distance_km FROM recovery_match_settings WHERE business_id = :b"
+    ), {"b": str(seller_business_id)})
+    settings_row = settings_res.fetchone()
+    max_distance = float(settings_row.max_distance_km) if settings_row else float(DEFAULT_MAX_DISTANCE_KM)
+
     candidates = await db.execute(text("""
         WITH sales_30d AS (
             SELECT business_id, item_id, COALESCE(SUM(quantity), 0) AS qty_30d
@@ -273,17 +291,9 @@ async def suggest_matches_for_listing(db: AsyncSession, listing_id: UUID | str, 
         if days_left > 7:
             continue
         distance = _distance_km(listing.seller_lat, listing.seller_lon, c.latitude, c.longitude)
-        if distance is not None and distance > float(DEFAULT_MAX_DISTANCE_KM):
+        if distance is not None and distance > max_distance:
             continue
-        score = 40
-        if listing.barcode:
-            score += 40
-        elif listing.sku:
-            score += 25
-        score += max(0, 20 - int(days_left * 2))
-        if distance is not None and distance <= 3:
-            score += 5
-        score = min(score, 100)
+        score = _compute_match_score(listing.barcode, listing.sku, days_left, distance)
         if score < 75:
             continue
         buyer_need = max(1, (float(c.daily_velocity or 0.01) * 14) - float(c.current_stock or 0))

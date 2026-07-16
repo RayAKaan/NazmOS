@@ -1,0 +1,178 @@
+# NazmOS production-pilot compose
+# Use behind a real TLS reverse proxy (Nginx/Caddy/Traefik) or a managed load balancer.
+# Required .env keys:
+#   DB_PASSWORD, REDIS_PASSWORD, SECRET_KEY, CORS_ORIGINS, PUBLIC_API_URL
+# Optional:
+#   OPENROUTER_API_KEY, LLM_MODEL, USE_MOCK_LLM
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nazmos
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set}
+      POSTGRES_DB: nazmos
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nazmos -d nazmos"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - nazmos
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD must be set}
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    networks:
+      - nazmos
+
+  migrate:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    restart: "no"
+    environment:
+      ENVIRONMENT: production
+      DATABASE_URL: postgresql+asyncpg://nazmos:${DB_PASSWORD}@postgres:5432/nazmos
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
+      CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS must be set}
+      UPLOAD_DIR: /app/uploads
+      USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_BASE_URL: ${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      OPENROUTER_SITE_URL: ${OPENROUTER_SITE_URL:-https://nazmak.com}
+      OPENROUTER_APP_NAME: ${OPENROUTER_APP_NAME:-NazmOS by Nazmak}
+      LLM_MODEL: ${LLM_MODEL:-openrouter/auto}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: alembic upgrade head
+    networks:
+      - nazmos
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      ENVIRONMENT: production
+      DATABASE_URL: postgresql+asyncpg://nazmos:${DB_PASSWORD}@postgres:5432/nazmos
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
+      CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS must be set}
+      UPLOAD_DIR: /app/uploads
+      CHAT_ENABLED: ${CHAT_ENABLED:-true}
+      BILLING_ENABLED: ${BILLING_ENABLED:-true}
+      AGENT_ENABLED: ${AGENT_ENABLED:-true}
+      USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
+      USE_CELERY: ${USE_CELERY:-false}
+      USE_REDIS: ${USE_REDIS:-false}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_BASE_URL: ${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      OPENROUTER_SITE_URL: ${OPENROUTER_SITE_URL:-https://nazmak.com}
+      OPENROUTER_APP_NAME: ${OPENROUTER_APP_NAME:-NazmOS by Nazmak}
+      LLM_MODEL: ${LLM_MODEL:-google/gemma-2-9b-it:free}
+      DEFAULT_CURRENCY: SAR
+      DEFAULT_TIMEZONE: Asia/Riyadh
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    volumes:
+      - uploaded_files:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers ${API_WORKERS:-2}
+    networks:
+      - nazmos
+
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: production
+      DATABASE_URL: postgresql+asyncpg://nazmos:${DB_PASSWORD}@postgres:5432/nazmos
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
+      UPLOAD_DIR: /app/uploads
+      USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_BASE_URL: ${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      OPENROUTER_SITE_URL: ${OPENROUTER_SITE_URL:-https://nazmak.com}
+      OPENROUTER_APP_NAME: ${OPENROUTER_APP_NAME:-NazmOS by Nazmak}
+      LLM_MODEL: ${LLM_MODEL:-openrouter/auto}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    volumes:
+      - uploaded_files:/app/uploads
+    command: celery -A app.celery_app worker --loglevel=info --concurrency=${CELERY_CONCURRENCY:-2} --queues=ingestion,forecasting,analytics,default
+    networks:
+      - nazmos
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:?PUBLIC_API_URL must be set}
+        NEXT_PUBLIC_CHAT_ENABLED: ${NEXT_PUBLIC_CHAT_ENABLED:-true}
+        NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-NazmOS}
+        NEXT_PUBLIC_CURRENCY: SAR
+        NEXT_PUBLIC_LOCALE: ${NEXT_PUBLIC_LOCALE:-en}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:?PUBLIC_API_URL must be set}
+      NEXT_PUBLIC_CHAT_ENABLED: ${NEXT_PUBLIC_CHAT_ENABLED:-true}
+      NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-NazmOS}
+      NEXT_PUBLIC_CURRENCY: SAR
+      NEXT_PUBLIC_LOCALE: ${NEXT_PUBLIC_LOCALE:-en}
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - nazmos
+
+volumes:
+  pgdata:
+  redisdata:
+  uploaded_files:
+
+networks:
+  nazmos:
+    name: nazmos_production

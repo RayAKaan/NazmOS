@@ -1,0 +1,4 @@
+Product,Current Stock,Cost Price,Shelf Price,Barcode,SKU,Category,Brand,Pack Size,Storage Type,Expiry Date,Batch Number
+Coffee Beans 250g,68,15,25,628000000001,COF-250,Packaged goods,Nazmak Coffee,250g,ambient,2027-01-01,COF-B1
+Sukari Dates 1kg,120,25,40,628000000002,DAT-SUK-01,Dates,Qassim Dates,1kg,ambient,2027-02-15,DAT-B2
+Nova Water 330ml x24,24,9,15,628000000003,WTR-NOVA-24,Beverages,Nova,24x330ml,ambient,2027-05-30,WTR-B3

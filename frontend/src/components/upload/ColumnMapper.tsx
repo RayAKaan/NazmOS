@@ -1,0 +1,288 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
+import { CheckCircle, AlertTriangle, ChevronDown, Info } from "lucide-react";
+import {
+  COLUMN_HELP,
+  COLUMN_LABELS,
+  INVENTORY_SIGNAL_COLUMNS,
+  REQUIRED_COLUMNS,
+  SALES_SIGNAL_COLUMNS,
+  TARGET_COLUMNS,
+  TargetColumn,
+} from "@/types/upload";
+import { cn } from "@/lib/utils";
+
+interface ColumnMapperProps {
+  uploadId: string;
+  detectedColumns: Record<string, string>;
+  confidenceScores: Record<string, number>;
+  unmappedColumns: string[];
+  sampleRows: Record<string, unknown>[];
+  onConfirm: (mappings: Record<string, string>) => Promise<void>;
+  onBack: () => void;
+}
+
+function asTarget(value: string): TargetColumn | "" {
+  return TARGET_COLUMNS.includes(value as TargetColumn) ? (value as TargetColumn) : "";
+}
+
+export function ColumnMapper({
+  detectedColumns,
+  confidenceScores,
+  unmappedColumns,
+  sampleRows,
+  onConfirm,
+  onBack,
+}: ColumnMapperProps) {
+  const sourceColumns = useMemo(() => {
+    const fromRows = sampleRows[0] ? Object.keys(sampleRows[0]) : [];
+    return Array.from(new Set([...Object.keys(detectedColumns), ...unmappedColumns, ...fromRows]));
+  }, [detectedColumns, sampleRows, unmappedColumns]);
+
+  const [mappings, setMappings] = useState<Record<string, string>>(
+    Object.fromEntries(
+      sourceColumns.map((source) => [source, asTarget(detectedColumns[source] || "")])
+    )
+  );
+  const [editingColumn, setEditingColumn] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const mappedTargets = useMemo(() => Object.values(mappings).filter(Boolean), [mappings]);
+  const hasItemName = REQUIRED_COLUMNS.every((req) => mappedTargets.includes(req));
+  const hasSalesSignal = mappedTargets.includes("transaction_at") && SALES_SIGNAL_COLUMNS.some((col) => mappedTargets.includes(col));
+  const hasInventorySignal = INVENTORY_SIGNAL_COLUMNS.some((col) => col === "current_stock" && mappedTargets.includes(col));
+  const readyToImport = hasItemName && (hasSalesSignal || hasInventorySignal);
+
+  const modeLabel = hasInventorySignal && hasSalesSignal
+    ? "Sales + inventory file"
+    : hasInventorySignal
+      ? "Inventory snapshot"
+      : hasSalesSignal
+        ? "Sales history"
+        : "Needs one more field";
+
+  const getSampleValues = (column: string): unknown[] => {
+    return sampleRows.slice(0, 3).map((row) => row[column]).filter((value) => value !== undefined && value !== null && value !== "");
+  };
+
+  const handleMappingChange = (sourceColumn: string, targetColumn: TargetColumn) => {
+    setMappings((prev) => {
+      const updated = { ...prev };
+
+      Object.keys(updated).forEach((source) => {
+        if (updated[source] === targetColumn && source !== sourceColumn) {
+          updated[source] = "";
+        }
+      });
+
+      updated[sourceColumn] = targetColumn;
+      return updated;
+    });
+    setEditingColumn(null);
+  };
+
+  const removeMapping = (targetColumn: TargetColumn) => {
+    setMappings((prev) => {
+      const updated = { ...prev };
+      Object.keys(updated).forEach((source) => {
+        if (updated[source] === targetColumn) updated[source] = "";
+      });
+      return updated;
+    });
+    setEditingColumn(null);
+  };
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      const cleanMappings = Object.fromEntries(Object.entries(mappings).filter(([, target]) => Boolean(target)));
+      await onConfirm(cleanMappings);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const getConfidenceColor = (confidence: number) => {
+    if (confidence >= 0.9) return "text-green-400";
+    if (confidence >= 0.7) return "text-yellow-400";
+    return "text-red-400";
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-6"
+    >
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#E0B34A]">Step 2 · Confirm columns</p>
+          <h2 className="mt-2 text-2xl font-black text-[#f0f0f5]">Tell NazmOS what each column means</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[#8888a0]">
+            We guessed the columns. You only need <b className="text-white">Product name</b> plus either
+            <b className="text-white"> Current stock</b> for an inventory file, or
+            <b className="text-white"> Sale date + price/total</b> for a sales file.
+          </p>
+        </div>
+        <button
+          onClick={onBack}
+          className="rounded-xl border border-white/10 px-4 py-2 text-sm font-bold text-[#8888a0] hover:bg-white/5 hover:text-[#f0f0f5]"
+        >
+          Back to upload
+        </button>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-3">
+        <div className={cn("rounded-2xl border p-4", hasItemName ? "border-emerald-400/30 bg-emerald-400/10" : "border-red-400/30 bg-red-400/10")}>
+          <p className="text-sm font-bold text-white">1. Product names</p>
+          <p className="mt-1 text-xs text-white/55">{hasItemName ? "Mapped" : "Required before import"}</p>
+        </div>
+        <div className={cn("rounded-2xl border p-4", hasInventorySignal ? "border-emerald-400/30 bg-emerald-400/10" : "border-white/10 bg-white/[0.03]")}>
+          <p className="text-sm font-bold text-white">2A. Inventory snapshot</p>
+          <p className="mt-1 text-xs text-white/55">Current stock column</p>
+        </div>
+        <div className={cn("rounded-2xl border p-4", hasSalesSignal ? "border-emerald-400/30 bg-emerald-400/10" : "border-white/10 bg-white/[0.03]")}>
+          <p className="text-sm font-bold text-white">2B. Sales history</p>
+          <p className="mt-1 text-xs text-white/55">Sale date + price or total</p>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-2xl bg-[#1a1a2e] ring-1 ring-white/10">
+        <div className="border-b border-[#2a2a3e] p-4">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-2">
+              {readyToImport ? (
+                <CheckCircle size={18} className="text-green-400" />
+              ) : (
+                <AlertTriangle size={18} className="text-yellow-400" />
+              )}
+              <span className="text-sm font-medium text-[#f0f0f5]">
+                {readyToImport ? `Ready: ${modeLabel}` : "Map the minimum fields to continue"}
+              </span>
+            </div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#E0B34A]/10 px-3 py-1 text-xs font-bold text-[#E0B34A]">
+              <Info className="h-3.5 w-3.5" /> Unneeded columns are ignored safely
+            </div>
+          </div>
+        </div>
+
+        <div className="divide-y divide-[#2a2a3e]">
+          {TARGET_COLUMNS.map((targetCol) => {
+            const mappedSource = Object.entries(mappings).find(([, target]) => target === targetCol)?.[0];
+            const sampleValues = mappedSource ? getSampleValues(mappedSource) : [];
+            const confidence = mappedSource ? confidenceScores[mappedSource] || 0 : 0;
+            const isRequired = targetCol === "item_name";
+            const isCoreSignal = targetCol === "current_stock" || targetCol === "transaction_at" || targetCol === "unit_price" || targetCol === "total_amount";
+
+            return (
+              <div key={targetCol} className="p-4">
+                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-sm font-semibold text-[#f0f0f5]">{COLUMN_LABELS[targetCol]}</span>
+                      {isRequired && <span className="rounded bg-red-500/20 px-2 py-0.5 text-xs text-red-300">Required</span>}
+                      {isCoreSignal && !isRequired && <span className="rounded bg-[#E0B34A]/15 px-2 py-0.5 text-xs text-[#E0B34A]">Audit signal</span>}
+                      {mappedSource && (
+                        <span className={cn("text-xs", getConfidenceColor(confidence))}>
+                          {confidence ? `${Math.round(confidence * 100)}% guess` : "manual"}
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-1 text-xs leading-5 text-[#8888a0]">{COLUMN_HELP[targetCol]}</p>
+                  </div>
+
+                  <div className="relative md:min-w-[260px]">
+                    <button
+                      onClick={() => setEditingColumn(editingColumn === targetCol ? null : targetCol)}
+                      className={cn(
+                        "flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors",
+                        mappedSource
+                          ? "bg-blue-500/20 text-blue-300"
+                          : "bg-[#2a2a3e] text-[#8888a0] hover:text-[#f0f0f5]"
+                      )}
+                    >
+                      <span className="truncate">{mappedSource || "Select source column"}</span>
+                      <ChevronDown size={14} />
+                    </button>
+
+                    {editingColumn === targetCol && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="absolute right-0 top-full z-20 mt-2 max-h-72 w-full overflow-y-auto rounded-xl border border-[#2a2a3e] bg-[#111126] shadow-2xl"
+                      >
+                        {sourceColumns.map((sourceCol) => {
+                          const usedBy = Object.entries(mappings).find(([source, target]) => source !== sourceCol && target === targetCol)?.[0];
+                          const alreadyMappedTo = mappings[sourceCol];
+                          return (
+                            <button
+                              key={sourceCol}
+                              onClick={() => handleMappingChange(sourceCol, targetCol)}
+                              className={cn(
+                                "flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-[#2a2a3e]",
+                                mappedSource === sourceCol && "bg-blue-500/20"
+                              )}
+                            >
+                              <span className="truncate text-[#f0f0f5]">{sourceCol}</span>
+                              <span className="shrink-0 text-xs text-[#8888a0]">
+                                {alreadyMappedTo && alreadyMappedTo !== targetCol ? COLUMN_LABELS[alreadyMappedTo as TargetColumn] || "mapped" : usedBy ? "in use" : ""}
+                              </span>
+                            </button>
+                          );
+                        })}
+                        <button
+                          onClick={() => removeMapping(targetCol)}
+                          className="w-full border-t border-[#2a2a3e] px-4 py-2.5 text-left text-sm text-red-400 hover:bg-[#2a2a3e]"
+                        >
+                          Remove mapping
+                        </button>
+                      </motion.div>
+                    )}
+                  </div>
+                </div>
+
+                {mappedSource && sampleValues.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {sampleValues.map((val, i) => (
+                      <span key={`${mappedSource}-${i}`} className="rounded bg-[#2a2a3e] px-2 py-1 text-xs text-[#8888a0]">
+                        {String(val).slice(0, 38)}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-[#8888a0]">
+        <b className="text-white">Founder tip:</b> If you are not sure, import anyway after the minimum fields.
+        NazmOS will ignore extra columns and you can upload a corrected file later. Cost price improves trapped-cash accuracy.
+      </div>
+
+      <div className="flex flex-col-reverse gap-3 md:flex-row md:justify-end">
+        <button
+          onClick={onBack}
+          className="rounded-xl px-6 py-3 text-sm font-bold text-[#8888a0] hover:text-[#f0f0f5]"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSubmit}
+          disabled={!readyToImport || isSubmitting}
+          className={cn(
+            "rounded-xl px-6 py-3 text-sm font-bold transition-colors",
+            readyToImport && !isSubmitting
+              ? "bg-[#E0B34A] text-black hover:bg-[#f2cf69]"
+              : "cursor-not-allowed bg-[#2a2a3e] text-[#8888a0]"
+          )}
+        >
+          {isSubmitting ? "Starting import..." : "Import for Money Audit"}
+        </button>
+      </div>
+    </motion.div>
+  );
+}

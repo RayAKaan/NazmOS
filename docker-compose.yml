@@ -1,0 +1,113 @@
+# NazmOS local runtime test stack
+# Purpose: run real Postgres + Redis + backend + Celery + frontend for pilot validation.
+# Usage:
+#   docker compose -f docker-compose.local.yml up --build
+# Then in another terminal:
+#   cd backend && alembic upgrade head
+#   python scripts/runtime_e2e_upload_money_audit.py
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nazmos
+      POSTGRES_PASSWORD: nazmos_dev
+      POSTGRES_DB: nazmos
+    ports:
+      - "5432:5432"
+    volumes:
+      - nazmos_pgdata_local:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nazmos -d nazmos"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - nazmos_redisdata_local:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      ENVIRONMENT: development
+      DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@postgres:5432/nazmos
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: dev-secret-key-change-in-production-minimum-32-chars
+      CORS_ORIGINS: http://localhost:3000
+      UPLOAD_DIR: /app/uploads
+      CHAT_ENABLED: "true"
+      BILLING_ENABLED: "true"
+      AGENT_ENABLED: "true"
+      USE_MOCK_LLM: "true"
+      OPENROUTER_BASE_URL: https://openrouter.ai/api/v1
+      LLM_MODEL: openrouter/auto
+      ALLOW_DEMO_SEED: "false"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - nazmos_uploads_local:/app/uploads
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  celery_worker:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: development
+      DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@postgres:5432/nazmos
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: dev-secret-key-change-in-production-minimum-32-chars
+      UPLOAD_DIR: /app/uploads
+      USE_MOCK_LLM: "true"
+      OPENROUTER_BASE_URL: https://openrouter.ai/api/v1
+      LLM_MODEL: openrouter/auto
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - nazmos_uploads_local:/app/uploads
+    command: celery -A app.celery_app worker --loglevel=info --concurrency=2 --queues=ingestion,forecasting,analytics,default
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_APP_NAME: NazmOS
+      NEXT_PUBLIC_CURRENCY: SAR
+      NEXT_PUBLIC_LOCALE: en
+    depends_on:
+      - backend
+
+volumes:
+  nazmos_pgdata_local:
+  nazmos_redisdata_local:
+  nazmos_uploads_local:

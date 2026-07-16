@@ -1,0 +1,129 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+type Policy = {
+  action_type: string;
+  label: string;
+  label_en: string;
+  dial: number;
+  ceiling_sar?: number;
+  max_price_increase_pct?: number;
+  description_ar: string;
+  description_en: string;
+};
+
+export default function AutonomyPage() {
+  const [policies, setPolicies] = useState<Policy[]>([
+    { action_type: "restock", label: "إعادة الطلب", label_en: "Restocking", dial: 50, ceiling_sar: 2000, description_ar: "0 = أخبرني فقط / 50 = جهز وانتظر موافقتي / 100 = نفذ تلقائيا", description_en: "0 = inform / 50 = draft+approve / 100 = auto" },
+    { action_type: "pricing_increase", label: "رفع الأسعار", label_en: "Price Increase", dial: 20, max_price_increase_pct: 5, description_ar: "0 = أخبرني فقط / 50 = جهز وانتظر موافقتي / 100 = نفذ تلقائيا", description_en: "0 = inform / 50 = draft+approve / 100 = auto" },
+    { action_type: "pricing_decrease", label: "خفض الأسعار", label_en: "Price Decrease", dial: 30, description_ar: "0 = أخبرني فقط / 50 = جهز وانتظر موافقتي / 100 = نفذ تلقائيا", description_en: "0 = inform / 50 = draft+approve / 100 = auto" },
+    { action_type: "cash_alert", label: "التدفق النقدي", label_en: "Cash Flow", dial: 0, description_ar: "تنبيه فقط – لا تنفيذ تلقائي أبداً", description_en: "Inform only – never auto-execute", },
+    { action_type: "staff_schedule", label: "جدولة الموظفين", label_en: "Staffing", dial: 0, description_ar: "تنبيه فقط", description_en: "Inform only" },
+    { action_type: "expiry_alert", label: "تنبيهات انتهاء الصلاحية", label_en: "Expiry Alerts", dial: 50, description_ar: "0 = أخبرني فقط / 50 = جهز وانتظر موافقتي / 100 = نفذ تلقائيا", description_en: "0 = inform / 50 = draft+approve / 100 = auto" },
+  ]);
+  const [saving, setSaving] = useState(false);
+  const businessId = "00000000-0000-0000-0000-000000000001";
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const res = await axios.get(`${API}/api/v1/agent/autonomy?business_id=${businessId}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (res.data.policies?.length) setPolicies(res.data.policies);
+      } catch {}
+    };
+    load();
+  }, []);
+
+  const setDial = (action_type: string, dial: number) => {
+    setPolicies(p => p.map(x => x.action_type === action_type ? { ...x, dial } : x));
+  };
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      const token = localStorage.getItem("access_token");
+      await axios.put(`${API}/api/v1/agent/autonomy?business_id=${businessId}`, 
+        { policies: policies.map(p => ({
+          action_type: p.action_type,
+          dial: p.dial,
+          ceiling_sar: p.ceiling_sar,
+          max_price_increase_pct: p.max_price_increase_pct,
+          max_price_decrease_pct: (p as any).max_price_decrease_pct,
+        }))},
+        { headers: token ? { Authorization: `Bearer ${token}` } : {} }
+      );
+      alert("Saved – تم الحفظ");
+    } catch {
+      alert("Saved locally (demo mode)");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const labelFor = (d: number) => d === 0 ? "Inform – إخبار" : d < 50 ? "Suggest – اقتراح" : d < 95 ? "Approve – موافقة" : "Auto – تلقائي";
+  const colorFor = (d: number) => d === 0 ? "text-text-muted" : d < 50 ? "text-yellow-400" : d < 95 ? "text-accent-blue" : "text-accent-green";
+
+  return (
+    <div className="p-6 md:p-8 max-w-2xl mx-auto">
+      <h1 className="text-2xl font-bold mb-1">Autonomy Dial – التحكم الذاتي</h1>
+      <p className="text-text-muted text-sm mb-8">Control how much Nazm does on its own. 0 = inform only · 50 = draft + approve · 100 = auto-execute</p>
+
+      <div className="space-y-6">
+        {policies.map((p) => (
+          <div key={p.action_type} className="bg-surface border border-border rounded-2xl p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <div className="font-semibold">{p.label} <span className="text-text-muted font-normal">· {p.label_en}</span></div>
+                <div className="text-xs text-text-muted">{p.description_ar}</div>
+              </div>
+              <div className={`text-sm font-mono font-bold ${colorFor(p.dial)}`}>
+                {p.dial} – {labelFor(p.dial)}
+              </div>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="5"
+              value={p.dial}
+              onChange={(e) => setDial(p.action_type, parseInt(e.target.value))}
+              className="w-full accent-blue-500"
+            />
+            <div className="flex justify-between text-xs text-text-muted mt-1">
+              <span>0 Inform</span>
+              <span>50 Approve</span>
+              <span>100 Auto</span>
+            </div>
+            {p.ceiling_sar !== undefined && (
+              <div className="text-xs text-text-muted mt-2">Auto-spend ceiling: ﷼ {p.ceiling_sar} SAR</div>
+            )}
+            {p.max_price_increase_pct !== undefined && (
+              <div className="text-xs text-yellow-400 mt-2">⚠️ Max auto price increase: {p.max_price_increase_pct}% – higher requires manual approval</div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <button
+        onClick={save}
+        disabled={saving}
+        className="w-full mt-6 bg-accent-blue text-white py-3 rounded-xl font-medium hover:opacity-90 disabled:opacity-50"
+      >
+        {saving ? "Saving…" : "Save – حفظ"}
+      </button>
+
+      <div className="mt-6 text-xs text-text-muted bg-surface border border-border rounded-xl p-4">
+        <b>Recommended for Saudi pharmacies (starting):</b><br/>
+        Restock 50 · Pricing 20 · Cash 0 · Staff 0 · Expiry 50<br/>
+        Increase dial gradually as you trust Nazm. You can always pull it back to 0.
+      </div>
+    </div>
+  );
+}

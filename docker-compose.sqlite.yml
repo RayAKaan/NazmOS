@@ -1,0 +1,78 @@
+# NazmOS SQLite mode — zero-cost local deployment
+# No PostgreSQL, no Redis, no Celery worker.
+# Backend runs with USE_CELERY=false, DATABASE_URL=sqlite+aiosqlite:///./nazmos.db
+# Usage: docker compose -f docker-compose.sqlite.yml up --build
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      ENVIRONMENT: development
+      DATABASE_URL: sqlite+aiosqlite:///./nazmos.db
+      SECRET_KEY: sqlite-local-dev-key-change-in-production-minimum-32-chars
+      CORS_ORIGINS: http://localhost:3000
+      UPLOAD_DIR: /app/uploads
+      USE_CELERY: "false"
+      USE_REDIS: "false"
+      USE_MOCK_LLM: "true"
+      LLM_MODEL: google/gemma-2-9b-it:free
+      ALLOW_DEMO_SEED: "true"
+      DEFAULT_CURRENCY: SAR
+      DEFAULT_TIMEZONE: Asia/Riyadh
+      CHAT_ENABLED: "true"
+      AGENT_ENABLED: "true"
+    volumes:
+      - sqlite_data:/app
+      - uploaded_files:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    command: >
+      sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1"
+    networks:
+      - nazmos
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+        NEXT_PUBLIC_CHAT_ENABLED: "true"
+        NEXT_PUBLIC_APP_NAME: NazmOS
+        NEXT_PUBLIC_CURRENCY: SAR
+        NEXT_PUBLIC_LOCALE: en
+        NEXT_PUBLIC_CLIENT_ETL: "true"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_CHAT_ENABLED: "true"
+      NEXT_PUBLIC_APP_NAME: NazmOS
+      NEXT_PUBLIC_CURRENCY: SAR
+      NEXT_PUBLIC_LOCALE: en
+      NEXT_PUBLIC_CLIENT_ETL: "true"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - nazmos
+
+volumes:
+  sqlite_data:
+  uploaded_files:
+
+networks:
+  nazmos:
+    name: nazmos_sqlite

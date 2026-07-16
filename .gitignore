@@ -1,0 +1,347 @@
+# =============================================================================
+# NazmOS .gitignore - Comprehensive security-focused ignore patterns
+# =============================================================================
+
+# =============================================================================
+# PYTHON - Backend
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+/lib/
+/lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Alembic
+alembic/versions/*.pyc
+
+# =============================================================================
+# NODE.JS - Frontend
+# =============================================================================
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+
+# Testing
+coverage/
+
+# Misc
+.DS_Store
+*.pem
+
+# Local env files (contain secrets)
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# npm debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =============================================================================
+# ENVIRONMENT FILES - CRITICAL SECURITY
+# =============================================================================
+# NEVER commit files containing secrets
+*.env
+.env
+.env.*
+!.env.example
+!.env.template
+!.env.sample
+!.env.example.local
+
+# Backend env files
+backend/.env
+backend/.env.local
+backend/.env.*.local
+!backend/.env.example
+!backend/.env.template
+
+# Credentials and keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+credentials.json
+secrets.json
+*.secret
+
+# =============================================================================
+# DOCKER - Exclude container state, keep configs
+# =============================================================================
+.dockerignore
+.docker/
+
+# Data volumes (never commit)
+postgres_data/
+redis_data/
+minio_data/
+*.sql.gz
+
+# =============================================================================
+# IDE & EDITOR
+# =============================================================================
+.idea/
+*.swp
+*.swo
+*~
+.vscode/
+*.code-workspace
+.settings/
+.project
+.classpath
+*.sublime-*
+
+# =============================================================================
+# OS FILES
+# =============================================================================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.ehthumbs.db
+Icon?
+.DS_Store?
+
+# =============================================================================
+# LOGS & CACHE
+# =============================================================================
+*.log
+logs/
+*.log.*
+access.log
+error.log
+debug.log
+
+# Cache directories
+.cache/
+.parcel-cache/
+.turbo/
+.swc/
+.eslintcache
+
+# =============================================================================
+# DATABASE & STATE
+# =============================================================================
+*.db
+*.sqlite
+*.sqlite3
+*.mdb
+*.accdb
+*.bak
+*.dump
+
+# Redis persistence
+appendonly.aof
+dump.rdb
+
+# =============================================================================
+# SECRETS & SECURITY - CRITICAL
+# =============================================================================
+# API keys and tokens
+api_keys.*
+*apikey*
+*secret*
+
+# JWT and auth
+*.jwt
+jwt-secret*
+auth-secret*
+
+# Cloud provider credentials
+*.gcp credentials*
+aws-credentials*
+azure-credentials*
+
+# Payment processors
+stripe*.json
+*stripe*key*
+paypal*
+
+# Communication services
+twilio*
+sendgrid*
+
+# Object storage
+minio*
+s3*
+
+# Grafana and monitoring
+grafana/
+prometheus_data/
+alertmanager/
+
+# =============================================================================
+# MEDIA & UPLOADS
+# =============================================================================
+uploads/
+user_uploads/
+customer_uploads/
+*.upload
+static/uploads/
+media/
+
+# Images (unless needed for repo)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.ico
+*.svg
+!.logo.svg
+
+# Documents (unless needed for repo)
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+!.README.xlsx
+
+# =============================================================================
+# MONITORING & ANALYTICS
+# =============================================================================
+prometheus_data/
+grafana_data/
+alertmanager_data/
+metrics/
+*.metrics
+
+# =============================================================================
+# CELERY & BACKGROUND TASKS
+# =============================================================================
+celerybeat-schedule.db
+celerybeat-schedule.bak
+
+# =============================================================================
+# BACKUPS
+# =============================================================================
+*.backup
+*.bak
+*.old
+backup/
+backups/
+*.backup.sql
+
+# =============================================================================
+# TEMP FILES
+# =============================================================================
+tmp/
+temp/
+temp_*
+*.tmp
+.tmp/
+*.swp
+*.swo
+~*
+
+# =============================================================================
+# MINIO / S3 Data
+# =============================================================================
+minio/
+.minio/
+.miniocache/
+
+# =============================================================================
+# NEXT.JS specific
+# =============================================================================
+next-env.d.ts
+next.config.js.local
+*.tsbuildinfo
+
+# =============================================================================
+# TAILWIND / CSS
+# =============================================================================
+*.css.map
+*.sass.map
+*.scss.map
+
+# =============================================================================
+# TEST COVERAGE OUTPUTS
+# =============================================================================
+lcov.info
+*.lcov
+htmlcov/
+cov_xml/
+coverage/
+
+# =============================================================================
+# STRIPE WEBHOOKS LOCAL
+# =============================================================================
+stripe.*
+*.stripe*
+
+# =============================================================================
+# PROMETHEUS ALERTS
+# =============================================================================
+alertmanager.yml.tmp
+prometheus_alerts.yml.tmp
+
+# =============================================================================
+# INTERNAL FILES
+# =============================================================================
+*.internal
+*.confidential
+PRIVATE*
+private/
+
+# Windows reserved device names
+nul

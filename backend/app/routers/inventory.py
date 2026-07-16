@@ -1,0 +1,74 @@
+from fastapi import APIRouter, Depends, Query, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import text
+from uuid import UUID
+from app.database import get_db, User
+from app.schemas.inventory import (
+    InventoryResponse,
+    ItemDetailResponse,
+    RestockRequest,
+    RestockResponse,
+)
+from app.services.analytics_service import get_inventory_list, get_item_detail
+from app.services.inventory_service import restock_item
+from app.middleware.auth_middleware import get_current_user
+
+router = APIRouter(prefix="/inventory", tags=["Inventory"])
+
+
+async def _verify_business_access(db: AsyncSession, business_id: UUID, user: User):
+    result = await db.execute(
+        text("SELECT owner_id FROM businesses WHERE id = :id"),
+        {"id": str(business_id)}
+    )
+    biz = result.fetchone()
+    if not biz:
+        raise HTTPException(404, "Business not found")
+    if str(biz.owner_id) == str(user.id):
+        return
+    tm = await db.execute(text(
+        "SELECT 1 FROM team_members WHERE business_id = :bid AND user_id = :uid AND is_active = true"
+    ), {"bid": str(business_id), "uid": str(user.id)})
+    if tm.fetchone():
+        return
+    raise HTTPException(403, "Not authorized")
+
+
+@router.get("", response_model=InventoryResponse)
+async def get_inventory(
+    business_id: UUID = Query(...),
+    status: str = Query(default="all"),
+    category: str = Query(default="all"),
+    search: str = Query(default=""),
+    sort: str = Query(default="days_left"),
+    order: str = Query(default="asc"),
+    page: int = Query(default=1, ge=1),
+    limit: int = Query(default=20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    await _verify_business_access(db, business_id, current_user)
+    return await get_inventory_list(
+        db, business_id, status, category, search, sort, order, page, limit
+    )
+
+
+@router.get("/{item_id}/detail", response_model=ItemDetailResponse)
+async def get_detail(
+    item_id: UUID,
+    business_id: UUID = Query(...),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    await _verify_business_access(db, business_id, current_user)
+    return await get_item_detail(db, business_id, item_id)
+
+
+@router.post("/restock", response_model=RestockResponse)
+async def restock(
+    data: RestockRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    # RestockRequest should include business_id – verify via item lookup in service
+    return await restock_item(db, data)

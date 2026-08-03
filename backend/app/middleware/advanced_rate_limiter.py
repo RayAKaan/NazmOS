@@ -302,17 +302,28 @@ def get_rate_limiter() -> RedisRateLimiter | InMemoryRateLimiter:
     Factory function to get appropriate rate limiter based on environment.
     
     In production with multiple workers, use RedisRateLimiter.
-    For development/testing, use InMemoryRateLimiter.
+    For development/testing, use InMemoryRateLimiter with relaxed limits.
     """
     import os
-    
+    from app.config import get_settings
+
+    settings = get_settings()
+    is_dev = settings.ENVIRONMENT == "development"
+
     redis_url = os.getenv("REDIS_URL")
-    if redis_url:
+    if redis_url and not is_dev:
         try:
             return RedisRateLimiter(redis_url=redis_url)
         except Exception:
             pass
-    
+
+    if is_dev:
+        limiter = InMemoryRateLimiter(default_limit=10000, window_seconds=60)
+        # Relaxed dev limits so E2E/smoke tests can poll status endpoints freely.
+        for key in limiter.limits:
+            limiter.limits[key]["limit"] *= 100
+        return limiter
+
     return InMemoryRateLimiter()
 
 

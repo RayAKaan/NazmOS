@@ -6,23 +6,108 @@ on:
   pull_request:
 
 jobs:
-  backend-no-db:
+  backend:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: nazmos
+          POSTGRES_PASSWORD: nazmos_dev
+          POSTGRES_DB: nazmos_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.13'
       - name: Install backend dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
-      - name: Backend tests without DB
+      - name: Lint and compile backend
         working-directory: backend
+        env:
+          PYTHONPATH: .
         run: |
-          PYTHONPATH=. pytest -q
-          PYTHONPATH=. python -m compileall -q app tests
-          PYTHONPATH=. python -m alembic heads
+          python -m compileall -q app tests scripts
+          python -m alembic heads
+      - name: Dependency vulnerability scan
+        run: |
+          python -m pip install pip-audit
+          pip-audit --desc --format=json -r backend/requirements.txt > pip-audit.json || true
+          pip-audit --desc -r backend/requirements.txt
+
+      - name: Block CI on high/critical CVEs
+        run: |
+          python - <<'PY'
+          import json, sys
+          try:
+              with open('pip-audit.json') as f:
+                  report = json.load(f)
+          except Exception:
+              print('No pip-audit report found; skipping CVE gate.')
+              sys.exit(0)
+
+          failures = []
+          for dep in report.get('dependencies', []):
+              for vuln in dep.get('vulns', []):
+                  severity = (vuln.get('severity') or '').lower()
+                  if severity in ('high', 'critical'):
+                      failures.append({
+                          'package': dep.get('name'),
+                          'version': dep.get('version'),
+                          'vuln_id': vuln.get('id'),
+                          'severity': severity,
+                          'fix_versions': vuln.get('fix_versions', []),
+                      })
+
+          if failures:
+              print('HIGH/CRITICAL CVEs detected:')
+              for f in failures:
+                  print(f"  {f['package']} {f['version']}: {f['vuln_id']} ({f['severity']}) fix: {f['fix_versions']}")
+              sys.exit(1)
+          print('No high/critical CVEs detected.')
+          PY
+      - name: Backend tests with PostgreSQL
+        working-directory: backend
+        env:
+          PYTHONPATH: .
+          DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos_test
+          REDIS_URL: redis://localhost:6379/0
+          ENVIRONMENT: test
+        run: |
+          python -m alembic upgrade head
+          pytest -q
+
+      - name: Backend runtime E2E smoke tests
+        working-directory: backend
+        env:
+          PYTHONPATH: .
+          DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos_test
+          REDIS_URL: redis://localhost:6379/0
+          ENVIRONMENT: test
+          USE_CELERY: false
+          USE_REDIS: false
+          API_BASE_URL: http://localhost:8000
+        run: |
+          python -m alembic upgrade head
+          uvicorn app.main:app --host 127.0.0.1 --port 8000 --log-level warning &
+          SERVER_PID=$!
+          sleep 3
+          python ../scripts/runtime_e2e_upload_money_audit.py
+          python ../scripts/runtime_e2e_demo_ksa_retail.py
+          kill $SERVER_PID
 
   frontend:
     runs-on: ubuntu-latest

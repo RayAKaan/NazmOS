@@ -1,6 +1,7 @@
 import asyncio
 import hashlib
 import json
+import uuid as _uuid
 from typing import AsyncGenerator
 import pandas as pd
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,7 +9,7 @@ from sqlalchemy import text
 import redis.asyncio as aioredis
 from pathlib import Path
 
-from app.database.connection import get_session
+from app.database.connection import async_session_scope
 from app.config import get_settings
 from app.services.data_normalizer import normalize_dataframe
 from app.services.shariah_compliance import audit_inventory_halal_status
@@ -77,7 +78,7 @@ class ETLPipeline:
         except:
             self.redis = None
 
-        async with get_session() as session:
+        async with async_session_scope() as session:
             try:
                 await self._push_progress("Starting Money Audit import...", 0)
 
@@ -179,12 +180,12 @@ class ETLPipeline:
 
         result = await session.execute(
             text("""
-                INSERT INTO categories (business_id, name, description, sort_order, is_active)
-                VALUES (:business_id, :name, NULL, 0, true)
+                INSERT INTO categories (id, business_id, name, description, sort_order, is_active, created_at)
+                VALUES (:id, :business_id, :name, NULL, 0, true, NOW())
                 ON CONFLICT (business_id, name) DO UPDATE SET name = EXCLUDED.name
                 RETURNING id
             """),
-            {"business_id": self.business_id, "name": category_name},
+            {"id": str(_uuid.uuid4()), "business_id": self.business_id, "name": category_name},
         )
         row = result.fetchone()
         return str(row[0]) if row else None
@@ -270,18 +271,19 @@ class ETLPipeline:
                 )
                 self._stats["items_updated"] += 1
             else:
+                item_id = str(_uuid.uuid4())
                 await session.execute(
                     text("""
                         INSERT INTO items
-                            (business_id, name, sku, category_id, unit, cost_price, sell_price,
+                            (id, business_id, name, sku, category_id, unit, cost_price, sell_price,
                              barcode, brand, pack_size, storage_type,
-                             shariah_status, shariah_flags, shariah_checked_at)
+                             shariah_status, shariah_flags, shariah_checked_at, is_active, created_at)
                         VALUES
-                            (:business_id, :name, :sku, :category_id, 'piece', :cost_price, :sell_price,
+                            (:id, :business_id, :name, :sku, :category_id, 'piece', :cost_price, :sell_price,
                              :barcode, :brand, :pack_size, :storage_type,
-                             :shariah_status, CAST(:shariah_flags AS JSON), NOW())
+                             :shariah_status, CAST(:shariah_flags AS JSON), NOW(), true, NOW())
                     """),
-                    params,
+                    {**params, "id": item_id},
                 )
                 self._stats["items_created"] += 1
 
@@ -295,14 +297,14 @@ class ETLPipeline:
         for item_name_lower in item_map.keys():
             await session.execute(
                 text("""
-                    INSERT INTO inventory (business_id, item_id, current_stock, reorder_level, max_stock)
-                    SELECT :business_id, :item_id, 0, 10, 100
+                    INSERT INTO inventory (id, business_id, item_id, current_stock, reorder_level, max_stock, created_at)
+                    SELECT :id, :business_id, :item_id, 0, 10, 100, NOW()
                     WHERE NOT EXISTS (
-                        SELECT 1 FROM inventory 
+                        SELECT 1 FROM inventory
                         WHERE business_id = :business_id AND item_id = :item_id
                     )
                 """),
-                {"business_id": self.business_id, "item_id": item_map[item_name_lower]}
+                {"id": str(_uuid.uuid4()), "business_id": self.business_id, "item_id": item_map[item_name_lower]}
             )
 
     async def _apply_inventory_snapshot(self, session: AsyncSession, item_map: dict) -> dict:
@@ -331,9 +333,9 @@ class ETLPipeline:
             await session.execute(
                 text("""
                     INSERT INTO inventory
-                        (business_id, item_id, current_stock, reorder_level, max_stock, last_restocked, updated_at)
+                        (id, business_id, item_id, current_stock, reorder_level, max_stock, last_restocked, updated_at, created_at)
                     VALUES
-                        (:business_id, :item_id, :current_stock, COALESCE(:reorder_level, 10), :max_stock, NOW(), NOW())
+                        (:id, :business_id, :item_id, :current_stock, COALESCE(:reorder_level, 10), :max_stock, NOW(), NOW(), NOW())
                     ON CONFLICT (business_id, item_id) DO UPDATE SET
                         current_stock = EXCLUDED.current_stock,
                         reorder_level = COALESCE(:reorder_level, inventory.reorder_level),
@@ -345,6 +347,7 @@ class ETLPipeline:
                         updated_at = NOW()
                 """),
                 {
+                    "id": str(_uuid.uuid4()),
                     "business_id": self.business_id,
                     "item_id": item_id,
                     "current_stock": current_stock,
@@ -384,14 +387,19 @@ class ETLPipeline:
             if isinstance(transaction_at, pd.Timestamp):
                 transaction_at = transaction_at.to_pydatetime()
 
+            quantity = float(row.get("quantity", 1))
+            unit_price = float(row.get("unit_price", row.get("total_amount", 0)))
+            cost_price = float(row.get("cost_price", 0))
+            total_amount = float(row.get("total_amount", quantity * unit_price))
             rows.append({
                 "business_id": self.business_id,
                 "item_id": item_id,
-                "quantity": float(row.get("quantity", 1)),
-                "unit_price": float(row.get("unit_price", row.get("total_amount", 0))),
-                "cost_price": float(row.get("cost_price", 0)),
-                "total_amount": float(row.get("total_amount", row.get("quantity", 1) * row.get("unit_price", 0))),
-                "transaction_at": transaction_at.isoformat() if transaction_at else None,
+                "quantity": quantity,
+                "unit_price": unit_price,
+                "cost_price": cost_price,
+                "total_amount": total_amount,
+                "profit": total_amount - (quantity * cost_price),
+                "transaction_at": transaction_at if transaction_at else None,
                 "transaction_type": "sale",
             })
             if row.get("transaction_at"):
@@ -405,19 +413,21 @@ class ETLPipeline:
                 await session.execute(
                     text("""
                         INSERT INTO transactions
-                            (business_id, item_id, quantity, unit_price, cost_price,
-                             total_amount, transaction_at, transaction_type)
-                        VALUES (:business_id, :item_id, :quantity, :unit_price, :cost_price,
-                                :total_amount, :transaction_at, :transaction_type)
+                            (id, business_id, item_id, quantity, unit_price, cost_price,
+                             total_amount, profit, transaction_at, transaction_type, created_at)
+                        VALUES (:id, :business_id, :item_id, :quantity, :unit_price, :cost_price,
+                                :total_amount, :profit, :transaction_at, :transaction_type, NOW())
                     """),
-                    row_data
+                    {**row_data, "id": str(_uuid.uuid4())}
                 )
                 imported += 1
                 # Chunked commit every 1,000 rows to prevent table lock exhaustion
                 if idx % 1000 == 0:
                     await session.commit()
-            except:
+            except Exception as exc:
                 failed += 1
+                import logging
+                logging.getLogger("etl_pipeline").warning("Transaction insert failed: %s", exc)
 
         await session.commit()
 
@@ -432,47 +442,68 @@ class ETLPipeline:
     async def _rebuild_summaries(self, session: AsyncSession, date_range: tuple):
         if not date_range or not date_range[0]:
             return
-        
+
         start_date, end_date = date_range
         if isinstance(start_date, pd.Timestamp):
             start_date = start_date.to_pydatetime()
         if isinstance(end_date, pd.Timestamp):
             end_date = end_date.to_pydatetime()
+        # Normalize to date for DATE(...) comparisons.
+        start_date = start_date.date() if hasattr(start_date, "date") else start_date
+        end_date = end_date.date() if hasattr(end_date, "date") else end_date
 
         await session.execute(
             text("""
-                INSERT INTO daily_summaries (business_id, date, total_sales, total_profit, total_transactions, top_item_id, top_item_qty)
-                SELECT 
-                    t.business_id,
-                    DATE(t.transaction_at) as date,
-                    COALESCE(SUM(t.total_amount), 0) as total_sales,
-                    COALESCE(SUM(t.profit), 0) as total_profit,
-                    COUNT(*) as total_transactions,
-                    (
-                        SELECT item_id 
-                        FROM transactions t2 
-                        WHERE DATE(t2.transaction_at) = DATE(t.transaction_at)
-                        GROUP BY item_id 
-                        ORDER BY SUM(t2.quantity) DESC 
-                        LIMIT 1
-                    ) as top_item_id,
-                    (
-                        SELECT SUM(quantity) 
-                        FROM transactions t3 
-                        WHERE DATE(t3.transaction_at) = DATE(t.transaction_at)
-                        GROUP BY item_id 
-                        ORDER BY SUM(t3.quantity) DESC 
-                        LIMIT 1
-                    ) as top_item_qty
-                FROM transactions t
-                WHERE t.business_id = :business_id
-                    AND DATE(t.transaction_at) >= :start_date
-                    AND DATE(t.transaction_at) <= :end_date
-                GROUP BY t.business_id, DATE(t.transaction_at)
+                WITH daily_totals AS (
+                    SELECT
+                        business_id,
+                        DATE(transaction_at) AS d,
+                        COALESCE(SUM(total_amount), 0) AS total_sales,
+                        COALESCE(SUM(profit), 0) AS total_profit,
+                        COUNT(*) AS total_transactions
+                    FROM transactions
+                    WHERE business_id = :business_id
+                      AND DATE(transaction_at) >= :start_date
+                      AND DATE(transaction_at) <= :end_date
+                    GROUP BY business_id, DATE(transaction_at)
+                ),
+                item_totals AS (
+                    SELECT
+                        business_id,
+                        DATE(transaction_at) AS d,
+                        item_id,
+                        SUM(quantity) AS qty,
+                        ROW_NUMBER() OVER (
+                            PARTITION BY DATE(transaction_at)
+                            ORDER BY SUM(quantity) DESC
+                        ) AS rn
+                    FROM transactions
+                    WHERE business_id = :business_id
+                      AND DATE(transaction_at) >= :start_date
+                      AND DATE(transaction_at) <= :end_date
+                    GROUP BY business_id, DATE(transaction_at), item_id
+                )
+                INSERT INTO daily_summaries
+                    (id, business_id, date, total_sales, total_profit, total_transactions, top_item_id, top_item_qty, created_at)
+                SELECT
+                    gen_random_uuid(),
+                    dt.business_id,
+                    dt.d,
+                    dt.total_sales,
+                    dt.total_profit,
+                    dt.total_transactions,
+                    it.item_id,
+                    it.qty,
+                    NOW()
+                FROM daily_totals dt
+                LEFT JOIN item_totals it
+                    ON dt.d = it.d AND it.rn = 1
                 ON CONFLICT (business_id, date) DO UPDATE SET
                     total_sales = EXCLUDED.total_sales,
                     total_profit = EXCLUDED.total_profit,
-                    total_transactions = EXCLUDED.total_transactions
+                    total_transactions = EXCLUDED.total_transactions,
+                    top_item_id = EXCLUDED.top_item_id,
+                    top_item_qty = EXCLUDED.top_item_qty
             """),
             {"business_id": self.business_id, "start_date": start_date, "end_date": end_date}
         )

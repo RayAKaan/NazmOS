@@ -134,7 +134,7 @@ def test_arabic_inventory_detection_maps_purchase_price_correctly():
 
 
 def test_legacy_distraction_terms_are_not_reintroduced_in_source():
-    ignored_dirs = {"node_modules", ".next", ".git", "__pycache__", ".pytest_cache"}
+    ignored_dirs = {"node_modules", ".next", ".git", "__pycache__", ".pytest_cache", ".venv", "venv"}
     ignored_files = {"TESTING_REPORT.md"}  # the report may mention removed terms historically.
     matches = []
     for path in ROOT.rglob("*"):

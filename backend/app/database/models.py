@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Boolean, DateTime, Numeric, ForeignKey, CheckConstraint, Index, UniqueConstraint, text, BigInteger, JSON, Enum, Time, LargeBinary, Date, Integer
-from sqlalchemy.dialects.postgresql import UUID
+from app.database.types import UUID
 from sqlalchemy.orm import relationship, DeclarativeBase
 from sqlalchemy.sql import func
 from enum import Enum as PyEnum
@@ -46,6 +46,8 @@ class POSAdapterType(str, PyEnum):
     ZOHO = "zoho"
     CSV_WEBHOOK = "csv_webhook"
     CUSTOM_API = "custom_api"
+    FOODICS = "foodics"
+    SALLA = "salla"
 
 
 class POSSyncStatus(str, PyEnum):
@@ -1247,6 +1249,64 @@ class MoneyAudit(Base):
     __table_args__ = (
         Index("idx_money_audits_business_created", "business_id", "created_at"),
         Index("idx_money_audits_status", "status"),
+    )
+
+
+class FeatureFlag(Base):
+    """Dynamic feature flags for per-business / per-plan rollout control."""
+    __tablename__ = "feature_flags"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    key = Column(String(100), nullable=False, unique=True, index=True)
+    name = Column(String(255), nullable=False)
+    description = Column(String, nullable=True)
+    # Global default when no business override exists.
+    default_value = Column(Boolean, default=False, nullable=False)
+    # Optional plan gating: comma-separated plan names, e.g. "basic,pro,enterprise".
+    allowed_plans = Column(String, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        Index("idx_feature_flags_key", "key"),
+    )
+
+
+class FeatureFlagOverride(Base):
+    """Per-business feature flag override."""
+    __tablename__ = "feature_flag_overrides"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    feature_flag_id = Column(UUID(as_uuid=True), ForeignKey("feature_flags.id", ondelete="CASCADE"), nullable=False)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    value = Column(Boolean, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("feature_flag_id", "business_id", name="uq_feature_flag_business"),
+        Index("idx_feature_flag_overrides_business", "business_id"),
+    )
+
+
+class IdempotencyKey(Base):
+    """Cached responses for idempotent POST/PATCH/PUT requests."""
+    __tablename__ = "idempotency_keys"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    idempotency_key = Column(String(255), nullable=False)
+    scope_method = Column(String(10), nullable=False)
+    scope_path = Column(String(500), nullable=False)
+    request_hash = Column(String(64), nullable=True)
+    response_status = Column(Integer, nullable=False)
+    response_body = Column(String, nullable=False)
+    expires_at = Column(DateTime(timezone=True), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("idempotency_key", "scope_method", "scope_path", name="uq_idempotency_scope"),
+        Index("idx_idempotency_key_lookup", "idempotency_key", "scope_method", "scope_path"),
+        Index("idx_idempotency_expires", "expires_at"),
     )
 
 

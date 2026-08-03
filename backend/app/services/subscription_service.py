@@ -7,8 +7,11 @@ from sqlalchemy import select, func, and_
 import structlog
 
 from app.database.models import Subscription, SubscriptionUsage, Business
+from app.config import get_settings
 
 logger = structlog.get_logger(__name__)
+
+settings = get_settings()
 
 
 @dataclass
@@ -60,8 +63,8 @@ PLAN_CONFIG = {
         annual_price_sar=0,
         branches=1,
         max_skus=500,
-        uploads_per_month=2,
-        money_audits_per_month=1,
+        uploads_per_month=10,
+        money_audits_per_month=10,
         ai_queries_per_day=5,
         team_members=1,
         pos_integrations=0,
@@ -168,6 +171,13 @@ PLAN_CONFIG = {
         custom_reports=True,
     ),
 }
+
+# Validation-friendly free-plan limits in development only.
+# Production keeps the intended 2 uploads / 1 money audit per month.
+if settings.ENVIRONMENT == "development":
+    _dev_free = PLAN_CONFIG["free"]
+    _dev_free.uploads_per_month = 10
+    _dev_free.money_audits_per_month = 10
 
 FEATURE_ATTRS = {
     "forecasting": "forecasting",

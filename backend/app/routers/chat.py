@@ -16,6 +16,7 @@ from app.services.decision_engine import DecisionEngine
 from app.services.cache_service import CacheService
 from app.utils.prompt_sanitizer import sanitize_user_input
 from app.config import get_settings
+from app.services.feature_flags import require_feature_enabled
 
 settings = get_settings()
 router = APIRouter(prefix="/api/v1/chat", tags=["chat"])
@@ -30,6 +31,9 @@ async def chat(
     current_user: User = Depends(get_current_user),
     db=Depends(get_db),
 ):
+    if business_id:
+        await require_feature_enabled(db, "chat_enabled", business_id=business_id)
+
     clean_message = sanitize_user_input(message)
 
     if not session_id:
@@ -147,6 +151,7 @@ async def get_sessions(
     current_user: User = Depends(get_current_user),
     db=Depends(get_db),
 ):
+    await require_feature_enabled(db, "chat_enabled", business_id=business_id)
     offset = (page - 1) * limit
 
     result = await db.execute(
@@ -237,6 +242,7 @@ async def get_suggestions(
     current_user: User = Depends(get_current_user),
     db=Depends(get_db),
 ):
+    await require_feature_enabled(db, "chat_enabled", business_id=business_id)
     suggestions = [
         "What should I order urgently right now?",
         "Why do Wednesday sales always dip by 31%?",

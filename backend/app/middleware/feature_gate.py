@@ -4,6 +4,11 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.subscription_service import SubscriptionService
+from app.config import get_settings
+
+
+settings = get_settings()
+_is_sqlite = settings.DATABASE_URL.startswith("sqlite")
 
 
 class FeatureLocked(HTTPException):
@@ -35,11 +40,13 @@ async def require_feature(
 async def enforce_upload_limit(db: AsyncSession, business_id: UUID | str) -> None:
     service = SubscriptionService(db)
     limits = await service.get_plan_limits(UUID(str(business_id)))
-    res = await db.execute(text("""
+    # SQLite compatible replacement for date_trunc('month', NOW()).
+    month_start_sql = "strftime('%Y-%m-01', 'now')" if _is_sqlite else "date_trunc('month', NOW())"
+    res = await db.execute(text(f"""
         SELECT COUNT(*)
         FROM uploaded_files
         WHERE business_id = :business_id
-          AND created_at >= date_trunc('month', NOW())
+          AND created_at >= {month_start_sql}
     """), {"business_id": str(business_id)})
     used = int(res.scalar() or 0)
     if used >= limits.uploads_per_month:

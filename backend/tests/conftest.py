@@ -4,7 +4,7 @@ from typing import AsyncGenerator
 
 import pytest
 import pytest_asyncio
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
 
@@ -57,6 +57,51 @@ async def client(db_session: AsyncSession) -> AsyncGenerator[AsyncClient, None]:
         yield db_session
 
     app.dependency_overrides[get_db] = override_get_db
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
         yield ac
     app.dependency_overrides.clear()
+
+
+@pytest_asyncio.fixture(scope="function")
+async def authenticated_client(client: AsyncClient) -> dict:
+    """Return an authenticated client + business context for router tests.
+
+    Creates a fresh user, logs in, and bootstraps a single business so tests
+    have a real, accessible business_id instead of hard-coded UUIDs.
+    """
+    email = "test_user@example.com"
+    password = "TestPass123!"
+    full_name = "Test User"
+
+    register_response = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": password, "full_name": full_name},
+    )
+    if register_response.status_code not in (200, 201):
+        raise RuntimeError(f"Registration failed: {register_response.text}")
+
+    login_response = await client.post(
+        "/api/v1/auth/login",
+        json={"email": email, "password": password},
+    )
+    if login_response.status_code != 200:
+        raise RuntimeError(f"Login failed: {login_response.text}")
+
+    token = login_response.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    bootstrap_response = await client.post(
+        "/api/v1/businesses/bootstrap",
+        json={"name": "Test Baqala", "type": "baqala", "city": "Riyadh"},
+        headers=headers,
+    )
+    if bootstrap_response.status_code != 200:
+        raise RuntimeError(f"Business bootstrap failed: {bootstrap_response.text}")
+
+    business_id = bootstrap_response.json()["id"]
+    return {
+        "client": client,
+        "token": token,
+        "business_id": business_id,
+        "headers": headers,
+    }

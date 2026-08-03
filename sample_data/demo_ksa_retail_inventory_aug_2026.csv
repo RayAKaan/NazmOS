@@ -1,0 +1,31 @@
+Product,SKU,Category,Brand,Pack Size,Current Stock,Cost Price SAR,Shelf Price SAR,Barcode,Storage Type,Expiry Date,Batch Number,Reorder Level,Supplier
+Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,Qassim Farms,1kg,0,22.0,38.0,628000100001,ambient,2026-09-17,DAT-B02,17,Tamimi Supply
+Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,Madinah Premium,500g,80,35.0,62.0,628000100002,ambient,2026-10-26,DAT-B01,23,Panda Logistics
+Mixed Nuts 400g,NUT-MIX-03,Dates & Nuts,AlFaisal,400g,100,28.0,48.0,628000100003,ambient,2026-12-05,NUT-B03,11,Tamimi Supply
+Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,Nadec,1L,50,5.5,8.75,628000200004,chilled,2026-08-06,DAI-B03,30,Tamimi Supply
+Laban 180ml,DAI-LAB-05,Dairy & Eggs,Nadec,180ml,70,1.5,2.75,628000200005,chilled,2026-08-07,DAI-B02,12,Nazmak Distribution
+Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,Balady,30pcs,30,18.0,26.5,628000200006,chilled,2026-08-25,DAI-B04,13,Panda Logistics
+Cheese Slices 200g,DAI-CHS-07,Dairy & Eggs,Puck,200g,100,12.0,13.44,628000200007,chilled,2026-09-10,DAI-B04,24,Nazmak Distribution
+Arabic Coffee 250g,BEV-COF-08,Beverages,Nazmak Coffee,250g,90,16.0,27.0,628000300008,ambient,2027-10-23,BEV-B03,29,Almarai Direct
+Bottled Water 330ml x12,BEV-WTR-09,Beverages,Nova,12x330ml,0,7.0,11.5,628000300009,ambient,2028-06-27,BEV-B05,28,Nazmak Distribution
+Soft Drink Can 330ml,BEV-SOD-10,Beverages,Pepsi,330ml,200,1.85,3.25,628000300010,ambient,2027-07-17,BEV-B03,28,Nazmak Distribution
+Orange Juice 1L,BEV-JUC-11,Beverages,Tropicana,1L,146,8.0,13.5,628000300011,chilled,2026-09-04,BEV-B02,28,Panda Logistics
+Green Tea 100 bags,BEV-TEA-12,Beverages,Lipton,100 bags,90,14.0,22.0,628000300012,ambient,2027-12-23,BEV-B01,25,Almarai Direct
+Chocolate Bar 100g,SNK-CHO-13,Snacks & Confectionery,Galaxy,100g,60,5.0,8.5,628000400013,ambient,2027-01-18,SNK-B01,15,Almarai Direct
+Potato Chips 150g,SNK-CHP-14,Snacks & Confectionery,Lay's,150g,60,4.0,6.75,628000400014,ambient,2027-04-17,SNK-B03,22,Nazmak Distribution
+Biscuits 300g,SNK-BIS-15,Snacks & Confectionery,Digestive,300g,70,6.0,9.5,628000400015,ambient,2027-01-15,SNK-B03,20,Nazmak Distribution
+Sliced Bread 600g,BAK-BRD-16,Bakery,Yaumi,600g,190,3.5,5.75,628000500016,ambient,2026-08-07,BAK-B05,10,Panda Logistics
+Croissant 4pcs,BAK-CRO-17,Bakery,La Poire,4pcs,60,8.0,13.0,628000500017,ambient,2026-08-07,BAK-B05,21,Panda Logistics
+Dishwashing Liquid 1L,HOU-DSH-18,Household,Fairy,1L,90,9.0,14.5,628000600018,ambient,2026-11-20,HOU-B02,18,Tamimi Supply
+Laundry Powder 2.5kg,HOU-LND-19,Household,Tide,2.5kg,180,28.0,44.0,628000600019,ambient,2029-01-20,HOU-B04,13,Nazmak Distribution
+Trash Bags 30pcs,HOU-TRB-20,Household,Glad,30pcs,200,10.0,16.0,628000600020,ambient,2030-01-04,HOU-B02,15,Almarai Direct
+Shampoo 400ml,PER-SHM-21,Personal Care,Head & Shoulders,400ml,80,18.0,29.0,628000700021,ambient,2028-11-19,PER-B01,17,Nazmak Distribution
+Toothpaste 100ml,PER-PST-22,Personal Care,Colgate,100ml,70,7.0,11.5,628000700022,ambient,2027-04-04,PER-B02,25,Almarai Direct
+Soap Bar 4pcs,PER-SOP-23,Personal Care,Lux,4pcs,80,9.0,14.0,628000700023,ambient,2028-02-17,PER-B04,25,Panda Logistics
+Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,India Gate,5kg,40,32.0,49.0,628000800024,ambient,2027-09-03,RIC-B02,29,Tamimi Supply
+Oats 1kg,RIC-OAT-25,Rice & Grains,Quaker,1kg,160,12.0,13.44,628000800025,ambient,2027-05-16,RIC-B04,20,Almarai Direct
+Cooking Oil 1.8L,OIL-COK-26,Oils & Ghee,Afia,1.8L,140,16.0,25.0,628000900026,ambient,2027-05-23,OIL-B03,28,Panda Logistics
+Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,Almarai,800g,160,34.0,52.0,628000900027,ambient,2027-03-23,OIL-B05,25,Almarai Direct
+Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,Almarai,900g,50,19.0,29.0,628001000028,frozen,2027-02-16,FRZ-B04,20,Tamimi Supply
+Frozen Fries 1kg,FRZ-FRI-29,Frozen Foods,McCain,1kg,129,11.0,17.5,628001000029,frozen,2027-04-03,FRZ-B04,11,Almarai Direct
+Ice Cream 1L,FRZ-ICE-30,Frozen Foods,Ben & Jerry's,1L,120,14.0,22.0,628001000030,frozen,2027-02-18,FRZ-B04,30,Tamimi Supply

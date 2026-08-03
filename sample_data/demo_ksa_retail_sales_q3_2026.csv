@@ -1,0 +1,151 @@
+Date,Transaction ID,Branch,City,Product,SKU,Category,Qty,Unit Price SAR,Total SAR,Cost SAR,Payment Method
+2026-07-01,TX-2026-07-01-0001,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-07-01,TX-2026-07-01-0002,Riyadh - Yasmin,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,2,23.8,47.6,56.0,cash
+2026-07-01,TX-2026-07-01-0003,Jeddah - Rawdah,Jeddah,Croissant 4pcs,BAK-CRO-17,Bakery,2,13.0,26.0,16.0,apple_pay
+2026-07-01,TX-2026-07-01-0004,Makkah - Ibrahim Khalil,Makkah,Arabic Coffee 250g,BEV-COF-08,Beverages,2,27.0,54.0,32.0,mada
+2026-07-01,TX-2026-07-01-0005,Jeddah - Tahlia,Jeddah,Soap Bar 4pcs,PER-SOP-23,Personal Care,2,14.0,28.0,18.0,cash
+2026-07-01,TX-2026-07-01-0006,Khobar - Corniche,Khobar,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,1,6.05,6.05,5.5,visa
+2026-07-02,TX-2026-07-02-0007,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,49.0,98.0,64.0,mastercard
+2026-07-02,TX-2026-07-02-0008,Riyadh - Yasmin,Riyadh,Dishwashing Liquid 1L,HOU-DSH-18,Household,1,14.5,14.5,9.0,visa
+2026-07-02,TX-2026-07-02-0009,Jeddah - Rawdah,Jeddah,Soap Bar 4pcs,PER-SOP-23,Personal Care,1,14.0,14.0,9.0,visa
+2026-07-02,TX-2026-07-02-0010,Riyadh - Yasmin,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,1,20.9,20.9,19.0,visa
+2026-07-02,TX-2026-07-02-0011,Madinah - Quba,Madinah,Shampoo 400ml,PER-SHM-21,Personal Care,4,29.0,116.0,72.0,visa
+2026-07-02,TX-2026-07-02-0012,Jeddah - Rawdah,Jeddah,Toothpaste 100ml,PER-PST-22,Personal Care,1,11.5,11.5,7.0,mada
+2026-07-02,TX-2026-07-02-0013,Jeddah - Tahlia,Jeddah,Dishwashing Liquid 1L,HOU-DSH-18,Household,3,14.5,43.5,27.0,mastercard
+2026-07-02,TX-2026-07-02-0014,Dammam - King Fahd,Dammam,Ice Cream 1L,FRZ-ICE-30,Frozen Foods,2,22.0,44.0,28.0,visa
+2026-07-02,TX-2026-07-02-0015,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,4,27.0,108.0,64.0,mastercard
+2026-07-03,TX-2026-07-03-0016,Riyadh - Yasmin,Riyadh,Cheese Slices 200g,DAI-CHS-07,Dairy & Eggs,5,19.0,95.0,60.0,visa
+2026-07-03,TX-2026-07-03-0017,Jeddah - Rawdah,Jeddah,Shampoo 400ml,PER-SHM-21,Personal Care,2,29.0,58.0,36.0,mastercard
+2026-07-03,TX-2026-07-03-0018,Jeddah - Tahlia,Jeddah,Bottled Water 330ml x12,BEV-WTR-09,Beverages,1,11.5,11.5,7.0,apple_pay
+2026-07-03,TX-2026-07-03-0019,Dammam - King Fahd,Dammam,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,49.0,98.0,64.0,mastercard
+2026-07-03,TX-2026-07-03-0020,Khobar - Corniche,Khobar,Arabic Coffee 250g,BEV-COF-08,Beverages,12,27.0,324.0,192.0,mastercard
+2026-07-03,TX-2026-07-03-0021,Riyadh - Yasmin,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,1,13.2,13.2,12.0,cash
+2026-07-03,TX-2026-07-03-0022,Makkah - Ibrahim Khalil,Makkah,Trash Bags 30pcs,HOU-TRB-20,Household,1,16.0,16.0,10.0,mastercard
+2026-07-03,TX-2026-07-03-0023,Dammam - King Fahd,Dammam,Dishwashing Liquid 1L,HOU-DSH-18,Household,4,7.65,30.6,36.0,mada
+2026-07-03,TX-2026-07-03-0024,Dammam - King Fahd,Dammam,Oats 1kg,RIC-OAT-25,Rice & Grains,2,13.2,26.4,24.0,mastercard
+2026-07-04,TX-2026-07-04-0025,Madinah - Quba,Madinah,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,6,38.0,228.0,132.0,visa
+2026-07-04,TX-2026-07-04-0026,Jeddah - Tahlia,Jeddah,Croissant 4pcs,BAK-CRO-17,Bakery,5,13.0,65.0,40.0,visa
+2026-07-04,TX-2026-07-04-0027,Jeddah - Rawdah,Jeddah,Laban 180ml,DAI-LAB-05,Dairy & Eggs,1,2.75,2.75,1.5,apple_pay
+2026-07-04,TX-2026-07-04-0028,Riyadh - Tahlia,Riyadh,Trash Bags 30pcs,HOU-TRB-20,Household,1,8.5,8.5,10.0,visa
+2026-07-04,TX-2026-07-04-0029,Dammam - King Fahd,Dammam,Arabic Coffee 250g,BEV-COF-08,Beverages,1,27.0,27.0,16.0,mada
+2026-07-04,TX-2026-07-04-0030,Riyadh - Yasmin,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,35.2,70.4,64.0,apple_pay
+2026-07-04,TX-2026-07-04-0031,Jeddah - Tahlia,Jeddah,Laban 180ml,DAI-LAB-05,Dairy & Eggs,3,2.75,8.25,4.5,cash
+2026-07-05,TX-2026-07-05-0032,Makkah - Ibrahim Khalil,Makkah,Cheese Slices 200g,DAI-CHS-07,Dairy & Eggs,5,19.0,95.0,60.0,cash
+2026-07-05,TX-2026-07-05-0033,Dammam - King Fahd,Dammam,Chocolate Bar 100g,SNK-CHO-13,Snacks & Confectionery,12,8.5,102.0,60.0,mastercard
+2026-07-05,TX-2026-07-05-0034,Madinah - Quba,Madinah,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,1,6.05,6.05,5.5,mada
+2026-07-05,TX-2026-07-05-0035,Jeddah - Rawdah,Jeddah,Laundry Powder 2.5kg,HOU-LND-19,Household,1,30.8,30.8,28.0,mada
+2026-07-05,TX-2026-07-05-0036,Jeddah - Rawdah,Jeddah,Mixed Nuts 400g,NUT-MIX-03,Dates & Nuts,5,48.0,240.0,140.0,mada
+2026-07-05,TX-2026-07-05-0037,Jeddah - Rawdah,Jeddah,Bottled Water 330ml x12,BEV-WTR-09,Beverages,3,11.5,34.5,21.0,cash
+2026-07-05,TX-2026-07-05-0038,Madinah - Quba,Madinah,Arabic Coffee 250g,BEV-COF-08,Beverages,3,27.0,81.0,48.0,cash
+2026-07-05,TX-2026-07-05-0039,Riyadh - Yasmin,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,3,8.75,26.25,16.5,mastercard
+2026-07-05,TX-2026-07-05-0040,Madinah - Quba,Madinah,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,29.0,87.0,57.0,mada
+2026-07-06,TX-2026-07-06-0041,Makkah - Ibrahim Khalil,Makkah,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-07-06,TX-2026-07-06-0042,Jeddah - Rawdah,Jeddah,Cheese Slices 200g,DAI-CHS-07,Dairy & Eggs,2,19.0,38.0,24.0,cash
+2026-07-06,TX-2026-07-06-0043,Dammam - King Fahd,Dammam,Biscuits 300g,SNK-BIS-15,Snacks & Confectionery,1,9.5,9.5,6.0,mastercard
+2026-07-06,TX-2026-07-06-0044,Riyadh - Yasmin,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,3,62.0,186.0,105.0,mada
+2026-07-06,TX-2026-07-06-0045,Riyadh - Yasmin,Riyadh,Ice Cream 1L,FRZ-ICE-30,Frozen Foods,3,22.0,66.0,42.0,mastercard
+2026-07-07,TX-2026-07-07-0046,Madinah - Quba,Madinah,Cheese Slices 200g,DAI-CHS-07,Dairy & Eggs,4,19.0,76.0,48.0,cash
+2026-07-07,TX-2026-07-07-0047,Makkah - Ibrahim Khalil,Makkah,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,10,38.0,380.0,220.0,mastercard
+2026-07-07,TX-2026-07-07-0048,Dammam - King Fahd,Dammam,Potato Chips 150g,SNK-CHP-14,Snacks & Confectionery,3,6.75,20.25,12.0,apple_pay
+2026-07-07,TX-2026-07-07-0049,Madinah - Quba,Madinah,Laban 180ml,DAI-LAB-05,Dairy & Eggs,1,2.75,2.75,1.5,mada
+2026-07-07,TX-2026-07-07-0050,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,1,35.2,35.2,32.0,mastercard
+2026-07-07,TX-2026-07-07-0051,Jeddah - Tahlia,Jeddah,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,8,38.5,308.0,280.0,cash
+2026-07-07,TX-2026-07-07-0052,Riyadh - Yasmin,Riyadh,Trash Bags 30pcs,HOU-TRB-20,Household,1,16.0,16.0,10.0,mastercard
+2026-07-07,TX-2026-07-07-0053,Riyadh - Yasmin,Riyadh,Frozen Fries 1kg,FRZ-FRI-29,Frozen Foods,2,17.5,35.0,22.0,mada
+2026-07-07,TX-2026-07-07-0054,Riyadh - Yasmin,Riyadh,Potato Chips 150g,SNK-CHP-14,Snacks & Confectionery,3,6.75,20.25,12.0,visa
+2026-07-07,TX-2026-07-07-0055,Dammam - King Fahd,Dammam,Cheese Slices 200g,DAI-CHS-07,Dairy & Eggs,3,19.0,57.0,36.0,visa
+2026-07-07,TX-2026-07-07-0056,Makkah - Ibrahim Khalil,Makkah,Laban 180ml,DAI-LAB-05,Dairy & Eggs,3,2.75,8.25,4.5,visa
+2026-07-07,TX-2026-07-07-0057,Riyadh - Yasmin,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,2,38.0,76.0,44.0,mada
+2026-07-08,TX-2026-07-08-0058,Jeddah - Rawdah,Jeddah,Croissant 4pcs,BAK-CRO-17,Bakery,1,13.0,13.0,8.0,mada
+2026-07-08,TX-2026-07-08-0059,Jeddah - Rawdah,Jeddah,Green Tea 100 bags,BEV-TEA-12,Beverages,1,22.0,22.0,14.0,apple_pay
+2026-07-08,TX-2026-07-08-0060,Dammam - King Fahd,Dammam,Trash Bags 30pcs,HOU-TRB-20,Household,10,16.0,160.0,100.0,apple_pay
+2026-07-08,TX-2026-07-08-0061,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,4,11.5,46.0,28.0,mada
+2026-07-08,TX-2026-07-08-0062,Jeddah - Tahlia,Jeddah,Bottled Water 330ml x12,BEV-WTR-09,Beverages,1,7.7,7.7,7.0,apple_pay
+2026-07-08,TX-2026-07-08-0063,Jeddah - Tahlia,Jeddah,Bottled Water 330ml x12,BEV-WTR-09,Beverages,1,11.5,11.5,7.0,visa
+2026-07-09,TX-2026-07-09-0064,Dammam - King Fahd,Dammam,Croissant 4pcs,BAK-CRO-17,Bakery,2,13.0,26.0,16.0,mada
+2026-07-09,TX-2026-07-09-0065,Riyadh - Yasmin,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,2,29.0,58.0,36.0,mada
+2026-07-09,TX-2026-07-09-0066,Khobar - Corniche,Khobar,Oats 1kg,RIC-OAT-25,Rice & Grains,1,19.5,19.5,12.0,cash
+2026-07-09,TX-2026-07-09-0067,Madinah - Quba,Madinah,Dishwashing Liquid 1L,HOU-DSH-18,Household,3,14.5,43.5,27.0,mada
+2026-07-09,TX-2026-07-09-0068,Riyadh - Yasmin,Riyadh,Frozen Fries 1kg,FRZ-FRI-29,Frozen Foods,3,17.5,52.5,33.0,mada
+2026-07-09,TX-2026-07-09-0069,Khobar - Corniche,Khobar,Laundry Powder 2.5kg,HOU-LND-19,Household,2,44.0,88.0,56.0,mada
+2026-07-09,TX-2026-07-09-0070,Dammam - King Fahd,Dammam,Green Tea 100 bags,BEV-TEA-12,Beverages,5,22.0,110.0,70.0,mada
+2026-07-09,TX-2026-07-09-0071,Khobar - Corniche,Khobar,Cheese Slices 200g,DAI-CHS-07,Dairy & Eggs,3,19.0,57.0,36.0,visa
+2026-07-10,TX-2026-07-10-0072,Jeddah - Tahlia,Jeddah,Ice Cream 1L,FRZ-ICE-30,Frozen Foods,5,22.0,110.0,70.0,cash
+2026-07-10,TX-2026-07-10-0073,Makkah - Ibrahim Khalil,Makkah,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,38.0,38.0,22.0,mastercard
+2026-07-10,TX-2026-07-10-0074,Jeddah - Rawdah,Jeddah,Bottled Water 330ml x12,BEV-WTR-09,Beverages,1,11.5,11.5,7.0,mastercard
+2026-07-10,TX-2026-07-10-0075,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,29.0,58.0,38.0,mastercard
+2026-07-10,TX-2026-07-10-0076,Khobar - Corniche,Khobar,Soft Drink Can 330ml,BEV-SOD-10,Beverages,4,3.25,13.0,7.4,cash
+2026-07-10,TX-2026-07-10-0077,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,11.5,11.5,7.0,mada
+2026-07-10,TX-2026-07-10-0078,Dammam - King Fahd,Dammam,Green Tea 100 bags,BEV-TEA-12,Beverages,2,22.0,44.0,28.0,apple_pay
+2026-07-10,TX-2026-07-10-0079,Khobar - Corniche,Khobar,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,38.0,38.0,22.0,cash
+2026-07-10,TX-2026-07-10-0080,Dammam - King Fahd,Dammam,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,62.0,62.0,35.0,visa
+2026-07-10,TX-2026-07-10-0081,Makkah - Ibrahim Khalil,Makkah,Trash Bags 30pcs,HOU-TRB-20,Household,10,11.0,110.0,100.0,apple_pay
+2026-07-10,TX-2026-07-10-0082,Jeddah - Rawdah,Jeddah,Bottled Water 330ml x12,BEV-WTR-09,Beverages,1,11.5,11.5,7.0,apple_pay
+2026-07-11,TX-2026-07-11-0083,Khobar - Corniche,Khobar,Potato Chips 150g,SNK-CHP-14,Snacks & Confectionery,1,6.75,6.75,4.0,visa
+2026-07-11,TX-2026-07-11-0084,Khobar - Corniche,Khobar,Toothpaste 100ml,PER-PST-22,Personal Care,4,11.5,46.0,28.0,visa
+2026-07-11,TX-2026-07-11-0085,Dammam - King Fahd,Dammam,Toothpaste 100ml,PER-PST-22,Personal Care,2,11.5,23.0,14.0,visa
+2026-07-11,TX-2026-07-11-0086,Jeddah - Tahlia,Jeddah,Cheese Slices 200g,DAI-CHS-07,Dairy & Eggs,2,19.0,38.0,24.0,cash
+2026-07-11,TX-2026-07-11-0087,Dammam - King Fahd,Dammam,Chocolate Bar 100g,SNK-CHO-13,Snacks & Confectionery,2,4.25,8.5,10.0,visa
+2026-07-11,TX-2026-07-11-0088,Jeddah - Rawdah,Jeddah,Potato Chips 150g,SNK-CHP-14,Snacks & Confectionery,3,6.75,20.25,12.0,visa
+2026-07-11,TX-2026-07-11-0089,Madinah - Quba,Madinah,Biscuits 300g,SNK-BIS-15,Snacks & Confectionery,2,9.5,19.0,12.0,mastercard
+2026-07-11,TX-2026-07-11-0090,Jeddah - Tahlia,Jeddah,Toothpaste 100ml,PER-PST-22,Personal Care,1,11.5,11.5,7.0,apple_pay
+2026-07-12,TX-2026-07-12-0091,Riyadh - Yasmin,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,6,52.0,312.0,204.0,visa
+2026-07-12,TX-2026-07-12-0092,Jeddah - Rawdah,Jeddah,Cooking Oil 1.8L,OIL-COK-26,Oils & Ghee,1,13.6,13.6,16.0,cash
+2026-07-12,TX-2026-07-12-0093,Madinah - Quba,Madinah,Trash Bags 30pcs,HOU-TRB-20,Household,4,11.0,44.0,40.0,mastercard
+2026-07-12,TX-2026-07-12-0094,Jeddah - Rawdah,Jeddah,Soap Bar 4pcs,PER-SOP-23,Personal Care,3,14.0,42.0,27.0,cash
+2026-07-12,TX-2026-07-12-0095,Jeddah - Tahlia,Jeddah,Shampoo 400ml,PER-SHM-21,Personal Care,3,29.0,87.0,54.0,mada
+2026-07-12,TX-2026-07-12-0096,Makkah - Ibrahim Khalil,Makkah,Arabic Coffee 250g,BEV-COF-08,Beverages,1,27.0,27.0,16.0,apple_pay
+2026-07-12,TX-2026-07-12-0097,Madinah - Quba,Madinah,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,2,62.0,124.0,70.0,mada
+2026-07-12,TX-2026-07-12-0098,Madinah - Quba,Madinah,Laban 180ml,DAI-LAB-05,Dairy & Eggs,4,2.75,11.0,6.0,apple_pay
+2026-07-12,TX-2026-07-12-0099,Khobar - Corniche,Khobar,Oats 1kg,RIC-OAT-25,Rice & Grains,5,19.5,97.5,60.0,apple_pay
+2026-07-12,TX-2026-07-12-0100,Makkah - Ibrahim Khalil,Makkah,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,5,52.0,260.0,170.0,cash
+2026-07-13,TX-2026-07-13-0101,Madinah - Quba,Madinah,Bottled Water 330ml x12,BEV-WTR-09,Beverages,3,11.5,34.5,21.0,visa
+2026-07-13,TX-2026-07-13-0102,Madinah - Quba,Madinah,Shampoo 400ml,PER-SHM-21,Personal Care,1,29.0,29.0,18.0,visa
+2026-07-13,TX-2026-07-13-0103,Jeddah - Rawdah,Jeddah,Bottled Water 330ml x12,BEV-WTR-09,Beverages,1,11.5,11.5,7.0,mada
+2026-07-13,TX-2026-07-13-0104,Jeddah - Tahlia,Jeddah,Laban 180ml,DAI-LAB-05,Dairy & Eggs,1,2.75,2.75,1.5,cash
+2026-07-13,TX-2026-07-13-0105,Riyadh - Yasmin,Riyadh,Potato Chips 150g,SNK-CHP-14,Snacks & Confectionery,2,6.75,13.5,8.0,mastercard
+2026-07-13,TX-2026-07-13-0106,Riyadh - Tahlia,Riyadh,Cheese Slices 200g,DAI-CHS-07,Dairy & Eggs,4,19.0,76.0,48.0,apple_pay
+2026-07-13,TX-2026-07-13-0107,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,5,29.0,145.0,95.0,mastercard
+2026-07-13,TX-2026-07-13-0108,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,22.0,22.0,14.0,mastercard
+2026-07-13,TX-2026-07-13-0109,Jeddah - Rawdah,Jeddah,Sliced Bread 600g,BAK-BRD-16,Bakery,1,5.75,5.75,3.5,mada
+2026-07-13,TX-2026-07-13-0110,Makkah - Ibrahim Khalil,Makkah,Orange Juice 1L,BEV-JUC-11,Beverages,3,13.5,40.5,24.0,cash
+2026-07-13,TX-2026-07-13-0111,Madinah - Quba,Madinah,Ice Cream 1L,FRZ-ICE-30,Frozen Foods,1,22.0,22.0,14.0,mada
+2026-07-13,TX-2026-07-13-0112,Makkah - Ibrahim Khalil,Makkah,Laundry Powder 2.5kg,HOU-LND-19,Household,2,23.8,47.6,56.0,mastercard
+2026-07-14,TX-2026-07-14-0113,Madinah - Quba,Madinah,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,1,26.5,26.5,18.0,cash
+2026-07-14,TX-2026-07-14-0114,Madinah - Quba,Madinah,Orange Juice 1L,BEV-JUC-11,Beverages,1,13.5,13.5,8.0,visa
+2026-07-14,TX-2026-07-14-0115,Makkah - Ibrahim Khalil,Makkah,Bottled Water 330ml x12,BEV-WTR-09,Beverages,4,11.5,46.0,28.0,apple_pay
+2026-07-14,TX-2026-07-14-0116,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,15.4,15.4,14.0,mada
+2026-07-14,TX-2026-07-14-0117,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,13.6,13.6,16.0,cash
+2026-07-14,TX-2026-07-14-0118,Jeddah - Rawdah,Jeddah,Laban 180ml,DAI-LAB-05,Dairy & Eggs,2,1.65,3.3,3.0,cash
+2026-07-14,TX-2026-07-14-0119,Madinah - Quba,Madinah,Soap Bar 4pcs,PER-SOP-23,Personal Care,1,14.0,14.0,9.0,apple_pay
+2026-07-15,TX-2026-07-15-0120,Jeddah - Tahlia,Jeddah,Soft Drink Can 330ml,BEV-SOD-10,Beverages,1,1.57,1.57,1.85,visa
+2026-07-15,TX-2026-07-15-0121,Makkah - Ibrahim Khalil,Makkah,Chocolate Bar 100g,SNK-CHO-13,Snacks & Confectionery,6,8.5,51.0,30.0,apple_pay
+2026-07-15,TX-2026-07-15-0122,Jeddah - Rawdah,Jeddah,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,3,8.75,26.25,16.5,apple_pay
+2026-07-15,TX-2026-07-15-0123,Riyadh - Yasmin,Riyadh,Cooking Oil 1.8L,OIL-COK-26,Oils & Ghee,10,25.0,250.0,160.0,visa
+2026-07-15,TX-2026-07-15-0124,Makkah - Ibrahim Khalil,Makkah,Toothpaste 100ml,PER-PST-22,Personal Care,1,11.5,11.5,7.0,visa
+2026-07-15,TX-2026-07-15-0125,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,29.0,58.0,38.0,mastercard
+2026-07-16,TX-2026-07-16-0126,Madinah - Quba,Madinah,Soap Bar 4pcs,PER-SOP-23,Personal Care,1,14.0,14.0,9.0,apple_pay
+2026-07-16,TX-2026-07-16-0127,Dammam - King Fahd,Dammam,Trash Bags 30pcs,HOU-TRB-20,Household,4,16.0,64.0,40.0,mastercard
+2026-07-16,TX-2026-07-16-0128,Madinah - Quba,Madinah,Potato Chips 150g,SNK-CHP-14,Snacks & Confectionery,4,6.75,27.0,16.0,visa
+2026-07-16,TX-2026-07-16-0129,Jeddah - Rawdah,Jeddah,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,6,52.0,312.0,204.0,mastercard
+2026-07-16,TX-2026-07-16-0130,Jeddah - Rawdah,Jeddah,Oats 1kg,RIC-OAT-25,Rice & Grains,2,19.5,39.0,24.0,mastercard
+2026-07-16,TX-2026-07-16-0131,Khobar - Corniche,Khobar,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,2,38.0,76.0,44.0,mastercard
+2026-07-16,TX-2026-07-16-0132,Jeddah - Rawdah,Jeddah,Green Tea 100 bags,BEV-TEA-12,Beverages,3,22.0,66.0,42.0,apple_pay
+2026-07-16,TX-2026-07-16-0133,Dammam - King Fahd,Dammam,Dishwashing Liquid 1L,HOU-DSH-18,Household,1,14.5,14.5,9.0,mada
+2026-07-16,TX-2026-07-16-0134,Jeddah - Rawdah,Jeddah,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,49.0,98.0,64.0,cash
+2026-07-16,TX-2026-07-16-0135,Madinah - Quba,Madinah,Shampoo 400ml,PER-SHM-21,Personal Care,3,29.0,87.0,54.0,mada
+2026-07-17,TX-2026-07-17-0136,Dammam - King Fahd,Dammam,Arabic Coffee 250g,BEV-COF-08,Beverages,2,27.0,54.0,32.0,apple_pay
+2026-07-17,TX-2026-07-17-0137,Khobar - Corniche,Khobar,Sliced Bread 600g,BAK-BRD-16,Bakery,2,5.75,11.5,7.0,apple_pay
+2026-07-17,TX-2026-07-17-0138,Khobar - Corniche,Khobar,Green Tea 100 bags,BEV-TEA-12,Beverages,3,22.0,66.0,42.0,visa
+2026-07-17,TX-2026-07-17-0139,Jeddah - Rawdah,Jeddah,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,3,8.75,26.25,16.5,apple_pay
+2026-07-17,TX-2026-07-17-0140,Jeddah - Tahlia,Jeddah,Cheese Slices 200g,DAI-CHS-07,Dairy & Eggs,1,19.0,19.0,12.0,apple_pay
+2026-07-17,TX-2026-07-17-0141,Dammam - King Fahd,Dammam,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,4,8.75,35.0,22.0,visa
+2026-07-18,TX-2026-07-18-0142,Dammam - King Fahd,Dammam,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,38.0,114.0,66.0,mada
+2026-07-18,TX-2026-07-18-0143,Riyadh - Tahlia,Riyadh,Dishwashing Liquid 1L,HOU-DSH-18,Household,1,14.5,14.5,9.0,mastercard
+2026-07-18,TX-2026-07-18-0144,Riyadh - Yasmin,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,1,29.0,29.0,19.0,mastercard
+2026-07-18,TX-2026-07-18-0145,Madinah - Quba,Madinah,Orange Juice 1L,BEV-JUC-11,Beverages,1,8.8,8.8,8.0,mastercard
+2026-07-18,TX-2026-07-18-0146,Riyadh - Yasmin,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,52.0,52.0,34.0,apple_pay
+2026-07-18,TX-2026-07-18-0147,Riyadh - Tahlia,Riyadh,Laban 180ml,DAI-LAB-05,Dairy & Eggs,1,2.75,2.75,1.5,visa
+2026-07-18,TX-2026-07-18-0148,Riyadh - Yasmin,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,27.0,27.0,16.0,apple_pay
+2026-07-19,TX-2026-07-19-0149,Makkah - Ibrahim Khalil,Makkah,Biscuits 300g,SNK-BIS-15,Snacks & Confectionery,5,9.5,47.5,30.0,apple_pay
+2026-07-19,TX-2026-07-19-0150,Makkah - Ibrahim Khalil,Makkah,Soft Drink Can 330ml,BEV-SOD-10,Beverages,2,2.04,4.08,3.7,mada

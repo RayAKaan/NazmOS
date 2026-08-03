@@ -13,6 +13,7 @@ from app.database import get_db, User
 from app.middleware.auth_middleware import get_current_user
 from app.middleware.business_access import assert_business_access
 from app.services.agent_action_executor import approve_agent_action, reject_agent_action
+from app.services.feature_flags import require_feature_enabled
 
 router = APIRouter(prefix="/api/v1/agent", tags=["Nazm Agent"])
 
@@ -32,6 +33,7 @@ async def get_feed(
 ):
     """Attention feed – ranked by urgency – the owner's home screen"""
     await assert_business_access(db, business_id, current_user)
+    await require_feature_enabled(db, "agent_enabled", business_id=business_id)
     allowed_statuses = {
         "pending_approval", "critical", "info_only", "approved",
         "rejected", "auto_executed", "executed", "failed",
@@ -100,6 +102,8 @@ async def approve_action(
     if str(row.owner_id) != str(current_user.id):
         raise HTTPException(403, "Only the business owner can approve actions")
 
+    await require_feature_enabled(db, "agent_enabled", business_id=business_id)
+
     result = await approve_agent_action(
         db,
         action_id,
@@ -123,6 +127,8 @@ async def reject_action(
     ), {"id": str(action_id), "uid": str(current_user.id)})
     if not ownership.fetchone():
         raise HTTPException(404, "Action not found or access denied")
+
+    await require_feature_enabled(db, "agent_enabled", business_id=business_id)
 
     result = await reject_agent_action(db, action_id, note=reason or "Rejected via NazmOS web dashboard")
     return {"ok": result.get("ok", False), "status": "rejected"}
@@ -225,6 +231,7 @@ async def trigger_scan(
 ):
     """Manually trigger Nazm planner – for testing / demo"""
     await assert_business_access(db, business_id, current_user)
+    await require_feature_enabled(db, "agent_enabled", business_id=business_id)
     from app.services.nazm_planner import NazmPlanner
     planner = NazmPlanner(db)
     n = await planner.scan_business(business_id)

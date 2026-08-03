@@ -15,3 +15,5 @@ class HealthResponse(BaseModel):
     status: str = "healthy"
     version: str = "1.0.0"
     timestamp: datetime
+    checks: dict | None = None
+    environment: str | None = None

@@ -1,9 +1,14 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Any
+import hashlib
+import hmac
 import httpx
 import structlog
 
+from app.config import get_settings
+
 logger = structlog.get_logger(__name__)
+settings = get_settings()
 
 
 class BasePOSAdapter(ABC):
@@ -100,6 +105,18 @@ class TallyAdapter(BasePOSAdapter):
             logger.error("tally_inventory_error", error=str(e))
             return []
 
+    async def test_connection(self) -> bool:
+        try:
+            async with httpx.AsyncClient(timeout=10) as client:
+                response = await client.get(
+                    f"{self.tally_url}:{self.port}",
+                    timeout=5,
+                )
+                return response.status_code < 500
+        except Exception as e:
+            logger.error("tally_test_connection_error", error=str(e))
+            return False
+
 
 class ShopifyAdapter(BasePOSAdapter):
     def __init__(self, credentials: dict):
@@ -178,6 +195,18 @@ class ShopifyAdapter(BasePOSAdapter):
             logger.error("shopify_inventory_error", error=str(e))
             return []
 
+    async def test_connection(self) -> bool:
+        try:
+            async with httpx.AsyncClient(timeout=10) as client:
+                response = await client.get(
+                    f"{self.base_url}/shop.json",
+                    headers=self._get_headers(),
+                )
+                return response.status_code == 200
+        except Exception as e:
+            logger.error("shopify_test_connection_error", error=str(e))
+            return False
+
 
 class WooCommerceAdapter(BasePOSAdapter):
     def __init__(self, credentials: dict):
@@ -243,21 +272,89 @@ class WooCommerceAdapter(BasePOSAdapter):
             logger.error("woocommerce_inventory_error", error=str(e))
             return []
 
+    async def test_connection(self) -> bool:
+        try:
+            async with httpx.AsyncClient(timeout=10) as client:
+                response = await client.get(
+                    f"{self.site_url}/wp-json/wc/v3/products",
+                    auth=(self.consumer_key, self.consumer_secret),
+                    params={"per_page": 1},
+                )
+                return response.status_code == 200
+        except Exception as e:
+            logger.error("woocommerce_test_connection_error", error=str(e))
+            return False
+
 
 class ZohoAdapter(BasePOSAdapter):
+    def __init__(self, credentials: dict):
+        super().__init__(credentials)
+        self.organization_id = self.credentials.get("organization_id")
+        self.client_id = self.credentials.get("client_id")
+        self.client_secret = self.credentials.get("client_secret")
+        self.refresh_token = self.credentials.get("refresh_token")
+        self.accounts_base = self.credentials.get("accounts_base", "https://accounts.zoho.com")
+        self.api_base = self.credentials.get("api_base", "https://inventory.zoho.com")
+
+    async def _get_access_token(self) -> Optional[str]:
+        async with httpx.AsyncClient(timeout=15) as client:
+            response = await client.post(
+                f"{self.accounts_base}/oauth/v2/token",
+                params={
+                    "refresh_token": self.refresh_token,
+                    "client_id": self.client_id,
+                    "client_secret": self.client_secret,
+                    "grant_type": "refresh_token",
+                },
+            )
+            if response.status_code == 200:
+                return response.json().get("access_token")
+            logger.warning("zoho_token_refresh_failed", status=response.status_code)
+            return None
+
     async def fetch_sales(self, date_from=None, date_to=None) -> list[dict]:
         return []
-    
+
     async def fetch_inventory(self) -> list[dict]:
         return []
+
+    async def test_connection(self) -> bool:
+        try:
+            access_token = await self._get_access_token()
+            if not access_token:
+                return False
+            async with httpx.AsyncClient(timeout=10) as client:
+                response = await client.get(
+                    f"{self.api_base}/api/v1/organizations",
+                    headers={"Authorization": f"Zoho-oauthtoken {access_token}"},
+                )
+                return response.status_code == 200
+        except Exception as e:
+            logger.error("zoho_test_connection_error", error=str(e))
+            return False
 
 
 class CSVWebhookAdapter(BasePOSAdapter):
+    def __init__(self, credentials: dict):
+        super().__init__(credentials)
+        self.endpoint_url = self.credentials.get("endpoint_url") or self.credentials.get("base_url")
+
     async def fetch_sales(self, date_from=None, date_to=None) -> list[dict]:
         return []
-    
+
     async def fetch_inventory(self) -> list[dict]:
         return []
+
+    async def test_connection(self) -> bool:
+        if not self.endpoint_url:
+            return False
+        try:
+            async with httpx.AsyncClient(timeout=10) as client:
+                response = await client.get(self.endpoint_url, timeout=5)
+                return response.status_code < 500
+        except Exception as e:
+            logger.error("csv_webhook_test_connection_error", error=str(e))
+            return False
 
 
 class CustomAPIAdapter(BasePOSAdapter):
@@ -300,6 +397,73 @@ class CustomAPIAdapter(BasePOSAdapter):
             logger.error("custom_api_inventory_error", error=str(e))
             return []
 
+    async def test_connection(self) -> bool:
+        if not self.base_url:
+            return False
+        try:
+            async with httpx.AsyncClient(timeout=10) as client:
+                response = await client.get(
+                    self.base_url,
+                    headers=self.headers,
+                    timeout=5,
+                )
+                return 200 <= response.status_code < 400
+        except Exception as e:
+            logger.error("custom_api_test_connection_error", error=str(e))
+            return False
+
+
+class FoodicsWebhookAdapter(BasePOSAdapter):
+    """Webhook-only adapter for Foodics POS.
+
+    Real-time orders are pushed by Foodics to /api/v1/pos/foodics/webhook.
+    This adapter only provides a connection test that validates the configured
+    webhook secret can be used for HMAC signature verification.
+    """
+
+    async def fetch_sales(self, date_from=None, date_to=None) -> list[dict]:
+        return []
+
+    async def fetch_inventory(self) -> list[dict]:
+        return []
+
+    async def test_connection(self) -> bool:
+        secret = self.credentials.get("webhook_secret") or getattr(settings, "FOODICS_WEBHOOK_SECRET", "")
+        if not secret:
+            return False
+        try:
+            expected = hmac.new(secret.encode(), b"nazmos-test", hashlib.sha256).hexdigest()
+            return len(expected) == 64
+        except Exception as e:
+            logger.error("foodics_test_connection_error", error=str(e))
+            return False
+
+
+class SallaWebhookAdapter(BasePOSAdapter):
+    """Webhook-only adapter for Salla E-Commerce.
+
+    Real-time orders are pushed by Salla to /api/v1/pos/salla/webhook.
+    This adapter only provides a connection test that validates the configured
+    webhook secret can be used for HMAC signature verification.
+    """
+
+    async def fetch_sales(self, date_from=None, date_to=None) -> list[dict]:
+        return []
+
+    async def fetch_inventory(self) -> list[dict]:
+        return []
+
+    async def test_connection(self) -> bool:
+        secret = self.credentials.get("webhook_secret") or getattr(settings, "SALLA_WEBHOOK_SECRET", "")
+        if not secret:
+            return False
+        try:
+            expected = hmac.new(secret.encode(), b"nazmos-test", hashlib.sha256).hexdigest()
+            return len(expected) == 64
+        except Exception as e:
+            logger.error("salla_test_connection_error", error=str(e))
+            return False
+
 
 ADAPTER_REGISTRY = {
     "tally": TallyAdapter,
@@ -308,6 +472,8 @@ ADAPTER_REGISTRY = {
     "zoho": ZohoAdapter,
     "csv_webhook": CSVWebhookAdapter,
     "custom_api": CustomAPIAdapter,
+    "foodics": FoodicsWebhookAdapter,
+    "salla": SallaWebhookAdapter,
 }
 
 

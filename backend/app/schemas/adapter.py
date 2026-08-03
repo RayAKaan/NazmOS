@@ -5,7 +5,7 @@ from typing import Optional
 
 
 class POSConnectionCreate(BaseModel):
-    adapter_type: str = Field(..., pattern=r'^(tally|shopify|woocommerce|zoho|csv_webhook|custom_api)$')
+    adapter_type: str = Field(..., pattern=r'^(tally|shopify|woocommerce|zoho|csv_webhook|custom_api|foodics|salla)$')
     connection_name: str = Field(..., min_length=1, max_length=100)
     endpoint_url: Optional[str] = None
     sync_interval_minutes: int = Field(default=15, ge=5, le=1440)
@@ -45,12 +45,18 @@ class POSCredentialsGeneric(BaseModel):
     headers: Optional[dict] = None
 
 
+class POSCredentialsWebhook(BaseModel):
+    webhook_secret: str
+
+
 class POSConnectionCredentials(BaseModel):
     tally: Optional[POSCredentialsTally] = None
     shopify: Optional[POSCredentialsShopify] = None
     woocommerce: Optional[POSCredentialsWooCommerce] = None
     zoho: Optional[POSCredentialsZoho] = None
     custom_api: Optional[POSCredentialsGeneric] = None
+    foodics: Optional[POSCredentialsWebhook] = None
+    salla: Optional[POSCredentialsWebhook] = None
 
 
 class POSConnectionResponse(BaseModel):

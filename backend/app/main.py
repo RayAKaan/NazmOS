@@ -17,7 +17,12 @@ from app.routers import (
 from app.middleware.advanced_rate_limiter import RedisRateLimiter, InMemoryRateLimiter, AdvancedRateLimitMiddleware, get_rate_limiter
 from app.middleware.logging_middleware import LoggingMiddleware
 from app.middleware.security_headers import SecurityHeadersMiddleware
+from app.middleware.idempotency import IdempotencyMiddleware
+from app.middleware.rls_tenant import TenantContextMiddleware
+from app.middleware.prometheus_metrics import PrometheusMiddleware, metrics_response
+from app.middleware.api_version import APIVersionMiddleware
 from app.database.seed import seed_demo_data
+from app.services.feature_flags import seed_default_flags
 from app.utils.logger import setup_logger
 from app.utils.exceptions import (
     NotFoundException,
@@ -35,22 +40,66 @@ logger = setup_logger("app")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Starting NazmOS API...")
-    
-    if settings.ENVIRONMENT != "production":
+
+    # Observability: Sentry is initialized as early as possible so it can capture
+    # startup errors and unhandled exceptions in the async event loop.
+    if settings.SENTRY_DSN:
+        import sentry_sdk
+        from sentry_sdk.integrations.fastapi import FastApiIntegration
+        from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+
+        sentry_sdk.init(
+            dsn=settings.SENTRY_DSN,
+            environment=settings.SENTRY_ENVIRONMENT or settings.ENVIRONMENT,
+            traces_sample_rate=settings.SENTRY_TRACES_SAMPLE_RATE,
+            profiles_sample_rate=settings.SENTRY_PROFILES_SAMPLE_RATE,
+            integrations=[
+                FastApiIntegration(),
+                SqlalchemyIntegration(),
+            ],
+        )
+        logger.info("Sentry error tracking initialized")
+
+    # Trust warnings: fail-closed checks that make dangerous misconfigurations
+    # visible immediately on startup rather than silently at runtime.
+    if settings.ENVIRONMENT == "production":
+        if settings.USE_MOCK_LLM:
+            logger.warning(
+                "MOCK_LLM_ENABLED_IN_PRODUCTION",
+                message="USE_MOCK_LLM=true in production. Merchant-facing LLM responses are canned keyword matches, not a real model.",
+            )
+        if not settings.SENTRY_DSN:
+            logger.warning(
+                "SENTRY_NOT_CONFIGURED",
+                message="SENTRY_DSN is empty in production. Uncaught exceptions will not be aggregated or alerted.",
+            )
+        if settings.DATABASE_URL.startswith("sqlite"):
+            logger.error(
+                "SQLITE_IN_PRODUCTION",
+                message="SQLite is configured in production. NazmOS requires PostgreSQL for multi-tenant data integrity.",
+            )
+            raise RuntimeError("SQLite is not supported in production")
+    else:
+        logger.info("Development mode: auto-creating tables from models")
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
-    else:
-        logger.info("Production mode: skipping Base.metadata.create_all; use Alembic migrations")
-    
+
+    async with AsyncSessionLocal() as session:
+        try:
+            await seed_default_flags(session)
+            logger.info("Feature flags seeded successfully")
+        except Exception as e:
+            logger.warning(f"Feature flag seeding skipped: {e}")
+
     async with AsyncSessionLocal() as session:
         try:
             await seed_demo_data(session)
             logger.info("Demo data seeded successfully")
         except Exception as e:
             logger.warning(f"Demo data seeding skipped: {e}")
-    
+
     yield
-    
+
     logger.info("Shutting down NazmOS API...")
     await engine.dispose()
 
@@ -70,8 +119,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(APIVersionMiddleware)
 app.add_middleware(LoggingMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(IdempotencyMiddleware)
+app.add_middleware(TenantContextMiddleware)
+app.add_middleware(PrometheusMiddleware)
+
+@app.get("/metrics")
+async def metrics_endpoint():
+    return metrics_response()
 
 rate_limiter_instance = get_rate_limiter()
 app.state.rate_limiter = rate_limiter_instance

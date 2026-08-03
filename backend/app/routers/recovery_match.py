@@ -27,6 +27,7 @@ from app.services.recovery_match_service import (
     reject_match,
     report_match_issue,
 )
+from app.services.recovery_match_matcher import run_nightly_recovery_match_scan
 
 router = APIRouter(prefix="/api/v1/recovery-match", tags=["Recovery Match"])
 
@@ -286,3 +287,16 @@ async def recovery_match_status(
         "phase": "manual-confirm pilot",
         "message": "Recovery Match is being built as a manual-first retailer-to-retailer stock recovery network.",
     }
+
+
+@router.post("/admin/nightly-scan")
+async def trigger_nightly_scan(
+    business_id: UUID = Query(...),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Manual trigger for the nightly Recovery Match liquidity scan."""
+    await assert_business_access(db, business_id, current_user)
+    await require_feature(db, business_id, "recovery_match", required_plan="Growing Retail")
+    summary = await run_nightly_recovery_match_scan(db)
+    return {"ok": True, "summary": summary}

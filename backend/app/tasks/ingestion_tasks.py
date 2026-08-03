@@ -136,3 +136,12 @@ if settings.USE_CELERY:
     @celery_app.task(name="app.tasks.ingestion_tasks.cleanup_stale_uploads")
     def cleanup_stale_uploads():
         return run_cleanup_stale_uploads()
+
+    @celery_app.task(name="app.tasks.ingestion_tasks.nightly_recovery_match_scan")
+    def nightly_recovery_match_scan():
+        from app.database.connection import get_sync_session
+        from app.services.recovery_match_matcher import run_nightly_recovery_match_scan
+        import asyncio
+
+        with get_sync_session() as session:
+            return asyncio.run(run_nightly_recovery_match_scan(session))

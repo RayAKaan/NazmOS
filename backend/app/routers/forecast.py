@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import text
 from datetime import datetime, timedelta, timezone
-from uuid import UUID
+from uuid import UUID, uuid4
 import json
 import pandas as pd
 
@@ -54,8 +54,8 @@ async def generate_forecast(
         expires = _now_riyadh() + timedelta(hours=24)
         await db.execute(text("""
             INSERT INTO forecast_cache 
-            (business_id, item_id, model_version, training_rows, forecast_7d, forecast_30d, weekly_pattern, trend_direction, trend_strength, expires_at)
-            VALUES (:bid, :iid, 'prophet_v1_ksa', :rows, :f7, :f30, :wp, :td, :ts, :exp)
+            (id, business_id, item_id, model_version, training_rows, forecast_7d, forecast_30d, weekly_pattern, trend_direction, trend_strength, expires_at)
+            VALUES (:id, :bid, :iid, 'prophet_v1_ksa', :rows, :f7, :f30, :wp, :td, :ts, :exp)
             ON CONFLICT (business_id, item_id) DO UPDATE SET
             forecast_7d = EXCLUDED.forecast_7d,
             forecast_30d = EXCLUDED.forecast_30d,
@@ -65,7 +65,7 @@ async def generate_forecast(
             trained_at = NOW(),
             expires_at = EXCLUDED.expires_at
         """), {
-            "bid": business_id, "iid": item_id,
+            "id": str(uuid4()), "bid": business_id, "iid": item_id,
             "rows": result["training_rows"],
             "f7": json.dumps(result["forecast_7d"]),
             "f30": json.dumps(result["forecast_30d"]),

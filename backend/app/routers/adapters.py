@@ -15,6 +15,7 @@ from app.schemas.adapter import (
     POSSyncStatusResponse, POSSyncTriggerResponse, POSFieldMappingUpdate,
 )
 from app.tasks.pos_sync_tasks import run_sync_pos_connection
+from app.adapters.registry import ADAPTER_REGISTRY
 from app.config import get_settings
 
 settings = get_settings()
@@ -247,16 +248,28 @@ async def test_connection(
     tenant: TenantContext = Depends(get_current_tenant),
 ):
     connection = await db.get(POSConnection, connection_id)
-    
+
     if not connection or connection.business_id != tenant.business_id:
         raise HTTPException(404, "Connection not found")
-    
+
     vault = POSCredentialManager()
     creds = vault.decrypt_credentials(connection.credentials_encrypted)
-    
+    adapter_type = connection.adapter_type
+
+    adapter_class = ADAPTER_REGISTRY.get(adapter_type)
+    if not adapter_class:
+        raise HTTPException(400, f"Unsupported adapter type: {adapter_type}")
+
+    adapter = adapter_class(creds)
+    ok = await adapter.test_connection()
+
     return {
-        "success": True,
-        "message": f"Successfully connected to {connection.connection_name}",
-        "adapter_type": connection.adapter_type,
+        "success": ok,
+        "message": (
+            f"Successfully connected to {connection.connection_name}"
+            if ok
+            else f"Could not connect to {connection.connection_name}; check credentials and reachability"
+        ),
+        "adapter_type": adapter_type,
         "credentials_configured": bool(creds.get("credentials")),
     }

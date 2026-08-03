@@ -16,6 +16,7 @@ from app.database import get_db, User, Business, UploadedFile as UploadedFileMod
 from app.services.file_validator import FileValidator, FileValidationError
 from app.services.schema_detector import SchemaDetector
 from app.services.upload_service import UploadService
+from app.services.storage import storage
 from app.config import get_settings
 
 settings = get_settings()
@@ -23,6 +24,40 @@ router = APIRouter(prefix="/api/v1/upload", tags=["upload"])
 
 UPLOAD_DIR = Path(settings.UPLOAD_DIR)
 UPLOAD_DIR.mkdir(exist_ok=True, parents=True)
+
+
+def _looks_like_local_path(value: str) -> bool:
+    """Return True if the stored filename is a local filesystem path."""
+    if not value:
+        return True
+    return value.startswith(("/", ".", "\\")) or "://" not in value
+
+
+async def _resolve_local_parse_path(stored_filename: str, upload_id: str) -> tuple[Path, bool]:
+    """Resolve an uploaded file to a local path suitable for parsing.
+
+    Returns:
+        (local_path, cleanup_after_parse).  When ``cleanup_after_parse`` is
+        True, the caller must delete ``local_path`` after parsing.
+    """
+    if settings.STORAGE_BACKEND.lower() == "local" or _looks_like_local_path(stored_filename):
+        return Path(stored_filename), False
+
+    # Object storage backend: download to a temporary local file for parsing.
+    tmp_name = f"tmp_{upload_id}_{Path(stored_filename).name}"
+    local_path = UPLOAD_DIR / tmp_name
+    try:
+        retrieved = await storage.retrieve(stored_filename)
+    except Exception as exc:
+        raise HTTPException(500, detail=f"Failed to retrieve uploaded file for parsing: {exc}")
+
+    try:
+        async with aiofiles.open(local_path, "wb") as f:
+            await f.write(retrieved)
+    except Exception as exc:
+        raise HTTPException(500, detail=f"Failed to write temporary parse file: {exc}")
+
+    return local_path, True
 
 
 @router.post("/")
@@ -49,19 +84,39 @@ async def upload_file(
     if len(content) > 15 * 1024 * 1024:
         raise HTTPException(413, detail="File too large. Maximum is 15 MB.")
 
-    file_path = UPLOAD_DIR / safe_filename
-    async with aiofiles.open(file_path, "wb") as f:
-        await f.write(content)
+    # Persist through the configured storage backend (local/S3/MinIO).
+    # For local storage this still lands in UPLOAD_DIR; for object storage
+    # it uploads to the configured bucket and returns a URI.
+    try:
+        storage_uri = await storage.store(safe_filename, content, content_type=file.content_type or "application/octet-stream")
+    except Exception as exc:
+        raise HTTPException(500, detail=f"Failed to store uploaded file: {exc}")
+
+    # Build a local path for parsing. Object storage backends download to a
+    # temporary file; local backends use the stored path directly.
+    local_parse_path: Path
+    cleanup_after_parse = False
+    if settings.STORAGE_BACKEND.lower() == "local":
+        local_parse_path = Path(storage_uri)
+    else:
+        local_parse_path = UPLOAD_DIR / safe_filename
+        try:
+            retrieved = await storage.retrieve(storage_uri)
+            async with aiofiles.open(local_parse_path, "wb") as f:
+                await f.write(retrieved)
+            cleanup_after_parse = True
+        except Exception as exc:
+            raise HTTPException(500, detail=f"Failed to retrieve uploaded file for parsing: {exc}")
 
     try:
         validation = FileValidator.validate(
-            file_path,
+            local_parse_path,
             file.filename,
             len(content)
         )
 
         df = UploadService.parse_file(
-            file_path,
+            local_parse_path,
             validation["detected_extension"],
             validation["encoding"],
         )
@@ -83,7 +138,7 @@ async def upload_file(
                 "id": upload_id,
                 "business_id": business_id,
                 "uploaded_by": str(current_user.id),
-                "stored_filename": safe_filename,
+                "stored_filename": storage_uri,  # may be a local path or s3:// URI
                 "original_filename": file.filename,
                 "file_type": validation["detected_extension"].lstrip("."),
                 "file_size_bytes": len(content),
@@ -112,17 +167,15 @@ async def upload_file(
         }
 
     except FileValidationError as e:
-        try:
-            os.unlink(file_path)
-        except:
-            pass
         raise HTTPException(422, detail={"code": e.code, "message": e.message})
     except Exception as e:
-        try:
-            os.unlink(file_path)
-        except:
-            pass
         raise HTTPException(500, detail=str(e))
+    finally:
+        if cleanup_after_parse:
+            try:
+                os.unlink(local_parse_path)
+            except Exception:
+                pass
 
 
 @router.post("/{upload_id}/map")
@@ -197,21 +250,60 @@ async def confirm_mapping(
         )
         await db.commit()
     else:
-        from app.tasks.ingestion_tasks import run_process_upload
+        # Zero-cost mode: run ingestion inline on the main event loop. The file
+        # sizes for Money Audit are small enough that blocking the response is
+        # acceptable for pilot validation without Celery/Redis.
+        from app.services.etl_pipeline import ETLPipeline
+        from app.services.upload_service import UploadService
+        from app.services.schema_detector import SchemaDetector
+        from pathlib import Path
 
-        async def _run_in_background():
-            import asyncio
-            loop = asyncio.get_event_loop()
-            await loop.run_in_executor(None, run_process_upload, upload_id, effective_business_id, clean_mapping)
+        upload_row = await db.execute(
+            text("SELECT stored_filename, file_type FROM uploaded_files WHERE id = :id"),
+            {"id": upload_id},
+        )
+        upload_meta = upload_row.fetchone()
+        local_parse_path, cleanup_after_parse = await _resolve_local_parse_path(
+            upload_meta.stored_filename, upload_id
+        )
+        try:
+            df = UploadService.parse_file(local_parse_path, f".{upload_meta.file_type}", "utf-8")
+            if not clean_mapping:
+                detection = SchemaDetector().detect(df)
+                clean_mapping = detection["detected_columns"]
+            pipeline = ETLPipeline(upload_id, effective_business_id, df, clean_mapping)
+            stats = await pipeline.run()
+        finally:
+            if cleanup_after_parse:
+                try:
+                    os.unlink(local_parse_path)
+                except Exception:
+                    pass
 
-        background_tasks.add_task(_run_in_background)
+        # Persist import counters so /result and /status report real numbers.
+        imported = int(stats.get("imported", 0))
+        failed = int(stats.get("failed", 0))
+        await db.execute(
+            text("""
+                UPDATE uploaded_files
+                SET status = 'completed',
+                    row_count_imported = :imported,
+                    row_count_failed = :failed,
+                    etl_completed_at = NOW()
+                WHERE id = :id
+            """),
+            {"id": upload_id, "imported": imported, "failed": failed}
+        )
+        await db.commit()
 
     return {
         "task_id": task_id,
         "upload_id": upload_id,
-        "status": "processing",
-        "progress": 35,
-        "rows_processed": 0,
+        "status": "completed" if not settings.USE_CELERY else "processing",
+        "progress": 100 if not settings.USE_CELERY else 35,
+        "rows_processed": imported if not settings.USE_CELERY else 0,
+        "rows_imported": imported if not settings.USE_CELERY else 0,
+        "rows_failed": failed if not settings.USE_CELERY else 0,
     }
 
 
@@ -509,8 +601,7 @@ async def ingest_json(
         df = pd.DataFrame(rows)
         from app.services.etl_pipeline import ETLPipeline
         pipeline = ETLPipeline(upload_id, business_id, df, clean_mapping)
-        import asyncio
-        stats = asyncio.run(pipeline.run())
+        stats = await pipeline.run()
 
         await db.execute(
             text("""

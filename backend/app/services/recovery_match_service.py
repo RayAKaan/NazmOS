@@ -272,9 +272,9 @@ async def suggest_matches_for_listing(db: AsyncSession, listing_id: UUID | str, 
         WHERE b.id != :seller_business_id
           AND COALESCE(b.city, '') = COALESCE(:seller_city, '')
           AND (
-            (:barcode IS NOT NULL AND i.barcode = :barcode)
-            OR (:barcode IS NULL AND :sku IS NOT NULL AND i.sku = :sku)
-            OR (:barcode IS NULL AND :sku IS NULL AND LOWER(i.name) = LOWER(:item_name))
+            (CAST(:barcode AS TEXT) IS NOT NULL AND i.barcode = CAST(:barcode AS TEXT))
+            OR (CAST(:barcode AS TEXT) IS NULL AND CAST(:sku AS TEXT) IS NOT NULL AND i.sku = CAST(:sku AS TEXT))
+            OR (CAST(:barcode AS TEXT) IS NULL AND CAST(:sku AS TEXT) IS NULL AND LOWER(i.name) = LOWER(CAST(:item_name AS TEXT)))
           )
         LIMIT 50
     """), {

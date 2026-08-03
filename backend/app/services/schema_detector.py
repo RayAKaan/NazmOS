@@ -260,12 +260,24 @@ class SchemaDetector:
         return str(col_name).lower().strip().replace(" ", "_").replace("-", "_")
 
     def _name_similarity(self, col_name: str, hints: List[str]) -> float:
-        col_lower = col_name.lower()
+        col_tokens = set(self._clean(col_name).split("_"))
         for hint in hints:
             hint_lower = self._clean(hint)
-            if hint_lower in col_lower or col_lower in hint_lower:
+            hint_tokens = set(hint_lower.split("_"))
+            # Exact match or shared token match — prevents spurious substring
+            # matches like "city" inside "capacity".
+            if hint_lower in col_tokens or col_name in hint_tokens:
                 return 1.0
-            if self._levenshtein_similarity(col_lower, hint_lower) > 0.82:
+            if col_tokens & hint_tokens:
+                return 1.0
+            # Only allow substring match when one string is a multi-token phrase
+            # containing the other as a whole token (e.g. "unit_price_sar" contains
+            # "unit_price"). Single-token partial overlaps are rejected above.
+            if hint_lower in col_name and any(t == hint_lower for t in col_name.split("_")):
+                return 1.0
+            if col_name in hint_lower and any(t == col_name for t in hint_lower.split("_")):
+                return 1.0
+            if self._levenshtein_similarity(col_name, hint_lower) > 0.82:
                 return 0.82
         return 0.0
 

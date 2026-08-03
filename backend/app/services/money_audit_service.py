@@ -145,6 +145,13 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
     period_start, period_end = await _period(db, business_id_str)
     quality = await _quality(db, business_id_str)
 
+    # Anchor velocity calculations to the most recent data the merchant actually
+    # uploaded, not wall-clock time. Otherwise a historical upload is treated as
+    # if nothing sold in the last 30 real-world days.
+    velocity_anchor = period_end
+    if not velocity_anchor:
+        velocity_anchor = datetime.utcnow().date()
+
     result = await db.execute(
         text("""
             WITH sales_30 AS (
@@ -154,7 +161,7 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
                        MAX(transaction_at) AS last_sold_at
                 FROM transactions
                 WHERE business_id = :business_id
-                  AND transaction_at >= NOW() - INTERVAL '30 days'
+                  AND transaction_at >= (:velocity_anchor)::date - INTERVAL '30 days'
                 GROUP BY item_id
             ),
             sales_all AS (
@@ -181,7 +188,7 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
             LEFT JOIN sales_all sa ON sa.item_id = i.id
             WHERE i.business_id = :business_id AND i.is_active = true
         """),
-        {"business_id": business_id_str},
+        {"business_id": business_id_str, "velocity_anchor": velocity_anchor},
     )
     rows = result.fetchall()
 
@@ -323,25 +330,33 @@ async def generate_money_audit(db: AsyncSession, business_id: UUID | str, genera
     computation = await compute_money_audit(db, business_id_str)
     summary = computation.summary
 
+    # DB expects date objects, but summary JSON uses ISO strings.
+    period_start = summary.get("period_start")
+    period_end = summary.get("period_end")
+    if isinstance(period_start, str):
+        period_start = date.fromisoformat(period_start)
+    if isinstance(period_end, str):
+        period_end = date.fromisoformat(period_end)
+
     audit_result = await db.execute(
         text("""
             INSERT INTO money_audits
-                (business_id, generated_by, status, period_start, period_end,
+                (id, business_id, generated_by, status, period_start, period_end,
                  money_at_risk_sar, dead_stock_value_sar, stockout_risk_value_sar, margin_leakage_sar,
                  overstock_value_sar, money_approved_sar, money_recovered_sar,
-                 confidence_score, data_quality_score, missing_data, summary)
+                 confidence_score, data_quality_score, missing_data, summary, created_at, updated_at)
             VALUES
-                (:business_id, :generated_by, 'generated', :period_start, :period_end,
+                (gen_random_uuid(), :business_id, :generated_by, 'generated', :period_start, :period_end,
                  :money_at_risk_sar, :dead_stock_value_sar, :stockout_risk_value_sar, :margin_leakage_sar,
                  :overstock_value_sar, 0, 0,
-                 :confidence_score, :data_quality_score, CAST(:missing_data AS JSONB), CAST(:summary AS JSONB))
+                 :confidence_score, :data_quality_score, CAST(:missing_data AS JSONB), CAST(:summary AS JSONB), NOW(), NOW())
             RETURNING id
         """),
         {
             "business_id": business_id_str,
             "generated_by": str(generated_by) if generated_by else None,
-            "period_start": summary.get("period_start"),
-            "period_end": summary.get("period_end"),
+            "period_start": period_start,
+            "period_end": period_end,
             "money_at_risk_sar": summary["money_at_risk_sar"],
             "dead_stock_value_sar": summary["dead_stock_value_sar"],
             "stockout_risk_value_sar": summary["stockout_risk_value_sar"],
@@ -359,11 +374,11 @@ async def generate_money_audit(db: AsyncSession, business_id: UUID | str, genera
         await db.execute(
             text("""
                 INSERT INTO money_audit_actions
-                    (audit_id, business_id, item_id, action_type, priority, title, description,
-                     expected_recovery_sar, quantity, recommended_discount_pct, status, evidence)
+                    (id, audit_id, business_id, item_id, action_type, priority, title, description,
+                     expected_recovery_sar, quantity, recommended_discount_pct, status, evidence, created_at, updated_at)
                 VALUES
-                    (:audit_id, :business_id, :item_id, :action_type, :priority, :title, :description,
-                     :expected_recovery_sar, :quantity, :recommended_discount_pct, 'suggested', CAST(:evidence AS JSONB))
+                    (gen_random_uuid(), :audit_id, :business_id, :item_id, :action_type, :priority, :title, :description,
+                     :expected_recovery_sar, :quantity, :recommended_discount_pct, 'suggested', CAST(:evidence AS JSONB), NOW(), NOW())
             """),
             {
                 "audit_id": audit_id,
@@ -391,6 +406,11 @@ async def _row_to_audit(row: Any, actions: list[dict[str, Any]]) -> dict[str, An
             summary = json.loads(summary)
         except Exception:
             summary = {}
+    # The stored summary is a generation-time snapshot; action totals are live
+    # columns on the audit row. Always reflect the live values in the API so
+    # merchants see recovered/approved money that matches their actions.
+    summary["money_approved_sar"] = _float(row.money_approved_sar)
+    summary["money_recovered_sar"] = _float(row.money_recovered_sar)
     missing_data = row.missing_data or []
     if isinstance(missing_data, str):
         try:
@@ -492,18 +512,27 @@ async def list_money_audit_actions(db: AsyncSession, audit_id: UUID | str) -> li
 async def _recalculate_audit_totals(db: AsyncSession, audit_id: str) -> None:
     await db.execute(
         text("""
+            WITH totals AS (
+                SELECT
+                    COALESCE(SUM(expected_recovery_sar) FILTER (WHERE status IN ('approved', 'completed')), 0) AS approved,
+                    COALESCE(SUM(COALESCE(completed_value_sar, expected_recovery_sar)) FILTER (WHERE status = 'completed'), 0) AS recovered
+                FROM money_audit_actions
+                WHERE audit_id = :audit_id
+            )
             UPDATE money_audits ma
-            SET money_approved_sar = COALESCE((
-                    SELECT SUM(expected_recovery_sar)
-                    FROM money_audit_actions
-                    WHERE audit_id = :audit_id AND status IN ('approved', 'completed')
-                ), 0),
-                money_recovered_sar = COALESCE((
-                    SELECT SUM(COALESCE(completed_value_sar, expected_recovery_sar))
-                    FROM money_audit_actions
-                    WHERE audit_id = :audit_id AND status = 'completed'
-                ), 0),
+            SET money_approved_sar = t.approved,
+                money_recovered_sar = t.recovered,
+                summary = jsonb_set(
+                    jsonb_set(
+                        COALESCE(ma.summary, '{}')::jsonb,
+                        '{money_approved_sar}',
+                        to_jsonb(t.approved)
+                    ),
+                    '{money_recovered_sar}',
+                    to_jsonb(t.recovered)
+                ),
                 updated_at = NOW()
+            FROM totals t
             WHERE ma.id = :audit_id
         """),
         {"audit_id": audit_id},
@@ -536,13 +565,14 @@ async def update_action_status(
         "completed": "completed_at",
     }[status]
 
+    completed_value_sql = "completed_value_sar = :completed_value_sar," if status == "completed" else ""
     await db.execute(
         text(f"""
             UPDATE money_audit_actions
             SET status = :status,
                 approval_channel = :approval_channel,
                 {timestamp_col} = NOW(),
-                completed_value_sar = CASE WHEN :status = 'completed' THEN :completed_value_sar ELSE completed_value_sar END,
+                {completed_value_sql}
                 notes = COALESCE(:notes, notes),
                 updated_at = NOW()
             WHERE id = :id AND business_id = :business_id

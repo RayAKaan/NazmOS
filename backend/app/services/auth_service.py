@@ -23,6 +23,7 @@ async def register_user(db: AsyncSession, data: RegisterRequest) -> tuple[User, 
     )
     db.add(user)
     await db.flush()
+    await db.commit()
     
     access_token = create_access_token({"sub": str(user.id)})
     refresh_token = create_refresh_token({"sub": str(user.id)})
@@ -42,6 +43,7 @@ async def login_user(db: AsyncSession, email: str, password: str) -> tuple[User,
     
     user.last_login = datetime.utcnow()
     await db.flush()
+    await db.commit()
     
     access_token = create_access_token({"sub": str(user.id)})
     refresh_token = create_refresh_token({"sub": str(user.id)})

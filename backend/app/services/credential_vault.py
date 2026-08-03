@@ -134,6 +134,8 @@ class POSCredentialManager:
             "zoho": self.validate_zoho_credentials,
             "csv_webhook": lambda c: True,
             "custom_api": lambda c: "base_url" in c or "api_key" in c,
+            "foodics": lambda c: bool(c.get("webhook_secret")),
+            "salla": lambda c: bool(c.get("webhook_secret")),
         }
         
         validator = validators.get(adapter_type)

@@ -23,18 +23,19 @@ AI-powered decision layer for physical businesses (supermarkets, cafes, retail s
 ## Tech Stack
 
 ### Backend
-- Python 3.11+
+- Python 3.13+
 - FastAPI
 - SQLAlchemy 2.0 (async)
-- PostgreSQL 15+
+- PostgreSQL 17+
 - Alembic (migrations)
-- Pydantic v2
-- Redis + Celery (background tasks)
-- OpenAI GPT-4 (LLM)
+- Pydantic v2 / pydantic-settings
+- Redis + Celery (optional background tasks; zero-cost mode disables both)
+- OpenRouter gateway (model-agnostic; default `google/gemma-2-9b-it:free`)
 - Prophet (forecasting)
 
 ### Frontend
-- Next.js 14 (App Router)
+- Next.js 16 (App Router)
+- React 18
 - TypeScript
 - Tailwind CSS
 - Recharts
@@ -47,15 +48,20 @@ AI-powered decision layer for physical businesses (supermarkets, cafes, retail s
 
 ### Prerequisites
 
-- Docker & Docker Compose
+- Docker & Docker Compose (optional)
 - Node.js 20+ (for local development)
-- Python 3.11+ (for local development)
+- Python 3.13+ (for local development)
+- PostgreSQL 17+ (local or Docker)
 
 ### Using Docker (Recommended)
 
 ```bash
 cd NazmOS
-docker-compose up
+# Zero-cost/SQLite mode
+docker-compose -f docker-compose.sqlite.yml up
+
+# Full local stack (Postgres 17 + Redis + backend + frontend)
+docker-compose -f docker-compose.local.yml up
 ```
 
 The application will be available at:
@@ -72,17 +78,24 @@ The application will be available at:
 cd backend
 
 # Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 
 # Create .env file
 cp .env.example .env
-# Edit .env and add your OpenAI API key and Redis URL
+# Edit .env with your DATABASE_URL, SECRET_KEY, and optional OpenRouter key.
 
-# Run Redis (required for Phase 2)
+# Run PostgreSQL 17 (local example)
+sudo service postgresql start
+# Ensure a `nazmos` user/database exist, or point DATABASE_URL at your instance.
+
+# Apply migrations
+python -m alembic upgrade head
+
+# Run Redis (optional; zero-cost mode works without it)
 redis-server
 
 # Run Celery worker (optional, for background tasks)
@@ -110,41 +123,61 @@ cp .env.local.example .env.local
 npm run dev
 ```
 
-## Demo Account
-
-- Email: demo@nazmos.ai
-- Password: demo123456
-
-Or click "Try Demo Without Login" on the login page.
-
 ## Phase 2 Setup
 
 ### Environment Variables
 
-Add these to your backend `.env` file:
+Key backend `.env` values:
 
 ```env
-# Redis
+# Core
+ENVIRONMENT=development
+DATABASE_URL=postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos
+SECRET_KEY=change-me-in-production-minimum-48-chars
+
+# Zero-cost architecture
+USE_CELERY=false
+USE_REDIS=false
+USE_CLIENT_ETL=false
+
+# Redis (optional)
 REDIS_URL=redis://localhost:6379/0
 
-# OpenAI (optional - mock LLM used if not set)
-OPENAI_API_KEY=sk-your-api-key
-OPENAI_MODEL=gpt-4
-USE_MOCK_LLM=false
+# LLM via OpenRouter (mock LLM is used when OPENROUTER_API_KEY is empty)
+OPENROUTER_API_KEY=sk-or-v1-...
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+USE_MOCK_LLM=true
+LLM_MODEL=google/gemma-2-9b-it:free
 
-# Uploads
+# Uploads / object storage
 UPLOAD_DIR=./uploads
-MAX_FILE_SIZE_MB=15
+STORAGE_BACKEND=local  # local | s3 | minio
+# STORAGE_BUCKET=...
+# STORAGE_ENDPOINT=...
+# STORAGE_ACCESS_KEY=...
+# STORAGE_SECRET_KEY=...
 
-# Forecasting
-FORECAST_DAYS_DEFAULT=30
-FORECAST_DAYS_MAX=365
+# Observability
+SENTRY_DSN=
+SENTRY_ENVIRONMENT=development
+PROMETHEUS_ENABLED=true
+
+# PostgreSQL Row-Level Security (production)
+# Leave empty in dev to run as table owner; set in prod to enforce RLS.
+DATABASE_APP_ROLE=nazmos_app
 ```
 
 ### Feature Flags
 
-- `USE_MOCK_LLM=true` - Use mock LLM responses for offline demo
-- Set `OPENAI_API_KEY` for real AI responses
+Feature flags are now dynamic (database-backed) and support per-business
+overrides and plan-level gating. Static env booleans are used as a fallback
+before the flag table is seeded.
+
+- `AGENT_ENABLED`, `CHAT_ENABLED`, `BILLING_ENABLED`, etc. — static defaults.
+- Run migrations; `seed_default_flags()` populates the `feature_flags` table on
+  startup.
+- Use `is_feature_enabled()` / `set_business_override()` to control rollout or
+  kill-switches without a redeploy.
 
 ## Project Structure
 
@@ -231,8 +264,14 @@ NazmOS/
 - `PATCH /api/v1/decisions/:id` - Update decision status
 - `GET /api/v1/decisions/stats` - Get decision statistics
 
-### Health
-- `GET /api/v1/health` - Health check
+### Health & Observability
+- `GET /health` - Root health check
+- `GET /api/v1/health` - Detailed health check with dependency probes
+- `GET /ready` - Kubernetes readiness probe
+- `GET /live` - Kubernetes liveness probe
+- `GET /metrics` - Prometheus metrics (when `PROMETHEUS_ENABLED=true`)
+
+All responses include `X-NazmOS-API-Version: 2.1.0-ksa`.
 
 ## Development
 

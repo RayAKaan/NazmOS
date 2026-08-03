@@ -89,8 +89,8 @@ services:
       BILLING_ENABLED: ${BILLING_ENABLED:-true}
       AGENT_ENABLED: ${AGENT_ENABLED:-true}
       USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
-      USE_CELERY: ${USE_CELERY:-false}
-      USE_REDIS: ${USE_REDIS:-false}
+      USE_CELERY: ${USE_CELERY:-true}
+      USE_REDIS: ${USE_REDIS:-true}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       OPENROUTER_BASE_URL: ${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
       OPENROUTER_SITE_URL: ${OPENROUTER_SITE_URL:-https://nazmak.com}
@@ -125,6 +125,8 @@ services:
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
       SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
       UPLOAD_DIR: /app/uploads
+      USE_CELERY: ${USE_CELERY:-true}
+      USE_REDIS: ${USE_REDIS:-true}
       USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       OPENROUTER_BASE_URL: ${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}

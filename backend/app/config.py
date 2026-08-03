@@ -92,8 +92,28 @@ class Settings(BaseSettings):
     # Demo fixtures/seeding
     ALLOW_DEMO_SEED: bool = False
 
+    # File/object storage abstraction (local disk, S3, or MinIO)
+    STORAGE_BACKEND: str = "local"  # local | s3 | minio
+    STORAGE_BUCKET: str = ""
+    STORAGE_ENDPOINT: str = ""  # e.g. https://s3.amazonaws.com or http://localhost:9000
+    STORAGE_ACCESS_KEY: str = ""
+    STORAGE_SECRET_KEY: str = ""
+    STORAGE_REGION: str = "us-east-1"
+    STORAGE_PREFIX: str = ""  # optional key prefix such as "uploads/"
+    STORAGE_USE_SSL: bool = True
+
+    # PostgreSQL Row-Level Security — production app role.
+    # When set, the application connection issues SET ROLE <role> after
+    # setting app.current_tenant_id so RLS policies are enforced even though
+    # the migration user is the table owner.
+    DATABASE_APP_ROLE: str = ""
+
     # Observability
     PROMETHEUS_ENABLED: bool = True
+    SENTRY_DSN: str = ""
+    SENTRY_ENVIRONMENT: str = ""
+    SENTRY_TRACES_SAMPLE_RATE: float = 0.1
+    SENTRY_PROFILES_SAMPLE_RATE: float = 0.0
 
     class Config:
         env_file = ".env"

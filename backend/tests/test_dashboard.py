@@ -3,22 +3,19 @@ from httpx import AsyncClient
 
 
 @pytest.mark.asyncio
-async def test_demo_login(client: AsyncClient):
-    response = await client.post("/api/v1/auth/demo")
-    assert response.status_code == 200
-    data = response.json()
-    assert "access_token" in data
-    assert data["user"]["email"] == "demo@nazmos.ai"
+async def test_dashboard_summary_requires_auth(client: AsyncClient):
+    response = await client.get(
+        "/api/v1/dashboard/summary?business_id=00000000-0000-0000-0000-000000000001"
+    )
+    assert response.status_code == 401
 
 
 @pytest.mark.asyncio
-async def test_get_dashboard_summary(client: AsyncClient):
-    demo_response = await client.post("/api/v1/auth/demo")
-    token = demo_response.json()["access_token"]
-    
-    response = await client.get(
-        f"/api/v1/dashboard/summary?business_id={demo_response.json()['user']['id']}",
-        headers={"Authorization": f"Bearer {token}"}
+async def test_get_dashboard_summary(authenticated_client: dict):
+    ac = authenticated_client
+    response = await ac["client"].get(
+        f"/api/v1/dashboard/summary?business_id={ac['business_id']}",
+        headers=ac["headers"],
     )
     assert response.status_code == 200
     data = response.json()
@@ -28,13 +25,11 @@ async def test_get_dashboard_summary(client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_get_sales_trend(client: AsyncClient):
-    demo_response = await client.post("/api/v1/auth/demo")
-    token = demo_response.json()["access_token"]
-    
-    response = await client.get(
-        f"/api/v1/dashboard/sales-trend?business_id={demo_response.json()['user']['id']}&period=30",
-        headers={"Authorization": f"Bearer {token}"}
+async def test_get_sales_trend(authenticated_client: dict):
+    ac = authenticated_client
+    response = await ac["client"].get(
+        f"/api/v1/dashboard/sales-trend?business_id={ac['business_id']}&period=30",
+        headers=ac["headers"],
     )
     assert response.status_code == 200
     data = response.json()
@@ -47,5 +42,6 @@ async def test_health_check(client: AsyncClient):
     response = await client.get("/api/v1/health")
     assert response.status_code == 200
     data = response.json()
-    assert data["status"] == "healthy"
+    assert data["status"] in ("healthy", "degraded")
     assert data["version"] == "1.0.0"
+    assert "checks" in data

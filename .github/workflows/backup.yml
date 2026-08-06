@@ -1,0 +1,25 @@
+name: Backup restore drill
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  restore-drill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run nightly backup + restore drill on production
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PRODUCTION_SSH_HOST }}
+          username: ${{ secrets.PRODUCTION_SSH_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: |
+            set -e
+            cd /opt/nazmos
+            docker compose -f docker-compose.yml up -d postgres redis api
+            docker compose -f docker-compose.yml exec -T api python scripts/backup_postgres.py --restore-drill

@@ -25,12 +25,27 @@ if [ ! -f .env ]; then
   SECRET=$(openssl rand -base64 48 | tr -d '\n')
   DB_PASS=$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 24)
   REDIS_PASS=$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 24)
+  VAULT_KEY=$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 32)
+  echo "[?] Public URL for the app (what users/browsers will hit, e.g. https://app.nazmak.com):"
+  read -r -p "    PUBLIC_API_URL [http://localhost:3000]: " PUBLIC_API_URL
+  PUBLIC_API_URL=${PUBLIC_API_URL:-http://localhost:3000}
+  echo "[?] Sentry DSN (required in production; grab one at https://sentry.io):"
+  read -r -p "    SENTRY_DSN: " SENTRY_DSN
+  if [ -z "$SENTRY_DSN" ]; then
+    echo "[-] SENTRY_DSN is required in production. Aborting."
+    exit 1
+  fi
   cat > .env <<EOF
 # NazmOS KSA – Production
 SECRET_KEY=$SECRET
 DB_PASSWORD=$DB_PASS
 REDIS_PASSWORD=$REDIS_PASS
 ENVIRONMENT=production
+CREDENTIAL_MASTER_KEY=$VAULT_KEY
+DATABASE_APP_ROLE=nazmos_app
+SENTRY_DSN=$SENTRY_DSN
+PUBLIC_API_URL=$PUBLIC_API_URL
+CORS_ORIGINS=$PUBLIC_API_URL
 EOF
   echo "  Secrets generated"
 fi
@@ -44,8 +59,11 @@ if [ ! -f backend/.env ]; then
 ENVIRONMENT=production
 SECRET_KEY=$SECRET_KEY
 DATABASE_URL=postgresql+asyncpg://nazmos:${DB_PASSWORD}@postgres:5432/nazmos
-CORS_ORIGINS=http://localhost:3000
+CORS_ORIGINS=$CORS_ORIGINS
 REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+SENTRY_DSN=$SENTRY_DSN
+DATABASE_APP_ROLE=$DATABASE_APP_ROLE
+CREDENTIAL_MASTER_KEY=$CREDENTIAL_MASTER_KEY
 CHAT_ENABLED=false
 BILLING_ENABLED=false
 USE_MOCK_LLM=true
@@ -72,6 +90,14 @@ docker compose -f docker-compose.prod.yml up -d --build
 echo ""
 echo "Waiting 15s for services..."
 sleep 15
+
+echo ""
+echo "[+] Installing nightly backup systemd service..."
+NAZMOS_DIR="$(pwd)"
+sed "s|/opt/nazmos|$NAZMOS_DIR|g" deployment/nazmos-backup.service > /etc/systemd/system/nazmos-backup.service
+cp deployment/nazmos-backup.timer /etc/systemd/system/nazmos-backup.timer
+systemctl daemon-reload
+systemctl enable --now nazmos-backup.timer
 
 echo ""
 echo "=========================================="

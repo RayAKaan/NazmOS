@@ -8,7 +8,7 @@ class OrganizationCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
     slug: Optional[str] = Field(None, min_length=1, max_length=100)
     default_currency: str = Field(default="SAR", max_length=3)
-    default_timezone: str = Field(default="Asia/Kolkata", max_length=50)
+    default_timezone: str = Field(default="Asia/Riyadh", max_length=50)
 
 
 class OrganizationUpdate(BaseModel):

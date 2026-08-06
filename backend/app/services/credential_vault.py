@@ -22,16 +22,25 @@ class CredentialVault:
     VERSION = "v1"
     SALT = b"nazmos_vault_salt_v3"
     ITERATIONS = 100000
+    DEV_FALLBACK_KEY = "dev-master-key-replace-in-production-32chars"
 
     def __init__(self, master_key: Optional[str] = None):
         if master_key:
             self._master_key = master_key.encode()
         else:
-            self._master_key = os.environ.get(
-                "CREDENTIAL_MASTER_KEY",
-                "dev-master-key-replace-in-production-32chars"
-            ).encode()
-        
+            self._master_key = os.environ.get("CREDENTIAL_MASTER_KEY")
+            if self._master_key is None:
+                from app.config import get_settings
+                env = get_settings().ENVIRONMENT
+                if env == "production":
+                    raise RuntimeError(
+                        "FATAL: CREDENTIAL_MASTER_KEY is required in production. "
+                        "Generate one per install with: "
+                        "python -c 'import secrets; print(secrets.token_urlsafe(48))'"
+                    )
+                self._master_key = self.DEV_FALLBACK_KEY
+            self._master_key = self._master_key.encode()
+
         self._fernet = self._create_fernet(self._master_key)
 
     def _create_fernet(self, key: bytes) -> Fernet:

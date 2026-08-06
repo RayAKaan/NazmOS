@@ -6,11 +6,16 @@ import secrets
 
 class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos"
+    DATABASE_POOL_SIZE: int = 10
+    DATABASE_MAX_OVERFLOW: int = 20
+    DATABASE_POOL_RECYCLE: int = 1800
+    DATABASE_POOL_TIMEOUT: int = 30
     SECRET_KEY: str = "dev-secret-key-change-in-production-minimum-32-chars"
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
     CORS_ORIGINS: str = "http://localhost:3000"
+    CORS_METHODS: str = "GET,POST,PUT,PATCH,DELETE,OPTIONS"
     LOG_LEVEL: str = "INFO"
     ENVIRONMENT: str = "development"
 
@@ -110,6 +115,7 @@ class Settings(BaseSettings):
 
     # Observability
     PROMETHEUS_ENABLED: bool = True
+    METRICS_TOKEN: str = ""  # When set, /metrics requires X-Metrics-Token to match.
     SENTRY_DSN: str = ""
     SENTRY_ENVIRONMENT: str = ""
     SENTRY_TRACES_SAMPLE_RATE: float = 0.1
@@ -132,6 +138,41 @@ class Settings(BaseSettings):
                 )
         return v
 
+    @field_validator("SENTRY_DSN")
+    @classmethod
+    def validate_sentry_dsn(cls, v: str, info: ValidationInfo) -> str:
+        env = info.data.get("ENVIRONMENT", "development")
+        if env == "production" and not v:
+            raise ValueError(
+                "SENTRY_DSN is required in production. Uncaught exceptions must be aggregated and alerted."
+            )
+        return v
+
+    @field_validator("CORS_ORIGINS")
+    @classmethod
+    def validate_cors_origins(cls, v: str, info: ValidationInfo) -> str:
+        env = info.data.get("ENVIRONMENT", "development")
+        origins = [origin.strip() for origin in (v or "").split(",") if origin.strip()]
+        if env == "production":
+            for origin in origins:
+                if origin == "*":
+                    raise ValueError("CORS wildcard '*' is not allowed in production")
+                if not origin.startswith(("https://", "http://")):
+                    raise ValueError(f"CORS origin must include scheme: {origin}")
+        return v
+
+    @field_validator("DATABASE_APP_ROLE")
+    @classmethod
+    def validate_database_app_role(cls, v: str, info: ValidationInfo) -> str:
+        env = info.data.get("ENVIRONMENT", "development")
+        if env == "production" and not v.strip():
+            raise ValueError(
+                "DATABASE_APP_ROLE is required in production. RLS policies are "
+                "enforced only when the app connection switches to the restricted "
+                "role via SET ROLE after setting app.current_tenant_id."
+            )
+        return v
+
 
 @lru_cache()
 def get_settings() -> Settings:
@@ -139,6 +180,9 @@ def get_settings() -> Settings:
     # Fail fast in production if using dev secret
     if s.ENVIRONMENT == "production" and "dev-secret-key" in s.SECRET_KEY:
         raise RuntimeError("FATAL: SECRET_KEY is still the dev default in production")
+    # Fail fast in production if Sentry is not configured
+    if s.ENVIRONMENT == "production" and not s.SENTRY_DSN:
+        raise RuntimeError("FATAL: SENTRY_DSN is required in production")
     # Auto-detect SQLite mode: no Celery/Redis needed
     if s.DATABASE_URL.startswith("sqlite"):
         object.__setattr__(s, "USE_CELERY", False)

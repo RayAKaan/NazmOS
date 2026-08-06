@@ -1,11 +1,24 @@
 import time
 import hashlib
+import logging
 from typing import Dict, Tuple, Optional
-from fastapi import Request, HTTPException
+from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 import redis
+import redis.asyncio as aioredis
 import json
+
+from app.utils.problem_details import problem_response
+
+logger = logging.getLogger(__name__)
+
+
+class RateLimiterUnavailable(Exception):
+    """Raised when Redis is unreachable during a rate-limit check.
+
+    The middleware decides fail-open vs fail-closed based on the endpoint.
+    """
 
 
 class RedisRateLimiter:
@@ -25,7 +38,7 @@ class RedisRateLimiter:
         default_limit: int = 300,
         window_seconds: int = 60
     ):
-        self.redis = redis.from_url(redis_url, decode_responses=True)
+        self.redis = aioredis.from_url(redis_url, decode_responses=True)
         self.default_limit = default_limit
         self.window_seconds = window_seconds
         
@@ -38,7 +51,7 @@ class RedisRateLimiter:
         }
     
     def get_client_identifier(self, request: Request) -> str:
-        """Get unique identifier for the client."""
+        """Get unique identifier for the client, scoped to business when available."""
         forwarded = request.headers.get("X-Forwarded-For")
         if isinstance(forwarded, str) and forwarded:
             ip = forwarded.split(",")[0].strip()
@@ -51,17 +64,32 @@ class RedisRateLimiter:
             identifier = f"user:{hashlib.md5(token.encode()).hexdigest()[:16]}"
         else:
             identifier = f"ip:{ip}"
-        
+
+        # Scope per-tenant limits when a business_id is available. path_params
+        # is empty inside BaseHTTPMiddleware (routing happens after this layer),
+        # so tenant scoping is derived from the query string or header instead.
+        business_id = request.query_params.get("business_id") or request.headers.get("X-Business-ID")
+        if business_id:
+            identifier = f"{identifier}:biz:{business_id}"
+        else:
+            logger.debug(
+                "rate_limiter_tenant_scoping_absent",
+                extra={"path": request.url.path},
+            )
+
         return identifier
     
-    def check_rate_limit(
+    async def check_rate_limit(
         self,
         identifier: str,
         endpoint_key: str = "default"
     ) -> Tuple[bool, Dict]:
         """
         Check if request is within rate limit using sliding window algorithm.
-        
+
+        Raises RateLimiterUnavailable when Redis is unreachable; the middleware
+        decides fail-open vs fail-closed based on the endpoint.
+
         Returns:
             Tuple of (is_allowed, rate_limit_info)
         """
@@ -69,74 +97,81 @@ class RedisRateLimiter:
         limit = config["limit"]
         window = config["window"]
         prefix = config["key_prefix"]
-        
+
         key = f"{prefix}:{identifier}"
         now = time.time()
         window_start = now - window
-        
-        pipe = self.redis.pipeline()
-        
-        pipe.zremrangebyscore(key, 0, window_start)
-        
-        pipe.zcard(key)
-        
-        pipe.execute()
-        
-        current_count = self.redis.zcard(key)
-        
-        remaining = max(0, limit - current_count - 1)
-        reset_time = int(now + window)
-        
-        if current_count >= limit:
-            ttl = self.redis.ttl(key)
-            retry_after = max(1, ttl if ttl > 0 else window)
-            
-            return False, {
+
+        try:
+            async with self.redis.pipeline() as pipe:
+                pipe.zremrangebyscore(key, 0, window_start)
+                pipe.zcard(key)
+                results = await pipe.execute()
+
+            current_count = int(results[1])
+
+            remaining = max(0, limit - current_count - 1)
+            reset_time = int(now + window)
+
+            if current_count >= limit:
+                ttl = await self.redis.ttl(key)
+                retry_after = max(1, ttl if ttl > 0 else window)
+
+                return False, {
+                    "limit": limit,
+                    "remaining": 0,
+                    "reset": reset_time,
+                    "retry_after": retry_after
+                }
+
+            await self.redis.zadd(
+                key, {f"{now}:{hashlib.md5(str(now).encode()).hexdigest()[:8]}": now}
+            )
+            await self.redis.expire(key, window)
+
+            return True, {
                 "limit": limit,
-                "remaining": 0,
-                "reset": reset_time,
-                "retry_after": retry_after
+                "remaining": remaining,
+                "reset": reset_time
             }
-        
-        self.redis.zadd(key, {f"{now}:{hashlib.md5(str(now).encode()).hexdigest()[:8]}": now})
-        self.redis.expire(key, window)
-        
-        return True, {
-            "limit": limit,
-            "remaining": remaining,
-            "reset": reset_time
-        }
-    
+        except Exception as exc:
+            raise RateLimiterUnavailable(str(exc)) from exc
+
     async def check_rate_limit_async(
         self,
         identifier: str,
         endpoint_key: str = "default"
     ) -> Tuple[bool, Dict]:
         """Async version of check_rate_limit."""
-        return self.check_rate_limit(identifier, endpoint_key)
-    
-    def get_usage(self, identifier: str, endpoint_key: str = "default") -> int:
+        return await self.check_rate_limit(identifier, endpoint_key)
+
+    async def get_usage(self, identifier: str, endpoint_key: str = "default") -> int:
         """Get current usage count for an identifier."""
         config = self.limits.get(endpoint_key, self.limits["default"])
         window = config["window"]
         prefix = config["key_prefix"]
-        
+
         key = f"{prefix}:{identifier}"
         now = time.time()
         window_start = now - window
-        
-        self.redis.zremrangebyscore(key, 0, window_start)
-        
-        return self.redis.zcard(key)
-    
-    def reset_limit(self, identifier: str, endpoint_key: str = "default") -> bool:
+
+        try:
+            await self.redis.zremrangebyscore(key, 0, window_start)
+            return int(await self.redis.zcard(key))
+        except Exception as exc:
+            raise RateLimiterUnavailable(str(exc)) from exc
+
+    async def reset_limit(self, identifier: str, endpoint_key: str = "default") -> bool:
         """Reset rate limit for an identifier."""
         config = self.limits.get(endpoint_key, self.limits["default"])
         prefix = config["key_prefix"]
-        
+
         key = f"{prefix}:{identifier}"
-        self.redis.delete(key)
-        
+        try:
+            await self.redis.delete(key)
+        except Exception as exc:
+            raise RateLimiterUnavailable(str(exc)) from exc
+
         return True
 
 
@@ -173,8 +208,17 @@ class InMemoryRateLimiter:
         auth_header = request.headers.get("Authorization", "")
         if isinstance(auth_header, str) and auth_header.startswith("Bearer "):
             token = auth_header[7:]
-            return f"user:{hashlib.md5(token.encode()).hexdigest()[:16]}"
-        return f"ip:{ip}"
+            identifier = f"user:{hashlib.md5(token.encode()).hexdigest()[:16]}"
+        else:
+            identifier = f"ip:{ip}"
+
+        # Scope per-tenant limits when a business_id is available. path_params
+        # is empty inside BaseHTTPMiddleware (routing happens after this layer).
+        business_id = request.query_params.get("business_id") or request.headers.get("X-Business-ID")
+        if business_id:
+            identifier = f"{identifier}:biz:{business_id}"
+
+        return identifier
 
 
     def _generate_key(self, request: Request) -> str:
@@ -282,13 +326,39 @@ class AdvancedRateLimitMiddleware(BaseHTTPMiddleware):
 
         endpoint_key = self._endpoint_key(request.url.path)
         identifier = self.limiter.get_client_identifier(request)
-        allowed, info = await self.limiter.check_rate_limit_async(identifier, endpoint_key)
-        if not allowed:
-            return JSONResponse(
-                status_code=429,
-                content={"error": True, "code": "RATE_LIMITED", "message": "Too many requests"},
-                headers={"Retry-After": str(info.get("retry_after", 60))},
+
+        try:
+            allowed, info = await self.limiter.check_rate_limit_async(identifier, endpoint_key)
+        except RateLimiterUnavailable as exc:
+            # Redis outage: auth endpoints fail closed (503); everything else
+            # fails open so a Redis blip does not take the whole API down.
+            if endpoint_key in {"auth_login", "auth_register"}:
+                logger.error(
+                    "rate_limiter_redis_outage",
+                    extra={"path": request.url.path, "error": str(exc)},
+                )
+                response = problem_response(
+                    status=503,
+                    title="Rate limiter unavailable",
+                    detail="Authentication throttling is temporarily unavailable. Please retry shortly.",
+                    request=request,
+                )
+                return response
+            logger.warning(
+                "rate_limiter_redis_outage",
+                extra={"path": request.url.path, "error": str(exc)},
             )
+            return await call_next(request)
+
+        if not allowed:
+            response = problem_response(
+                status=429,
+                title="Rate Limited",
+                detail="Too many requests. Please slow down.",
+                request=request,
+            )
+            response.headers["Retry-After"] = str(info.get("retry_after", 60))
+            return response
 
         response = await call_next(request)
         response.headers["X-RateLimit-Limit"] = str(info.get("limit", ""))
@@ -300,9 +370,16 @@ class AdvancedRateLimitMiddleware(BaseHTTPMiddleware):
 def get_rate_limiter() -> RedisRateLimiter | InMemoryRateLimiter:
     """
     Factory function to get appropriate rate limiter based on environment.
-    
+
     In production with multiple workers, use RedisRateLimiter.
     For development/testing, use InMemoryRateLimiter with relaxed limits.
+
+    Distributed rate limiting requires Redis. Falling back to an in-memory
+    limiter in a multi-worker production deployment silently breaks limiting:
+    each worker enforces its own independent budget, so the aggregate limit is
+    multiplied by the worker count. Therefore in production we only fall back
+    to a RedisRateLimiter configured to fail open on outage, never to the
+    in-memory implementation.
     """
     import os
     from app.config import get_settings
@@ -314,8 +391,11 @@ def get_rate_limiter() -> RedisRateLimiter | InMemoryRateLimiter:
     if redis_url and not is_dev:
         try:
             return RedisRateLimiter(redis_url=redis_url)
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.error(
+                "rate_limiter_redis_construct_failed",
+                extra={"error": str(exc), "environment": settings.ENVIRONMENT},
+            )
 
     if is_dev:
         limiter = InMemoryRateLimiter(default_limit=10000, window_seconds=60)
@@ -324,7 +404,13 @@ def get_rate_limiter() -> RedisRateLimiter | InMemoryRateLimiter:
             limiter.limits[key]["limit"] *= 100
         return limiter
 
-    return InMemoryRateLimiter()
+    # Production without a constructible Redis limiter: never silently degrade
+    # to in-memory. Return a Redis limiter that fails open on outage instead.
+    logger.error(
+        "rate_limiter_redis_required",
+        extra={"environment": settings.ENVIRONMENT, "redis_url_present": bool(redis_url)},
+    )
+    return RedisRateLimiter(redis_url=redis_url or "redis://localhost:6379/0")
 
 
 rate_limiter = get_rate_limiter()

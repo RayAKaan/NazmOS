@@ -9,6 +9,7 @@ from app.routers.forecast import router as forecast_router
 from app.routers.decisions import router as decisions_router
 from app.routers.money_audit import router as money_audit_router
 from app.routers.ops import router as ops_router
+from app.routers.compliance import router as compliance_router
 from app.routers.organizations import router as organizations_router
 from app.routers.subscriptions import router as subscriptions_router
 from app.routers.adapters import router as adapters_router
@@ -57,6 +58,7 @@ __all__ = [
     "decisions_router",
     "money_audit_router",
     "ops_router",
+    "compliance_router",
     "organizations_router",
     "subscriptions_router",
     "adapters_router",

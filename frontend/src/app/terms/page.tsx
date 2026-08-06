@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Terms of Use",
+  description: "NazmOS terms of use, product scope, merchant responsibilities, and Recovery Match limitations.",
+  alternates: { canonical: "/terms" },
+};
 
 export default function TermsPage() {
   return (

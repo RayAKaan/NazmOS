@@ -12,12 +12,6 @@
   "categories": ["business", "productivity", "utilities"],
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "any",
-      "type": "image/x-icon",
-      "purpose": "any"
-    },
-    {
       "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
@@ -42,12 +36,6 @@
       "short_name": "Dashboard",
       "description": "View your store dashboard",
       "url": "/dashboard"
-    },
-    {
-      "name": "Ask AI",
-      "short_name": "Ask AI",
-      "description": "Chat with your AI assistant",
-      "url": "/chat"
     },
     {
       "name": "Inventory",

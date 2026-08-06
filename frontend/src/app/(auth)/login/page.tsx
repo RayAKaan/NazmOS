@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { Toast } from "@/components/ui/Toast";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
-import api from "@/lib/api";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -41,11 +41,14 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     setIsSubmitting(true);
     try {
-      await api.post("/auth/login", data);
+      await useAuthStore.getState().login(data.email, data.password);
       router.push("/dashboard");
     } catch (error: any) {
       setToast({
-        message: error.response?.data?.message || t.auth.login.error,
+        message:
+          error.response?.data?.detail ||
+          error.response?.data?.message ||
+          t.auth.login.error,
         type: "error",
       });
     } finally {

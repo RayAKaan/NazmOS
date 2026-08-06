@@ -35,7 +35,7 @@ export function HealthScore({ score, isLoading }: HealthScoreProps) {
       </h3>
       <div className="flex items-center justify-center">
         <div className="relative">
-          <svg className="w-32 h-32 -rotate-90">
+          <svg className="w-32 h-32 -rotate-90" aria-hidden="true">
             <circle
               cx="64"
               cy="64"

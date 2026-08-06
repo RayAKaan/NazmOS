@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { Toast } from "@/components/ui/Toast";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
-import api from "@/lib/api";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -43,11 +43,19 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterForm) => {
     setIsSubmitting(true);
     try {
-      await api.post("/auth/register", data);
-      router.push("/dashboard");
+      await useAuthStore.getState().register(
+        data.email,
+        data.password,
+        data.fullName,
+        data.phone
+      );
+      router.push("/onboarding");
     } catch (error: any) {
       setToast({
-        message: error.response?.data?.message || t.auth.register.error,
+        message:
+          error.response?.data?.detail ||
+          error.response?.data?.message ||
+          t.auth.register.error,
         type: "error",
       });
     } finally {

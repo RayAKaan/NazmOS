@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
-
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+import api from "@/lib/api";
+import { useAppStore } from "@/stores/appStore";
 
 type Policy = {
   action_type: string;
@@ -26,20 +25,16 @@ export default function AutonomyPage() {
     { action_type: "expiry_alert", label: "تنبيهات انتهاء الصلاحية", label_en: "Expiry Alerts", dial: 50, description_ar: "0 = أخبرني فقط / 50 = جهز وانتظر موافقتي / 100 = نفذ تلقائيا", description_en: "0 = inform / 50 = draft+approve / 100 = auto" },
   ]);
   const [saving, setSaving] = useState(false);
-  const businessId = "00000000-0000-0000-0000-000000000001";
+  const { businessId } = useAppStore();
 
   useEffect(() => {
-    const load = async () => {
+    (async () => {
       try {
-        const token = localStorage.getItem("access_token");
-        const res = await axios.get(`${API}/api/v1/agent/autonomy?business_id=${businessId}`, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
+        const res = await api.get("/agent/autonomy", { params: { business_id: businessId } });
         if (res.data.policies?.length) setPolicies(res.data.policies);
       } catch {}
-    };
-    load();
-  }, []);
+    })();
+  }, [businessId]);
 
   const setDial = (action_type: string, dial: number) => {
     setPolicies(p => p.map(x => x.action_type === action_type ? { ...x, dial } : x));
@@ -48,8 +43,7 @@ export default function AutonomyPage() {
   const save = async () => {
     setSaving(true);
     try {
-      const token = localStorage.getItem("access_token");
-      await axios.put(`${API}/api/v1/agent/autonomy?business_id=${businessId}`, 
+      await api.put("/agent/autonomy",
         { policies: policies.map(p => ({
           action_type: p.action_type,
           dial: p.dial,
@@ -57,7 +51,7 @@ export default function AutonomyPage() {
           max_price_increase_pct: p.max_price_increase_pct,
           max_price_decrease_pct: (p as any).max_price_decrease_pct,
         }))},
-        { headers: token ? { Authorization: `Bearer ${token}` } : {} }
+        { params: { business_id: businessId } }
       );
       alert("Saved – تم الحفظ");
     } catch {

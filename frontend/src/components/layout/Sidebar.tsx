@@ -68,7 +68,7 @@ export function Sidebar() {
             <span className="text-white font-bold text-xl font-serif">ن</span>
           </div>
           <div>
-            <h1 className="font-bold text-lg">NazmOS</h1>
+            <div className="font-bold text-lg">NazmOS</div>
             <p className="text-xs text-text-muted">{isAr ? "نظام – الرياض" : "نظام – KSA"}</p>
           </div>
         </div>

@@ -18,6 +18,7 @@ const eslintConfig = [
       "react-hooks/purity": "off",
       "react-hooks/immutability": "off",
       "react-hooks/static-components": "off",
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
 ];

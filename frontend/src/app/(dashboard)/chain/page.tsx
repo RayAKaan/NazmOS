@@ -100,7 +100,7 @@ export default function ChainDashboardPage() {
             {dashboard.organization_name}
           </h1>
           <p className="text-sm text-[#8888a0]">
-            {dashboard.total_locations} locations across India
+            {dashboard.total_locations} locations in Saudi Arabia
           </p>
         </div>
         <Link

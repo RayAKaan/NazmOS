@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import axios from "axios";
-
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+import { useCallback, useEffect, useState } from "react";
+import api from "@/lib/api";
+import { useAppStore } from "@/stores/appStore";
 
 type AgentAction = {
   id: string;
@@ -23,14 +22,12 @@ type AgentAction = {
 export default function FeedPage() {
   const [items, setItems] = useState<AgentAction[]>([]);
   const [loading, setLoading] = useState(true);
-  const businessId = "00000000-0000-0000-0000-000000000001"; // TODO: from auth store
+  const { businessId } = useAppStore();
 
-  const load = async () => {
+  const load = useCallback(async () => {
+    if (!businessId) return;
     try {
-      const token = localStorage.getItem("access_token");
-      const res = await axios.get(`${API}/api/v1/agent/feed?business_id=${businessId}`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
+      const res = await api.get("/agent/feed", { params: { business_id: businessId } });
       setItems(res.data.items || []);
     } catch (e) {
       // demo fallback
@@ -66,18 +63,17 @@ export default function FeedPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [businessId]);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   const act = async (id: string, action: "approve" | "reject") => {
     try {
-      const token = localStorage.getItem("access_token");
-      await axios.post(
-        `${API}/api/v1/agent/actions/${id}/${action}?business_id=${businessId}`,
-        {},
-        { headers: token ? { Authorization: `Bearer ${token}` } : {} }
-      );
+      const path =
+        action === "approve"
+          ? `/agent/actions/${id}/approve`
+          : `/agent/actions/${id}/reject`;
+      await api.post(path, {}, { params: { business_id: businessId } });
     } catch {}
     setItems(items.filter(i => i.id !== id));
   };

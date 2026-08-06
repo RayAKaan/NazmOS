@@ -141,6 +141,9 @@ async def _quality(db: AsyncSession, business_id: str) -> dict[str, Any]:
 
 
 async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> AuditComputation:
+    from app.database.connection import enforce_tenant_filter
+    enforce_tenant_filter(str(business_id))
+
     business_id_str = str(business_id)
     period_start, period_end = await _period(db, business_id_str)
     quality = await _quality(db, business_id_str)
@@ -449,6 +452,9 @@ async def get_money_audit(db: AsyncSession, audit_id: UUID | str) -> dict[str, A
 
 
 async def get_latest_money_audit(db: AsyncSession, business_id: UUID | str) -> dict[str, Any] | None:
+    from app.database.connection import enforce_tenant_filter
+    enforce_tenant_filter(str(business_id))
+
     result = await db.execute(
         text("""
             SELECT * FROM money_audits

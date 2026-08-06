@@ -24,6 +24,25 @@ def get_rls_tenant_id() -> str | None:
 def clear_rls_tenant_id() -> None:
     _rls_tenant_id.set(None)
 
+
+def enforce_tenant_filter(business_id: str | None) -> str:
+    """Validate and normalize a tenant (business_id) scope for a bulk operation.
+
+    Postgres RLS is the primary isolation boundary in production; this guard is
+    the defense-in-depth that also protects SQLite development, where RLS
+    policies do not exist. It blocks unscoped bulk reads and any attempt to act
+    outside the request's tenant context.
+    """
+    from app.utils.exceptions import TenantViolationError
+
+    context_tenant = get_rls_tenant_id()
+    if business_id is None or not str(business_id).strip():
+        raise TenantViolationError("Missing business_id scope for tenant-scoped operation")
+    scope = str(business_id)
+    if context_tenant and scope != context_tenant:
+        raise TenantViolationError("Cross-tenant access attempt blocked")
+    return scope
+
 _engine_kwargs: dict = {
     "echo": settings.ENVIRONMENT == "development",
 }
@@ -32,11 +51,37 @@ if _is_sqlite:
 else:
     _engine_kwargs.update({
         "pool_pre_ping": True,
-        "pool_size": 10,
-        "max_overflow": 20,
+        "pool_size": getattr(settings, "DATABASE_POOL_SIZE", 10),
+        "max_overflow": getattr(settings, "DATABASE_MAX_OVERFLOW", 20),
+        "pool_recycle": getattr(settings, "DATABASE_POOL_RECYCLE", 1800),
+        "pool_timeout": getattr(settings, "DATABASE_POOL_TIMEOUT", 30),
     })
 
 engine = create_async_engine(settings.DATABASE_URL, **_engine_kwargs)
+
+if not _is_sqlite:
+    from sqlalchemy import event
+
+    @event.listens_for(engine.sync_engine, "begin")
+    def _after_begin(conn, trans):
+        """Re-apply tenant context on every transaction begin.
+
+        ``SET LOCAL`` is scoped to the current transaction, so code that commits
+        mid-request (e.g. agent action approval) would otherwise lose the RLS
+        tenant context on the next statement.  Re-issuing the SET LOCAL at the
+        start of each transaction keeps ``app.current_tenant_id`` (and the
+        restricted app role) active for the whole request regardless of commit
+        points.
+        """
+        tenant_id = get_rls_tenant_id()
+        if tenant_id:
+            conn.exec_driver_sql(
+                f"SET LOCAL app.current_tenant_id = '{tenant_id}'"
+            )
+        if settings.DATABASE_APP_ROLE:
+            conn.exec_driver_sql(
+                f'SET LOCAL ROLE "{settings.DATABASE_APP_ROLE}"'
+            )
 
 AsyncSessionLocal = async_sessionmaker(
     engine,

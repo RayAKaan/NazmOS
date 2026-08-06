@@ -373,16 +373,6 @@ class ETLPipeline:
                 failed += 1
                 continue
 
-            row_hash = hashlib.sha256(
-                json.dumps({
-                    "business_id": self.business_id,
-                    "item_name": item_name,
-                    "transaction_at": str(row["transaction_at"]),
-                    "quantity": str(row.get("quantity", 1)),
-                    "total_amount": str(row.get("total_amount", 0)),
-                }, sort_keys=True).encode()
-            ).hexdigest()
-
             transaction_at = row["transaction_at"]
             if isinstance(transaction_at, pd.Timestamp):
                 transaction_at = transaction_at.to_pydatetime()
@@ -391,6 +381,22 @@ class ETLPipeline:
             unit_price = float(row.get("unit_price", row.get("total_amount", 0)))
             cost_price = float(row.get("cost_price", 0))
             total_amount = float(row.get("total_amount", quantity * unit_price))
+
+            # Dedup hash over the row's identifying business facts. Deterministic
+            # across re-uploads (no per-upload salt) so a re-import of the same
+            # file never double-counts sales. The partial unique index
+            # (business_id, row_hash) WHERE row_hash IS NOT NULL makes the
+            # ON CONFLICT DO NOTHING below idempotent.
+            row_hash = hashlib.sha256(
+                json.dumps({
+                    "business_id": self.business_id,
+                    "item_id": item_id,
+                    "transaction_at": str(transaction_at),
+                    "quantity": quantity,
+                    "total_amount": total_amount,
+                }, sort_keys=True).encode()
+            ).hexdigest()
+
             rows.append({
                 "business_id": self.business_id,
                 "item_id": item_id,
@@ -401,6 +407,7 @@ class ETLPipeline:
                 "profit": total_amount - (quantity * cost_price),
                 "transaction_at": transaction_at if transaction_at else None,
                 "transaction_type": "sale",
+                "row_hash": row_hash,
             })
             if row.get("transaction_at"):
                 dates.append(row["transaction_at"])
@@ -410,17 +417,23 @@ class ETLPipeline:
             if not row_data["transaction_at"]:
                 continue
             try:
-                await session.execute(
+                result = await session.execute(
                     text("""
                         INSERT INTO transactions
                             (id, business_id, item_id, quantity, unit_price, cost_price,
-                             total_amount, profit, transaction_at, transaction_type, created_at)
+                             total_amount, profit, transaction_at, transaction_type, row_hash, created_at)
                         VALUES (:id, :business_id, :item_id, :quantity, :unit_price, :cost_price,
-                                :total_amount, :profit, :transaction_at, :transaction_type, NOW())
+                                :total_amount, :profit, :transaction_at, :transaction_type, :row_hash, NOW())
+                        ON CONFLICT (business_id, row_hash) WHERE row_hash IS NOT NULL
+                        DO NOTHING
                     """),
                     {**row_data, "id": str(_uuid.uuid4())}
                 )
-                imported += 1
+                # rowcount is 0 when the unique dedup index suppressed the row.
+                if result.rowcount and result.rowcount > 0:
+                    imported += 1
+                else:
+                    skipped += 1
                 # Chunked commit every 1,000 rows to prevent table lock exhaustion
                 if idx % 1000 == 0:
                     await session.commit()

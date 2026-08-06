@@ -153,7 +153,6 @@ async def approve_agent_action(
     })
     row = res.fetchone()
     if not row:
-        await db.commit()
         return {"ok": False, "reason": "Action not found or not pending approval", "action_id": str(action_id)}
 
     payload = _payload_to_dict(row.payload)

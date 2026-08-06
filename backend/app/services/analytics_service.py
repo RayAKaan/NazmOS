@@ -18,6 +18,9 @@ from typing import List, Optional, Tuple
 
 
 async def get_dashboard_summary(db: AsyncSession, business_id: UUID) -> DashboardSummaryResponse:
+    from app.database.connection import enforce_tenant_filter
+    enforce_tenant_filter(business_id)
+
     today = datetime.utcnow().date()
     today_start = datetime.combine(today, datetime.min.time())
     today_end = datetime.combine(today, datetime.max.time())
@@ -139,6 +142,22 @@ async def calculate_health_score(db: AsyncSession, business_id: UUID) -> int:
     )
     items = {item.id: item for item in items_result.scalars().all()}
     
+    # Single grouped aggregation replaces one query per item (N+1 fix).
+    qty_result = await db.execute(
+        select(
+            Transaction.item_id,
+            func.coalesce(func.sum(Transaction.quantity), 0).label("total_qty"),
+        )
+        .where(
+            and_(
+                Transaction.business_id == business_id,
+                Transaction.transaction_at >= datetime.utcnow() - timedelta(days=30),
+            )
+        )
+        .group_by(Transaction.item_id)
+    )
+    qty_map = {row.item_id: float(row.total_qty) for row in qty_result}
+    
     critical_count = 0
     low_count = 0
     total_count = len(inventories)
@@ -148,13 +167,13 @@ async def calculate_health_score(db: AsyncSession, business_id: UUID) -> int:
         if not item:
             continue
         
-        daily_avg = await get_item_daily_avg(db, business_id, inv.item_id)
+        daily_avg = qty_map.get(inv.item_id, 0) / 30
         
         if daily_avg <= 0:
             status = "dead"
-        elif inv.current_stock / daily_avg < 2:
+        elif float(inv.current_stock) / daily_avg < 2:
             status = "critical"
-        elif inv.current_stock / daily_avg < 5:
+        elif float(inv.current_stock) / daily_avg < 5:
             status = "low"
         else:
             status = "healthy"
@@ -235,6 +254,9 @@ async def calculate_dead_stock_value(db: AsyncSession, business_id: UUID) -> Dec
 
 
 async def get_sales_trend(db: AsyncSession, business_id: UUID, period: int = 30) -> SalesTrendResponse:
+    from app.database.connection import enforce_tenant_filter
+    enforce_tenant_filter(business_id)
+
     end_date = datetime.utcnow().date()
     start_date = end_date - timedelta(days=period)
     
@@ -299,6 +321,9 @@ async def get_sales_trend(db: AsyncSession, business_id: UUID, period: int = 30)
 
 
 async def get_top_products(db: AsyncSession, business_id: UUID, period: int = 7, limit: int = 10) -> TopProductsResponse:
+    from app.database.connection import enforce_tenant_filter
+    enforce_tenant_filter(business_id)
+
     end_date = datetime.utcnow()
     start_date = end_date - timedelta(days=period)
     
@@ -322,39 +347,50 @@ async def get_top_products(db: AsyncSession, business_id: UUID, period: int = 7,
         .limit(limit)
     )
     
-    products = []
-    for idx, row in enumerate(result.all()):
-        category_result = await db.execute(
-            select(Category.name).where(Category.id == row.id)
+    rows = result.all()
+    if not rows:
+        return TopProductsResponse(products=[])
+
+    item_ids = [row.id for row in rows]
+
+    # Batch-load items + categories for all top products in one query.
+    items_result = await db.execute(
+        select(Item, Category)
+        .outerjoin(Category, Category.id == Item.category_id)
+        .where(Item.id.in_(item_ids))
+    )
+    item_map = {
+        item.id: (item, cat.name if cat else "Uncategorized")
+        for item, cat in items_result.all()
+    }
+
+    # Batch-load previous-period quantities for all top products in one query.
+    prev_period_start = start_date - timedelta(days=period)
+    prev_result = await db.execute(
+        select(
+            Transaction.item_id,
+            func.coalesce(func.sum(Transaction.quantity), 0).label("prev_qty"),
         )
-        category_name = category_result.scalar() or "Uncategorized"
-        
-        items_result = await db.execute(select(Item).where(Item.id == row.id))
-        item = items_result.scalar_one_or_none()
-        if item and item.category_id:
-            cat_result = await db.execute(select(Category).where(Category.id == item.category_id))
-            cat = cat_result.scalar_one_or_none()
-            category_name = cat.name if cat else "Uncategorized"
-        
-        daily_avg = float(row.total_qty) / period
-        
-        items_result = await db.execute(select(Item).where(Item.id == row.id))
-        item = items_result.scalar_one_or_none()
-        
-        prev_period_start = start_date - timedelta(days=period)
-        prev_result = await db.execute(
-            select(func.coalesce(func.sum(Transaction.quantity), 0))
-            .where(
-                and_(
-                    Transaction.business_id == business_id,
-                    Transaction.item_id == row.id,
-                    Transaction.transaction_at >= prev_period_start,
-                    Transaction.transaction_at < start_date,
-                )
+        .where(
+            and_(
+                Transaction.business_id == business_id,
+                Transaction.item_id.in_(item_ids),
+                Transaction.transaction_at >= prev_period_start,
+                Transaction.transaction_at < start_date,
             )
         )
-        prev_qty = float(prev_result.scalar() or 0)
-        
+        .group_by(Transaction.item_id)
+    )
+    prev_qty_map = {row.item_id: float(row.prev_qty) for row in prev_result.all()}
+
+    products = []
+    for idx, row in enumerate(rows):
+        _, category_name = item_map.get(row.id, (None, "Uncategorized"))
+
+        daily_avg = float(row.total_qty) / period
+
+        prev_qty = prev_qty_map.get(row.id, 0)
+
         if prev_qty > 0:
             change = (float(row.total_qty) - prev_qty) / prev_qty
             if change > 0.1:
@@ -365,7 +401,7 @@ async def get_top_products(db: AsyncSession, business_id: UUID, period: int = 7,
                 trend = "stable"
         else:
             trend = "stable"
-        
+
         products.append(TopProductItem(
             item_id=row.id,
             name=row.name,
@@ -377,7 +413,7 @@ async def get_top_products(db: AsyncSession, business_id: UUID, period: int = 7,
             trend=trend,
             rank=idx + 1,
         ))
-    
+
     return TopProductsResponse(products=products)
 
 
@@ -388,18 +424,28 @@ async def get_dead_stock(db: AsyncSession, business_id: UUID) -> DeadStockRespon
         select(
             Item.id,
             Item.name,
+            Inventory.current_stock.label("current_stock"),
+            Item.cost_price.label("cost_price"),
+            Category.name.label("category_name"),
             func.max(Transaction.transaction_at).label("last_sold"),
             func.coalesce(func.sum(Transaction.quantity), 0).label("total_qty"),
         )
         .join(Transaction, Transaction.item_id == Item.id, isouter=True)
         .join(Inventory, Inventory.item_id == Item.id)
+        .outerjoin(Category, Category.id == Item.category_id)
         .where(
             and_(
                 Item.business_id == business_id,
                 Inventory.current_stock > 0,
             )
         )
-        .group_by(Item.id, Item.name)
+        .group_by(
+            Item.id,
+            Item.name,
+            Inventory.current_stock,
+            Item.cost_price,
+            Category.name,
+        )
     )
     
     items = []
@@ -418,41 +464,27 @@ async def get_dead_stock(db: AsyncSession, business_id: UUID) -> DeadStockRespon
         days_since_last_sale = (datetime.utcnow().date() - last_sold.date()).days if last_sold else days_since
         
         if days_since_last_sale >= 30:
-            inv_result = await db.execute(
-                select(Inventory).where(
-                    and_(Inventory.business_id == business_id, Inventory.item_id == row.id)
-                )
-            )
-            inv = inv_result.scalar_one_or_none()
+            stock_value = row.current_stock * (row.cost_price or Decimal("0"))
+            total_stuck += stock_value
+            category_name = row.category_name if row.category_name else "Uncategorized"
             
-            items_result = await db.execute(select(Item).where(Item.id == row.id))
-            item = items_result.scalar_one_or_none()
+            if days_since_last_sale > 60:
+                recommendation = "remove"
+            elif days_since_last_sale > 45:
+                recommendation = "discount"
+            else:
+                recommendation = "bundle"
             
-            if item and inv:
-                stock_value = inv.current_stock * item.cost_price
-                total_stuck += stock_value
-                
-                cat_result = await db.execute(select(Category).where(Category.id == item.category_id))
-                cat = cat_result.scalar_one_or_none()
-                category_name = cat.name if cat else "Uncategorized"
-                
-                if days_since_last_sale > 60:
-                    recommendation = "remove"
-                elif days_since_last_sale > 45:
-                    recommendation = "discount"
-                else:
-                    recommendation = "bundle"
-                
-                items.append(DeadStockItem(
-                    item_id=item.id,
-                    name=item.name,
-                    category=category_name,
-                    current_stock=float(inv.current_stock),
-                    stock_value=float(stock_value),
-                    last_sold_at=last_sold.strftime("%Y-%m-%d") if last_sold else None,
-                    days_since_last_sale=days_since_last_sale,
-                    recommendation=recommendation,
-                ))
+            items.append(DeadStockItem(
+                item_id=row.id,
+                name=row.name,
+                category=category_name,
+                current_stock=float(row.current_stock),
+                stock_value=float(stock_value),
+                last_sold_at=last_sold.strftime("%Y-%m-%d") if last_sold else None,
+                days_since_last_sale=days_since_last_sale,
+                recommendation=recommendation,
+            ))
     
     return DeadStockResponse(
         items=items,
@@ -530,6 +562,9 @@ async def get_hourly_pattern(db: AsyncSession, business_id: UUID, period: int = 
 
 
 async def get_category_breakdown(db: AsyncSession, business_id: UUID, period: int = 30) -> CategoryBreakdownResponse:
+    from app.database.connection import enforce_tenant_filter
+    enforce_tenant_filter(business_id)
+
     end_date = datetime.utcnow()
     start_date = end_date - timedelta(days=period)
     
@@ -552,51 +587,41 @@ async def get_category_breakdown(db: AsyncSession, business_id: UUID, period: in
         .order_by(func.sum(Transaction.total_amount).desc())
     )
     
-    total_sales = sum(float(row.total_sales) for row in result.all())
-    
-    result = await db.execute(
-        select(
-            Category.id,
-            Category.name,
-            func.coalesce(func.sum(Transaction.total_amount), 0).label("total_sales"),
-            func.count(func.distinct(Item.id)).label("item_count"),
-        )
-        .join(Category, Category.id == Item.category_id)
-        .join(Transaction, Transaction.item_id == Item.id)
-        .where(
-            and_(
-                Item.business_id == business_id,
-                Transaction.transaction_at >= start_date,
-            )
-        )
-        .group_by(Category.id, Category.name)
-        .order_by(func.sum(Transaction.total_amount).desc())
-    )
-    
-    categories = []
-    for row in result.all():
-        cat_result = await db.execute(
+    rows = result.all()
+    total_sales = sum(float(row.total_sales) for row in rows)
+
+    category_ids = [row.id for row in rows]
+    best_per_category: dict = {}
+    if category_ids:
+        # Batch-load the top item per category in a single query (ordered by
+        # quantity desc, so the first hit per category wins).
+        top_items_result = await db.execute(
             select(
+                Item.category_id,
                 Item.name,
-                func.coalesce(func.sum(Transaction.quantity), 0).label("qty")
+                func.coalesce(func.sum(Transaction.quantity), 0).label("qty"),
             )
             .join(Transaction, Transaction.item_id == Item.id)
             .where(
                 and_(
                     Item.business_id == business_id,
-                    Item.category_id == row.id,
+                    Item.category_id.in_(category_ids),
                     Transaction.transaction_at >= start_date,
                 )
             )
-            .group_by(Item.name)
+            .group_by(Item.category_id, Item.name)
             .order_by(func.sum(Transaction.quantity).desc())
-            .limit(1)
         )
-        top_item_row = cat_result.first()
-        top_item = top_item_row.name if top_item_row else None
-        
+        for cat_id, item_name, _ in top_items_result.all():
+            if cat_id not in best_per_category:
+                best_per_category[cat_id] = item_name
+
+    categories = []
+    for row in rows:
+        top_item = best_per_category.get(row.id)
+
         percentage = (float(row.total_sales) / total_sales * 100) if total_sales > 0 else 0
-        
+
         categories.append(CategoryBreakdownItem(
             name=row.name,
             total_sales=float(row.total_sales),
@@ -604,7 +629,7 @@ async def get_category_breakdown(db: AsyncSession, business_id: UUID, period: in
             item_count=int(row.item_count),
             top_item=top_item,
         ))
-    
+
     return CategoryBreakdownResponse(categories=categories)
 
 
@@ -619,6 +644,9 @@ async def get_inventory_list(
     page: int = 1,
     limit: int = 20,
 ) -> InventoryResponse:
+    from app.database.connection import enforce_tenant_filter
+    enforce_tenant_filter(business_id)
+
     query = (
         select(Item, Inventory, Category.name.label("category_name"))
         .join(Inventory, Inventory.item_id == Item.id)
@@ -881,15 +909,15 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
     days_until_stockout_display = round(days_until_stockout, 1) if days_until_stockout else None
     
     if daily_avg < 0.1:
-        status = "dead"
+        computed_status = "dead"
     elif days_until_stockout_display is not None and days_until_stockout_display < 2:
-        status = "critical"
+        computed_status = "critical"
     elif days_until_stockout_display is not None and days_until_stockout_display < 5:
-        status = "low"
+        computed_status = "low"
     elif days_until_stockout_display is not None and days_until_stockout_display > 20:
-        status = "overstock"
+        computed_status = "overstock"
     else:
-        status = "healthy"
+        computed_status = "healthy"
     
     trend_7d_result = await db.execute(
         select(func.coalesce(func.sum(Transaction.quantity), 0))
@@ -951,6 +979,9 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
 
 
 async def get_dashboard_alerts(db: AsyncSession, business_id: UUID) -> AlertsResponse:
+    from app.database.connection import enforce_tenant_filter
+    enforce_tenant_filter(business_id)
+
     alerts = []
     
     inventory_result = await db.execute(

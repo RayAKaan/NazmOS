@@ -225,6 +225,10 @@ s3*
 
 # Grafana and monitoring
 grafana/
+!backend/monitoring/grafana/
+!backend/monitoring/grafana/provisioning/
+!backend/monitoring/grafana/provisioning/datasources/
+!backend/monitoring/grafana/provisioning/datasources/prometheus.yml
 prometheus_data/
 alertmanager/
 

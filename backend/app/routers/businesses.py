@@ -46,7 +46,7 @@ async def current_business(
         SELECT b.*
         FROM businesses b
         LEFT JOIN team_members tm ON tm.business_id = b.id AND tm.user_id = :uid AND tm.is_active = true
-        WHERE b.owner_id = :uid OR tm.user_id IS NOT NULL
+        WHERE b.is_active = true AND (b.owner_id = :uid OR tm.user_id IS NOT NULL)
         ORDER BY b.created_at ASC
         LIMIT 1
     """), {"uid": str(current_user.id)})
@@ -70,7 +70,7 @@ async def bootstrap_business(
         SELECT b.*
         FROM businesses b
         LEFT JOIN team_members tm ON tm.business_id = b.id AND tm.user_id = :uid AND tm.is_active = true
-        WHERE b.owner_id = :uid OR tm.user_id IS NOT NULL
+        WHERE b.is_active = true AND (b.owner_id = :uid OR tm.user_id IS NOT NULL)
         ORDER BY b.created_at ASC
         LIMIT 1
     """), {"uid": str(current_user.id)})

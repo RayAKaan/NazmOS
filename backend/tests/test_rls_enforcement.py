@@ -33,11 +33,13 @@ APP_ROLE = "nazmos_app"
 
 def _run_alembic_upgrade() -> None:
     """Run ``alembic upgrade head`` in the backend directory."""
+    import sys
+
     backend_dir = os.path.join(os.path.dirname(__file__), "..")
     env = os.environ.copy()
     env["DATABASE_URL"] = TEST_DATABASE_URL
     result = subprocess.run(
-        ["alembic", "upgrade", "head"],
+        [sys.executable, "-m", "alembic", "upgrade", "head"],
         cwd=backend_dir,
         env=env,
         capture_output=True,

@@ -190,6 +190,7 @@ class Business(Base):
     owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
     currency = Column(String(3), default="SAR")
     timezone = Column(String(50), default="Asia/Riyadh")
+    is_active = Column(Boolean, nullable=False, server_default=text("true"), default=True)
     is_demo = Column(Boolean, default=False)
     llm_usage_tokens = Column(BigInteger, default=0)
     llm_requests_today = Column(Numeric(10, 0), default=0)
@@ -1949,7 +1950,7 @@ class Event(Base):
         Index("idx_events_business_occurred", "business_id", "occurred_at"),
         Index("idx_events_business_type", "business_id", "event_type"),
         Index("idx_events_source_source_id", "source", "source_id"),
-        UniqueConstraint("business_id", "source", "source_id", "checksum", name="uq_events_dedupe"),
+        Index("idx_events_dedupe", "business_id", "source", "source_id", "checksum"),
     )
 
 

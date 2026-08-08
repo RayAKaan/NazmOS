@@ -11,6 +11,15 @@ import json
 
 from app.utils.problem_details import problem_response
 
+logger = logging.getLogger(__name__)
+
+
+class RateLimiterUnavailable(Exception):
+    """Raised when Redis is unreachable during a rate-limit check.
+
+    The middleware decides fail-open vs fail-closed based on the endpoint.
+    """
+
 
 class RedisRateLimiter:
     """
@@ -56,8 +65,13 @@ class RedisRateLimiter:
         else:
             identifier = f"ip:{ip}"
 
-        # Scope per-tenant limits when a business_id is present in the URL.
-        business_id = request.query_params.get("business_id") or request.path_params.get("business_id")
+        # Scope per-tenant limits when a business_id is present in the URL or
+        # X-Business-ID header (path_params is empty inside BaseHTTPMiddleware).
+        business_id = (
+            request.query_params.get("business_id")
+            or request.path_params.get("business_id")
+            or request.headers.get("X-Business-ID")
+        )
         if business_id:
             identifier = f"{identifier}:biz:{business_id}"
 
@@ -196,7 +210,11 @@ class InMemoryRateLimiter:
         else:
             identifier = f"ip:{ip}"
 
-        business_id = request.query_params.get("business_id") or request.path_params.get("business_id")
+        business_id = (
+            request.query_params.get("business_id")
+            or request.path_params.get("business_id")
+            or request.headers.get("X-Business-ID")
+        )
         if business_id:
             identifier = f"{identifier}:biz:{business_id}"
 
@@ -344,7 +362,7 @@ def get_rate_limiter() -> RedisRateLimiter | InMemoryRateLimiter:
     from app.config import get_settings
 
     settings = get_settings()
-    is_dev = settings.ENVIRONMENT == "development"
+    is_dev = settings.ENVIRONMENT in ("development", "test")
 
     redis_url = os.getenv("REDIS_URL")
     if redis_url and not is_dev:

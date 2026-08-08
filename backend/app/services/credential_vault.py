@@ -25,11 +25,18 @@ class CredentialVault:
     DEV_FALLBACK_KEY = "dev-master-key-replace-in-production-32chars"
 
     def __init__(self, master_key: Optional[str] = None):
+        from app.config import get_settings
+
         env_key = os.environ.get("CREDENTIAL_MASTER_KEY", "")
         effective_key = master_key or env_key or None
 
         if effective_key is None:
-            # In production this is fatal and is already caught by Settings.
+            if get_settings().ENVIRONMENT == "production":
+                raise RuntimeError(
+                    "FATAL: CREDENTIAL_MASTER_KEY is required in production and must be >= 32 chars. "
+                    "It encrypts POS and integration credentials. Set CREDENTIAL_MASTER_KEY before "
+                    "instantiating CredentialVault."
+                )
             # In development we allow a known dev key only for local testing.
             effective_key = "dev-master-key-replace-in-production-32chars"
             logger.warning(

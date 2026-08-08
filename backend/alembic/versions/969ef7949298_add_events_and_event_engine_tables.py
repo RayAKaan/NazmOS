@@ -75,8 +75,8 @@ def upgrade() -> None:
     op.create_index("idx_events_business_occurred", "events", ["business_id", "occurred_at"])
     op.create_index("idx_events_business_type", "events", ["business_id", "event_type"])
     op.create_index("idx_events_source_source_id", "events", ["source", "source_id"])
-    op.create_unique_constraint(
-        "uq_events_dedupe",
+    op.create_index(
+        "idx_events_dedupe",
         "events",
         ["business_id", "source", "source_id", "checksum"],
     )
@@ -128,7 +128,7 @@ def downgrade() -> None:
         op.execute(text(f"DROP POLICY IF EXISTS {table}_tenant_isolation ON {table}"))
         op.execute(text(f"ALTER TABLE {table} DISABLE ROW LEVEL SECURITY"))
 
-    op.drop_constraint("uq_events_dedupe", "events")
+    op.drop_index("idx_events_dedupe", table_name="events")
     op.drop_index("idx_events_source_source_id", table_name="events")
     op.drop_index("idx_events_business_type", table_name="events")
     op.drop_index("idx_events_business_occurred", table_name="events")

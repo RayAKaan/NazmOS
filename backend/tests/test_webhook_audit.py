@@ -15,6 +15,12 @@ from app.services import webhook_audit_service
 pytestmark = pytest.mark.asyncio
 
 
+def _async_result(value: dict):
+    from unittest.mock import AsyncMock
+
+    return AsyncMock(return_value=value)()
+
+
 def _foodics_payload(external_id: str):
     return json.dumps({"event": "order.created", "order": {"id": external_id}}).encode("utf-8")
 
@@ -39,7 +45,7 @@ async def test_foodics_webhook_dedupes_by_external_event_id(
     monkeypatch.setattr(settings, "FOODICS_WEBHOOK_TOKEN", "test-webhook-token")
     monkeypatch.setattr(
         "app.routers.pos_webhooks._process_webhook",
-        lambda provider, payload, bid, db: {"processed": True, "provider": provider},
+        lambda provider, payload, bid, db: _async_result({"processed": True, "provider": provider}),
     )
 
     external_id = f"evt-{uuid4().hex[:8]}"
@@ -63,7 +69,7 @@ async def test_webhook_replay_requires_admin_or_owner(
 
     monkeypatch.setattr(
         "app.routers.pos_webhooks._process_webhook",
-        lambda provider, payload, bid, db: {"replayed": True},
+        lambda provider, payload, bid, db: _async_result({"replayed": True}),
     )
 
     event = await webhook_audit_service.record_webhook_event(

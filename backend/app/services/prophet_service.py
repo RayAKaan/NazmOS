@@ -16,6 +16,56 @@ class ProphetService:
     def __init__(self, db=None):
         # Optional AsyncSession used by live item-level forecast callers.
         self.db = db
+        self._model = None
+
+    def _build_prophet(self) -> "Prophet":
+        if not PROPHET_AVAILABLE:
+            raise ImportError("Prophet is not installed")
+        model = Prophet(
+            yearly_seasonality=False,
+            weekly_seasonality=False,
+            daily_seasonality=False,
+            holidays=INDIAN_HOLIDAYS_DF,
+        )
+        model.add_seasonality(
+            name="monthly",
+            period=30.5,
+            fourier_order=5,
+        )
+        return model
+
+    def create_model(self, df: pd.DataFrame) -> "Prophet":
+        """Fit a Prophet model on the given ``[ds, y]`` dataframe and return it.
+
+        Thin passthrough kept for callers that only need a fitted model
+        (e.g. exploratory forecasting and tests).
+        """
+        if df.empty or PROPHET_AVAILABLE is False:
+            raise ImportError("Prophet is not installed")
+        model = self._build_prophet()
+        series = df.copy()
+        if not series["ds"].is_monotonic_increasing:
+            series = series.sort_values("ds")
+        model.fit(series)
+        self._model = model
+        return model
+
+    def make_future_dataframe(self, periods: int) -> pd.DataFrame:
+        """Return the future dataframe for a fitted prophet model.
+
+        If no model has been fitted yet on this service instance, a default
+        model is fit on a synthetic horizon so standalone use works.
+        """
+        if not PROPHET_AVAILABLE:
+            raise ImportError("Prophet is not installed")
+        if self._model is None:
+            self._model = self._build_prophet()
+            synthetic = pd.DataFrame({
+                "ds": pd.date_range("2024-01-01", periods=150),
+                "y": 0,
+            })
+            self._model.fit(synthetic)
+        return self._model.make_future_dataframe(periods=periods)
 
     async def predict_item_demand(self, business_id, item_id, horizon_days: int = 7) -> dict:
         """Return a live item demand forecast using current transaction history.

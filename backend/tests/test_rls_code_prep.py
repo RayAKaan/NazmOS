@@ -70,9 +70,6 @@ class TestConnectionReappliesRlsContext:
             def exec_driver_sql(self, statement, *args, **kwargs):
                 sqls.append(statement)
 
-        class FakeTrans:
-            pass
-
         listener = conn.engine.sync_engine.dispatch.begin.listeners[0]
         fn = getattr(listener, "fn", None) or listener
 
@@ -81,7 +78,7 @@ class TestConnectionReappliesRlsContext:
             conn.settings, "DATABASE_APP_ROLE", "nazmos_app"
         )
 
-        fn(FakeConn(), FakeTrans())
+        fn(FakeConn())
 
         assert "SET LOCAL app.current_tenant_id = 'tenant-1234'" in sqls
         assert 'SET LOCAL ROLE "nazmos_app"' in sqls
@@ -101,6 +98,6 @@ class TestConnectionReappliesRlsContext:
         monkeypatch.setattr(conn, "get_rls_tenant_id", lambda: None)
         monkeypatch.setattr(conn.settings, "DATABASE_APP_ROLE", "")
 
-        fn(FakeConn(), object())
+        fn(FakeConn())
 
         assert sqls == [], "no SET LOCAL when there is no tenant context"

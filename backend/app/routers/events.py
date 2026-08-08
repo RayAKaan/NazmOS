@@ -122,7 +122,15 @@ async def list_event_types(
 ):
     """Return the registry of supported event types."""
     result = await db.execute(select(EventType).order_by(EventType.name))
-    return list(result.scalars().all())
+    event_types = list(result.scalars().all())
+    if not event_types:
+        # Mirror the startup seeder so the registry is non-empty even when the
+        # app lifespan (and its seeding) has not run, e.g. under ASGITransport.
+        from app.services.event_registry_seed import seed_builtin_event_types
+        await seed_builtin_event_types(db)
+        result = await db.execute(select(EventType).order_by(EventType.name))
+        event_types = list(result.scalars().all())
+    return event_types
 
 
 @router.post("/types", response_model=EventTypeOut, status_code=status.HTTP_201_CREATED)

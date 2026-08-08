@@ -9,7 +9,7 @@ settings = get_settings()
 
 
 async def ping_redis(redis_url: str | None = None) -> dict[str, Any]:
-    url = redis_url or settings.REDIS_URL
+    url = redis_url if redis_url is not None else settings.REDIS_URL
     if not url:
         return {"reachable": False, "reason": "REDIS_URL not configured"}
     try:

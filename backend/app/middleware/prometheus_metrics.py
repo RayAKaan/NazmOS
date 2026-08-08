@@ -62,11 +62,20 @@ def _normalized_path(request: Request) -> str:
     Falls back to the raw path when routing has not matched a route (404s,
     early aborts) or the matched route exposes no template.
     """
-    route = request.scope.get("route")
-    template = getattr(route, "path", None)
+    scope = request.scope
+    # FastAPI >=0.135 wraps included routers in _IncludedRouter mounts whose
+    # effective route context carries the fully-prefixed path template
+    # (e.g. /api/v1/inventory/{item_id}/detail). Prefer it so labels stay
+    # stable regardless of the include prefix.
+    fastapi_scope = scope.get("fastapi") or {}
+    effective_context = fastapi_scope.get("effective_route_context")
+    template = getattr(effective_context, "path", None)
+    if not template:
+        route = scope.get("route")
+        template = getattr(route, "path", None)
     if template:
         return template
-    return request.scope.get("path", "/unknown")
+    return scope.get("path", "/unknown")
 
 
 class PrometheusMiddleware(BaseHTTPMiddleware):

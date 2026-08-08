@@ -133,35 +133,6 @@ async def _verify_business_access(
     return business
 
 
-@router.get("/memory/{memory_type}", response_model=BusinessMemoryOut)
-async def read_memory(
-    memory_type: str,
-    business_id: UUID,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-):
-    """Retrieve a business memory document by type."""
-    if memory_type not in {m.value for m in MemoryType}:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Unsupported memory_type: {memory_type}",
-        )
-    await _verify_business_access(db, business_id, current_user)
-    memory = await get_memory(db, business_id, memory_type)
-    if not memory:
-        # Return an empty memory document so clients have a stable contract.
-        return BusinessMemoryOut(
-            id=UUID(int=0),
-            business_id=business_id,
-            memory_type=memory_type,
-            data={},
-            version=0,
-            updated_by_event_id=None,
-            updated_at=None,  # type: ignore[arg-type]
-        )
-    return memory
-
-
 @router.patch("/memory/goals", response_model=BusinessMemoryOut)
 async def update_goals(
     business_id: UUID,
@@ -190,6 +161,35 @@ async def read_memory_changes(
     await _verify_business_access(db, business_id, current_user)
     items, total = await list_memory_changes(db, business_id, memory_type, limit=limit, offset=offset)
     return MemoryChangesOut(items=items, total=total, limit=limit, offset=offset)
+
+
+@router.get("/memory/{memory_type}", response_model=BusinessMemoryOut)
+async def read_memory(
+    memory_type: str,
+    business_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Retrieve a business memory document by type."""
+    if memory_type not in {m.value for m in MemoryType}:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unsupported memory_type: {memory_type}",
+        )
+    await _verify_business_access(db, business_id, current_user)
+    memory = await get_memory(db, business_id, memory_type)
+    if not memory:
+        # Return an empty memory document so clients have a stable contract.
+        return BusinessMemoryOut(
+            id=UUID(int=0),
+            business_id=business_id,
+            memory_type=memory_type,
+            data={},
+            version=0,
+            updated_by_event_id=None,
+            updated_at=None,  # type: ignore[arg-type]
+        )
+    return memory
 
 
 # ═══════════════════════════════════════════════════════════════════════════

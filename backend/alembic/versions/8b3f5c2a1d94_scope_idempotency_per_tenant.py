@@ -35,7 +35,7 @@ def upgrade() -> None:
     )
     op.execute(
         sa.text(
-            "UPDATE idempotency_keys SET business_id = :sentinel WHERE business_id IS NULL"
+            "UPDATE idempotency_keys SET business_id = CAST(:sentinel AS UUID) WHERE business_id IS NULL"
         ).bindparams(sentinel=NO_TENANT)
     )
     op.drop_constraint("uq_idempotency_scope", "idempotency_keys", type_="unique")

@@ -75,6 +75,9 @@ async def test_ingest_event_creates_record_and_processes(db_session):
         payload={"item_id": str(uuid4()), "quantity_delta": -3, "new_quantity": 10},
     )
     business_id = uuid4()
+    from app.database.models import Business
+    db_session.add(Business(id=business_id, name="Event Engine", type="baqala"))
+    await db_session.flush()
     record = await ingest_event(db_session, business_id, event)
     assert record.id is not None
     assert record.event_type == "inventory.changed"
@@ -92,6 +95,9 @@ async def test_duplicate_event_is_idempotent(db_session):
         payload={"item_id": str(uuid4()), "new_price": 15.0},
     )
     business_id = uuid4()
+    from app.database.models import Business
+    db_session.add(Business(id=business_id, name="Event Test", type="baqala"))
+    await db_session.flush()
     first = await ingest_event(db_session, business_id, event)
     second = await ingest_event(db_session, business_id, event)
     assert first.id != second.id

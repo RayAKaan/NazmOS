@@ -39,15 +39,15 @@ async def verify_pos_webhook_auth(
 ) -> tuple[str, bytes]:
     """Verify webhook authenticity via HMAC signature or shared token.
 
-    Returns the verified provider name ("foodics" | "salla" | "token_verified")
-    and the raw request body. Raises 401 if verification fails.
+    Returns the verified provider name ("foodics" | "salla") and the raw
+    request body. Raises 401 if verification fails.
     """
     raw_body = await request.body()
 
     if x_foodics_signature:
         secret = getattr(settings, "FOODICS_WEBHOOK_SECRET", "")
         if not secret:
-            raise HTTPException(500, "FOODICS_WEBHOOK_SECRET not configured")
+            raise HTTPException(401, "FOODICS_WEBHOOK_SECRET not configured; cannot verify signature")
         expected = hmac.new(
             secret.encode(), raw_body, hashlib.sha256
         ).hexdigest()
@@ -58,7 +58,7 @@ async def verify_pos_webhook_auth(
     if x_salla_signature:
         secret = getattr(settings, "SALLA_WEBHOOK_SECRET", "")
         if not secret:
-            raise HTTPException(500, "SALLA_WEBHOOK_SECRET not configured")
+            raise HTTPException(401, "SALLA_WEBHOOK_SECRET not configured; cannot verify signature")
         expected = hmac.new(
             secret.encode(), raw_body, hashlib.sha256
         ).hexdigest()
@@ -69,13 +69,11 @@ async def verify_pos_webhook_auth(
     if x_webhook_token:
         if getattr(settings, "ENVIRONMENT", "development") == "production":
             raise HTTPException(401, "Shared webhook tokens are disabled in production; use HMAC signatures")
-        valid_tokens = [
-            getattr(settings, "FOODICS_WEBHOOK_TOKEN", ""),
-            getattr(settings, "SALLA_WEBHOOK_TOKEN", ""),
-        ]
-        if x_webhook_token not in valid_tokens:
-            raise HTTPException(401, "Invalid webhook token")
-        return "token_verified", raw_body
+        if hmac.compare_digest(x_webhook_token, getattr(settings, "FOODICS_WEBHOOK_TOKEN", "")):
+            return "foodics", raw_body
+        if hmac.compare_digest(x_webhook_token, getattr(settings, "SALLA_WEBHOOK_TOKEN", "")):
+            return "salla", raw_body
+        raise HTTPException(401, "Invalid webhook token")
 
     raise HTTPException(401, "Missing webhook authentication")
 

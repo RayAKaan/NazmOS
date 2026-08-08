@@ -859,7 +859,7 @@
             "type": "string"
           },
           "file": {
-            "format": "binary",
+            "contentMediaType": "application/octet-stream",
             "title": "File",
             "type": "string"
           }
@@ -4054,7 +4054,7 @@
             "type": "string"
           },
           "default_timezone": {
-            "default": "Asia/Kolkata",
+            "default": "Asia/Riyadh",
             "maxLength": 50,
             "title": "Default Timezone",
             "type": "string"

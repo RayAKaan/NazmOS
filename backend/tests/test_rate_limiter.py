@@ -194,4 +194,6 @@ def _settings(environment: str):
         CORS_ORIGINS="https://app.example.com",
         REDIS_URL="redis://localhost:6379/0",
         DATABASE_APP_ROLE="nazmos_app" if environment == "production" else "",
+        USE_MOCK_LLM=False if environment == "production" else True,
+        CREDENTIAL_MASTER_KEY=("y" * 48) if environment == "production" else "",
     )

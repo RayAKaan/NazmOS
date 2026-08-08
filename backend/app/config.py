@@ -195,6 +195,18 @@ class Settings(BaseSettings):
                     raise ValueError(f"CORS origin must include scheme: {origin}")
         return v
 
+    @field_validator("DATABASE_APP_ROLE")
+    @classmethod
+    def validate_database_app_role(cls, v: str, info: ValidationInfo) -> str:
+        env = info.data.get("ENVIRONMENT", "development")
+        if env == "production" and not v.strip():
+            raise ValueError(
+                "DATABASE_APP_ROLE is required in production. RLS policies are "
+                "enforced only when the app connection switches to the restricted "
+                "role via SET ROLE after setting app.current_tenant_id."
+            )
+        return v
+
 
 @lru_cache()
 def get_settings() -> Settings:

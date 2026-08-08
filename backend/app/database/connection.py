@@ -63,7 +63,7 @@ if not _is_sqlite:
     from sqlalchemy import event
 
     @event.listens_for(engine.sync_engine, "begin")
-    def _after_begin(conn, trans):
+    def _after_begin(conn):
         """Re-apply tenant context on every transaction begin.
 
         ``SET LOCAL`` is scoped to the current transaction, so code that commits

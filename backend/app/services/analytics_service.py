@@ -999,7 +999,7 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
             cost_price=float(item.cost_price),
             sell_price=float(item.sell_price),
             stock_value=float(inventory.current_stock * item.sell_price),
-            status=status,
+            status=computed_status,
             last_restocked=inventory.last_restocked,
             reorder_level=float(inventory.reorder_level),
             trend_7d=trend,

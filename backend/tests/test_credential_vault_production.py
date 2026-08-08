@@ -51,6 +51,9 @@ def _settings(environment: str):
         SECRET_KEY="a" * 48,
         SENTRY_DSN="https://key@o.ingest.sentry.io/proj" if environment == "production" else "",
         DATABASE_APP_ROLE="nazmos_app" if environment == "production" else "",
+        USE_MOCK_LLM=False if environment == "production" else True,
+        CORS_ORIGINS="https://app.example.com" if environment == "production" else "",
+        CREDENTIAL_MASTER_KEY=("m" * 48) if environment == "production" else "",
     )
 
 
@@ -64,6 +67,9 @@ class TestConfigProductionValidators:
                 SECRET_KEY="a" * 48,
                 SENTRY_DSN="https://key@o.ingest.sentry.io/proj",
                 DATABASE_APP_ROLE="",
+                USE_MOCK_LLM=False,
+                CORS_ORIGINS="https://app.example.com",
+                CREDENTIAL_MASTER_KEY="m" * 48,
             )
 
     def test_development_allows_empty_database_app_role(self):

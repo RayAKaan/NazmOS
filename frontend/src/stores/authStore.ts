@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { User, authApi, setAuthTokens, clearAuthTokens, isAuthenticated } from "@/lib/auth";
+import { User, authApi, clearAuthTokens, isAuthenticated } from "@/lib/auth";
 
 interface AuthState {
   user: User | null;
@@ -20,9 +20,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   login: async (email: string, password: string) => {
     set({ isLoading: true });
     try {
-      const response = await authApi.login(email, password);
-      setAuthTokens(response.access_token, response.refresh_token);
-      set({ user: response.user, isAuthenticated: true, isLoading: false });
+      const { user } = await authApi.login(email, password);
+      set({ user, isAuthenticated: true, isLoading: false });
     } catch (error) {
       set({ isLoading: false });
       throw error;
@@ -32,9 +31,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   register: async (email: string, password: string, fullName: string, phone?: string) => {
     set({ isLoading: true });
     try {
-      const response = await authApi.register(email, password, fullName, phone);
-      setAuthTokens(response.access_token, response.refresh_token);
-      set({ user: response.user, isAuthenticated: true, isLoading: false });
+      const { user } = await authApi.register(email, password, fullName, phone);
+      set({ user, isAuthenticated: true, isLoading: false });
     } catch (error) {
       set({ isLoading: false });
       throw error;
@@ -44,9 +42,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   loginDemo: async () => {
     set({ isLoading: true });
     try {
-      const response = await authApi.loginDemo();
-      setAuthTokens(response.access_token, response.refresh_token);
-      set({ user: response.user, isAuthenticated: true, isLoading: false });
+      const { user } = await authApi.loginDemo();
+      set({ user, isAuthenticated: true, isLoading: false });
     } catch (error) {
       set({ isLoading: false });
       throw error;
@@ -64,25 +61,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       return;
     }
 
-    // Demo token — use mock user without hitting backend
-    if (localStorage.getItem("access_token") === "demo-token") {
-      set({
-        user: {
-          id: "demo-user-001",
-          email: "demo@nazmos.sa",
-          full_name: "Demo User",
-          role: "owner",
-        },
-        isAuthenticated: true,
-      });
-      return;
-    }
-
     try {
       const user = await authApi.getMe();
       set({ user, isAuthenticated: true });
     } catch {
-      clearAuthTokens();
+      await clearAuthTokens();
       set({ user: null, isAuthenticated: false });
     }
   },

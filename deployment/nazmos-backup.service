@@ -1,0 +1,12 @@
+[Unit]
+Description=NazmOS nightly PostgreSQL backup + restore drill
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/nazmos
+ExecStart=/usr/bin/docker compose -f docker-compose.prod.yml exec -T backend python scripts/backup_postgres.py --restore-drill
+
+[Install]
+WantedBy=multi-user.target

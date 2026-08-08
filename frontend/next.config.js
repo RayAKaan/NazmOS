@@ -92,6 +92,15 @@ const nextConfig = {
       },
     ];
   },
+
+  async rewrites() {
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: `${API_URL}/api/v1/:path*`,
+      },
+    ];
+  },
 };
 
 module.exports = withBundleAnalyzer(nextConfig);

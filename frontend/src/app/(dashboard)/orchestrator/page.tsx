@@ -3,19 +3,22 @@
 import { useState, useEffect } from "react";
 import { Sparkles, RefreshCw, Zap, TrendingUp, AlertTriangle, CheckCircle2, ArrowRight } from "lucide-react";
 import api from "@/lib/api";
+import { useAppStore } from "@/stores/appStore";
 
 export default function OrchestratorPage() {
   const [loading, setLoading] = useState(true);
   const [rebalanceData, setRebalanceData] = useState<any>(null);
   const [profitData, setProfitData] = useState<any>(null);
+  const { businessId } = useAppStore();
 
   useEffect(() => {
     async function loadOrchestration() {
+      if (!businessId) return;
       setLoading(true);
       try {
         const [rebRes, profRes] = await Promise.all([
-          api.get("/orchestrator/rebalance?business_id=00000000-0000-0000-0000-000000000001"),
-          api.get("/orchestrator/profit-scan?business_id=00000000-0000-0000-0000-000000000001")
+          api.get(`/orchestrator/rebalance?business_id=${businessId}`),
+          api.get(`/orchestrator/profit-scan?business_id=${businessId}`)
         ]);
         setRebalanceData(rebRes.data);
         setProfitData(profRes.data);
@@ -26,7 +29,7 @@ export default function OrchestratorPage() {
       }
     }
     loadOrchestration();
-  }, []);
+  }, [businessId]);
 
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-8 animate-fade-in">

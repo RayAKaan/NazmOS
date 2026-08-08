@@ -261,12 +261,21 @@ async def confirm_mapping(
             upload_meta.stored_filename, upload_id
         )
         try:
-            df = UploadService.parse_file(local_parse_path, f".{upload_meta.file_type}", "utf-8")
-            if not clean_mapping:
-                detection = SchemaDetector().detect(df)
-                clean_mapping = detection["detected_columns"]
-            pipeline = ETLPipeline(upload_id, effective_business_id, df, clean_mapping)
-            stats = await pipeline.run()
+            try:
+                df = UploadService.parse_file(local_parse_path, f".{upload_meta.file_type}", "utf-8")
+                if not clean_mapping:
+                    detection = SchemaDetector().detect(df)
+                    clean_mapping = detection["detected_columns"]
+                pipeline = ETLPipeline(upload_id, effective_business_id, df, clean_mapping)
+                stats = await pipeline.run()
+            except Exception as e:
+                # Mark the upload failed so it never gets stuck in 'processing'.
+                await db.execute(
+                    text("UPDATE uploaded_files SET status = 'failed', error_summary = :error WHERE id = :id"),
+                    {"id": upload_id, "error": str(e)}
+                )
+                await db.commit()
+                raise
         finally:
             if cleanup_after_parse:
                 try:

@@ -1,31 +1,57 @@
 import axios from "axios";
 
+// Same-origin BFF: the browser only ever talks to the Next.js server, which
+// injects the Bearer token from the httpOnly cookie (see src/middleware.ts).
 const api = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/v1`,
+  baseURL: "/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-api.interceptors.request.use((config) => {
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+function redirectToLogin() {
+  if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+    window.location.href = "/login";
   }
-  return config;
-});
+}
+
+async function clearSession() {
+  try {
+    await fetch("/api/auth/logout", { method: "POST" });
+  } catch {
+    /* ignore */
+  }
+}
 
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401 && typeof window !== "undefined") {
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      if (!window.location.pathname.startsWith("/login")) {
-        window.location.href = "/login";
+    const original = error.config;
+    const isAuthEndpoint =
+      original?.url?.includes("/auth/login") ||
+      original?.url?.includes("/auth/register") ||
+      original?.url?.includes("/auth/refresh");
+
+    if (error.response?.status === 401 && original && !(original as any)._retried && !isAuthEndpoint) {
+      (original as any)._retried = true;
+      try {
+        const res = await fetch("/api/auth/refresh", { method: "POST" });
+        if (!res.ok) {
+          await clearSession();
+          redirectToLogin();
+          return Promise.reject(error);
+        }
+        return api(original);
+      } catch (refreshError) {
+        await clearSession();
+        redirectToLogin();
+        return Promise.reject(refreshError);
       }
+    }
+
+    if (error.response?.status === 401) {
+      await clearSession();
+      redirectToLogin();
     }
     return Promise.reject(error);
   }

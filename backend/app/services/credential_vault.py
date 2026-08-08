@@ -22,6 +22,7 @@ class CredentialVault:
     VERSION = "v1"
     SALT = b"nazmos_vault_salt_v3"
     ITERATIONS = 100000
+    DEV_FALLBACK_KEY = "dev-master-key-replace-in-production-32chars"
 
     def __init__(self, master_key: Optional[str] = None):
         env_key = os.environ.get("CREDENTIAL_MASTER_KEY", "")

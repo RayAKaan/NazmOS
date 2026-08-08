@@ -1,4 +1,5 @@
 import api from "./api";
+import { SESSION_COOKIE } from "./session";
 
 export interface User {
   id: string;
@@ -17,43 +18,56 @@ export interface AuthResponse {
   refresh_token: string;
 }
 
-export function setAuthTokens(accessToken: string, refreshToken: string) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem("access_token", accessToken);
-  localStorage.setItem("refresh_token", refreshToken);
+async function establishSession(tokens: { access_token: string; refresh_token: string }) {
+  const res = await fetch("/api/auth/set-token", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(tokens),
+  });
+  if (!res.ok) {
+    throw new Error("Failed to establish session");
+  }
 }
 
-export function clearAuthTokens() {
+export async function clearAuthTokens() {
   if (typeof window === "undefined") return;
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("refresh_token");
+  try {
+    await fetch("/api/auth/logout", { method: "POST" });
+  } catch {
+    /* ignore */
+  }
 }
 
 export function isAuthenticated() {
   if (typeof window === "undefined") return false;
-  return Boolean(localStorage.getItem("access_token"));
+  return document.cookie.split("; ").some((c) => c.startsWith(`${SESSION_COOKIE}=1`));
 }
 
 export const authApi = {
-  async login(email: string, password: string): Promise<AuthResponse> {
+  async login(email: string, password: string): Promise<{ user: User }> {
     const { data } = await api.post<AuthResponse>("/auth/login", { email, password });
-    return data;
+    await establishSession(data);
+    return { user: data.user };
   },
 
-  async register(email: string, password: string, fullName: string, phone?: string): Promise<AuthResponse> {
+  async register(
+    email: string,
+    password: string,
+    fullName: string,
+    phone?: string
+  ): Promise<{ user: User }> {
     const { data } = await api.post<AuthResponse>("/auth/register", {
       email,
       password,
       full_name: fullName,
       phone: phone || null,
     });
-    return data;
+    await establishSession(data);
+    return { user: data.user };
   },
 
-  async loginDemo(): Promise<AuthResponse> {
+  async loginDemo(): Promise<{ user: User }> {
     return {
-      access_token: "demo-token",
-      refresh_token: "demo-refresh-token",
       user: {
         id: "demo-user-001",
         email: "demo@nazmos.sa",

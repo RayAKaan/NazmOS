@@ -117,6 +117,7 @@ class Settings(BaseSettings):
 
     # Observability
     PROMETHEUS_ENABLED: bool = True
+    METRICS_TOKEN: str = ""  # When set, /metrics requires X-Metrics-Token to match.
     SENTRY_DSN: str = ""
     SENTRY_ENVIRONMENT: str = ""
     SENTRY_TRACES_SAMPLE_RATE: float = 0.1

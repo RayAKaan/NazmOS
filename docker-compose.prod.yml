@@ -1,9 +1,10 @@
 # NazmOS production-pilot compose
 # Use behind a real TLS reverse proxy (Nginx/Caddy/Traefik) or a managed load balancer.
 # Required .env keys:
-#   DB_PASSWORD, REDIS_PASSWORD, SECRET_KEY, CORS_ORIGINS, PUBLIC_API_URL
+#   DB_PASSWORD, REDIS_PASSWORD, SECRET_KEY, CORS_ORIGINS, PUBLIC_API_URL,
+#   SENTRY_DSN, DATABASE_APP_ROLE, CREDENTIAL_MASTER_KEY
 # Optional:
-#   OPENROUTER_API_KEY, LLM_MODEL, USE_MOCK_LLM
+#   OPENROUTER_API_KEY, LLM_MODEL, USE_MOCK_LLM, METRICS_TOKEN
 
 services:
   postgres:
@@ -54,6 +55,8 @@ services:
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
       SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
       CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS must be set}
+      SENTRY_DSN: ${SENTRY_DSN:?SENTRY_DSN must be set}
+      DATABASE_APP_ROLE: ${DATABASE_APP_ROLE:?DATABASE_APP_ROLE must be set}
       UPLOAD_DIR: /app/uploads
       USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
@@ -84,6 +87,10 @@ services:
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
       SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
       CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS must be set}
+      SENTRY_DSN: ${SENTRY_DSN:?SENTRY_DSN must be set}
+      DATABASE_APP_ROLE: ${DATABASE_APP_ROLE:?DATABASE_APP_ROLE must be set}
+      CREDENTIAL_MASTER_KEY: ${CREDENTIAL_MASTER_KEY:?CREDENTIAL_MASTER_KEY must be set}
+      METRICS_TOKEN: ${METRICS_TOKEN:-}
       UPLOAD_DIR: /app/uploads
       CHAT_ENABLED: ${CHAT_ENABLED:-true}
       BILLING_ENABLED: ${BILLING_ENABLED:-true}
@@ -98,11 +105,15 @@ services:
       LLM_MODEL: ${LLM_MODEL:-google/gemma-2-9b-it:free}
       DEFAULT_CURRENCY: SAR
       DEFAULT_TIMEZONE: Asia/Riyadh
+      BACKUP_DIR: /app/backups
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-7}
     depends_on:
       migrate:
         condition: service_completed_successfully
     volumes:
       - uploaded_files:/app/uploads
+      - ./scripts:/app/scripts:ro
+      - backup_data:/app/backups
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/ready"]
       interval: 30s
@@ -124,6 +135,9 @@ services:
       DATABASE_URL: postgresql+asyncpg://nazmos:${DB_PASSWORD}@postgres:5432/nazmos
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
       SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
+      SENTRY_DSN: ${SENTRY_DSN:?SENTRY_DSN must be set}
+      DATABASE_APP_ROLE: ${DATABASE_APP_ROLE:?DATABASE_APP_ROLE must be set}
+      CREDENTIAL_MASTER_KEY: ${CREDENTIAL_MASTER_KEY:?CREDENTIAL_MASTER_KEY must be set}
       UPLOAD_DIR: /app/uploads
       USE_CELERY: ${USE_CELERY:-true}
       USE_REDIS: ${USE_REDIS:-true}
@@ -140,7 +154,32 @@ services:
         condition: service_healthy
     volumes:
       - uploaded_files:/app/uploads
-    command: celery -A app.celery_app worker --loglevel=info --concurrency=${CELERY_CONCURRENCY:-2} --queues=ingestion,forecasting,analytics,default
+    command: celery -A app.celery_app worker --loglevel=info --concurrency=${CELERY_CONCURRENCY:-2} --queues=celery,ingestion,forecasting,analytics
+    networks:
+      - nazmos
+
+  celery_beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: production
+      DATABASE_URL: postgresql+asyncpg://nazmos:${DB_PASSWORD}@postgres:5432/nazmos
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
+      SENTRY_DSN: ${SENTRY_DSN:?SENTRY_DSN must be set}
+      DATABASE_APP_ROLE: ${DATABASE_APP_ROLE:?DATABASE_APP_ROLE must be set}
+      CREDENTIAL_MASTER_KEY: ${CREDENTIAL_MASTER_KEY:?CREDENTIAL_MASTER_KEY must be set}
+      USE_CELERY: ${USE_CELERY:-true}
+      USE_REDIS: ${USE_REDIS:-true}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    command: celery -A app.celery_app beat --loglevel=info
     networks:
       - nazmos
 
@@ -150,6 +189,7 @@ services:
       dockerfile: Dockerfile.prod
       args:
         NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:?PUBLIC_API_URL must be set}
+        API_URL: ${API_URL:-http://backend:8000}
         NEXT_PUBLIC_CHAT_ENABLED: ${NEXT_PUBLIC_CHAT_ENABLED:-true}
         NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-NazmOS}
         NEXT_PUBLIC_CURRENCY: SAR
@@ -174,6 +214,7 @@ volumes:
   pgdata:
   redisdata:
   uploaded_files:
+  backup_data:
 
 networks:
   nazmos:

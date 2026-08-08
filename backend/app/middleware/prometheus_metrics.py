@@ -55,6 +55,20 @@ def _safe_label(value: str | int) -> str:
     return str(value).replace('"', '\\"')
 
 
+def _normalized_path(request: Request) -> str:
+    """Return the route template (e.g. ``/api/v1/items/{item_id}``) instead of
+    the concrete URL so label cardinality stays bounded per route.
+
+    Falls back to the raw path when routing has not matched a route (404s,
+    early aborts) or the matched route exposes no template.
+    """
+    route = request.scope.get("route")
+    template = getattr(route, "path", None)
+    if template:
+        return template
+    return request.scope.get("path", "/unknown")
+
+
 class PrometheusMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         start = time.perf_counter()
@@ -68,7 +82,7 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         finally:
             if settings.PROMETHEUS_ENABLED:
                 duration = time.perf_counter() - start
-                path = request.scope.get("path", "/unknown")
+                path = _normalized_path(request)
                 method = request.method
                 REQUEST_LATENCY.labels(
                     method=_safe_label(method), path=_safe_label(path)

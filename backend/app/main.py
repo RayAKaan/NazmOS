@@ -88,7 +88,10 @@ async def lifespan(app: FastAPI):
             )
             raise RuntimeError("SQLite is not supported in production")
     else:
-        logger.info("Development mode: auto-creating tables from models")
+        logger.warning(
+            "CREATE_ALL_DEV_ONLY",
+            message="Development mode: auto-creating tables from models via Base.metadata.create_all. Production uses Alembic migrations; do not rely on create_all for schema changes.",
+        )
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
 
@@ -163,7 +166,14 @@ app.add_middleware(TenantContextMiddleware)
 app.add_middleware(PrometheusMiddleware)
 
 @app.get("/metrics")
-async def metrics_endpoint():
+async def metrics_endpoint(request: Request):
+    if settings.METRICS_TOKEN and request.headers.get("X-Metrics-Token") != settings.METRICS_TOKEN:
+        return problem_response(
+            status=401,
+            title="Unauthorized",
+            detail="Missing or invalid X-Metrics-Token header",
+            request=request,
+        )
     return metrics_response()
 
 rate_limiter_instance = get_rate_limiter()

@@ -329,6 +329,7 @@ class Transaction(Base):
     transaction_type = Column(String(20), default="sale")
     payment_method = Column(String(20), default="cash")
     reference_id = Column(String(100), nullable=True, index=True)  # External POS webhook reference ID
+    row_hash = Column(String(64), nullable=True)
     transaction_at = Column(DateTime(timezone=True), nullable=False, default=func.now())
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
@@ -339,6 +340,15 @@ class Transaction(Base):
         Index("idx_transaction_item", "item_id"),
         Index("idx_transaction_business_date", "business_id", "transaction_at"),
         Index("idx_transaction_date", "transaction_at"),
+        # Dedup: one row_hash per tenant; NULL row_hash (legacy/webhook rows)
+        # is exempt so those rows are not blocked by the uniqueness.
+        Index(
+            "uq_transactions_row_hash",
+            "business_id",
+            "row_hash",
+            unique=True,
+            postgresql_where=text("row_hash IS NOT NULL"),
+        ),
     )
 
 
@@ -585,6 +595,10 @@ class BillingEvent(Base):
     processed_at = Column(DateTime(timezone=True), server_default=func.now())
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+    __table_args__ = (
+        Index("idx_billing_events_business", "business_id"),
+    )
+
 
 class TeamMember(Base):
     __tablename__ = "team_members"
@@ -813,6 +827,7 @@ class NotificationPreference(Base):
 
     __table_args__ = (
         UniqueConstraint("user_id", "business_id", name="uq_notification_preferences_user_business"),
+        Index("idx_notification_preferences_business", "business_id"),
     )
 
 
@@ -1338,6 +1353,7 @@ class IdempotencyKey(Base):
     __tablename__ = "idempotency_keys"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), nullable=True)
     idempotency_key = Column(String(255), nullable=False)
     scope_method = Column(String(10), nullable=False)
     scope_path = Column(String(500), nullable=False)
@@ -1348,8 +1364,14 @@ class IdempotencyKey(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     __table_args__ = (
-        UniqueConstraint("idempotency_key", "scope_method", "scope_path", name="uq_idempotency_scope"),
-        Index("idx_idempotency_key_lookup", "idempotency_key", "scope_method", "scope_path"),
+        UniqueConstraint(
+            "business_id", "idempotency_key", "scope_method", "scope_path",
+            name="uq_idempotency_scope",
+        ),
+        Index(
+            "idx_idempotency_key_lookup",
+            "business_id", "idempotency_key", "scope_method", "scope_path",
+        ),
         Index("idx_idempotency_expires", "expires_at"),
     )
 

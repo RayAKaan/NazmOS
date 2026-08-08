@@ -17,7 +17,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response, StreamingResponse
 from sqlalchemy import text
 
-from app.database.connection import async_session_scope
+from app.database.connection import async_session_scope, get_rls_tenant_id
 from app.database.models import IdempotencyKey
 
 logger = logging.getLogger(__name__)
@@ -25,6 +25,15 @@ logger = logging.getLogger(__name__)
 MUTATING_METHODS: Set[str] = {"POST", "PATCH", "PUT"}
 IDEMPOTENCY_HEADER = "Idempotency-Key"
 CACHE_TTL_HOURS = 24
+
+# Sentinel for requests with no tenant (e.g. auth) so the unique scope still
+# holds and tenant A can never replay tenant B's cached response.
+NO_TENANT = "00000000-0000-0000-0000-000000000000"
+
+
+def _business_scope(request: Request) -> str:
+    """Resolve the current tenant for the idempotency cache scope."""
+    return get_rls_tenant_id() or NO_TENANT
 
 
 class IdempotencyMiddleware(BaseHTTPMiddleware):
@@ -38,9 +47,10 @@ class IdempotencyMiddleware(BaseHTTPMiddleware):
 
         scope_path = request.url.path
         cache_scope = f"{method}:{scope_path}"
+        business_id = _business_scope(request)
 
         # 1. Check for an existing, non-expired cached response.
-        cached = await self._lookup_cache(idempotency_key, method, scope_path)
+        cached = await self._lookup_cache(idempotency_key, method, scope_path, business_id)
         if cached is not None:
             logger.debug(
                 "idempotency_cache_hit",
@@ -80,6 +90,7 @@ class IdempotencyMiddleware(BaseHTTPMiddleware):
                 idempotency_key=idempotency_key,
                 method=method,
                 scope_path=scope_path,
+                business_id=business_id,
                 request=request,
                 response_status=status_code,
                 response_body=body.decode("utf-8"),
@@ -91,19 +102,20 @@ class IdempotencyMiddleware(BaseHTTPMiddleware):
 
         return response
 
-    async def _lookup_cache(self, key: str, method: str, path: str):
+    async def _lookup_cache(self, key: str, method: str, path: str, business_id: str):
         try:
             async with async_session_scope() as db:
                 result = await db.execute(
                     text("""
                         SELECT response_status, response_body
                         FROM idempotency_keys
-                        WHERE idempotency_key = :key
+                        WHERE business_id = :business_id
+                          AND idempotency_key = :key
                           AND scope_method = :method
                           AND scope_path = :path
                           AND expires_at > NOW()
                     """),
-                    {"key": key, "method": method, "path": path},
+                    {"business_id": business_id, "key": key, "method": method, "path": path},
                 )
                 row = result.fetchone()
                 if row:
@@ -121,6 +133,7 @@ class IdempotencyMiddleware(BaseHTTPMiddleware):
         idempotency_key: str,
         method: str,
         scope_path: str,
+        business_id: str,
         request: Request,
         response_status: int,
         response_body: str,
@@ -132,18 +145,20 @@ class IdempotencyMiddleware(BaseHTTPMiddleware):
             await db.execute(
                 text("""
                     INSERT INTO idempotency_keys
-                        (id, idempotency_key, scope_method, scope_path, request_hash,
-                         response_status, response_body, expires_at, created_at)
+                        (id, business_id, idempotency_key, scope_method, scope_path,
+                         request_hash, response_status, response_body, expires_at, created_at)
                     VALUES
-                        (gen_random_uuid(), :key, :method, :path, :request_hash,
-                         :response_status, :response_body, :expires_at, NOW())
-                    ON CONFLICT (idempotency_key, scope_method, scope_path) DO UPDATE SET
+                        (gen_random_uuid(), :business_id, :key, :method, :path,
+                         :request_hash, :response_status, :response_body, :expires_at, NOW())
+                    ON CONFLICT (business_id, idempotency_key, scope_method, scope_path)
+                    DO UPDATE SET
                         request_hash = EXCLUDED.request_hash,
                         response_status = EXCLUDED.response_status,
                         response_body = EXCLUDED.response_body,
                         expires_at = EXCLUDED.expires_at
                 """),
                 {
+                    "business_id": business_id,
                     "key": idempotency_key,
                     "method": method,
                     "path": scope_path,

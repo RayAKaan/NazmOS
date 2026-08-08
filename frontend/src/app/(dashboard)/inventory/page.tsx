@@ -1,14 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Package } from "lucide-react";
+import { Package, ArrowRight } from "lucide-react";
 import { InventoryFilters } from "@/components/inventory/InventoryFilters";
 import { InventoryTable } from "@/components/inventory/InventoryTable";
 import { ReorderModal } from "@/components/inventory/ReorderModal";
 import { useInventory } from "@/hooks/useInventory";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Badge } from "@/components/ui/Badge";
+import { IntelligenceCard } from "@/components/intelligence/IntelligenceCard";
 import { formatCurrency } from "@/lib/utils";
+import { Lightbulb, TrendingUp } from "lucide-react";
 
 export default function InventoryPage() {
   const { inventory, isLoading, filters, updateFilters, setPage, getItemDetail } = useInventory();
@@ -54,6 +56,44 @@ export default function InventoryPage() {
           <Badge variant="purple" className="px-4 py-2">
             Overstock: {inventory.summary.overstock_count}
           </Badge>
+        </div>
+      )}
+
+      {inventory?.intelligence_recommendations && inventory.intelligence_recommendations.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider">
+            Intelligence Recommendations
+          </h3>
+          <div className="grid gap-3 md:grid-cols-2">
+            {inventory.intelligence_recommendations.slice(0, 4).map((rec, index) => {
+              const valueSar = rec.expected_value_sar ?? rec.expected_impact_sar ?? rec.expected_roi ?? null;
+              const actionLabel = rec.action_type
+                ? `${rec.action_type.replaceAll("_", " ")} · ${valueSar !== null ? `SAR ${valueSar.toLocaleString()}` : "Review"}`
+                : valueSar !== null
+                  ? `Act now · SAR ${valueSar.toLocaleString()}`
+                  : "Review";
+              return (
+                <IntelligenceCard
+                  key={`${rec.type || rec.action_type || "rec"}-${index}`}
+                  title={rec.title}
+                  summary={rec.description || `${rec.action_type || "Intelligence"} recommendation`}
+                  confidence={rec.confidence ?? null}
+                  icon={<Lightbulb className="w-5 h-5" />}
+                  variant="inline"
+                  actionLabel={actionLabel}
+                  onAction={() => {
+                    if (rec.action_type?.includes("reorder") || rec.action_type?.includes("restock")) {
+                      const firstCritical = inventory.items.find(i => i.status === "critical" || i.status === "low");
+                      if (firstCritical) handleItemClick(firstCritical.item_id);
+                    } else {
+                      window.location.href = "/chat";
+                    }
+                  }}
+                  onExplain={() => window.location.href = "/chat"}
+                />
+              );
+            })}
+          </div>
         </div>
       )}
 

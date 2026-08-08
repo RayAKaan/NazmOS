@@ -24,14 +24,20 @@ class CredentialVault:
     ITERATIONS = 100000
 
     def __init__(self, master_key: Optional[str] = None):
-        if master_key:
-            self._master_key = master_key.encode()
-        else:
-            self._master_key = os.environ.get(
-                "CREDENTIAL_MASTER_KEY",
-                "dev-master-key-replace-in-production-32chars"
-            ).encode()
-        
+        env_key = os.environ.get("CREDENTIAL_MASTER_KEY", "")
+        effective_key = master_key or env_key or None
+
+        if effective_key is None:
+            # In production this is fatal and is already caught by Settings.
+            # In development we allow a known dev key only for local testing.
+            effective_key = "dev-master-key-replace-in-production-32chars"
+            logger.warning(
+                "credential_master_key_not_set",
+                message="CREDENTIAL_MASTER_KEY is not set. Using dev-only key. "
+                        "Set CREDENTIAL_MASTER_KEY before production.",
+            )
+
+        self._master_key = effective_key.encode()
         self._fernet = self._create_fernet(self._master_key)
 
     def _create_fernet(self, key: bytes) -> Fernet:
@@ -135,7 +141,9 @@ class POSCredentialManager:
             "csv_webhook": lambda c: True,
             "custom_api": lambda c: "base_url" in c or "api_key" in c,
             "foodics": lambda c: bool(c.get("webhook_secret")),
-            "salla": lambda c: bool(c.get("webhook_secret")),
+            "salla": lambda c: bool(c.get("access_token") or c.get("webhook_secret")),
+            "zid": lambda c: bool(c.get("access_token")),
+            "qoyod": lambda c: bool(c.get("api_key")),
         }
         
         validator = validators.get(adapter_type)

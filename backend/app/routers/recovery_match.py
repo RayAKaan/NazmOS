@@ -26,8 +26,10 @@ from app.services.recovery_match_service import (
     complete_match,
     reject_match,
     report_match_issue,
+    activate_recovery_match,
 )
 from app.services.recovery_match_matcher import run_nightly_recovery_match_scan
+from app.services.intelligence_api_client import IntelligenceAPIClient
 
 router = APIRouter(prefix="/api/v1/recovery-match", tags=["Recovery Match"])
 
@@ -66,6 +68,12 @@ class ReportIssueRequest(BaseModel):
     notes: Optional[str] = None
 
 
+class ActivateRequest(BaseModel):
+    business_id: UUID
+    auto_create_listings: bool = False
+    max_listings: int = Field(3, ge=0, le=10)
+
+
 @router.get("/settings")
 async def get_settings(
     business_id: UUID = Query(...),
@@ -96,6 +104,26 @@ async def get_recovery_match_preview(
     await assert_business_access(db, business_id, current_user)
     await require_feature(db, business_id, "recovery_match_preview", required_plan="Free Money Audit")
     opportunities = await generate_preview(db, business_id)
+
+    # Phase 7: ask the Intelligence API which surplus items are best suited for recovery.
+    intelligence_recommendations: list[dict] = []
+    try:
+        client = IntelligenceAPIClient(db, business_id)
+        analysis = await client.analyze(query="Recovery match and discount opportunities for surplus stock")
+        decision = analysis.get("decision")
+        if decision:
+            for candidate in (decision.candidate_actions or [])[:3]:
+                if candidate.get("action_type") in {"recovery_match", "discount", "bundle"}:
+                    intelligence_recommendations.append({
+                        "action_type": candidate.get("action_type"),
+                        "title": candidate.get("title"),
+                        "expected_roi": candidate.get("expected_roi"),
+                        "confidence": candidate.get("confidence"),
+                        "reasons": candidate.get("reasons", []),
+                    })
+    except Exception:
+        intelligence_recommendations = []
+
     return {
         "business_id": str(business_id),
         "mode": "preview",
@@ -108,6 +136,7 @@ async def get_recovery_match_preview(
         ],
         "opportunities": opportunities,
         "count": len(opportunities),
+        "intelligence_recommendations": intelligence_recommendations,
     }
 
 
@@ -276,17 +305,36 @@ async def recovery_match_status(
     current_user: User = Depends(get_current_user),
 ):
     await assert_business_access(db, business_id, current_user)
+    settings = await get_or_create_settings(db, business_id)
     try:
         await require_feature(db, business_id, "recovery_match", required_plan="Growing Retail")
-        enabled = True
+        plan_enabled = True
     except Exception:
-        enabled = False
+        plan_enabled = False
     return {
         "business_id": str(business_id),
-        "recovery_match_enabled": enabled,
+        "recovery_match_enabled": bool(settings.get("is_enabled")),
+        "plan_enabled": plan_enabled,
         "phase": "manual-confirm pilot",
         "message": "Recovery Match is being built as a manual-first retailer-to-retailer stock recovery network.",
     }
+
+
+@router.post("/activate")
+async def activate_recovery_match_endpoint(
+    req: ActivateRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Activate Recovery Match beyond preview and optionally seed listings."""
+    await assert_business_access(db, req.business_id, current_user)
+    await require_feature(db, req.business_id, "recovery_match", required_plan="Growing Retail")
+    result = await activate_recovery_match(
+        db, req.business_id,
+        auto_create_listings=req.auto_create_listings,
+        max_listings=req.max_listings,
+    )
+    return {"ok": True, **result}
 
 
 @router.post("/admin/nightly-scan")

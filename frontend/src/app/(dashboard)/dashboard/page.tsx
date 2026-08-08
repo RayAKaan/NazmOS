@@ -7,11 +7,15 @@ import { TopProducts } from "@/components/dashboard/TopProducts";
 import { DeadStock } from "@/components/dashboard/DeadStock";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { HealthScore } from "@/components/dashboard/HealthScore";
+import { IntelligenceCard } from "@/components/intelligence/IntelligenceCard";
 import { useDashboard } from "@/hooks/useDashboard";
+import { useIntelligenceSummary } from "@/hooks/useIntelligenceSummary";
 import { useAuth } from "@/hooks/useAuth";
 import { getGreeting } from "@/lib/utils";
 import { FreeAuditChecklist } from "@/components/free/FreeAuditChecklist";
 import { MoneyAuditEmptyState } from "@/components/free/MoneyAuditEmptyState";
+import { Sparkles } from "lucide-react";
+import Link from "next/link";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -26,6 +30,8 @@ export default function DashboardPage() {
     isLoading,
     error,
   } = useDashboard();
+
+  const { summary: intelligenceSummary, isLoading: intelligenceLoading } = useIntelligenceSummary();
 
   const hasUsableData = Boolean(
     summary && (summary.today.transactions > 0 || summary.this_month.transactions > 0)
@@ -81,6 +87,37 @@ export default function DashboardPage() {
           <p className="text-text-muted">Here&apos;s your store overview</p>
         </div>
       </div>
+
+      {!intelligenceLoading && intelligenceSummary && (
+        <IntelligenceCard
+          title="Nazm Intelligence — Today's Focus"
+          summary={intelligenceSummary.summary}
+          confidence={intelligenceSummary.top_action?.confidence ?? null}
+          sources={intelligenceSummary.sources}
+          icon={<Sparkles className="w-5 h-5" />}
+          actionLabel={intelligenceSummary.top_action?.title || "Ask Nazm"}
+          onAction={() => {
+            window.location.href = "/chat";
+          }}
+          onExplain={() => {
+            window.location.href = "/chat";
+          }}
+        >
+          {intelligenceSummary.top_action && (
+            <div className="space-y-2">
+              <p className="text-sm text-text-secondary">
+                <span className="text-text-primary font-medium">Top action:</span>{" "}
+                {intelligenceSummary.top_action.title || intelligenceSummary.top_action.action_type}
+              </p>
+              {intelligenceSummary.top_action.description && (
+                <p className="text-sm text-text-secondary">
+                  {intelligenceSummary.top_action.description}
+                </p>
+              )}
+            </div>
+          )}
+        </IntelligenceCard>
+      )}
 
       <FreeAuditChecklist />
 

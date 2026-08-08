@@ -3,6 +3,7 @@ Nazm Agent API – KSA
 Attention feed + approval queue + autonomy dial
 """
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel, Field
 from sqlalchemy import bindparam, text
 from sqlalchemy.ext.asyncio import AsyncSession
 import json
@@ -13,7 +14,9 @@ from app.database import get_db, User
 from app.middleware.auth_middleware import get_current_user
 from app.middleware.business_access import assert_business_access
 from app.services.agent_action_executor import approve_agent_action, reject_agent_action
+from app.services.autonomy_service import execute_if_autonomous, dry_run_action
 from app.services.feature_flags import require_feature_enabled
+from app.services.intelligence_api_client import IntelligenceAPIClient
 
 router = APIRouter(prefix="/api/v1/agent", tags=["Nazm Agent"])
 
@@ -236,3 +239,83 @@ async def trigger_scan(
     planner = NazmPlanner(db)
     n = await planner.scan_business(business_id)
     return {"ok": True, "actions_created": n, "message": f"Nazm created {n} actions – check /feed"}
+
+
+class AgentReasonRequest(BaseModel):
+    question: str = Field(..., min_length=1, max_length=1000)
+    context: dict = Field(default_factory=dict)
+
+
+class AutonomyEvaluateRequest(BaseModel):
+    action_id: UUID
+    business_id: UUID
+
+
+class AutonomyDryRunRequest(BaseModel):
+    action_id: UUID
+    business_id: UUID
+
+
+@router.post("/reason")
+async def agent_reason(
+    business_id: UUID,
+    request: AgentReasonRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Phase 7: agent reasoning via the Unified Intelligence API.
+
+    Lets the Nazm Agent consume the same intelligence surface as chat, dashboard,
+    and the rest of the product.
+    """
+    await assert_business_access(db, business_id, current_user)
+    await require_feature_enabled(db, "agent_enabled", business_id=business_id)
+    client = IntelligenceAPIClient(db, business_id)
+    result = await client.reason(question=request.question, context=request.context)
+    await db.commit()
+    return {
+        "answer": result["answer"],
+        "decision": result["decision"].ranked_action if result.get("decision") else None,
+        "plan": {"goal": result["plan"].goal, "steps": result["plan"].steps} if result.get("plan") else None,
+        "sources": result.get("sources", []),
+    }
+
+
+@router.post("/autonomy/evaluate")
+async def evaluate_autonomy(
+    request: AutonomyEvaluateRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Evaluate an action's autonomy policy and auto-execute if safe."""
+    await assert_business_access(db, request.business_id, current_user)
+    ownership = await db.execute(text(
+        "SELECT 1 FROM agent_actions WHERE id = :id AND business_id = :b"
+    ), {"id": str(request.action_id), "b": str(request.business_id)})
+    if not ownership.fetchone():
+        raise HTTPException(404, "Action not found for business")
+
+    await require_feature_enabled(db, "agent_enabled", business_id=request.business_id)
+    result = await execute_if_autonomous(db, request.action_id, current_user.id)
+    if not result.get("ok"):
+        raise HTTPException(400, result.get("reason", "Evaluation failed"))
+    return result
+
+
+@router.post("/actions/{action_id}/dry-run")
+async def action_dry_run(
+    action_id: UUID,
+    business_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Preview what would happen if this action were approved/auto-executed."""
+    await assert_business_access(db, business_id, current_user)
+    ownership = await db.execute(text(
+        "SELECT 1 FROM agent_actions WHERE id = :id AND business_id = :b"
+    ), {"id": str(action_id), "b": str(business_id)})
+    if not ownership.fetchone():
+        raise HTTPException(404, "Action not found for business")
+
+    await require_feature_enabled(db, "agent_enabled", business_id=business_id)
+    return await dry_run_action(db, action_id)

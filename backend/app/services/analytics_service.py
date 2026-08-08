@@ -14,6 +14,7 @@ from app.schemas.dashboard import (
 )
 from app.schemas.inventory import InventoryItem, InventoryResponse, PaginationInfo, InventorySummary, ItemDetailResponse, SalesHistoryItem, ForecastItem, ReorderRecommendation
 from app.schemas.dashboard import AlertsResponse, AlertResponse
+from app.services.intelligence_api_client import IntelligenceAPIClient
 from typing import List, Optional, Tuple
 
 
@@ -769,7 +770,7 @@ async def get_inventory_list(
             trend_7d=trend,
         ))
     
-    return InventoryResponse(
+    response = InventoryResponse(
         items=items,
         pagination=PaginationInfo(
             page=page,
@@ -787,6 +788,42 @@ async def get_inventory_list(
             dead_count=summary["dead_count"],
         ),
     )
+
+    # Phase 7: enrich inventory response with intelligence-driven recommendations.
+    try:
+        client = IntelligenceAPIClient(db, business_id)
+        analysis = await client.analyze(query="Inventory optimization recommendations")
+        decision = analysis.get("decision")
+        recommendations: list[dict] = []
+        if decision:
+            ranked = decision.ranked_action
+            if ranked:
+                recommendations.append({
+                    "action_type": ranked.get("action_type"),
+                    "title": ranked.get("title"),
+                    "description": ranked.get("description"),
+                    "confidence": float(decision.confidence) if decision.confidence else None,
+                    "expected_value_sar": ranked.get("expected_value_sar") or ranked.get("expected_roi"),
+                    "expected_roi": ranked.get("expected_roi"),
+                    "reasons": ranked.get("reasons", []),
+                })
+            for candidate in (decision.candidate_actions or [])[:2]:
+                if candidate != ranked:
+                    recommendations.append({
+                        "action_type": candidate.get("action_type"),
+                        "title": candidate.get("title"),
+                        "description": candidate.get("description"),
+                        "confidence": candidate.get("confidence"),
+                        "expected_value_sar": candidate.get("expected_value_sar") or candidate.get("expected_roi"),
+                        "expected_roi": candidate.get("expected_roi"),
+                        "reasons": candidate.get("reasons", []),
+                    })
+        response.intelligence_recommendations = recommendations
+    except Exception:
+        # Intelligence enrichment is best-effort; never break inventory listing.
+        response.intelligence_recommendations = None
+
+    return response
 
 
 async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) -> ItemDetailResponse:
@@ -921,7 +958,7 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
     else:
         trend = "stable"
     
-    return ItemDetailResponse(
+    response = ItemDetailResponse(
         item=InventoryItem(
             item_id=item.id,
             name=item.name,
@@ -934,7 +971,7 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
             cost_price=float(item.cost_price),
             sell_price=float(item.sell_price),
             stock_value=float(inventory.current_stock * item.sell_price),
-            status=computed_status,
+            status=status,
             last_restocked=inventory.last_restocked,
             reorder_level=float(inventory.reorder_level),
             trend_7d=trend,
@@ -948,6 +985,35 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
             reason=reason,
         ),
     )
+
+    # Phase 7: enrich item detail with demand prediction and reasoning.
+    try:
+        client = IntelligenceAPIClient(db, business_id)
+        prediction = await client.predict(target="demand", horizon_days=7, item_id=str(item_id))
+        reasoning = await client.reason(question=f"What should I do about {item.name}?")
+        recommendations: list[dict] = [
+            {
+                "type": "demand_forecast",
+                "horizon_days": prediction.get("horizon_days"),
+                "predicted_qty": prediction.get("predicted_value"),
+                "confidence": prediction.get("confidence"),
+            },
+        ]
+        if reasoning.get("decision"):
+            ranked = reasoning["decision"].ranked_action
+            if ranked:
+                recommendations.append({
+                    "type": "recommended_action",
+                    "action_type": ranked.get("action_type"),
+                    "title": ranked.get("title"),
+                    "confidence": float(reasoning["decision"].confidence) if reasoning["decision"].confidence else None,
+                    "reasons": ranked.get("reasons", []),
+                })
+        response.intelligence_recommendations = recommendations
+    except Exception:
+        response.intelligence_recommendations = None
+
+    return response
 
 
 async def get_dashboard_alerts(db: AsyncSession, business_id: UUID) -> AlertsResponse:

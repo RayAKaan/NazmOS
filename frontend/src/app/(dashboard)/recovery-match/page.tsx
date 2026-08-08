@@ -161,6 +161,7 @@ export default function RecoveryMatchPage() {
   const [issueNotes, setIssueNotes] = useState("");
   const [maxDistance, setMaxDistance] = useState("5");
   const [allowReveal, setAllowReveal] = useState(false);
+  const [activating, setActivating] = useState(false);
 
   const load = useCallback(async () => {
     if (!businessId) return;
@@ -210,6 +211,27 @@ export default function RecoveryMatchPage() {
     } catch (err: any) {
       if (err?.response?.status === 402) setLocked(true);
       setNotice(err?.response?.data?.detail?.message || "Recovery Match requires Growing Retail.");
+    }
+  };
+
+  const activateRecoveryMatch = async () => {
+    if (!businessId) return;
+    setActivating(true);
+    setNotice(null);
+    try {
+      await api.post("/recovery-match/activate", {
+        business_id: businessId,
+        auto_create_listings: false,
+        max_listings: 3,
+      });
+      setNotice("Recovery Match activated.");
+      setLocked(false);
+      await load();
+    } catch (err: any) {
+      if (err?.response?.status === 402) setLocked(true);
+      setNotice(err?.response?.data?.detail || "Activation requires Growing Retail.");
+    } finally {
+      setActivating(false);
     }
   };
 
@@ -383,9 +405,16 @@ export default function RecoveryMatchPage() {
               <input type="checkbox" checked={allowReveal} onChange={(e) => setAllowReveal(e.target.checked)} />
               <span>Allow contact reveal after mutual approval</span>
             </label>
-            <div className="flex items-end">
+            <div className="flex items-end gap-2">
               <button onClick={enableRecoveryMatch} className="rounded-xl bg-[#E0B34A] px-4 py-2 text-sm font-bold text-black">
                 {settings?.is_enabled ? "Save Settings" : "Enable Recovery Match"}
+              </button>
+              <button
+                onClick={activateRecoveryMatch}
+                disabled={activating || settings?.is_enabled}
+                className="rounded-xl bg-[#13A05A] px-4 py-2 text-sm font-bold text-black disabled:opacity-50"
+              >
+                {activating ? "Activating…" : "Activate"}
               </button>
             </div>
           </div>

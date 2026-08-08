@@ -3,6 +3,7 @@ from app.database.types import UUID
 from sqlalchemy.orm import relationship, DeclarativeBase
 from sqlalchemy.sql import func
 from enum import Enum as PyEnum
+from decimal import Decimal
 import uuid
 
 
@@ -667,6 +668,30 @@ class POSConnection(Base):
     )
 
 
+class WebhookEvent(Base):
+    """Audit trail for every inbound webhook. Supports replay and forensic debugging."""
+    __tablename__ = "webhook_events"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    provider = Column(String(50), nullable=False)
+    event_type = Column(String(100), nullable=True)
+    external_event_id = Column(String(255), nullable=True)
+    signature_valid = Column(Boolean, nullable=False, default=False)
+    payload_hash = Column(String(64), nullable=False)
+    payload = Column(JSON, nullable=False)
+    status = Column(String(30), nullable=False, default="received")
+    error = Column(String, nullable=True)
+    processed_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("idx_webhook_events_business_created", "business_id", "created_at"),
+        Index("idx_webhook_events_status", "status", "created_at"),
+        UniqueConstraint("provider", "external_event_id", name="uq_webhook_events_provider_external_id"),
+    )
+
+
 class POSSyncLog(Base):
     __tablename__ = "pos_sync_logs"
 
@@ -884,6 +909,25 @@ class ExecutedAction(Base):
         Index("idx_executed_actions_business", "business_id"),
         Index("idx_executed_actions_decision", "decision_id"),
         Index("idx_executed_actions_entity", "entity_type", "entity_id"),
+    )
+
+
+class DeletionRequest(Base):
+    """GDPR / PDPL erasure requests with a mandatory grace period."""
+    __tablename__ = "deletion_requests"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    requested_by = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    requested_at = Column(DateTime(timezone=True), server_default=func.now())
+    scheduled_purge_at = Column(DateTime(timezone=True), nullable=False)
+    purged_at = Column(DateTime(timezone=True), nullable=True)
+    status = Column(String(20), default="pending")
+    ip_address = Column(String, nullable=True)
+    user_agent = Column(String, nullable=True)
+
+    __table_args__ = (
+        Index("idx_deletion_requests_status_purge", "status", "scheduled_purge_at"),
     )
 
 
@@ -1450,4 +1494,527 @@ class PartCompatibility(Base):
     __table_args__ = (
         Index("idx_parts_make_model", "make", "model"),
         Index("idx_parts_oem", "oem_number"),
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# INTELLIGENCE LAYER – Phase 3: Context & Temporal Reasoning Engine
+# ═══════════════════════════════════════════════════════════════════════════
+
+class BusinessContext(Base):
+    """External context attached to business events (weather, holidays, regs, …)."""
+    __tablename__ = "business_context"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    context_type = Column(String(50), nullable=False)  # holiday, weather, prayer_time, inflation, regulation, competitor, …
+    source = Column(String(100), nullable=True)
+    source_url = Column(String(500), nullable=True)
+    effective_from = Column(DateTime(timezone=True), nullable=False)
+    effective_until = Column(DateTime(timezone=True), nullable=True)
+    payload = Column(JSON, nullable=False, default=dict)
+    confidence = Column(Numeric(4, 3), nullable=False, default=1.0)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        Index("idx_business_context_business_type", "business_id", "context_type"),
+        Index("idx_business_context_effective", "business_id", "effective_from", "effective_until"),
+    )
+
+
+class EventDerivation(Base):
+    """Causal links between events for temporal reasoning / explainability."""
+    __tablename__ = "event_derivations"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    cause_event_id = Column(UUID(as_uuid=True), ForeignKey("events.id", ondelete="CASCADE"), nullable=False)
+    effect_event_id = Column(UUID(as_uuid=True), ForeignKey("events.id", ondelete="CASCADE"), nullable=False)
+    derivation_type = Column(String(50), nullable=False)  # caused_by, correlated_with, followed_by
+    confidence = Column(Numeric(4, 3), nullable=False, default=0.5)
+    evidence = Column(JSON, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("business_id", "cause_event_id", "effect_event_id", "derivation_type", name="uq_event_derivation"),
+        Index("idx_event_derivations_effect", "effect_event_id"),
+        Index("idx_event_derivations_cause", "cause_event_id"),
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# INTELLIGENCE LAYER – Phase 5: Agents, Planning, Simulation, Execution
+# ═══════════════════════════════════════════════════════════════════════════
+
+class PlanStatus(str, PyEnum):
+    DRAFT = "draft"
+    PENDING_APPROVAL = "pending_approval"
+    APPROVED = "approved"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+
+
+class Plan(Base):
+    """Goal-driven plan produced by the Planning Engine."""
+    __tablename__ = "plans"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    goal = Column(String(500), nullable=False)
+    steps = Column(JSON, nullable=False, default=list)  # ordered JSONB steps
+    estimated_roi = Column(Numeric(12, 2), nullable=True)
+    estimated_cost = Column(Numeric(12, 2), nullable=True)
+    estimated_duration_hours = Column(Numeric(8, 2), nullable=True)
+    simulation_id = Column(UUID(as_uuid=True), ForeignKey("simulations.id", ondelete="SET NULL"), nullable=True)
+    status = Column(String(30), nullable=False, default="draft")
+    approved_by = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    approved_at = Column(DateTime(timezone=True), nullable=True)
+    started_at = Column(DateTime(timezone=True), nullable=True)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        Index("idx_plans_business_status", "business_id", "status"),
+        Index("idx_plans_business_created", "business_id", "created_at"),
+    )
+
+
+class SimulationStatus(str, PyEnum):
+    DRAFT = "draft"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+class Simulation(Base):
+    """What-if simulation run against a copy of business memory."""
+    __tablename__ = "simulations"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    name = Column(String(255), nullable=False)
+    scenario = Column(JSON, nullable=False, default=dict)
+    assumptions = Column(JSON, nullable=False, default=dict)
+    results = Column(JSON, nullable=True)
+    status = Column(String(30), nullable=False, default="draft")
+    started_at = Column(DateTime(timezone=True), nullable=True)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        Index("idx_simulations_business_status", "business_id", "status"),
+        Index("idx_simulations_business_created", "business_id", "created_at"),
+    )
+
+
+class ExecutionJobStatus(str, PyEnum):
+    PENDING = "pending"
+    EXECUTING = "executing"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    ROLLED_BACK = "rolled_back"
+
+
+class ExecutionJob(Base):
+    """Tracks every action sent to an external system by the Execution Engine."""
+    __tablename__ = "execution_jobs"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    decision_id = Column(UUID(as_uuid=True), ForeignKey("intelligence_decisions.id", ondelete="SET NULL"), nullable=True)
+    plan_id = Column(UUID(as_uuid=True), ForeignKey("plans.id", ondelete="SET NULL"), nullable=True)
+    action_type = Column(String(50), nullable=False)
+    entity_type = Column(String(50), nullable=False)
+    entity_id = Column(UUID(as_uuid=True), nullable=False)
+    payload = Column(JSON, nullable=False, default=dict)
+    external_reference = Column(String(255), nullable=True)
+    status = Column(String(30), nullable=False, default="pending")
+    result = Column(JSON, nullable=True)
+    error = Column(String, nullable=True)
+    executed_at = Column(DateTime(timezone=True), nullable=True)
+    rolled_back_at = Column(DateTime(timezone=True), nullable=True)
+    rollback_payload = Column(JSON, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        Index("idx_execution_jobs_business_status", "business_id", "status"),
+        Index("idx_execution_jobs_decision", "decision_id"),
+        Index("idx_execution_jobs_plan", "plan_id"),
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# INTELLIGENCE LAYER – Phase 4: Decision & Explainability Engine
+# ═══════════════════════════════════════════════════════════════════════════
+
+class DecisionStatus(str, PyEnum):
+    DRAFT = "draft"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+    EXECUTED = "executed"
+
+
+class IntelligenceDecision(Base):
+    """Ranked, auditable decision produced by the Decision Engine."""
+    __tablename__ = "intelligence_decisions"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    decision_type = Column(String(50), nullable=False)  # restock, pricing, discount, supplier_switch, cash_alert, …
+    input_event_ids = Column(JSON, nullable=False, default=list)
+    rules_applied = Column(JSON, nullable=False, default=list)
+    memory_snapshot = Column(JSON, nullable=True)
+    graph_evidence = Column(JSON, nullable=True)
+    context_evidence = Column(JSON, nullable=True)
+    candidate_actions = Column(JSON, nullable=False, default=list)
+    ranked_action = Column(JSON, nullable=True)
+    confidence = Column(Numeric(4, 3), nullable=False, default=0.0)
+    expected_roi = Column(Numeric(12, 2), nullable=True)
+    risk_score = Column(Numeric(4, 3), nullable=False, default=0.0)
+    urgency = Column(Numeric(4, 3), nullable=False, default=0.0)
+    status = Column(String(20), nullable=False, default="draft")
+    approved_by = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    approved_at = Column(DateTime(timezone=True), nullable=True)
+    explanation = Column(JSON, nullable=False, default=dict)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        Index("idx_intelligence_decisions_business", "business_id", "created_at"),
+        Index("idx_intelligence_decisions_status", "business_id", "status"),
+        Index("idx_intelligence_decisions_type", "business_id", "decision_type"),
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# INTELLIGENCE LAYER – Phase 6: Learning Engine
+# ═══════════════════════════════════════════════════════════════════════════
+
+class FeedbackSource(str, PyEnum):
+    MANUAL = "manual"
+    SYSTEM = "system"
+
+
+class OutcomeFeedback(Base):
+    """Feedback loop comparing predicted vs actual outcomes of intelligence decisions."""
+    __tablename__ = "outcome_feedback"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    decision_id = Column(UUID(as_uuid=True), ForeignKey("intelligence_decisions.id", ondelete="SET NULL"), nullable=True)
+    execution_job_id = Column(UUID(as_uuid=True), ForeignKey("execution_jobs.id", ondelete="SET NULL"), nullable=True)
+    decision_type = Column(String(50), nullable=True)
+    predicted_outcome = Column(JSON, nullable=False, default=dict)
+    actual_outcome = Column(JSON, nullable=False, default=dict)
+    delta = Column(JSON, nullable=False, default=dict)
+    feedback_source = Column(String(20), nullable=False, default=FeedbackSource.MANUAL.value)
+    recorded_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    __table_args__ = (
+        Index("idx_outcome_feedback_business_type", "business_id", "decision_type"),
+        Index("idx_outcome_feedback_decision", "decision_id"),
+        Index("idx_outcome_feedback_recorded", "business_id", "recorded_at"),
+    )
+
+
+class ModelPerformance(Base):
+    """Per-business, per-decision-type accuracy and ROI error tracked by the Learning Engine."""
+    __tablename__ = "model_performance"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    decision_type = Column(String(50), nullable=False)
+    window_start = Column(DateTime(timezone=True), nullable=False)
+    window_end = Column(DateTime(timezone=True), nullable=False)
+    samples = Column(Integer, nullable=False, default=0)
+    accuracy = Column(Numeric(5, 4), nullable=True)
+    roi_error = Column(Numeric(12, 4), nullable=True)
+    mean_latency_ms = Column(Numeric(10, 2), nullable=True)
+    last_updated_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint("business_id", "decision_type", "window_start", name="uq_model_performance_window"),
+        Index("idx_model_performance_business_type", "business_id", "decision_type"),
+        Index("idx_model_performance_window", "business_id", "decision_type", "window_start", "window_end"),
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# INTELLIGENCE LAYER – Phase 2: Knowledge Graph Engine
+# ═══════════════════════════════════════════════════════════════════════════
+
+class GraphEntity(Base):
+    """Node in the business knowledge graph.
+
+    Storage is relational PostgreSQL first; the abstraction is kept generic so
+    Apache AGE or Neo4j can be swapped in later without changing consumers.
+    """
+    __tablename__ = "graph_entities"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    entity_type = Column(String(50), nullable=False)  # supplier, product, branch, employee, customer, …
+    external_id = Column(String(255), nullable=True)  # POS-specific reference
+    name = Column(String(255), nullable=False)
+    attributes = Column(JSON, nullable=False, default=dict)
+    # Optional embedding stored as JSON array; migrate to pgvector when scale demands.
+    vector = Column(JSON, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("business_id", "entity_type", "external_id", name="uq_graph_entity_business_type_ext"),
+        Index("idx_graph_entities_business_type", "business_id", "entity_type"),
+        Index("idx_graph_entities_name", "business_id", "name"),
+    )
+
+
+class GraphRelationship(Base):
+    """Edge in the business knowledge graph with evidence and temporal validity."""
+    __tablename__ = "graph_relationships"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    source_id = Column(UUID(as_uuid=True), ForeignKey("graph_entities.id", ondelete="CASCADE"), nullable=False)
+    target_id = Column(UUID(as_uuid=True), ForeignKey("graph_entities.id", ondelete="CASCADE"), nullable=False)
+    relation_type = Column(String(50), nullable=False)  # SUPPLIES, SOLD_MOSTLY_AT, MANAGES, WORKS_AT, …
+    strength = Column(Numeric(4, 3), nullable=False, default=0.5)  # 0–1
+    evidence_event_ids = Column(JSON, nullable=False, default=list)
+    valid_from = Column(DateTime(timezone=True), server_default=func.now())
+    valid_until = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("business_id", "source_id", "target_id", "relation_type", name="uq_graph_relationship_edge"),
+        Index("idx_graph_relationships_source", "source_id"),
+        Index("idx_graph_relationships_target", "target_id"),
+        Index("idx_graph_relationships_business_type", "business_id", "relation_type"),
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# INTELLIGENCE LAYER – Phase 1: Business Memory Engine
+# ═══════════════════════════════════════════════════════════════════════════
+
+class MemoryType(str, PyEnum):
+    """Supported business memory document types."""
+    CURRENT_STATE = "current_state"
+    FORECASTS = "forecasts"
+    GOALS = "goals"
+    PATTERNS = "patterns"
+    SEASONALITY = "seasonality"
+    FAILURES = "failures"
+    RELATIONSHIPS = "relationships"
+
+
+class BusinessMemory(Base):
+    """Living, queryable projection of business state derived from the event stream.
+
+    One JSONB document per business + memory_type. Projectors are idempotent and
+    update this table in response to events.
+    """
+    __tablename__ = "business_memory"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    memory_type = Column(String(50), nullable=False)
+    data = Column(JSON, nullable=False, default=dict)
+    version = Column(Integer, nullable=False, default=0)  # optimistic counter for replay detection
+    updated_by_event_id = Column(UUID(as_uuid=True), ForeignKey("events.id", ondelete="SET NULL"), nullable=True)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("business_id", "memory_type", name="uq_business_memory_business_type"),
+        Index("idx_business_memory_business_type", "business_id", "memory_type"),
+        Index("idx_business_memory_updated", "business_id", "updated_at"),
+    )
+
+
+class MemoryUpdate(Base):
+    """Audit log of every mutation to a business memory document."""
+    __tablename__ = "memory_updates"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    memory_type = Column(String(50), nullable=False)
+    event_id = Column(UUID(as_uuid=True), ForeignKey("events.id", ondelete="SET NULL"), nullable=True)
+    path = Column(String(500), nullable=False)  # dot-notation path, e.g. "inventory.item_abc.stock"
+    old_value = Column(JSON, nullable=True)
+    new_value = Column(JSON, nullable=True)
+    occurred_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    __table_args__ = (
+        Index("idx_memory_updates_business_type", "business_id", "memory_type"),
+        Index("idx_memory_updates_event", "event_id"),
+        Index("idx_memory_updates_occurred", "business_id", "occurred_at"),
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# INTELLIGENCE LAYER – Phase 0: Universal Event Engine
+# ═══════════════════════════════════════════════════════════════════════════
+
+class EventType(Base):
+    """Registry of supported business event types and their schemas."""
+    __tablename__ = "event_types"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(100), nullable=False, unique=True, index=True)
+    version = Column(Integer, nullable=False, default=1)
+    description = Column(String, nullable=True)
+    schema = Column(JSON, nullable=False, default={})
+    example = Column(JSON, nullable=True)
+    is_system = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    @property
+    def json_schema(self) -> dict:
+        """Alias for ``schema`` so Pydantic models can avoid shadowing BaseModel.schema."""
+        return self.schema or {}
+
+
+class EventSubscription(Base):
+    """Consumer subscriptions for the event bus."""
+    __tablename__ = "event_subscriptions"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=True)
+    consumer_name = Column(String(100), nullable=False)
+    event_pattern = Column(String(255), nullable=False)  # e.g. "sale.*", "inventory.changed"
+    queue_or_channel = Column(String(255), nullable=False)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("idx_event_subscriptions_pattern", "event_pattern"),
+        Index("idx_event_subscriptions_business", "business_id"),
+    )
+
+
+class Event(Base):
+    """Append-only business event stream. The backbone of the intelligence layer."""
+    __tablename__ = "events"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    event_type = Column(String(100), nullable=False, index=True)
+    version = Column(Integer, nullable=False, default=1)
+    source = Column(String(50), nullable=False)  # foodics, salla, csv, manual, api, etc.
+    source_id = Column(String(255), nullable=True)  # external reference id
+    payload = Column(JSON, nullable=False)
+    context_snapshot = Column(JSON, nullable=True)
+    actor_type = Column(String(50), nullable=True)  # user, system, webhook, agent
+    actor_id = Column(UUID(as_uuid=True), nullable=True)
+    correlation_id = Column(UUID(as_uuid=True), nullable=True, index=True)
+    causation_id = Column(UUID(as_uuid=True), nullable=True)
+    checksum = Column(String(64), nullable=False)
+    occurred_at = Column(DateTime(timezone=True), nullable=False)
+    received_at = Column(DateTime(timezone=True), server_default=func.now())
+    processed = Column(Boolean, default=False, index=True)
+    processed_at = Column(DateTime(timezone=True), nullable=True)
+    error = Column(String, nullable=True)
+
+    __table_args__ = (
+        Index("idx_events_business_occurred", "business_id", "occurred_at"),
+        Index("idx_events_business_type", "business_id", "event_type"),
+        Index("idx_events_source_source_id", "source", "source_id"),
+        UniqueConstraint("business_id", "source", "source_id", "checksum", name="uq_events_dedupe"),
+    )
+
+
+class PartnerStatus(str, PyEnum):
+    PENDING = "pending"
+    ACTIVE = "active"
+    SUSPENDED = "suspended"
+
+
+class PartnerType(str, PyEnum):
+    ACCOUNTANT = "accountant"
+    ADVISOR = "advisor"
+    CONSULTANT = "consultant"
+    AUDITOR = "auditor"
+    FINTECH = "fintech"
+
+
+class ReferralStatus(str, PyEnum):
+    LEAD = "lead"
+    CONVERTED = "converted"
+    CHURNED = "churned"
+
+
+class Partner(Base):
+    """Accountant / Monshaat advisor / fintech partner program member."""
+    __tablename__ = "partners"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    owner_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    partner_type = Column(String(30), nullable=False)
+    status = Column(String(30), default="pending")
+
+    name = Column(String(255), nullable=False)
+    name_ar = Column(String(255), nullable=True)
+    email = Column(String(255), nullable=False, index=True)
+    phone = Column(String(20), nullable=True)
+    city = Column(String(100), nullable=True)
+    cr_number = Column(String(20), nullable=True)
+    monshaat_certified = Column(Boolean, default=False)
+
+    referral_code = Column(String(50), unique=True, nullable=False, index=True)
+    commission_pct = Column(Numeric(5, 2), default=Decimal("10.00"))
+    total_referrals = Column(Integer, default=0)
+    total_converted = Column(Integer, default=0)
+    total_revenue_sar = Column(Numeric(14, 2), default=0)
+    payout_due_sar = Column(Numeric(14, 2), default=0)
+    bank_iban = Column(String(50), nullable=True)
+
+    notes = Column(String, nullable=True)
+    reviewed_at = Column(DateTime(timezone=True), nullable=True)
+    reviewed_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        CheckConstraint("partner_type IN ('accountant', 'advisor', 'consultant', 'auditor', 'fintech')", name="partner_type_check"),
+        CheckConstraint("status IN ('pending', 'active', 'suspended')", name="partner_status_check"),
+        Index("idx_partners_status", "status"),
+        Index("idx_partners_city", "city"),
+    )
+
+
+class PartnerReferral(Base):
+    """Merchant referred by a partner. Tracked for payout and program analytics."""
+    __tablename__ = "partner_referrals"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    partner_id = Column(UUID(as_uuid=True), ForeignKey("partners.id", ondelete="CASCADE"), nullable=False)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="SET NULL"), nullable=True)
+
+    merchant_name = Column(String(255), nullable=False)
+    merchant_email = Column(String(255), nullable=True)
+    merchant_phone = Column(String(20), nullable=True)
+    estimated_arr_sar = Column(Numeric(12, 2), nullable=True)
+    status = Column(String(30), default="lead")
+
+    converted_at = Column(DateTime(timezone=True), nullable=True)
+    churned_at = Column(DateTime(timezone=True), nullable=True)
+    payout_sar = Column(Numeric(12, 2), nullable=True)
+    payout_paid_at = Column(DateTime(timezone=True), nullable=True)
+
+    notes = Column(String, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        CheckConstraint("status IN ('lead', 'converted', 'churned')", name="referral_status_check"),
+        Index("idx_partner_referrals_partner", "partner_id", "created_at"),
+        Index("idx_partner_referrals_status", "status"),
     )

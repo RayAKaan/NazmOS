@@ -33,6 +33,7 @@ export const en = {
 
   sidebar: {
     feed: "Nazm Feed",
+    copilot: "Nazm Copilot",
     dashboard: "Dashboard",
     inventory: "Inventory",
     forecast: "Forecast",
@@ -196,6 +197,46 @@ export const en = {
     applyNow: "Apply Now",
     noAlerts: "All clear",
     watching247: "Nazm is watching your inventory 24/7",
+  },
+
+  intelligence: {
+    title: "Nazm Intelligence",
+    summaryTitle: "Today's Focus",
+    whatToFocusOn: "What to focus on today",
+    sources: "Sources",
+    confidence: "Confidence",
+    reasoning: "Reasoning",
+    whyThis: "Why this?",
+    topAction: "Top action",
+    noSummary: "No intelligence summary available yet.",
+    recommendations: "Recommendations",
+  },
+
+  copilot: {
+    title: "Nazm Copilot",
+    subtitle: "Ask anything about your store",
+    placeholder: "Ask Nazm...",
+    disclaimer: "AI-generated answers may be incorrect. Always review before acting.",
+    thinking: "Nazm is thinking...",
+    emptyTitle: "What would you like to know?",
+    emptySubtitle: "Nazm can reason across sales, inventory, context, and decisions.",
+  },
+
+  onboarding: {
+    welcome: "Welcome to NazmOS",
+    subtitle: "Let's set up your store in under 5 minutes",
+    goalQuestion: "What do you want to achieve first?",
+    goalStockouts: "Prevent stockouts",
+    goalDeadStock: "Clear dead stock",
+    goalMargins: "Fix margins",
+    goalCompliance: "Stay compliant",
+    uploadData: "Upload or connect your data",
+    firstInsight: "Your first insight",
+    openDashboard: "Open Dashboard",
+    step1: "Goal",
+    step2: "Data",
+    step3: "Insight",
+    step4: "Dashboard",
   },
 
   agent: {

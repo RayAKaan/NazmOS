@@ -1,11 +1,13 @@
 import time
 import hashlib
 from typing import Dict, Tuple, Optional
-from fastapi import Request, HTTPException
+from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 import redis
 import json
+
+from app.utils.problem_details import problem_response
 
 
 class RedisRateLimiter:
@@ -38,7 +40,7 @@ class RedisRateLimiter:
         }
     
     def get_client_identifier(self, request: Request) -> str:
-        """Get unique identifier for the client."""
+        """Get unique identifier for the client, scoped to business when available."""
         forwarded = request.headers.get("X-Forwarded-For")
         if isinstance(forwarded, str) and forwarded:
             ip = forwarded.split(",")[0].strip()
@@ -51,7 +53,12 @@ class RedisRateLimiter:
             identifier = f"user:{hashlib.md5(token.encode()).hexdigest()[:16]}"
         else:
             identifier = f"ip:{ip}"
-        
+
+        # Scope per-tenant limits when a business_id is present in the URL.
+        business_id = request.query_params.get("business_id") or request.path_params.get("business_id")
+        if business_id:
+            identifier = f"{identifier}:biz:{business_id}"
+
         return identifier
     
     def check_rate_limit(
@@ -173,8 +180,15 @@ class InMemoryRateLimiter:
         auth_header = request.headers.get("Authorization", "")
         if isinstance(auth_header, str) and auth_header.startswith("Bearer "):
             token = auth_header[7:]
-            return f"user:{hashlib.md5(token.encode()).hexdigest()[:16]}"
-        return f"ip:{ip}"
+            identifier = f"user:{hashlib.md5(token.encode()).hexdigest()[:16]}"
+        else:
+            identifier = f"ip:{ip}"
+
+        business_id = request.query_params.get("business_id") or request.path_params.get("business_id")
+        if business_id:
+            identifier = f"{identifier}:biz:{business_id}"
+
+        return identifier
 
 
     def _generate_key(self, request: Request) -> str:
@@ -284,11 +298,14 @@ class AdvancedRateLimitMiddleware(BaseHTTPMiddleware):
         identifier = self.limiter.get_client_identifier(request)
         allowed, info = await self.limiter.check_rate_limit_async(identifier, endpoint_key)
         if not allowed:
-            return JSONResponse(
-                status_code=429,
-                content={"error": True, "code": "RATE_LIMITED", "message": "Too many requests"},
-                headers={"Retry-After": str(info.get("retry_after", 60))},
+            response = problem_response(
+                status=429,
+                title="Rate Limited",
+                detail="Too many requests. Please slow down.",
+                request=request,
             )
+            response.headers["Retry-After"] = str(info.get("retry_after", 60))
+            return response
 
         response = await call_next(request)
         response.headers["X-RateLimit-Limit"] = str(info.get("limit", ""))

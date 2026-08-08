@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel, Field
 from sqlalchemy import text
 from datetime import datetime
 import json
@@ -14,6 +15,7 @@ from app.services.prompt_engine import build_system_prompt, extract_decisions_fr
 from app.services.chat_memory import ChatMemoryService
 from app.services.decision_engine import DecisionEngine
 from app.services.cache_service import CacheService
+from app.services.intelligence_api_client import IntelligenceAPIClient
 from app.utils.prompt_sanitizer import sanitize_user_input
 from app.config import get_settings
 from app.services.feature_flags import require_feature_enabled
@@ -21,6 +23,11 @@ from app.services.feature_flags import require_feature_enabled
 settings = get_settings()
 router = APIRouter(prefix="/api/v1/chat", tags=["chat"])
 llm_orchestrator = LLMOrchestrator()
+
+
+class ChatReasonRequest(BaseModel):
+    message: str = Field(..., min_length=1, max_length=1000)
+    context: dict = Field(default_factory=dict)
 
 
 @router.post("/")
@@ -255,4 +262,30 @@ async def get_suggestions(
     return {
         "suggestions": suggestions,
         "context_summary": "3 critical stockouts, 4 dead stock items, weekend in 2 days",
+    }
+
+
+@router.post("/reason")
+async def chat_reason(
+    business_id: str,
+    request: ChatReasonRequest,
+    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    """Phase 7: structured reasoning endpoint for the chat assistant.
+
+    Returns a natural-language answer, a decision, and an optional plan from the
+    Unified Intelligence API. This lets the chat layer consume the same
+    intelligence surface as the rest of NazmOS.
+    """
+    await require_feature_enabled(db, "chat_enabled", business_id=business_id)
+    clean_message = sanitize_user_input(request.message)
+    client = IntelligenceAPIClient(db, business_id)
+    result = await client.reason(question=clean_message, context=request.context)
+    await db.commit()
+    return {
+        "answer": result["answer"],
+        "decision": result["decision"].ranked_action if result.get("decision") else None,
+        "plan": {"goal": result["plan"].goal, "steps": result["plan"].steps} if result.get("plan") else None,
+        "sources": result.get("sources", []),
     }

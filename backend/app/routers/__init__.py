@@ -9,10 +9,17 @@ from app.routers.forecast import router as forecast_router
 from app.routers.decisions import router as decisions_router
 from app.routers.money_audit import router as money_audit_router
 from app.routers.ops import router as ops_router
+from app.routers.compliance import router as compliance_router
+from app.routers.events import router as events_router
+from app.routers.intelligence import router as intelligence_router
 from app.routers.organizations import router as organizations_router
 from app.routers.subscriptions import router as subscriptions_router
 from app.routers.adapters import router as adapters_router
 from app.routers.actions import router as actions_router
+from app.routers.guest_audit import router as guest_audit_router
+from app.routers.partners import router as partners_router
+from app.routers.admin_backup import router as admin_backup_router
+from app.routers.oauth import router as oauth_router
 
 # Retail Recovery routers
 from app.routers.pos_webhooks import router as pos_webhooks_router
@@ -57,10 +64,17 @@ __all__ = [
     "decisions_router",
     "money_audit_router",
     "ops_router",
+    "compliance_router",
+    "events_router",
+    "intelligence_router",
     "organizations_router",
     "subscriptions_router",
     "adapters_router",
     "actions_router",
+    "guest_audit_router",
+    "partners_router",
+    "admin_backup_router",
+    "oauth_router",
     "agent_router",
     "suppliers_router",
     "pharmacy_router",

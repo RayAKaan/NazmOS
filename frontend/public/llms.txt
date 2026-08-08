@@ -1,0 +1,40 @@
+# NazmOS — llms.txt
+
+NazmOS is the inventory intelligence operating system built by Nazmak for e-commerce and retail teams in Saudi Arabia and the Gulf.
+
+## Product
+
+- Name: NazmOS
+- Company: Nazmak
+- Domain: https://nazm.ai
+- App domain: https://app.nazm.ai
+- Brand color: #14B8A6
+
+## What NazmOS does
+
+NazmOS connects to a merchant's sales history, inventory snapshot, and supplier data to:
+
+1. Run a Free Money Audit that finds dead stock, stockout risk, margin leakage, and avoidable purchases.
+2. Surface ranked, owner-controllable recovery actions via a web dashboard and WhatsApp.
+3. Track Money at Risk, Money Approved, and Money Recovered so founders and merchants can prove ROI.
+4. Match healthy surplus stock with nearby opted-in stores through Recovery Match (manual-confirm pilot, no risky categories).
+5. Rebalance stock across branches and defend margins through the Orchestrator.
+
+## Key pages
+
+- Home: https://app.nazm.ai/
+- Free Money Audit upload: https://app.nazm.ai/upload
+- Interactive demo: https://app.nazm.ai/product-demo
+- Privacy policy: https://app.nazm.ai/privacy
+- Terms of use: https://app.nazm.ai/terms
+
+## Stack
+
+- Next.js 16 App Router
+- React 18
+- TypeScript
+- Tailwind CSS
+
+## Contact
+
+For support, demos, and partnership inquiries, visit https://nazm.ai or use the in-app help widget.

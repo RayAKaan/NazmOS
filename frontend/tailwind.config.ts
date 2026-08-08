@@ -57,6 +57,18 @@ const config: Config = {
           primary: "#d4a574",
           secondary: "#8c8c8c",
           accent: "#a3a3a3",
+          teal: "#14B8A6",
+          "teal-light": "#5EEAD4",
+          "teal-dark": "#0F766E",
+          amber: "#E0B34A",
+          green: "#13A05A",
+          red: "#C8412A",
+        },
+        intelligence: {
+          DEFAULT: "#14B8A6",
+          muted: "#115E59",
+          surface: "#042F2E",
+          border: "#134E4A",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",

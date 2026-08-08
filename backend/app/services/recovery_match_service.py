@@ -450,3 +450,52 @@ async def report_match_issue(
     )
     await db.commit()
     return {"ok": True, "match_id": str(match_id), "issue_type": issue_type, "status": "issue_reported"}
+
+
+async def activate_recovery_match(
+    db: AsyncSession,
+    business_id: UUID | str,
+    auto_create_listings: bool = False,
+    max_listings: int = 3,
+) -> dict:
+    """Activate Recovery Match for a business and optionally seed listings from preview.
+
+    This is the "beyond preview" activation path: it enables the feature, sets
+    sensible defaults, and can create the first seller listings automatically
+    from the top surplus opportunities.
+    """
+    settings = await update_settings(db, business_id, {
+        "is_enabled": True,
+        "allow_contact_reveal": False,
+        "max_distance_km": 5,
+    })
+
+    created_listings: list[dict] = []
+    if auto_create_listings:
+        opportunities = await generate_preview(db, business_id)
+        # Only auto-list items with long shelf-life categories and safe surplus.
+        for opp in opportunities[:max_listings]:
+            if opp.get("status") != "preview_only":
+                continue
+            try:
+                listing = await create_listing(db, business_id, {
+                    "item_id": opp["item_id"],
+                    "quantity_available": opp.get("estimated_surplus_qty", 1),
+                    "discount_pct": 20,
+                    "expiry_date": (date.today() + timedelta(days=180)).isoformat(),
+                    "listing_days": 14,
+                    "notes": "Auto-created during Recovery Match activation",
+                })
+                created_listings.append(listing)
+            except ValueError:
+                # Some items may fail category/expiry safety checks; skip them.
+                continue
+
+    return {
+        "activated": True,
+        "settings": settings,
+        "auto_create_listings": auto_create_listings,
+        "listings_created": len(created_listings),
+        "listings": created_listings,
+        "next_step": "Go to Recovery Match > My Listings and click 'Suggest Nearby Buyers'.",
+    }

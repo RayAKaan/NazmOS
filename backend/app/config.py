@@ -6,11 +6,16 @@ import secrets
 
 class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos"
+    DATABASE_POOL_SIZE: int = 10
+    DATABASE_MAX_OVERFLOW: int = 20
+    DATABASE_POOL_RECYCLE: int = 1800
+    DATABASE_POOL_TIMEOUT: int = 30
     SECRET_KEY: str = "dev-secret-key-change-in-production-minimum-32-chars"
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
     CORS_ORIGINS: str = "http://localhost:3000"
+    CORS_METHODS: str = "GET,POST,PUT,PATCH,DELETE,OPTIONS"
     LOG_LEVEL: str = "INFO"
     ENVIRONMENT: str = "development"
 
@@ -85,6 +90,8 @@ class Settings(BaseSettings):
     FOODICS_WEBHOOK_TOKEN: str = ""
     SALLA_WEBHOOK_TOKEN: str = ""
 
+    CREDENTIAL_MASTER_KEY: str = ""
+
     # WhatsApp webhook security
     WHATSAPP_VERIFY_TOKEN: str = "nazmos_ksa_whatsapp_2026"
     WHATSAPP_APP_SECRET: str = ""  # Meta X-Hub-Signature-256 HMAC secret
@@ -132,13 +139,75 @@ class Settings(BaseSettings):
                 )
         return v
 
+    @field_validator("SENTRY_DSN")
+    @classmethod
+    def validate_sentry_dsn(cls, v: str, info: ValidationInfo) -> str:
+        env = info.data.get("ENVIRONMENT", "development")
+        if env == "production" and not v:
+            raise ValueError(
+                "SENTRY_DSN is required in production. Uncaught exceptions must be aggregated and alerted."
+            )
+        return v
+
+    @field_validator("USE_MOCK_LLM")
+    @classmethod
+    def validate_mock_llm(cls, v: bool, info: ValidationInfo) -> bool:
+        env = info.data.get("ENVIRONMENT", "development")
+        if env == "production" and v:
+            raise ValueError(
+                "USE_MOCK_LLM must be False in production. Merchant-facing LLM responses must use a real model."
+            )
+        return v
+
+    @field_validator("CREDENTIAL_MASTER_KEY")
+    @classmethod
+    def validate_credential_master_key(cls, v: str, info: ValidationInfo) -> str:
+        env = info.data.get("ENVIRONMENT", "development")
+        if env == "production" and (not v or len(v) < 32):
+            raise ValueError(
+                "CREDENTIAL_MASTER_KEY is required in production and must be >= 32 chars. "
+                "It encrypts POS and integration credentials."
+            )
+        return v
+
+    @field_validator("FOODICS_WEBHOOK_SECRET", "SALLA_WEBHOOK_SECRET")
+    @classmethod
+    def validate_webhook_secrets(cls, v: str, info: ValidationInfo) -> str:
+        env = info.data.get("ENVIRONMENT", "development")
+        # In production we strongly recommend HMAC secrets; dev can use tokens.
+        if env == "production" and not v:
+            # We do not raise here because some merchants may not enable these webhooks,
+            # but the startup check will fail loudly if any related webhook endpoint is called.
+            pass
+        return v
+
+    @field_validator("CORS_ORIGINS")
+    @classmethod
+    def validate_cors_origins(cls, v: str, info: ValidationInfo) -> str:
+        env = info.data.get("ENVIRONMENT", "development")
+        origins = [origin.strip() for origin in (v or "").split(",") if origin.strip()]
+        if env == "production":
+            for origin in origins:
+                if origin == "*":
+                    raise ValueError("CORS wildcard '*' is not allowed in production")
+                if not origin.startswith(("https://", "http://")):
+                    raise ValueError(f"CORS origin must include scheme: {origin}")
+        return v
+
 
 @lru_cache()
 def get_settings() -> Settings:
     s = Settings()
-    # Fail fast in production if using dev secret
-    if s.ENVIRONMENT == "production" and "dev-secret-key" in s.SECRET_KEY:
-        raise RuntimeError("FATAL: SECRET_KEY is still the dev default in production")
+    # Fail fast in production if using dev secrets or missing required config.
+    if s.ENVIRONMENT == "production":
+        if "dev-secret-key" in s.SECRET_KEY:
+            raise RuntimeError("FATAL: SECRET_KEY is still the dev default in production")
+        if not s.SENTRY_DSN:
+            raise RuntimeError("FATAL: SENTRY_DSN is required in production")
+        if s.USE_MOCK_LLM:
+            raise RuntimeError("FATAL: USE_MOCK_LLM must be False in production")
+        if not s.CREDENTIAL_MASTER_KEY or len(s.CREDENTIAL_MASTER_KEY) < 32:
+            raise RuntimeError("FATAL: CREDENTIAL_MASTER_KEY is required in production and must be >= 32 chars")
     # Auto-detect SQLite mode: no Celery/Redis needed
     if s.DATABASE_URL.startswith("sqlite"):
         object.__setattr__(s, "USE_CELERY", False)

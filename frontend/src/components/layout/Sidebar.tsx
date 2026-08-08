@@ -16,6 +16,7 @@ export function Sidebar() {
 
   const baseNavItems = [
     { href: "/feed", label: t.sidebar.feed, icon: Inbox, badge: AGENT_ENABLED ? "AI" : null },
+    { href: "/chat", label: t.sidebar.copilot || "Nazm Copilot", icon: Sparkles, badge: "AI" },
     { href: "/dashboard", label: t.sidebar.dashboard, icon: LayoutDashboard },
     { href: "/money-audit", label: "Money Audit", icon: WalletCards, badge: "Free" },
     { href: "/orchestrator", label: t.sidebar.orchestrator || "Recovery Engine", icon: Sparkles, badge: "Recovery" },
@@ -68,7 +69,7 @@ export function Sidebar() {
             <span className="text-white font-bold text-xl font-serif">ن</span>
           </div>
           <div>
-            <h1 className="font-bold text-lg">NazmOS</h1>
+            <div className="font-bold text-lg">NazmOS</div>
             <p className="text-xs text-text-muted">{isAr ? "نظام – الرياض" : "نظام – KSA"}</p>
           </div>
         </div>

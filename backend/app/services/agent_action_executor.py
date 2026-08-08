@@ -128,6 +128,9 @@ async def execute_agent_action(db: AsyncSession, business_id: UUID | str, action
         return await _execute_pricing_update(db, business_id, payload)
     if action_type == "restock":
         return await _execute_restock_po(db, business_id, action_id, payload)
+    if action_type == "expiry_alert":
+        # Expiry alerts are informative in v1; no automatic discount is applied.
+        return {"executed": False, "reason": "expiry_alert is inform-only in v1", "action": "expiry_alert"}
     return {"executed": False, "reason": f"No deterministic executor for action_type={action_type}"}
 
 

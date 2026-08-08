@@ -43,6 +43,7 @@ class InventoryResponse(BaseModel):
     items: List[InventoryItem]
     pagination: PaginationInfo
     summary: InventorySummary
+    intelligence_recommendations: List[dict] | None = None
 
 
 class SalesHistoryItem(BaseModel):
@@ -67,6 +68,7 @@ class ItemDetailResponse(BaseModel):
     sales_history_30d: List[SalesHistoryItem]
     forecast_7d: List[ForecastItem]
     reorder_recommendation: ReorderRecommendation
+    intelligence_recommendations: List[dict] | None = None
 
 
 class RestockRequest(BaseModel):

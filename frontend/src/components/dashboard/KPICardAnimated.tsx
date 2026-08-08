@@ -167,7 +167,7 @@ function Sparkline({ data, color }: { data: number[]; color: "blue" | "green" | 
   const currentColor = colors[color];
 
   return (
-    <svg className="w-24 h-8" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <svg className="w-24 h-8" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <linearGradient id={gradientId} x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stopColor={currentColor.fill} />

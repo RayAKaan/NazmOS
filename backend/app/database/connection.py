@@ -32,8 +32,10 @@ if _is_sqlite:
 else:
     _engine_kwargs.update({
         "pool_pre_ping": True,
-        "pool_size": 10,
-        "max_overflow": 20,
+        "pool_size": getattr(settings, "DATABASE_POOL_SIZE", 10),
+        "max_overflow": getattr(settings, "DATABASE_MAX_OVERFLOW", 20),
+        "pool_recycle": getattr(settings, "DATABASE_POOL_RECYCLE", 1800),
+        "pool_timeout": getattr(settings, "DATABASE_POOL_TIMEOUT", 30),
     })
 
 engine = create_async_engine(settings.DATABASE_URL, **_engine_kwargs)

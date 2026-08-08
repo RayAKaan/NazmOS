@@ -5,6 +5,7 @@ similar. Automatically includes request/business correlation IDs when they are s
 in the logging context.
 """
 import logging
+import re
 import sys
 import json
 from datetime import datetime, timezone
@@ -73,11 +74,15 @@ _PII_KEYS = frozenset(
     }
 )
 
-
 _REDACTED = "[REDACTED]"
 
+# Loose patterns for PII that may appear in free-form strings.
+_EMAIL_RE = re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}")
+_PHONE_RE = re.compile(r"\b(?:\+?966|0)?5\d{8}\b")
+_SAUSSI_ID_RE = re.compile(r"\b1\d{9}\b")
 
-def _redact_value(value: Any) -> Any:
+
+def _redact_scalar(value: Any) -> Any:
     """Replace a scalar value with a redaction marker."""
     if value is None:
         return None
@@ -90,9 +95,19 @@ def _redact_value(value: Any) -> Any:
     return _REDACTED
 
 
+def _redact_string(value: str) -> str:
+    """Redact PII patterns from free-form strings."""
+    value = _EMAIL_RE.sub(_REDACTED, value)
+    value = _PHONE_RE.sub(_REDACTED, value)
+    value = _SAUSSI_ID_RE.sub(_REDACTED, value)
+    return value
+
+
 def redact_pii(data: dict[str, Any]) -> dict[str, Any]:
     """Return a deep copy of ``data`` with known PII fields redacted."""
     if not isinstance(data, dict):
+        if isinstance(data, str):
+            return _redact_string(data)
         return data
     result: dict[str, Any] = {}
     for key, value in data.items():
@@ -103,8 +118,12 @@ def redact_pii(data: dict[str, Any]) -> dict[str, Any]:
             result[key] = redact_pii(value)
         elif isinstance(value, list):
             result[key] = [
-                redact_pii(item) if isinstance(item, dict) else item for item in value
+                redact_pii(item) if isinstance(item, dict) else
+                (_redact_string(item) if isinstance(item, str) else item)
+                for item in value
             ]
+        elif isinstance(value, str):
+            result[key] = _redact_string(value)
         else:
             result[key] = value
     return result
@@ -112,11 +131,12 @@ def redact_pii(data: dict[str, Any]) -> dict[str, Any]:
 
 class JSONFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
+        message = record.getMessage()
         log_data: dict[str, Any] = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "level": record.levelname,
             "logger": record.name,
-            "message": record.getMessage(),
+            "message": _redact_string(message),
         }
 
         # Merge in any extra fields passed via `extra={...}`.

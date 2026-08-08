@@ -16,7 +16,7 @@ export function Logo({ size = "default" }: { size?: "small" | "default" }) {
       </div>
       {size !== "small" && (
         <div>
-          <h1 className="font-bold text-lg leading-none">NazmOS</h1>
+          <div className="font-bold text-lg leading-none">NazmOS</div>
           <p className="text-xs text-text-muted leading-none mt-0.5">AI-Powered</p>
         </div>
       )}

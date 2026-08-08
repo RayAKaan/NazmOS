@@ -16,6 +16,7 @@ import {
   TrendingUp,
   WalletCards,
 } from 'lucide-react';
+import { GuestAuditUploader } from '@/components/landing/GuestAuditUploader';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
@@ -234,6 +235,21 @@ export default function LandingPage() {
           <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7 }}>
             <DemoPanel active="audit" />
           </motion.div>
+        </div>
+      </section>
+
+      <section className="border-y border-white/10 bg-[#0A0E0C] px-5 py-16 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 text-center">
+            <SectionLabel dark>Try it free</SectionLabel>
+            <h2 className="mt-4 font-serif text-4xl font-black tracking-[-.03em] md:text-5xl">
+              See your trapped cash in under 60 seconds
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-white/60">
+              Upload a sales or inventory export. No sign-up, no credit card, no customer data needed.
+            </p>
+          </div>
+          <GuestAuditUploader />
         </div>
       </section>
 

@@ -92,21 +92,15 @@ async def upload_file(
     except Exception as exc:
         raise HTTPException(500, detail=f"Failed to store uploaded file: {exc}")
 
-    # Build a local path for parsing. Object storage backends download to a
-    # temporary file; local backends use the stored path directly.
-    local_parse_path: Path
-    cleanup_after_parse = False
-    if settings.STORAGE_BACKEND.lower() == "local":
-        local_parse_path = Path(storage_uri)
-    else:
-        local_parse_path = UPLOAD_DIR / safe_filename
-        try:
-            retrieved = await storage.retrieve(storage_uri)
-            async with aiofiles.open(local_parse_path, "wb") as f:
-                await f.write(retrieved)
-            cleanup_after_parse = True
-        except Exception as exc:
-            raise HTTPException(500, detail=f"Failed to retrieve uploaded file for parsing: {exc}")
+    # Build a local path for parsing through the storage abstraction. Object
+    # storage backends download to a temporary file; local backends use the
+    # stored path directly. Temporary files are always cleaned up after parse.
+    try:
+        local_parse_path, cleanup_after_parse = await _resolve_local_parse_path(
+            storage_uri, upload_id
+        )
+    except Exception as exc:
+        raise HTTPException(500, detail=f"Failed to resolve uploaded file for parsing: {exc}")
 
     try:
         validation = FileValidator.validate(

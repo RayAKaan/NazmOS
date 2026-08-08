@@ -21,6 +21,7 @@ from app.services.analytics_service import (
     get_category_breakdown,
     get_dashboard_alerts,
 )
+from app.services.intelligence_api_client import IntelligenceAPIClient
 from app.middleware.auth_middleware import get_current_user
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
@@ -53,6 +54,29 @@ async def get_summary(
 ):
     await _verify_business_access(db, business_id, current_user)
     return await get_dashboard_summary(db, business_id)
+
+
+@router.get("/intelligence-summary")
+async def get_intelligence_summary(
+    business_id: UUID = Query(...),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Dashboard summary powered by the Unified Intelligence API.
+
+    This endpoint demonstrates how existing NazmOS applications can consume the
+    intelligence layer instead of querying raw SQL directly.
+    """
+    await _verify_business_access(db, business_id, current_user)
+    client = IntelligenceAPIClient(db, business_id)
+    result = await client.analyze(query="What should I focus on today?")
+    decision = result.get("decision")
+    return {
+        "summary": result["summary"],
+        "recent_event_count": result["recent_event_count"],
+        "top_action": decision.ranked_action if decision else None,
+        "sources": result["sources"],
+    }
 
 
 @router.get("/alerts", response_model=AlertsResponse)

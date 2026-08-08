@@ -6,33 +6,43 @@
   :root {
     --background: 0 0% 4%;
     --foreground: 0 0% 93%;
-    
+
     --card: 0 0% 7%;
     --card-foreground: 0 0% 93%;
-    
+
     --popover: 0 0% 7%;
     --popover-foreground: 0 0% 93%;
-    
-    --primary: 0 0% 93%;
+
+    /* Brand teal (#14B8A6) mapped to primary action / intelligence surfaces. */
+    --primary: 168 76% 40%;
     --primary-foreground: 0 0% 4%;
-    
+
     --secondary: 0 0% 9%;
     --secondary-foreground: 0 0% 93%;
-    
+
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 64%;
-    
+
     --accent: 34 56% 64%;
     --accent-foreground: 0 0% 4%;
-    
+
     --destructive: 0 63% 60%;
     --destructive-foreground: 0 0% 93%;
-    
+
     --border: 0 0% 15%;
     --input: 0 0% 15%;
-    --ring: 34 56% 64%;
-    
+    --ring: 168 76% 40%;
+
     --radius: 0px;
+
+    /* Brand palette */
+    --brand-teal: #14B8A6;
+    --brand-teal-light: #5EEAD4;
+    --brand-teal-dark: #0F766E;
+    --brand-amber: #E0B34A;
+    --brand-amber-light: #F2CF69;
+    --brand-green: #13A05A;
+    --brand-red: #C8412A;
 
     /* Local/system font stack: avoids build-time Google Font fetch failures. */
     --font-serif: Georgia, Cambria, "Times New Roman", serif;
@@ -86,5 +96,45 @@
 
   .shadow-glow-lg {
     box-shadow: 0 0 40px rgba(212, 165, 116, 0.2);
+  }
+
+  .shadow-glow-teal {
+    box-shadow: 0 0 24px rgba(20, 184, 166, 0.15);
+  }
+
+  .shadow-glow-teal-lg {
+    box-shadow: 0 0 40px rgba(20, 184, 166, 0.22);
+  }
+
+  .border-brand-teal {
+    border-color: var(--brand-teal);
+  }
+
+  .text-brand-teal {
+    color: var(--brand-teal);
+  }
+
+  .bg-brand-teal {
+    background-color: var(--brand-teal);
+  }
+
+  .prose-intelligence {
+    @apply text-sm leading-6 text-text-secondary;
+  }
+
+  .prose-intelligence p {
+    @apply mb-3 last:mb-0;
+  }
+
+  .prose-intelligence strong {
+    @apply text-text-primary font-semibold;
+  }
+
+  .prose-intelligence ul {
+    @apply list-disc pl-5 space-y-1;
+  }
+
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14B8A6] focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary;
   }
 }

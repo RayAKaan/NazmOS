@@ -18,6 +18,8 @@ import {
 import api from "@/lib/api";
 import { useAppStore } from "@/stores/appStore";
 import { cn } from "@/lib/utils";
+import { IntelligenceCard } from "@/components/intelligence/IntelligenceCard";
+import { Sparkles } from "lucide-react";
 
 interface AuditAction {
   id: string;
@@ -49,6 +51,9 @@ interface MoneyAudit {
   missing_data: { code: string; message: string }[];
   actions: AuditAction[];
   created_at?: string | null;
+  intelligence_summary?: string | null;
+  intelligence_actions?: { title: string; description?: string; expected_value_sar?: number; confidence?: number }[];
+  intelligence_sources?: string[];
 }
 
 function money(value: number | null | undefined) {
@@ -151,6 +156,20 @@ export default function MoneyAuditPage() {
     }
   };
 
+  const shareWhatsApp = async () => {
+    if (!audit) return;
+    setWorking(true);
+    try {
+      const res = await api.get(`/money-audit/${audit.id}/whatsapp-summary`, { responseType: "text" });
+      const text = encodeURIComponent(res.data);
+      window.open(`https://wa.me/?text=${text}`, "_blank", "noopener,noreferrer");
+    } catch {
+      setNotice("Could not open WhatsApp share.");
+    } finally {
+      setWorking(false);
+    }
+  };
+
   const openPrint = async () => {
     if (!audit) return;
     setWorking(true);
@@ -216,8 +235,11 @@ export default function MoneyAuditPage() {
             <button disabled={working} onClick={regenerate} className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-3 text-sm font-bold text-white/70 hover:bg-white/5">
               <RefreshCw className="h-4 w-4" /> Regenerate
             </button>
-            <button disabled={working} onClick={copyWhatsApp} className="inline-flex items-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-sm font-bold text-black hover:bg-[#54df85]">
+            <button disabled={working} onClick={copyWhatsApp} className="inline-flex items-center gap-2 rounded-xl border border-[#25D366]/50 px-4 py-3 text-sm font-bold text-[#25D366] hover:bg-[#25D366]/10">
               <MessageCircle className="h-4 w-4" /> Copy WhatsApp
+            </button>
+            <button disabled={working} onClick={shareWhatsApp} className="inline-flex items-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-sm font-bold text-black hover:bg-[#54df85]">
+              <MessageCircle className="h-4 w-4" /> Share WhatsApp
             </button>
             <button disabled={working} onClick={openPrint} className="inline-flex items-center gap-2 rounded-xl bg-[#E0B34A] px-4 py-3 text-sm font-bold text-black hover:bg-[#f2cf69]">
               <Download className="h-4 w-4" /> Printable report
@@ -240,6 +262,32 @@ export default function MoneyAuditPage() {
         <Mini label="Margin leakage" value={money(audit.margin_leakage_sar)} />
         <Mini label="Data quality" value={`${Math.round(audit.data_quality_score || audit.confidence_score)}%`} />
       </section>
+
+      {audit.intelligence_summary && (
+        <IntelligenceCard
+          title="AI-Powered Audit Summary"
+          summary={audit.intelligence_summary}
+          sources={audit.intelligence_sources || []}
+          icon={<Sparkles className="w-5 h-5" />}
+          variant="default"
+        >
+          {audit.intelligence_actions && audit.intelligence_actions.length > 0 && (
+            <ul className="space-y-2">
+              {audit.intelligence_actions.map((action, idx) => (
+                <li key={idx} className="text-sm text-text-secondary">
+                  <span className="text-text-primary font-medium">{action.title}</span>
+                  {action.description && <> — {action.description}</>}
+                  {typeof action.expected_value_sar === "number" && (
+                    <span className="ml-2 text-status-success">
+                      SAR {action.expected_value_sar.toLocaleString()}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </IntelligenceCard>
+      )}
 
       {audit.missing_data?.length > 0 && (
         <section className="rounded-3xl border border-[#E0B34A]/25 bg-[#E0B34A]/10 p-6">

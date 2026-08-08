@@ -26,6 +26,18 @@ export interface InventorySummary {
   dead_count: number;
 }
 
+export interface InventoryRecommendation {
+  type?: string;
+  action_type?: string;
+  title: string;
+  description?: string;
+  confidence?: number;
+  expected_value_sar?: number;
+  expected_impact_sar?: number;
+  expected_roi?: number;
+  reasons?: string[];
+}
+
 export interface InventoryResponse {
   items: InventoryItem[];
   pagination: {
@@ -35,6 +47,15 @@ export interface InventoryResponse {
     total_pages: number;
   };
   summary: InventorySummary;
+  intelligence_recommendations?: InventoryRecommendation[];
+}
+
+export interface ItemDetail {
+  item: InventoryItem;
+  sales_history_30d: SalesHistoryItem[];
+  forecast_7d: ForecastItem[];
+  reorder_recommendation: ReorderRecommendation;
+  intelligence_recommendations?: InventoryRecommendation[];
 }
 
 export interface SalesHistoryItem {
@@ -52,11 +73,4 @@ export interface ReorderRecommendation {
   recommended_qty: number;
   recommended_by_date: string | null;
   reason: string | null;
-}
-
-export interface ItemDetail {
-  item: InventoryItem;
-  sales_history_30d: SalesHistoryItem[];
-  forecast_7d: ForecastItem[];
-  reorder_recommendation: ReorderRecommendation;
 }

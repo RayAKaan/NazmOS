@@ -20,6 +20,7 @@ from app.services.money_audit_service import (
     update_action_status,
     whatsapp_summary,
 )
+from app.services.intelligence_api_client import IntelligenceAPIClient
 
 router = APIRouter(prefix="/api/v1/money-audit", tags=["Money Audit"])
 
@@ -43,6 +44,47 @@ async def _audit_business_id(db: AsyncSession, audit_id: UUID | str) -> str:
     return str(row.business_id)
 
 
+async def _enrich_audit_with_intelligence(
+    db: AsyncSession,
+    business_id: UUID,
+    audit: dict,
+) -> dict:
+    """Phase 7: enrich a Money Audit with intelligence-driven insights."""
+    try:
+        client = IntelligenceAPIClient(db, business_id)
+        analysis = await client.analyze(query="Money audit recovery actions")
+        decision = analysis.get("decision")
+        intelligence_actions = []
+        if decision:
+            ranked = decision.ranked_action
+            if ranked:
+                intelligence_actions.append({
+                    "action_type": ranked.get("action_type"),
+                    "title": ranked.get("title"),
+                    "confidence": float(decision.confidence) if decision.confidence else None,
+                    "expected_roi": ranked.get("expected_roi"),
+                    "reasons": ranked.get("reasons", []),
+                })
+            for candidate in (decision.candidate_actions or [])[:3]:
+                if candidate != ranked:
+                    intelligence_actions.append({
+                        "action_type": candidate.get("action_type"),
+                        "title": candidate.get("title"),
+                        "confidence": candidate.get("confidence"),
+                        "expected_roi": candidate.get("expected_roi"),
+                        "reasons": candidate.get("reasons", []),
+                    })
+        audit["intelligence_summary"] = analysis.get("summary")
+        audit["intelligence_actions"] = intelligence_actions
+        audit["intelligence_sources"] = analysis.get("sources", [])
+    except Exception:
+        # Intelligence enrichment is best-effort; never break the audit.
+        audit["intelligence_summary"] = None
+        audit["intelligence_actions"] = []
+        audit["intelligence_sources"] = []
+    return audit
+
+
 @router.get("/current")
 async def current_money_audit(
     business_id: UUID = Query(...),
@@ -53,10 +95,11 @@ async def current_money_audit(
     await assert_business_access(db, str(business_id), current_user)
     audit = await get_latest_money_audit(db, business_id)
     if audit:
-        return audit
+        return await _enrich_audit_with_intelligence(db, business_id, audit)
     if not auto_generate:
         return {"audit": None, "message": "No Money Audit generated yet."}
-    return await generate_money_audit(db, business_id, current_user.id)
+    audit = await generate_money_audit(db, business_id, current_user.id)
+    return await _enrich_audit_with_intelligence(db, business_id, audit)
 
 
 @router.post("/generate")
@@ -66,7 +109,8 @@ async def generate_audit(
     current_user: User = Depends(get_current_user),
 ):
     await assert_business_access(db, str(payload.business_id), current_user)
-    return await generate_money_audit(db, payload.business_id, current_user.id)
+    audit = await generate_money_audit(db, payload.business_id, current_user.id)
+    return await _enrich_audit_with_intelligence(db, payload.business_id, audit)
 
 
 @router.get("/{audit_id}")

@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Link2, Plus, RefreshCw, Trash2, CheckCircle, 
-  XCircle, Settings, Zap, Database, ShoppingCart
+  XCircle, Zap, Database, ShoppingCart, Store, Building2, ArrowLeft
 } from "lucide-react";
 import api from "@/lib/api";
 import { useAppStore } from "@/stores/appStore";
+import { cn } from "@/lib/utils";
 
 interface POSConnection {
   id: string;
@@ -24,14 +25,112 @@ interface POSConnection {
   is_active: boolean;
 }
 
-const ADAPTERS = [
-  { id: "foodics", name: "Foodics POS (KSA)", icon: Zap, description: "Real-time OAuth & order created webhook sync" },
-  { id: "salla", name: "Salla E-Commerce (KSA)", icon: ShoppingCart, description: "Sync Salla web orders into your retail recovery ledger" },
-  { id: "tally", name: "Tally ERP", icon: Database, description: "Connect to Tally for real-time sync" },
-  { id: "shopify", name: "Shopify", icon: ShoppingCart, description: "Sync with your Shopify store" },
-  { id: "woocommerce", name: "WooCommerce", icon: ShoppingCart, description: "Connect WordPress WooCommerce" },
-  { id: "zoho", name: "Zoho Inventory", icon: Database, description: "Sync with Zoho Inventory" },
-  { id: "csv_webhook", name: "CSV/Webhook", icon: Zap, description: "Custom CSV import or webhook" },
+type AdapterId = "foodics" | "salla" | "zid" | "qoyod" | "shopify" | "woocommerce" | "tally" | "zoho" | "csv_webhook";
+
+interface AdapterConfig {
+  id: AdapterId;
+  name: string;
+  icon: React.ElementType;
+  description: string;
+  category: "Saudi-native" | "Global" | "Custom";
+  fields: { key: string; label: string; type?: string; placeholder?: string; required?: boolean }[];
+}
+
+const ADAPTERS: AdapterConfig[] = [
+  { 
+    id: "foodics", 
+    name: "Foodics POS", 
+    icon: Store, 
+    description: "F&B POS webhooks and API sync for Saudi restaurants.",
+    category: "Saudi-native",
+    fields: [
+      { key: "connection_name", label: "Connection name", placeholder: "My Foodics branch", required: true },
+      { key: "access_token", label: "Foodics API token (optional)", placeholder: "For product/order fetch", type: "password" },
+      { key: "webhook_secret", label: "Webhook secret", placeholder: "For real-time order webhooks", type: "password" },
+    ]
+  },
+  { 
+    id: "salla", 
+    name: "Salla E-Commerce", 
+    icon: ShoppingCart, 
+    description: "Sync Salla web orders and products into NazmOS.",
+    category: "Saudi-native",
+    fields: [
+      { key: "connection_name", label: "Connection name", placeholder: "My Salla store", required: true },
+      { key: "access_token", label: "Salla access token", placeholder: "From Salla app settings", type: "password", required: true },
+      { key: "webhook_secret", label: "Webhook secret (optional)", placeholder: "For real-time order webhooks", type: "password" },
+    ]
+  },
+  { 
+    id: "zid", 
+    name: "Zid E-Commerce", 
+    icon: ShoppingCart, 
+    description: "Sync Zid orders and inventory into your retail recovery ledger.",
+    category: "Saudi-native",
+    fields: [
+      { key: "connection_name", label: "Connection name", placeholder: "My Zid store", required: true },
+      { key: "access_token", label: "Zid API token", placeholder: "From Zid merchant settings", type: "password", required: true },
+    ]
+  },
+  { 
+    id: "qoyod", 
+    name: "Qoyod Accounting", 
+    icon: Building2, 
+    description: "Pull products and sales invoices from Qoyod (read-only).",
+    category: "Saudi-native",
+    fields: [
+      { key: "connection_name", label: "Connection name", placeholder: "My Qoyod account", required: true },
+      { key: "api_key", label: "Qoyod API key", placeholder: "From Qoyod integrations", type: "password", required: true },
+    ]
+  },
+  { 
+    id: "shopify", 
+    name: "Shopify", 
+    icon: ShoppingCart, 
+    description: "Sync with your Shopify store.",
+    category: "Global",
+    fields: [
+      { key: "connection_name", label: "Connection name", placeholder: "My Shopify store", required: true },
+      { key: "shop_name", label: "Shop name", placeholder: "your-store", required: true },
+      { key: "access_token", label: "Access token", type: "password", required: true },
+    ]
+  },
+  { 
+    id: "woocommerce", 
+    name: "WooCommerce", 
+    icon: ShoppingCart, 
+    description: "Connect WordPress WooCommerce.",
+    category: "Global",
+    fields: [
+      { key: "connection_name", label: "Connection name", placeholder: "My WooCommerce store", required: true },
+      { key: "site_url", label: "Site URL", placeholder: "https://your-store.com", required: true },
+      { key: "consumer_key", label: "Consumer key", required: true },
+      { key: "consumer_secret", label: "Consumer secret", type: "password", required: true },
+    ]
+  },
+  { 
+    id: "tally", 
+    name: "Tally ERP", 
+    icon: Database, 
+    description: "Connect to Tally for real-time sync.",
+    category: "Global",
+    fields: [
+      { key: "connection_name", label: "Connection name", placeholder: "My Tally server", required: true },
+      { key: "tally_url", label: "Tally URL", placeholder: "http://localhost:9000", required: true },
+      { key: "company_name", label: "Company name", required: true },
+    ]
+  },
+  { 
+    id: "csv_webhook", 
+    name: "CSV / Webhook", 
+    icon: Zap, 
+    description: "Custom CSV import or webhook endpoint.",
+    category: "Custom",
+    fields: [
+      { key: "connection_name", label: "Connection name", placeholder: "Custom bridge", required: true },
+      { key: "endpoint_url", label: "Endpoint URL", placeholder: "https://..." },
+    ]
+  },
 ];
 
 const STATUS_COLORS: Record<string, string> = {
@@ -46,7 +145,10 @@ export default function IntegrationsPage() {
   const [connections, setConnections] = useState<POSConnection[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [selectedAdapter, setSelectedAdapter] = useState<string | null>(null);
+  const [selectedAdapter, setSelectedAdapter] = useState<AdapterId | null>(null);
+  const [formValues, setFormValues] = useState<Record<string, string>>({});
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formLoading, setFormLoading] = useState(false);
   const { businessId } = useAppStore();
 
   const fetchConnections = useCallback(async () => {
@@ -102,6 +204,60 @@ export default function IntegrationsPage() {
     }
   };
 
+  const handleCreateConnection = async () => {
+    if (!businessId || !selectedAdapter) return;
+    const adapter = ADAPTERS.find(a => a.id === selectedAdapter);
+    if (!adapter) return;
+
+    const requiredFields = adapter.fields.filter(f => f.required).map(f => f.key);
+    const missing = requiredFields.filter(key => !formValues[key]?.trim());
+    if (missing.length > 0) {
+      setFormError(`Please fill in: ${missing.join(", ")}`);
+      return;
+    }
+
+    setFormLoading(true);
+    setFormError(null);
+
+    try {
+      const credentials: Record<string, string> = {};
+      adapter.fields.forEach(field => {
+        if (field.key !== "connection_name" && formValues[field.key]) {
+          credentials[field.key] = formValues[field.key];
+        }
+      });
+
+      await api.post("/pos/connections", {
+        data: {
+          adapter_type: selectedAdapter,
+          connection_name: formValues.connection_name || adapter.name,
+          sync_sales: true,
+          sync_inventory: true,
+          push_orders: false,
+        },
+        credentials,
+      }, {
+        params: { business_id: businessId },
+      });
+
+      setShowAddModal(false);
+      setSelectedAdapter(null);
+      setFormValues({});
+      fetchConnections();
+    } catch (error: any) {
+      const detail = error?.response?.data?.detail;
+      setFormError(typeof detail === "string" ? detail : "Could not create connection. Check credentials and try again.");
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
+  const openAdapter = (adapterId: AdapterId) => {
+    setSelectedAdapter(adapterId);
+    setFormValues({});
+    setFormError(null);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -110,13 +266,17 @@ export default function IntegrationsPage() {
     );
   }
 
+  const saudiAdapters = ADAPTERS.filter(a => a.category === "Saudi-native");
+  const globalAdapters = ADAPTERS.filter(a => a.category === "Global");
+  const customAdapters = ADAPTERS.filter(a => a.category === "Custom");
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[#f0f0f5]">Integrations</h1>
           <p className="text-sm text-[#8888a0]">
-            Connect your POS systems and sync data automatically
+            Connect the tools you already use and let NazmOS turn their data into decisions.
           </p>
         </div>
         <button
@@ -239,68 +399,122 @@ export default function IntegrationsPage() {
       </div>
 
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-[#1a1a2e] rounded-2xl p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto"
+            className="bg-[#1a1a2e] rounded-2xl p-6 w-full max-w-2xl max-h-[85vh] overflow-y-auto"
           >
-            <h3 className="text-lg font-semibold text-[#f0f0f5] mb-4">Add Integration</h3>
+            <h3 className="text-lg font-semibold text-[#f0f0f5] mb-4">
+              {selectedAdapter ? "Configure integration" : "Add Integration"}
+            </h3>
             
             {!selectedAdapter ? (
-              <div className="grid grid-cols-2 gap-4">
-                {ADAPTERS.map((adapter) => {
-                  const Icon = adapter.icon;
-                  return (
-                    <button
-                      key={adapter.id}
-                      onClick={() => setSelectedAdapter(adapter.id)}
-                      className="flex items-start gap-4 p-4 bg-[#2a2a3e] rounded-xl hover:bg-[#3a3a4e] transition-colors text-left"
-                    >
-                      <div className="w-10 h-10 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
-                        <Icon className="w-5 h-5 text-[#8888a0]" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-[#f0f0f5]">{adapter.name}</p>
-                        <p className="text-sm text-[#8888a0]">{adapter.description}</p>
-                      </div>
-                    </button>
-                  );
-                })}
+              <div className="space-y-6">
+                <AdapterGrid title="Saudi-native" adapters={saudiAdapters} onSelect={openAdapter} />
+                <AdapterGrid title="Global platforms" adapters={globalAdapters} onSelect={openAdapter} />
+                <AdapterGrid title="Custom" adapters={customAdapters} onSelect={openAdapter} />
+                <button
+                  onClick={() => setShowAddModal(false)}
+                  className="w-full py-3 bg-[#2a2a3e] text-[#f0f0f5] rounded-xl hover:bg-[#3a3a4e] transition-colors"
+                >
+                  Cancel
+                </button>
               </div>
             ) : (
               <div>
                 <button
                   onClick={() => setSelectedAdapter(null)}
-                  className="text-sm text-blue-400 mb-4"
+                  className="flex items-center gap-1 text-sm text-blue-400 mb-4 hover:text-blue-300"
                 >
-                  ← Back to integrations
+                  <ArrowLeft className="w-4 h-4" /> Back to integrations
                 </button>
                 
-                <div className="space-y-4">
-                  <p className="text-[#8888a0]">
-                    Configure your {ADAPTERS.find((a) => a.id === selectedAdapter)?.name} connection.
-                    This will open a setup wizard in the next step.
-                  </p>
-                  
-                  <div className="bg-[#2a2a3e] rounded-xl p-4">
-                    <h4 className="font-medium text-[#f0f0f5] mb-2">Coming Soon</h4>
-                    <p className="text-sm text-[#8888a0]">
-                      Full configuration UI for {selectedAdapter} is being built. 
-                      Contact support to set up this integration.
-                    </p>
-                  </div>
-                  
+                <AdapterForm
+                  adapter={ADAPTERS.find(a => a.id === selectedAdapter)!}
+                  values={formValues}
+                  onChange={setFormValues}
+                  error={formError}
+                />
+                
+                <div className="mt-6 flex gap-3">
                   <button
-                    onClick={() => setShowAddModal(false)}
-                    className="w-full py-3 bg-[#2a2a3e] text-[#f0f0f5] rounded-xl hover:bg-[#3a3a4e] transition-colors"
+                    onClick={() => setSelectedAdapter(null)}
+                    className="flex-1 py-3 bg-[#2a2a3e] text-[#f0f0f5] rounded-xl hover:bg-[#3a3a4e] transition-colors"
                   >
-                    Cancel
+                    Back
+                  </button>
+                  <button
+                    onClick={handleCreateConnection}
+                    disabled={formLoading}
+                    className="flex-1 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors disabled:opacity-50"
+                  >
+                    {formLoading ? "Saving…" : "Connect"}
                   </button>
                 </div>
               </div>
             )}
           </motion.div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AdapterGrid({ title, adapters, onSelect }: { title: string; adapters: AdapterConfig[]; onSelect: (id: AdapterId) => void }) {
+  return (
+    <div>
+      <h4 className="text-sm font-medium text-[#8888a0] mb-3">{title}</h4>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {adapters.map((adapter) => {
+          const Icon = adapter.icon;
+          return (
+            <button
+              key={adapter.id}
+              onClick={() => onSelect(adapter.id)}
+              className="flex items-start gap-4 p-4 bg-[#2a2a3e] rounded-xl hover:bg-[#3a3a4e] transition-colors text-left"
+            >
+              <div className="w-10 h-10 rounded-lg bg-[#1a1a2e] flex items-center justify-center shrink-0">
+                <Icon className="w-5 h-5 text-[#8888a0]" />
+              </div>
+              <div>
+                <p className="font-medium text-[#f0f0f5]">{adapter.name}</p>
+                <p className="text-sm text-[#8888a0]">{adapter.description}</p>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function AdapterForm({ adapter, values, onChange, error }: { 
+  adapter: AdapterConfig; 
+  values: Record<string, string>; 
+  onChange: (v: Record<string, string>) => void;
+  error: string | null;
+}) {
+  return (
+    <div className="space-y-4">
+      {adapter.fields.map((field) => (
+        <div key={field.key}>
+          <label className="block text-sm font-medium text-[#f0f0f5] mb-1.5">
+            {field.label}
+            {field.required && <span className="text-red-400 ml-1">*</span>}
+          </label>
+          <input
+            type={field.type || "text"}
+            value={values[field.key] || ""}
+            onChange={(e) => onChange({ ...values, [field.key]: e.target.value })}
+            placeholder={field.placeholder}
+            className="w-full px-4 py-2.5 bg-[#0f0f1a] border border-[#2a2a3e] rounded-xl text-[#f0f0f5] placeholder-[#555570] focus:outline-none focus:border-blue-500"
+          />
+        </div>
+      ))}
+      {error && (
+        <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-300">
+          {error}
         </div>
       )}
     </div>

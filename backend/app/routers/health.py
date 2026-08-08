@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import get_settings
 from app.database import get_db
 from app.schemas.common import HealthResponse
+from app.services.infra_service import ping_redis, ping_celery, get_celery_queue_lengths
 
 router = APIRouter(tags=["Health"])
 settings = get_settings()
@@ -81,4 +82,23 @@ async def readiness_check(db: AsyncSession = Depends(get_db)):
         "status": ready_status,
         "checks": checks,
         "timestamp": datetime.utcnow().isoformat(),
+    }
+
+
+@router.get("/health/redis")
+async def redis_health():
+    return {
+        "service": "redis",
+        "timestamp": datetime.utcnow().isoformat(),
+        **await ping_redis(),
+    }
+
+
+@router.get("/health/celery")
+async def celery_health():
+    return {
+        "service": "celery",
+        "timestamp": datetime.utcnow().isoformat(),
+        **ping_celery(),
+        "queues": get_celery_queue_lengths().get("queues", {}),
     }

@@ -71,11 +71,13 @@ cryptography>=46.0.6
 # Utilities
 aiofiles==23.2.1
 pytz==2024.1
+setuptools>=70.0.0,<71
 
 # Phase 3 - Billing & Integrations
 stripe==8.8.0
 twilio==9.3.0
 minio==7.2.6
 email-validator==2.2.0
+python-multipart>=0.0.9
 python-slugify==8.0.4
 bcrypt==4.0.1

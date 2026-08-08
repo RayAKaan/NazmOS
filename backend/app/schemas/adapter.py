@@ -5,7 +5,10 @@ from typing import Optional
 
 
 class POSConnectionCreate(BaseModel):
-    adapter_type: str = Field(..., pattern=r'^(tally|shopify|woocommerce|zoho|csv_webhook|custom_api|foodics|salla)$')
+    adapter_type: str = Field(
+        ...,
+        pattern=r'^(tally|shopify|woocommerce|zoho|csv_webhook|custom_api|foodics|salla|zid|qoyod)$',
+    )
     connection_name: str = Field(..., min_length=1, max_length=100)
     endpoint_url: Optional[str] = None
     sync_interval_minutes: int = Field(default=15, ge=5, le=1440)
@@ -49,6 +52,22 @@ class POSCredentialsWebhook(BaseModel):
     webhook_secret: str
 
 
+class POSCredentialsToken(BaseModel):
+    access_token: str
+    webhook_secret: Optional[str] = None
+    base_url: Optional[str] = None
+
+
+class POSCredentialsZid(BaseModel):
+    access_token: str
+    base_url: Optional[str] = "https://api.zid.sa/v1"
+
+
+class POSCredentialsQoyod(BaseModel):
+    api_key: str
+    base_url: Optional[str] = "https://api.qoyod.com/api/2.0"
+
+
 class POSConnectionCredentials(BaseModel):
     tally: Optional[POSCredentialsTally] = None
     shopify: Optional[POSCredentialsShopify] = None
@@ -56,7 +75,9 @@ class POSConnectionCredentials(BaseModel):
     zoho: Optional[POSCredentialsZoho] = None
     custom_api: Optional[POSCredentialsGeneric] = None
     foodics: Optional[POSCredentialsWebhook] = None
-    salla: Optional[POSCredentialsWebhook] = None
+    salla: Optional[POSCredentialsToken] = None
+    zid: Optional[POSCredentialsZid] = None
+    qoyod: Optional[POSCredentialsQoyod] = None
 
 
 class POSConnectionResponse(BaseModel):

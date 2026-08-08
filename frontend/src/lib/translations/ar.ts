@@ -33,6 +33,7 @@ export const ar = {
 
   sidebar: {
     feed: "نظم",
+    copilot: "مساعد نظم",
     dashboard: "لوحة التحكم",
     inventory: "المخزون",
     forecast: "التوقعات",
@@ -196,6 +197,46 @@ export const ar = {
     applyNow: "تطبيق الآن",
     noAlerts: "كل شيء على ما يرام",
     watching247: "نظم يراقب مخزونك ٢٤/٧",
+  },
+
+  intelligence: {
+    title: "ذكاء نظم",
+    summaryTitle: "تركيز اليوم",
+    whatToFocusOn: "على ماذا يجب أن تركز اليوم",
+    sources: "المصادر",
+    confidence: "الثقة",
+    reasoning: "الاستدلال",
+    whyThis: "لماذا هذا؟",
+    topAction: "الإجراء الأهم",
+    noSummary: "لا يوجد ملخص ذكاء متاح بعد.",
+    recommendations: "التوصيات",
+  },
+
+  copilot: {
+    title: "مساعد نظم",
+    subtitle: "اسأل أي شيء عن متجرك",
+    placeholder: "اسأل نظم...",
+    disclaimer: "الإجابات المُولّدة بالذكاء الاصطناعي قد تكون غير دقيقة. راجعها دائماً قبل التنفيذ.",
+    thinking: "نظم يفكر...",
+    emptyTitle: "ماذا تريد أن تعرف؟",
+    emptySubtitle: "يمكن لنظم أن يستدل عبر المبيعات والمخزون والسياق والقرارات.",
+  },
+
+  onboarding: {
+    welcome: "مرحباً بك في نظم",
+    subtitle: "لنجهز متجرك في أقل من ٥ دقائق",
+    goalQuestion: "ما الذي تريد تحقيقه أولاً؟",
+    goalStockouts: "منع نفاد المخزون",
+    goalDeadStock: "تصفية المخزون الميت",
+    goalMargins: "تحسين الهوامش",
+    goalCompliance: "الالتزام باللوائح",
+    uploadData: "ارفع أو اربط بياناتك",
+    firstInsight: "رؤيتك الأولى",
+    openDashboard: "افتح لوحة التحكم",
+    step1: "الهدف",
+    step2: "البيانات",
+    step3: "الرؤية",
+    step4: "لوحة التحكم",
   },
 
   agent: {

@@ -439,29 +439,314 @@ class FoodicsWebhookAdapter(BasePOSAdapter):
             return False
 
 
-class SallaWebhookAdapter(BasePOSAdapter):
-    """Webhook-only adapter for Salla E-Commerce.
+class SallaAdapter(BasePOSAdapter):
+    """Salla E-Commerce adapter.
 
-    Real-time orders are pushed by Salla to /api/v1/pos/salla/webhook.
-    This adapter only provides a connection test that validates the configured
-    webhook secret can be used for HMAC signature verification.
+    Supports both webhook ingestion (order.created) and on-demand API fetch for
+    orders and products. Configure either a webhook_secret for real-time push or
+    an access_token for API polling.
     """
 
+    def __init__(self, credentials: dict):
+        super().__init__(credentials)
+        self.access_token = self.credentials.get("access_token")
+        self.webhook_secret = self.credentials.get("webhook_secret")
+        self.base_url = self.credentials.get("base_url", "https://api.salla.dev/admin/v2")
+
+    def _headers(self) -> dict:
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        if self.access_token:
+            headers["Authorization"] = f"Bearer {self.access_token}"
+        return headers
+
     async def fetch_sales(self, date_from=None, date_to=None) -> list[dict]:
-        return []
+        if not self.access_token:
+            return []
+        try:
+            async with httpx.AsyncClient(timeout=30) as client:
+                params = {"per_page": 100}
+                if date_from:
+                    params["from"] = str(date_from)
+                if date_to:
+                    params["to"] = str(date_to)
+                response = await client.get(
+                    f"{self.base_url}/orders",
+                    headers=self._headers(),
+                    params=params,
+                )
+                if response.status_code != 200:
+                    logger.warning("salla_fetch_sales_failed", status=response.status_code)
+                    return []
+                orders = response.json().get("data", [])
+                records = []
+                for order in orders:
+                    for item in order.get("items", []):
+                        records.append({
+                            "date": order.get("date", {}).get("date") or order.get("created_at"),
+                            "item_id": str(item.get("id")),
+                            "item_name": item.get("name"),
+                            "sku": item.get("sku"),
+                            "quantity": float(item.get("quantity", 1)),
+                            "unit_price": float(item.get("amount", 0)) / max(1, float(item.get("quantity", 1))),
+                            "cost_price": 0,
+                            "total": float(item.get("amount", 0)),
+                            "profit": 0,
+                        })
+                return records
+        except Exception as e:
+            logger.error("salla_fetch_sales_error", error=str(e))
+            return []
 
     async def fetch_inventory(self) -> list[dict]:
-        return []
+        if not self.access_token:
+            return []
+        try:
+            async with httpx.AsyncClient(timeout=30) as client:
+                response = await client.get(
+                    f"{self.base_url}/products",
+                    headers=self._headers(),
+                    params={"per_page": 100},
+                )
+                if response.status_code != 200:
+                    logger.warning("salla_fetch_inventory_failed", status=response.status_code)
+                    return []
+                products = response.json().get("data", [])
+                records = []
+                for product in products:
+                    records.append({
+                        "sku": product.get("sku"),
+                        "item_name": product.get("name"),
+                        "quantity": float(product.get("quantity", 0)),
+                        "cost_price": float(product.get("cost_price", 0) or 0),
+                        "sell_price": float(product.get("price", 0) or 0),
+                    })
+                return records
+        except Exception as e:
+            logger.error("salla_fetch_inventory_error", error=str(e))
+            return []
 
     async def test_connection(self) -> bool:
-        secret = self.credentials.get("webhook_secret") or getattr(settings, "SALLA_WEBHOOK_SECRET", "")
-        if not secret:
+        if self.access_token:
+            try:
+                async with httpx.AsyncClient(timeout=10) as client:
+                    response = await client.get(
+                        f"{self.base_url}/store/info",
+                        headers=self._headers(),
+                    )
+                    return response.status_code == 200
+            except Exception as e:
+                logger.error("salla_api_test_error", error=str(e))
+                return False
+        if self.webhook_secret:
+            try:
+                expected = hmac.new(self.webhook_secret.encode(), b"nazmos-test", hashlib.sha256).hexdigest()
+                return len(expected) == 64
+            except Exception as e:
+                logger.error("salla_webhook_test_error", error=str(e))
+                return False
+        return False
+
+
+class ZidAdapter(BasePOSAdapter):
+    """Zid E-Commerce adapter for Saudi merchants.
+
+    Supports API-polling for orders and products using a Zid merchant API token.
+    Webhook support can be added later via the shared webhook infrastructure.
+    """
+
+    def __init__(self, credentials: dict):
+        super().__init__(credentials)
+        self.access_token = self.credentials.get("access_token")
+        self.base_url = self.credentials.get("base_url", "https://api.zid.sa/v1")
+
+    def _headers(self) -> dict:
+        return {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": f"Bearer {self.access_token}",
+        }
+
+    async def fetch_sales(self, date_from=None, date_to=None) -> list[dict]:
+        if not self.access_token:
+            return []
+        try:
+            async with httpx.AsyncClient(timeout=30) as client:
+                params = {"per_page": 100}
+                if date_from:
+                    params["from"] = str(date_from)
+                if date_to:
+                    params["to"] = str(date_to)
+                response = await client.get(
+                    f"{self.base_url}/orders",
+                    headers=self._headers(),
+                    params=params,
+                )
+                if response.status_code != 200:
+                    logger.warning("zid_fetch_sales_failed", status=response.status_code)
+                    return []
+                orders = response.json().get("data", [])
+                records = []
+                for order in orders:
+                    for item in order.get("items", []):
+                        records.append({
+                            "date": order.get("created_at"),
+                            "item_id": str(item.get("id")),
+                            "item_name": item.get("name"),
+                            "sku": item.get("sku"),
+                            "quantity": float(item.get("quantity", 1)),
+                            "unit_price": float(item.get("price", 0)),
+                            "cost_price": 0,
+                            "total": float(item.get("total", 0) or item.get("price", 0)) * float(item.get("quantity", 1)),
+                            "profit": 0,
+                        })
+                return records
+        except Exception as e:
+            logger.error("zid_fetch_sales_error", error=str(e))
+            return []
+
+    async def fetch_inventory(self) -> list[dict]:
+        if not self.access_token:
+            return []
+        try:
+            async with httpx.AsyncClient(timeout=30) as client:
+                response = await client.get(
+                    f"{self.base_url}/products",
+                    headers=self._headers(),
+                    params={"per_page": 100},
+                )
+                if response.status_code != 200:
+                    logger.warning("zid_fetch_inventory_failed", status=response.status_code)
+                    return []
+                products = response.json().get("data", [])
+                records = []
+                for product in products:
+                    records.append({
+                        "sku": product.get("sku"),
+                        "item_name": product.get("name"),
+                        "quantity": float(product.get("stock_quantity", 0) or product.get("quantity", 0)),
+                        "cost_price": float(product.get("cost_price", 0) or 0),
+                        "sell_price": float(product.get("price", 0) or 0),
+                    })
+                return records
+        except Exception as e:
+            logger.error("zid_fetch_inventory_error", error=str(e))
+            return []
+
+    async def test_connection(self) -> bool:
+        if not self.access_token:
             return False
         try:
-            expected = hmac.new(secret.encode(), b"nazmos-test", hashlib.sha256).hexdigest()
-            return len(expected) == 64
+            async with httpx.AsyncClient(timeout=10) as client:
+                response = await client.get(
+                    f"{self.base_url}/store/profile",
+                    headers=self._headers(),
+                )
+                return response.status_code == 200
         except Exception as e:
-            logger.error("salla_test_connection_error", error=str(e))
+            logger.error("zid_test_connection_error", error=str(e))
+            return False
+
+
+class QoyodAdapter(BasePOSAdapter):
+    """Qoyod Accounting adapter for Saudi SMEs.
+
+    Pulls products and sales invoices into NazmOS using a Qoyod API key. The
+    adapter is read-only; NazmOS does not write back to the Qoyod general ledger.
+    """
+
+    def __init__(self, credentials: dict):
+        super().__init__(credentials)
+        self.api_key = self.credentials.get("api_key")
+        self.base_url = self.credentials.get("base_url", "https://api.qoyod.com/api/2.0")
+
+    def _headers(self) -> dict:
+        return {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "API-KEY": self.api_key,
+        }
+
+    async def fetch_sales(self, date_from=None, date_to=None) -> list[dict]:
+        if not self.api_key:
+            return []
+        try:
+            async with httpx.AsyncClient(timeout=30) as client:
+                params = {"per_page": 100}
+                if date_from:
+                    params["from"] = str(date_from)
+                if date_to:
+                    params["to"] = str(date_to)
+                response = await client.get(
+                    f"{self.base_url}/invoices",
+                    headers=self._headers(),
+                    params=params,
+                )
+                if response.status_code != 200:
+                    logger.warning("qoyod_fetch_sales_failed", status=response.status_code)
+                    return []
+                invoices = response.json().get("invoices", [])
+                records = []
+                for invoice in invoices:
+                    for line in invoice.get("line_items", invoice.get("products", [])):
+                        qty = float(line.get("quantity", 1))
+                        unit_price = float(line.get("unit_price", 0) or line.get("price", 0))
+                        records.append({
+                            "date": invoice.get("date") or invoice.get("created_at"),
+                            "item_id": str(line.get("product_id")),
+                            "item_name": line.get("description") or line.get("name"),
+                            "sku": line.get("sku"),
+                            "quantity": qty,
+                            "unit_price": unit_price,
+                            "cost_price": 0,
+                            "total": unit_price * qty,
+                            "profit": 0,
+                        })
+                return records
+        except Exception as e:
+            logger.error("qoyod_fetch_sales_error", error=str(e))
+            return []
+
+    async def fetch_inventory(self) -> list[dict]:
+        if not self.api_key:
+            return []
+        try:
+            async with httpx.AsyncClient(timeout=30) as client:
+                response = await client.get(
+                    f"{self.base_url}/products",
+                    headers=self._headers(),
+                    params={"per_page": 100},
+                )
+                if response.status_code != 200:
+                    logger.warning("qoyod_fetch_inventory_failed", status=response.status_code)
+                    return []
+                products = response.json().get("products", [])
+                records = []
+                for product in products:
+                    records.append({
+                        "sku": product.get("sku"),
+                        "item_name": product.get("name") or product.get("description"),
+                        "quantity": float(product.get("stock_quantity", 0) or product.get("quantity", 0)),
+                        "cost_price": float(product.get("purchase_price", 0) or product.get("cost", 0) or 0),
+                        "sell_price": float(product.get("selling_price", 0) or product.get("price", 0) or 0),
+                    })
+                return records
+        except Exception as e:
+            logger.error("qoyod_fetch_inventory_error", error=str(e))
+            return []
+
+    async def test_connection(self) -> bool:
+        if not self.api_key:
+            return False
+        try:
+            async with httpx.AsyncClient(timeout=10) as client:
+                response = await client.get(
+                    f"{self.base_url}/products",
+                    headers=self._headers(),
+                    params={"per_page": 1},
+                )
+                return response.status_code == 200
+        except Exception as e:
+            logger.error("qoyod_test_connection_error", error=str(e))
             return False
 
 
@@ -473,8 +758,14 @@ ADAPTER_REGISTRY = {
     "csv_webhook": CSVWebhookAdapter,
     "custom_api": CustomAPIAdapter,
     "foodics": FoodicsWebhookAdapter,
-    "salla": SallaWebhookAdapter,
+    "salla": SallaAdapter,
+    "zid": ZidAdapter,
+    "qoyod": QoyodAdapter,
 }
+
+
+# Backward-compatible aliases for tests and code that imported the old names.
+SallaWebhookAdapter = SallaAdapter
 
 
 def get_adapter(adapter_type: str):

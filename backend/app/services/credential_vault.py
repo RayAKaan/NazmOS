@@ -41,8 +41,8 @@ class CredentialVault:
             effective_key = "dev-master-key-replace-in-production-32chars"
             logger.warning(
                 "credential_master_key_not_set",
-                message="CREDENTIAL_MASTER_KEY is not set. Using dev-only key. "
-                        "Set CREDENTIAL_MASTER_KEY before production.",
+                extra={"detail": "CREDENTIAL_MASTER_KEY is not set. Using dev-only key. "
+                        "Set CREDENTIAL_MASTER_KEY before production."},
             )
 
         self._master_key = effective_key.encode()

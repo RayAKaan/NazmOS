@@ -74,23 +74,23 @@ async def lifespan(app: FastAPI):
         if settings.USE_MOCK_LLM:
             logger.warning(
                 "MOCK_LLM_ENABLED_IN_PRODUCTION",
-                message="USE_MOCK_LLM=true in production. Merchant-facing LLM responses are canned keyword matches, not a real model.",
+                extra={"detail": "USE_MOCK_LLM=true in production. Merchant-facing LLM responses are canned keyword matches, not a real model."},
             )
         if not settings.SENTRY_DSN:
             logger.warning(
                 "SENTRY_NOT_CONFIGURED",
-                message="SENTRY_DSN is empty in production. Uncaught exceptions will not be aggregated or alerted.",
+                extra={"detail": "SENTRY_DSN is empty in production. Uncaught exceptions will not be aggregated or alerted."},
             )
         if settings.DATABASE_URL.startswith("sqlite"):
             logger.error(
                 "SQLITE_IN_PRODUCTION",
-                message="SQLite is configured in production. NazmOS requires PostgreSQL for multi-tenant data integrity.",
+                extra={"detail": "SQLite is configured in production. NazmOS requires PostgreSQL for multi-tenant data integrity."},
             )
             raise RuntimeError("SQLite is not supported in production")
     else:
         logger.warning(
             "CREATE_ALL_DEV_ONLY",
-            message="Development mode: auto-creating tables from models via Base.metadata.create_all. Production uses Alembic migrations; do not rely on create_all for schema changes.",
+            extra={"detail": "Development mode: auto-creating tables from models via Base.metadata.create_all. Production uses Alembic migrations; do not rely on create_all for schema changes."},
         )
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)

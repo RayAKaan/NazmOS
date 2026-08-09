@@ -64,14 +64,14 @@ function actionTone(type: string) {
   if (type === "reorder") return "text-brand-amber bg-brand-amber/10 border-brand-amber/25";
   if (type === "discount") return "text-brand-red-light bg-brand-red/10 border-brand-red/25";
   if (type === "margin_fix") return "text-brand-green bg-brand-green/10 border-brand-green/25";
-  return "text-blue-300 bg-blue-500/10 border-blue-400/20";
+  return "text-primary bg-primary/10 border-primary/20";
 }
 
 function statusTone(status: string) {
   if (status === "completed") return "text-brand-green bg-brand-green/10";
   if (status === "approved") return "text-brand-amber bg-brand-amber/10";
-  if (status === "rejected") return "text-white/45 bg-white/10";
-  return "text-blue-300 bg-blue-500/10";
+  if (status === "rejected") return "text-brand-cream/45 bg-brand-cream/10";
+  return "text-primary bg-primary/10";
 }
 
 export default function MoneyAuditPage() {
@@ -204,11 +204,11 @@ export default function MoneyAuditPage() {
   if (error && !audit) {
     return (
       <div className="space-y-6">
-        <section className="rounded-3xl border border-brand-red/30 bg-brand-red/10 p-8 text-white">
+        <section className="rounded-3xl border border-brand-red/30 bg-brand-red/10 p-8 text-brand-cream">
           <p className="font-mono text-xs uppercase tracking-[0.24em] text-brand-red-light">Money Audit unavailable</p>
           <h1 className="mt-3 text-3xl font-black">Upload sales and inventory files first.</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-white/65">{error}</p>
-          <a href="/upload" className="mt-6 inline-flex rounded-xl bg-brand-amber px-5 py-3 font-bold text-black hover:bg-brand-gold">
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-brand-cream/65">{error}</p>
+          <a href="/upload" className="mt-6 inline-flex rounded-xl bg-brand-amber px-5 py-3 font-bold text-brand-night hover:bg-brand-gold">
             Upload files
           </a>
         </section>
@@ -220,28 +220,28 @@ export default function MoneyAuditPage() {
 
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-3xl border border-white/10 bg-brand-night p-6 text-white shadow-2xl shadow-black/20 md:p-8">
+      <section className="overflow-hidden rounded-3xl border border-brand-cream/10 bg-brand-night p-6 text-brand-cream shadow-2xl shadow-brand-night/20 md:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.24em] text-brand-amber">Free Money Audit</p>
             <h1 className="mt-4 max-w-4xl font-serif text-4xl font-black leading-tight tracking-[-0.04em] md:text-6xl">
               Here is the cash trapped inside your store.
             </h1>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-white/62">
+            <p className="mt-4 max-w-3xl text-sm leading-7 text-brand-cream/62">
               Generated from imported sales and inventory data. Founder-led pilots should review this before sending it to the merchant.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <button disabled={working} onClick={regenerate} className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-3 text-sm font-bold text-white/70 hover:bg-white/5">
+            <button disabled={working} onClick={regenerate} className="inline-flex items-center gap-2 rounded-xl border border-brand-cream/10 px-4 py-3 text-sm font-bold text-brand-cream/70 hover:bg-brand-cream/5">
               <RefreshCw className="h-4 w-4" /> Regenerate
             </button>
             <button disabled={working} onClick={copyWhatsApp} className="inline-flex items-center gap-2 rounded-xl border border-whatsapp/50 px-4 py-3 text-sm font-bold text-whatsapp hover:bg-whatsapp/10">
               <MessageCircle className="h-4 w-4" /> Copy WhatsApp
             </button>
-            <button disabled={working} onClick={shareWhatsApp} className="inline-flex items-center gap-2 rounded-xl bg-whatsapp px-4 py-3 text-sm font-bold text-black hover:bg-whatsapp-bright">
+            <button disabled={working} onClick={shareWhatsApp} className="inline-flex items-center gap-2 rounded-xl bg-whatsapp px-4 py-3 text-sm font-bold text-brand-night hover:bg-whatsapp-bright">
               <MessageCircle className="h-4 w-4" /> Share WhatsApp
             </button>
-            <button disabled={working} onClick={openPrint} className="inline-flex items-center gap-2 rounded-xl bg-brand-amber px-4 py-3 text-sm font-bold text-black hover:bg-brand-gold">
+            <button disabled={working} onClick={openPrint} className="inline-flex items-center gap-2 rounded-xl bg-brand-amber px-4 py-3 text-sm font-bold text-brand-night hover:bg-brand-gold">
               <Download className="h-4 w-4" /> Printable report
             </button>
           </div>
@@ -297,7 +297,7 @@ export default function MoneyAuditPage() {
           </div>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {audit.missing_data.map((warning) => (
-              <div key={warning.code} className="rounded-2xl bg-black/20 p-4 text-sm leading-6 text-white/62">
+              <div key={warning.code} className="rounded-2xl bg-brand-night/20 p-4 text-sm leading-6 text-brand-cream/62">
                 {warning.message}
               </div>
             ))}
@@ -347,20 +347,20 @@ function Kpi({ icon: Icon, label, value, body, tone }: { icon: any; label: strin
     green: "text-brand-green",
   };
   return (
-    <div className="rounded-3xl border border-white/10 bg-brand-night p-6 text-white">
+    <div className="rounded-3xl border border-brand-cream/10 bg-brand-night p-6 text-brand-cream">
       <Icon className={cn("h-6 w-6", tones[tone])} />
-      <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.22em] text-white/45">{label}</p>
+      <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.22em] text-brand-cream/45">{label}</p>
       <p className={cn("mt-2 font-serif text-4xl font-black", tones[tone])}>{value}</p>
-      <p className="mt-2 text-sm leading-6 text-white/55">{body}</p>
+      <p className="mt-2 text-sm leading-6 text-brand-cream/55">{body}</p>
     </div>
   );
 }
 
 function Mini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+    <div className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-4">
       <p className="text-xs text-text-muted">{label}</p>
-      <p className="mt-1 text-xl font-bold text-white">{value}</p>
+      <p className="mt-1 text-xl font-bold text-brand-cream">{value}</p>
     </div>
   );
 }
@@ -370,27 +370,27 @@ function ActionCard({ action, onApprove, onReject, onComplete, disabled }: { act
   const canComplete = action.status === "approved";
   const canReject = action.status !== "rejected" && action.status !== "completed";
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+    <div className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-5">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <span className={cn("rounded-full border px-3 py-1 text-xs font-bold", actionTone(action.action_type))}>{action.action_type.replaceAll("_", " ")}</span>
             <span className={cn("rounded-full px-3 py-1 text-xs font-bold", statusTone(action.status))}>{action.status.replaceAll("_", " ")}</span>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-white/50">Priority {action.priority}</span>
+            <span className="rounded-full bg-brand-cream/10 px-3 py-1 text-xs font-bold text-brand-cream/50">Priority {action.priority}</span>
           </div>
-          <h3 className="mt-3 text-lg font-bold text-white">{action.title}</h3>
+          <h3 className="mt-3 text-lg font-bold text-brand-cream">{action.title}</h3>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-text-secondary">{action.description}</p>
         </div>
-        <div className="shrink-0 rounded-2xl bg-black/20 p-4 text-right">
+        <div className="shrink-0 rounded-2xl bg-brand-night/20 p-4 text-right">
           <p className="text-xs text-text-muted">Expected recovery</p>
           <p className="mt-1 text-2xl font-black text-brand-green">{money(action.expected_recovery_sar)}</p>
         </div>
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
-        {canApprove && <button disabled={disabled} onClick={onApprove} className="rounded-xl bg-whatsapp px-4 py-2 text-sm font-bold text-black">Approve</button>}
-        {canComplete && <button disabled={disabled} onClick={onComplete} className="rounded-xl bg-brand-green px-4 py-2 text-sm font-bold text-black">Mark completed</button>}
-        {canReject && <button disabled={disabled} onClick={onReject} className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm font-bold text-white/70 hover:bg-white/5"><XCircle className="h-4 w-4" /> Reject</button>}
-        <button disabled={disabled} onClick={() => navigator.clipboard.writeText(`${action.title}\n${action.description || ""}\nExpected: ${money(action.expected_recovery_sar)}`)} className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm font-bold text-white/70 hover:bg-white/5">
+        {canApprove && <button disabled={disabled} onClick={onApprove} className="rounded-xl bg-whatsapp px-4 py-2 text-sm font-bold text-brand-night">Approve</button>}
+        {canComplete && <button disabled={disabled} onClick={onComplete} className="rounded-xl bg-brand-green px-4 py-2 text-sm font-bold text-brand-night">Mark completed</button>}
+        {canReject && <button disabled={disabled} onClick={onReject} className="inline-flex items-center gap-2 rounded-xl border border-brand-cream/10 px-4 py-2 text-sm font-bold text-brand-cream/70 hover:bg-brand-cream/5"><XCircle className="h-4 w-4" /> Reject</button>}
+        <button disabled={disabled} onClick={() => navigator.clipboard.writeText(`${action.title}\n${action.description || ""}\nExpected: ${money(action.expected_recovery_sar)}`)} className="inline-flex items-center gap-2 rounded-xl border border-brand-cream/10 px-4 py-2 text-sm font-bold text-brand-cream/70 hover:bg-brand-cream/5">
           <Clipboard className="h-4 w-4" /> Copy action
         </button>
       </div>
@@ -400,9 +400,9 @@ function ActionCard({ action, onApprove, onReject, onComplete, disabled }: { act
 
 function Workflow({ title, body, icon: Icon }: { title: string; body: string; icon: any }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+    <div className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-5">
       <Icon className="h-5 w-5 text-brand-amber" />
-      <h3 className="mt-3 font-bold text-white">{title}</h3>
+      <h3 className="mt-3 font-bold text-brand-cream">{title}</h3>
       <p className="mt-2 text-sm leading-6 text-text-secondary">{body}</p>
     </div>
   );
@@ -410,8 +410,8 @@ function Workflow({ title, body, icon: Icon }: { title: string; body: string; ic
 
 function EmptyActions() {
   return (
-    <div className="rounded-2xl border border-dashed border-white/10 p-8 text-center">
-      <p className="font-bold text-white">No actions generated yet.</p>
+    <div className="rounded-2xl border border-dashed border-brand-cream/10 p-8 text-center">
+      <p className="font-bold text-brand-cream">No actions generated yet.</p>
       <p className="mt-1 text-sm text-text-muted">Upload sales and inventory data with cost/current stock for a useful audit.</p>
     </div>
   );

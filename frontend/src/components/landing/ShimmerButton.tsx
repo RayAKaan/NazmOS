@@ -15,10 +15,10 @@ export function ShimmerButton({ children, className, onClick }: ShimmerButtonPro
       className={cn(
         "relative inline-flex items-center justify-center px-8 py-4 rounded-xl overflow-hidden transition-all duration-300",
         "bg-gradient-to-r from-brand-primary to-brand-secondary",
-        "text-white font-semibold",
-        "hover:shadow-glow hover:scale-105",
+        "text-brand-night font-semibold",
+        "hover:shadow-glow-gold hover:scale-105",
         "active:scale-95",
-        "before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent",
+        "before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-brand-cream/20 before:to-transparent",
         "before:translate-x-[-200%] before:animate-shimmer",
         className
       )}

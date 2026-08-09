@@ -51,7 +51,7 @@ export function AlertCardExpanded({ alert, onDismiss, onApply }: AlertCardExpand
       bgColor: "bg-status-error/10",
       borderColor: "border-status-error/30",
       accentColor: "border-l-status-error",
-      badgeColor: "bg-status-error text-white",
+      badgeColor: "bg-destructive text-destructive-foreground",
       iconColor: "text-status-error",
     },
     warning: {
@@ -59,7 +59,7 @@ export function AlertCardExpanded({ alert, onDismiss, onApply }: AlertCardExpand
       bgColor: "bg-status-warning/10",
       borderColor: "border-status-warning/30",
       accentColor: "border-l-status-warning",
-      badgeColor: "bg-status-warning text-black",
+      badgeColor: "bg-warning text-warning-foreground",
       iconColor: "text-status-warning",
     },
     info: {
@@ -67,7 +67,7 @@ export function AlertCardExpanded({ alert, onDismiss, onApply }: AlertCardExpand
       bgColor: "bg-status-info/10",
       borderColor: "border-status-info/30",
       accentColor: "border-l-status-info",
-      badgeColor: "bg-status-info text-white",
+      badgeColor: "bg-status-info text-brand-night",
       iconColor: "text-status-info",
     },
     success: {
@@ -75,7 +75,7 @@ export function AlertCardExpanded({ alert, onDismiss, onApply }: AlertCardExpand
       bgColor: "bg-status-success/10",
       borderColor: "border-status-success/30",
       accentColor: "border-l-status-success",
-      badgeColor: "bg-status-success text-white",
+      badgeColor: "bg-success text-success-foreground",
       iconColor: "text-status-success",
     },
   };
@@ -213,7 +213,7 @@ export function AlertCardExpanded({ alert, onDismiss, onApply }: AlertCardExpand
                   </button>
                   <button
                     onClick={onApply}
-                    className="px-4 py-2 rounded-lg bg-brand-primary text-white text-sm font-medium hover:bg-brand-primary-hover transition-colors"
+                    className="px-4 py-2 rounded-lg bg-brand-primary text-brand-night text-sm font-medium hover:bg-brand-primary-hover transition-colors"
                   >
                     Apply Restock →
                   </button>

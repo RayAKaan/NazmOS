@@ -18,13 +18,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-xs font-medium uppercase tracking-widest text-text-muted mb-3">
+          <label className="block text-xs font-medium uppercase tracking-widest text-muted-foreground mb-3">
             {label}
           </label>
         )}
         <div className="relative">
           {leftIcon && (
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
               {leftIcon}
             </div>
           )}
@@ -32,9 +32,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             type={isPassword && showPassword ? "text" : type}
             className={cn(
-              "w-full px-4 py-3 bg-bg-secondary border border-border-primary text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent-primary/50 transition-colors duration-200",
-              "rounded-none",
-              error && "border-status-error/50 focus:border-status-error",
+              "w-full px-4 py-3 bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors duration-200",
+              "rounded-md",
+              error && "border-destructive/50 focus:border-destructive",
               leftIcon && "pl-11",
               (rightIcon || isPassword) && "pr-11",
               className
@@ -45,7 +45,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               aria-label={showPassword ? "Hide password" : "Show password"}
               aria-pressed={showPassword}
             >
@@ -53,16 +53,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             </button>
           )}
           {rightIcon && !isPassword && (
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted">
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground">
               {rightIcon}
             </div>
           )}
         </div>
         {error && (
-          <p className="mt-2 text-sm text-status-error">{error}</p>
+          <p className="mt-2 text-sm text-destructive">{error}</p>
         )}
         {helperText && !error && (
-          <p className="mt-2 text-sm text-text-muted">{helperText}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{helperText}</p>
         )}
       </div>
     );

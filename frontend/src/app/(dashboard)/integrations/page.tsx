@@ -134,11 +134,11 @@ const ADAPTERS: AdapterConfig[] = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-  synced: "text-green-400 bg-green-500/20",
-  syncing: "text-blue-400 bg-blue-500/20",
-  error: "text-red-400 bg-red-500/20",
-  never_synced: "text-yellow-400 bg-yellow-500/20",
-  disabled: "text-gray-400 bg-gray-500/20",
+  synced: "text-success bg-success/20",
+  syncing: "text-primary bg-primary/20",
+  error: "text-destructive bg-destructive/20",
+  never_synced: "text-warning bg-warning/20",
+  disabled: "text-secondary bg-secondary/20",
 };
 
 export default function IntegrationsPage() {
@@ -261,7 +261,7 @@ export default function IntegrationsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="w-12 h-12 rounded-xl bg-accent-blue animate-pulse" />
+        <div className="w-12 h-12 rounded-xl bg-primary animate-pulse" />
       </div>
     );
   }
@@ -281,7 +281,7 @@ export default function IntegrationsPage() {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Add Integration
@@ -291,7 +291,7 @@ export default function IntegrationsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-navy-panel rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
-            <Link2 className="w-5 h-5 text-blue-400" />
+            <Link2 className="w-5 h-5 text-primary" />
             <span className="text-sm text-navy-muted">Active Connections</span>
           </div>
           <p className="text-2xl font-bold text-navy-text">
@@ -300,7 +300,7 @@ export default function IntegrationsPage() {
         </div>
         <div className="bg-navy-panel rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
-            <RefreshCw className="w-5 h-5 text-green-400" />
+            <RefreshCw className="w-5 h-5 text-success" />
             <span className="text-sm text-navy-muted">Last Sync</span>
           </div>
           <p className="text-2xl font-bold text-navy-text">
@@ -311,7 +311,7 @@ export default function IntegrationsPage() {
         </div>
         <div className="bg-navy-panel rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
-            <Zap className="w-5 h-5 text-purple-400" />
+            <Zap className="w-5 h-5 text-accent-purple" />
             <span className="text-sm text-navy-muted">Records Synced</span>
           </div>
           <p className="text-2xl font-bold text-navy-text">
@@ -331,7 +331,7 @@ export default function IntegrationsPage() {
             <p className="text-navy-muted mb-4">No integrations configured yet</p>
             <button
               onClick={() => setShowAddModal(true)}
-              className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors"
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors"
             >
               Add Your First Integration
             </button>
@@ -357,9 +357,9 @@ export default function IntegrationsPage() {
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
                       {conn.sync_status === "synced" ? (
-                        <CheckCircle className="w-4 h-4 text-green-400" />
+                        <CheckCircle className="w-4 h-4 text-success" />
                       ) : conn.sync_status === "error" ? (
-                        <XCircle className="w-4 h-4 text-red-400" />
+                        <XCircle className="w-4 h-4 text-destructive" />
                       ) : null}
                       <span className={`px-2 py-1 rounded text-xs ${STATUS_COLORS[conn.sync_status]}`}>
                         {conn.sync_status.replace("_", " ")}
@@ -384,7 +384,7 @@ export default function IntegrationsPage() {
                       </button>
                       <button
                         onClick={() => handleDelete(conn.id)}
-                        className="p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                        className="p-2 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                         title="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -399,7 +399,7 @@ export default function IntegrationsPage() {
       </div>
 
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-brand-night/70 flex items-center justify-center z-50 p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -425,7 +425,7 @@ export default function IntegrationsPage() {
               <div>
                 <button
                   onClick={() => setSelectedAdapter(null)}
-                  className="flex items-center gap-1 text-sm text-blue-400 mb-4 hover:text-blue-300"
+                  className="flex items-center gap-1 text-sm text-primary mb-4 hover:text-primary"
                 >
                   <ArrowLeft className="w-4 h-4" /> Back to integrations
                 </button>
@@ -447,7 +447,7 @@ export default function IntegrationsPage() {
                   <button
                     onClick={handleCreateConnection}
                     disabled={formLoading}
-                    className="flex-1 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors disabled:opacity-50"
+                    className="flex-1 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50"
                   >
                     {formLoading ? "Saving…" : "Connect"}
                   </button>
@@ -501,19 +501,19 @@ function AdapterForm({ adapter, values, onChange, error }: {
         <div key={field.key}>
           <label className="block text-sm font-medium text-navy-text mb-1.5">
             {field.label}
-            {field.required && <span className="text-red-400 ml-1">*</span>}
+            {field.required && <span className="text-destructive ml-1">*</span>}
           </label>
           <input
             type={field.type || "text"}
             value={values[field.key] || ""}
             onChange={(e) => onChange({ ...values, [field.key]: e.target.value })}
             placeholder={field.placeholder}
-            className="w-full px-4 py-2.5 bg-navy-deep border border-navy-panel-2 rounded-xl text-navy-text placeholder-navy-faint focus:outline-none focus:border-blue-500"
+            className="w-full px-4 py-2.5 bg-navy-deep border border-navy-panel-2 rounded-xl text-navy-text placeholder-navy-faint focus:outline-none focus:border-primary"
           />
         </div>
       ))}
       {error && (
-        <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-300">
+        <div className="rounded-xl bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
           {error}
         </div>
       )}

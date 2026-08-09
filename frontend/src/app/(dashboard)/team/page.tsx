@@ -31,12 +31,12 @@ interface Invitation {
 }
 
 const ROLE_COLORS: Record<string, string> = {
-  owner: "bg-purple-500/20 text-purple-400",
-  admin: "bg-blue-500/20 text-blue-400",
-  manager: "bg-green-500/20 text-green-400",
-  staff: "bg-yellow-500/20 text-yellow-400",
-  accountant: "bg-orange-500/20 text-orange-400",
-  viewer: "bg-gray-500/20 text-gray-400",
+  owner: "bg-accent-purple/20 text-accent-purple",
+  admin: "bg-primary/20 text-primary",
+  manager: "bg-success/20 text-success",
+  staff: "bg-warning/20 text-warning",
+  accountant: "bg-warning/20 text-warning",
+  viewer: "bg-secondary/20 text-secondary",
 };
 
 export default function TeamPage() {
@@ -127,7 +127,7 @@ export default function TeamPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="w-12 h-12 rounded-xl bg-accent-blue animate-pulse" />
+        <div className="w-12 h-12 rounded-xl bg-primary animate-pulse" />
       </div>
     );
   }
@@ -143,7 +143,7 @@ export default function TeamPage() {
         </div>
         <button
           onClick={() => setShowInviteModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors"
         >
           <UserPlus className="w-4 h-4" />
           Invite Member
@@ -153,21 +153,21 @@ export default function TeamPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-navy-panel rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
-            <Users className="w-5 h-5 text-blue-400" />
+            <Users className="w-5 h-5 text-primary" />
             <span className="text-sm text-navy-muted">Total Members</span>
           </div>
           <p className="text-2xl font-bold text-navy-text">{members.length}</p>
         </div>
         <div className="bg-navy-panel rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
-            <Clock className="w-5 h-5 text-yellow-400" />
+            <Clock className="w-5 h-5 text-warning" />
             <span className="text-sm text-navy-muted">Pending Invites</span>
           </div>
           <p className="text-2xl font-bold text-navy-text">{invitations.length}</p>
         </div>
         <div className="bg-navy-panel rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
-            <Shield className="w-5 h-5 text-green-400" />
+            <Shield className="w-5 h-5 text-success" />
             <span className="text-sm text-navy-muted">Admins</span>
           </div>
           <p className="text-2xl font-bold text-navy-text">
@@ -214,7 +214,7 @@ export default function TeamPage() {
                 {member.role !== "owner" && (
                   <button
                     onClick={() => handleRemoveMember(member.id)}
-                    className="p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                    className="p-2 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                     aria-label={`Remove ${member.full_name} from team`}
                   >
                     <XCircle className="w-4 h-4" />
@@ -253,7 +253,7 @@ export default function TeamPage() {
                   </span>
                   <button
                     onClick={() => handleResendInvite(invite.id)}
-                    className="p-2 text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors"
+                    className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
                     aria-label={`Resend invitation to ${invite.email}`}
                   >
                     <RefreshCw className="w-4 h-4" />
@@ -266,7 +266,7 @@ export default function TeamPage() {
       )}
 
       {showInviteModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-overlay flex items-center justify-center z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -281,7 +281,7 @@ export default function TeamPage() {
                   type="email"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
-                  className="w-full px-4 py-3 bg-navy-panel-2 rounded-xl text-navy-text focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 bg-navy-panel-2 rounded-xl text-navy-text focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="colleague@company.com"
                 />
               </div>
@@ -291,7 +291,7 @@ export default function TeamPage() {
                 <select
                   value={inviteRole}
                   onChange={(e) => setInviteRole(e.target.value)}
-                  className="w-full px-4 py-3 bg-navy-panel-2 rounded-xl text-navy-text focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 bg-navy-panel-2 rounded-xl text-navy-text focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="admin">Admin</option>
                   <option value="manager">Manager</option>
@@ -311,7 +311,7 @@ export default function TeamPage() {
                 <button
                   onClick={handleInvite}
                   disabled={!inviteEmail}
-                  className="flex-1 px-4 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors disabled:opacity-50"
+                  className="flex-1 px-4 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50"
                 >
                   Send Invite
                 </button>

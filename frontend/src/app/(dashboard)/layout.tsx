@@ -53,8 +53,8 @@ export default function DashboardLayout({
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-accent-blue animate-pulse" />
-          <p className="text-text-muted">Loading...</p>
+          <div className="w-12 h-12 rounded-xl bg-primary animate-pulse" />
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );

@@ -6,7 +6,7 @@ interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {}
 export function Skeleton({ className, ...props }: SkeletonProps) {
   return (
     <div
-      className={cn("animate-pulse bg-bg-tertiary rounded-lg", className)}
+      className={cn("animate-pulse bg-muted rounded-lg", className)}
       {...props}
     />
   );
@@ -14,7 +14,7 @@ export function Skeleton({ className, ...props }: SkeletonProps) {
 
 export function SkeletonCard() {
   return (
-    <div className="p-6 rounded-2xl bg-bg-secondary border border-border space-y-4">
+    <div className="p-6 rounded-2xl bg-card border border-border space-y-4">
       <div className="flex items-center gap-4">
         <Skeleton className="w-12 h-12 rounded-xl" />
         <div className="space-y-2 flex-1">

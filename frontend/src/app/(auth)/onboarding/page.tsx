@@ -65,7 +65,7 @@ export default function OnboardingPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4 md:p-6">
       <div className="w-full max-w-2xl bg-surface border border-border rounded-2xl p-6 md:p-10">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-xl bg-brand-teal mx-auto flex items-center justify-center text-black font-bold text-2xl mb-3">
+          <div className="w-14 h-14 rounded-xl bg-brand-teal mx-auto flex items-center justify-center text-brand-night font-bold text-2xl mb-3">
             ن
           </div>
           <h1 className="text-2xl md:text-3xl font-bold">{t.onboarding.welcome}</h1>
@@ -123,7 +123,7 @@ export default function OnboardingPage() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/upload"
-                className="flex-1 text-center bg-brand-teal text-black py-3 rounded-xl font-medium hover:bg-brand-teal-light transition-colors"
+                className="flex-1 text-center bg-brand-teal text-brand-night py-3 rounded-xl font-medium hover:bg-brand-teal-light transition-colors"
               >
                 Go to Upload →
               </Link>
@@ -162,7 +162,7 @@ export default function OnboardingPage() {
 
             <button
               onClick={next}
-              className="w-full bg-brand-teal text-black py-3 rounded-xl font-medium hover:bg-brand-teal-light transition-colors flex items-center justify-center gap-2"
+              className="w-full bg-brand-teal text-brand-night py-3 rounded-xl font-medium hover:bg-brand-teal-light transition-colors flex items-center justify-center gap-2"
             >
               {t.onboarding.openDashboard} <ArrowRight className="w-4 h-4" />
             </button>
@@ -180,7 +180,7 @@ export default function OnboardingPage() {
             </p>
             <button
               onClick={() => router.push("/dashboard")}
-              className="w-full bg-brand-teal text-black py-3 rounded-xl font-medium hover:bg-brand-teal-light transition-colors"
+              className="w-full bg-brand-teal text-brand-night py-3 rounded-xl font-medium hover:bg-brand-teal-light transition-colors"
             >
               {t.onboarding.openDashboard}
             </button>

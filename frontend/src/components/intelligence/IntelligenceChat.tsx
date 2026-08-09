@@ -84,7 +84,7 @@ export function IntelligenceChat({ className }: IntelligenceChatProps) {
               className={cn(
                 "max-w-[90%] md:max-w-[80%] rounded-xl px-4 py-3 text-sm",
                 message.role === "user"
-                  ? "bg-brand-teal text-black rounded-br-none"
+                  ? "bg-brand-teal text-brand-night rounded-br-none"
                   : "bg-bg-tertiary border border-border rounded-bl-none"
               )}
             >
@@ -128,7 +128,7 @@ export function IntelligenceChat({ className }: IntelligenceChatProps) {
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-brand-teal text-black hover:bg-brand-teal-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-brand-teal text-brand-night hover:bg-brand-teal-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             aria-label="Send message"
           >
             <Send className="w-4 h-4" />

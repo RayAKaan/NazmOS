@@ -68,8 +68,8 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
-            <span className="text-white font-bold text-3xl">N</span>
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-4">
+            <span className="text-primary-foreground font-bold text-3xl">N</span>
           </div>
           <h1 className="text-3xl font-bold text-text-primary">{t.auth.login.title}</h1>
           <p className="text-text-muted mt-2">{t.auth.login.subtitle}</p>
@@ -116,7 +116,7 @@ export default function LoginPage() {
 
         <p className="text-center text-text-muted mt-6">
           {t.auth.login.noAccount}{" "}
-          <Link href="/register" className="text-blue-400 hover:underline">
+          <Link href="/register" className="text-primary hover:underline">
             {t.auth.login.register}
           </Link>
         </p>

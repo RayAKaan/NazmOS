@@ -8,7 +8,7 @@ export default function NotFound() {
         <h1 className="mt-4 font-serif text-5xl font-black leading-[0.95] tracking-[-0.04em] md:text-7xl">
           Page not found
         </h1>
-        <p className="mt-6 text-lg leading-8 text-white/62">
+        <p className="mt-6 text-lg leading-8 text-brand-cream/62">
           The page you are looking for does not exist or has been moved.
         </p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
@@ -20,7 +20,7 @@ export default function NotFound() {
           </Link>
           <Link
             href="/product-demo"
-            className="inline-flex items-center justify-center rounded-2xl border border-white/10 px-6 py-3 font-semibold text-white/80 hover:bg-white/5"
+            className="inline-flex items-center justify-center rounded-2xl border border-brand-cream/10 px-6 py-3 font-semibold text-brand-cream/80 hover:bg-brand-cream/5"
           >
             Run interactive demo
           </Link>

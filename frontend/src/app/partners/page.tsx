@@ -63,7 +63,7 @@ export default function PartnersPage() {
 
         {submitted ? (
           <div className="mt-10 rounded-2xl border border-brand-green/30 bg-brand-green/10 p-8 text-center">
-            <h2 className="text-2xl font-bold text-white">Application received</h2>
+            <h2 className="text-2xl font-bold text-brand-cream">Application received</h2>
             <p className="mt-2 text-text-secondary">
               The Nazmak team will review your profile and send your partner referral code within 2 business days.
             </p>
@@ -90,8 +90,8 @@ export default function PartnersPage() {
                   className={cn(
                     "cursor-pointer rounded-xl border p-4 transition",
                     form.partner_type === pt.value
-                      ? "border-accent-blue bg-accent-blue/10"
-                      : "border-border bg-white/[0.02] hover:border-white/20"
+                      ? "border-primary bg-primary/10"
+                      : "border-border bg-brand-cream/[0.02] hover:border-brand-cream/20"
                   )}
                 >
                   <input
@@ -102,13 +102,13 @@ export default function PartnersPage() {
                     onChange={(e) => setForm({ ...form, partner_type: e.target.value })}
                     className="sr-only"
                   />
-                  <p className="font-bold text-white">{pt.label}</p>
+                  <p className="font-bold text-brand-cream">{pt.label}</p>
                   <p className="mt-1 text-xs text-text-muted">{pt.desc}</p>
                 </label>
               ))}
             </div>
 
-            <label className="flex items-center gap-3 rounded-xl border border-border bg-white/[0.02] p-4 text-sm">
+            <label className="flex items-center gap-3 rounded-xl border border-border bg-brand-cream/[0.02] p-4 text-sm">
               <input
                 type="checkbox"
                 checked={form.monshaat_certified}
@@ -119,7 +119,7 @@ export default function PartnersPage() {
 
             <button
               type="submit"
-              className="w-full rounded-xl bg-accent-blue py-3 font-bold text-white hover:opacity-90"
+              className="w-full rounded-xl bg-primary py-3 font-bold text-primary-foreground hover:opacity-90"
             >
               Submit application
             </button>
@@ -139,7 +139,7 @@ function Field({ label, value, onChange, type = "text", required }: { label: str
         required={required}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl border border-border bg-black/30 px-3 py-2 text-white outline-none focus:border-accent-blue"
+        className="w-full rounded-xl border border-border bg-brand-night/30 px-3 py-2 text-brand-cream outline-none focus:border-primary"
       />
     </label>
   );
@@ -148,8 +148,8 @@ function Field({ label, value, onChange, type = "text", required }: { label: str
 function Value({ icon: Icon, title, body }: { icon: React.ElementType; title: string; body: string }) {
   return (
     <div className="rounded-2xl border border-border bg-surface p-5">
-      <Icon className="h-6 w-6 text-accent-blue" />
-      <h3 className="mt-3 font-bold text-white">{title}</h3>
+      <Icon className="h-6 w-6 text-primary" />
+      <h3 className="mt-3 font-bold text-brand-cream">{title}</h3>
       <p className="mt-1 text-sm text-text-muted">{body}</p>
     </div>
   );

@@ -81,7 +81,7 @@ export function CommandMenu({ items, isOpen, onClose }: CommandMenuProps) {
         className="fixed inset-0 z-50"
         onClick={onClose}
       >
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-overlay backdrop-blur-sm" />
         
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: -20 }}

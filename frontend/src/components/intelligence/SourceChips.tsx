@@ -19,13 +19,13 @@ export function SourceChips({ sources, max = 4, className }: SourceChipsProps) {
       {visible.map((source) => (
         <span
           key={source}
-          className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-white/5 text-text-muted border border-white/5"
+          className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-brand-cream/5 text-text-muted border border-brand-cream/5"
         >
           {source}
         </span>
       ))}
       {remaining > 0 && (
-        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-white/5 text-text-muted border border-white/5">
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-brand-cream/5 text-text-muted border border-brand-cream/5">
           +{remaining}
         </span>
       )}

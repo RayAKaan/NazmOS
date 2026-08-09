@@ -1,0 +1,7 @@
+{
+  "$schema": "./eslint-rule-baseline.schema.json",
+  "generatedAt": "2026-08-09",
+  "generator": "scripts/gen_eslint_baseline.mjs",
+  "no-raw-color": [],
+  "destructive-needs-action": []
+}

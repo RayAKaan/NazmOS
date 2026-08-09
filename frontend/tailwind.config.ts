@@ -1,188 +1,284 @@
 import type { Config } from "tailwindcss";
 
+// AUTO-GENERATED from design-tokens/tokens.json via scripts/build_design_tokens.ts - DO NOT EDIT.
 const config: Config = {
-  darkMode: ["class"],
-  content: [
+  "darkMode": [
+    "class"
+  ],
+  "content": [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}"
   ],
-  theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+  "theme": {
+    "container": {
+      "center": true,
+      "padding": "2rem",
+      "screens": {
+        "2xl": "1400px"
+      }
     },
-    extend: {
-      colors: {
-        border: "hsl(var(--border))",
-        "border-primary": "#262626",
-        "border-secondary": "#1a1a1a",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+    "extend": {
+      "colors": {
+        "card": {
+          "DEFAULT": "oklch(var(--card) / <alpha-value>)",
+          "foreground": "oklch(var(--card-foreground) / <alpha-value>)"
         },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+        "popover": {
+          "DEFAULT": "oklch(var(--popover) / <alpha-value>)",
+          "foreground": "oklch(var(--popover-foreground) / <alpha-value>)"
         },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+        "primary": {
+          "DEFAULT": "oklch(var(--primary) / <alpha-value>)",
+          "foreground": "oklch(var(--primary-foreground) / <alpha-value>)"
         },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+        "secondary": {
+          "DEFAULT": "oklch(var(--secondary) / <alpha-value>)",
+          "foreground": "oklch(var(--secondary-foreground) / <alpha-value>)"
         },
-        accent: {
-          DEFAULT: "#d4a574",
-          foreground: "hsl(var(--accent-foreground))",
-          primary: "#d4a574",
-          "primary-hover": "#c99a6a",
-          secondary: "#8c8c8c",
-          "secondary-hover": "#a3a3a3",
-          blue: "#3b82f6",
-          green: "#22c55e",
-          yellow: "#eab308",
-          red: "#ef4444",
-          purple: "#a855f7",
+        "destructive": {
+          "DEFAULT": "oklch(var(--destructive) / <alpha-value>)",
+          "foreground": "oklch(var(--destructive-foreground) / <alpha-value>)"
         },
-        brand: {
-          primary: "#d4a574",
-          secondary: "#8c8c8c",
-          accent: "#a3a3a3",
-          teal: "#14B8A6",
-          "teal-light": "#5EEAD4",
-          "teal-dark": "#0F766E",
-          amber: "#E0B34A",
-          green: "#13A05A",
-          "green-light": "#4ade80",
-          red: "#C8412A",
-          "red-light": "#ff8a73",
-          night: "#0A0E0C",
-          gold: "#f2cf69",
-          "gold-soft": "#f0c765",
-          cream: "#f4efe6",
-          "cream-dark": "#ece5d6",
-          sand: "#cbb38a",
+        "muted": {
+          "DEFAULT": "oklch(var(--muted) / <alpha-value>)",
+          "foreground": "oklch(var(--muted-foreground) / <alpha-value>)"
         },
-        navy: {
-          text: "#f0f0f5",
-          muted: "#8888a0",
-          faint: "#555570",
-          "faint-2": "#66667a",
-          chip: "#b9b9c8",
-          panel: "#1a1a2e",
-          "panel-2": "#2a2a3e",
-          "panel-3": "#3a3a4e",
-          deep: "#0f0f1a",
-          "deep-2": "#111126",
+        "warning": {
+          "DEFAULT": "oklch(var(--warning) / <alpha-value>)",
+          "foreground": "oklch(var(--warning-foreground) / <alpha-value>)"
         },
-        whatsapp: {
-          DEFAULT: "#25D366",
-          deep: "#0b6b3a",
-          light: "#9ff2bd",
-          faint: "#8ff0b2",
-          mid: "#20b858",
-          bright: "#54df85",
+        "success": {
+          "DEFAULT": "oklch(var(--success) / <alpha-value>)",
+          "foreground": "oklch(var(--success-foreground) / <alpha-value>)"
         },
-        chat: {
-          deep: "#0B141A",
-          steel: "#1F2C33",
-          warm: "#3D2820",
+        "accent": {
+          "DEFAULT": "oklch(var(--accent-primary) / <alpha-value>)",
+          "foreground": "oklch(var(--accent-foreground) / <alpha-value>)",
+          "surface": "oklch(var(--accent) / <alpha-value>)",
+          "primary": "oklch(var(--accent-primary) / <alpha-value>)",
+          "primary-hover": "oklch(var(--accent-primary-hover) / <alpha-value>)",
+          "secondary": "oklch(var(--accent-secondary) / <alpha-value>)",
+          "secondary-hover": "oklch(var(--accent-secondary-hover) / <alpha-value>)",
+          "blue": "oklch(var(--accent-blue) / <alpha-value>)",
+          "green": "oklch(var(--accent-green) / <alpha-value>)",
+          "yellow": "oklch(var(--accent-yellow) / <alpha-value>)",
+          "red": "oklch(var(--accent-red) / <alpha-value>)",
+          "purple": "oklch(var(--accent-purple) / <alpha-value>)",
+          "orange": "oklch(var(--accent-orange) / <alpha-value>)"
         },
-        intelligence: {
-          DEFAULT: "#14B8A6",
-          muted: "#115E59",
-          surface: "#042F2E",
-          border: "#134E4A",
+        "background": "oklch(var(--background) / <alpha-value>)",
+        "foreground": "oklch(var(--foreground) / <alpha-value>)",
+        "input": "oklch(var(--input) / <alpha-value>)",
+        "ring": "oklch(var(--ring) / <alpha-value>)",
+        "border": "oklch(var(--border) / <alpha-value>)",
+        "success-bright": "oklch(var(--success-bright) / <alpha-value>)",
+        "chart-1": "oklch(var(--chart-1) / <alpha-value>)",
+        "chart-2": "oklch(var(--chart-2) / <alpha-value>)",
+        "chart-3": "oklch(var(--chart-3) / <alpha-value>)",
+        "chart-4": "oklch(var(--chart-4) / <alpha-value>)",
+        "chart-5": "oklch(var(--chart-5) / <alpha-value>)",
+        "chart-grid": "oklch(var(--chart-grid) / <alpha-value>)",
+        "surface-hover": "oklch(var(--surface-hover) / <alpha-value>)",
+        "overlay": "var(--overlay)",
+        "glass": "var(--glass)",
+        "glass-border": "var(--glass-border)",
+        "brand": {
+          "primary": "oklch(var(--brand-primary) / <alpha-value>)",
+          "secondary": "oklch(var(--brand-secondary) / <alpha-value>)",
+          "accent": "oklch(var(--brand-accent) / <alpha-value>)",
+          "teal": "oklch(var(--brand-teal) / <alpha-value>)",
+          "teal-light": "oklch(var(--brand-teal-light) / <alpha-value>)",
+          "teal-dark": "oklch(var(--brand-teal-dark) / <alpha-value>)",
+          "amber": "oklch(var(--brand-amber) / <alpha-value>)",
+          "gold": "oklch(var(--brand-gold) / <alpha-value>)",
+          "gold-soft": "oklch(var(--brand-gold-soft) / <alpha-value>)",
+          "green": "oklch(var(--brand-green) / <alpha-value>)",
+          "green-light": "oklch(var(--brand-green-light) / <alpha-value>)",
+          "red": "oklch(var(--brand-red) / <alpha-value>)",
+          "red-light": "oklch(var(--brand-red-light) / <alpha-value>)",
+          "night": "oklch(var(--brand-night) / <alpha-value>)",
+          "cream": "oklch(var(--brand-cream) / <alpha-value>)",
+          "cream-dark": "oklch(var(--brand-cream-dark) / <alpha-value>)",
+          "sand": "oklch(var(--brand-sand) / <alpha-value>)"
         },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+        "status": {
+          "success": "oklch(var(--status-success) / <alpha-value>)",
+          "warning": "oklch(var(--status-warning) / <alpha-value>)",
+          "error": "oklch(var(--status-error) / <alpha-value>)",
+          "info": "oklch(var(--status-info) / <alpha-value>)"
         },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+        "navy": {
+          "text": "oklch(var(--navy-text) / <alpha-value>)",
+          "muted": "oklch(var(--navy-muted) / <alpha-value>)",
+          "faint": "oklch(var(--navy-faint) / <alpha-value>)",
+          "faint-2": "oklch(var(--navy-faint-2) / <alpha-value>)",
+          "chip": "oklch(var(--navy-chip) / <alpha-value>)",
+          "panel": "oklch(var(--navy-panel) / <alpha-value>)",
+          "panel-2": "oklch(var(--navy-panel-2) / <alpha-value>)",
+          "panel-3": "oklch(var(--navy-panel-3) / <alpha-value>)",
+          "deep": "oklch(var(--navy-deep) / <alpha-value>)",
+          "deep-2": "oklch(var(--navy-deep-2) / <alpha-value>)"
         },
-        bg: {
-          primary: "#0a0a0a",
-          secondary: "#111111",
-          tertiary: "#171717",
-          surface: "#0f0f0f",
-          warm: "#0d0c0c",
+        "bg": {
+          "primary": "oklch(var(--bg-primary) / <alpha-value>)",
+          "secondary": "oklch(var(--bg-secondary) / <alpha-value>)",
+          "tertiary": "oklch(var(--bg-tertiary) / <alpha-value>)",
+          "surface": "oklch(var(--bg-surface) / <alpha-value>)",
+          "warm": "oklch(var(--bg-warm) / <alpha-value>)"
         },
-        text: {
-          primary: "#ededed",
-          secondary: "#a3a3a3",
-          muted: "#737373",
-          subtle: "#525252",
+        "text": {
+          "primary": "oklch(var(--text-primary) / <alpha-value>)",
+          "secondary": "oklch(var(--text-secondary) / <alpha-value>)",
+          "muted": "oklch(var(--text-muted) / <alpha-value>)",
+          "subtle": "oklch(var(--text-subtle) / <alpha-value>)"
         },
-        status: {
-          success: "#4ade80",
-          warning: "#fbbf24",
-          error: "#f87171",
-          info: "#60a5fa",
+        "intelligence": {
+          "DEFAULT": "oklch(var(--intelligence) / <alpha-value>)",
+          "muted": "oklch(var(--intelligence-muted) / <alpha-value>)",
+          "surface": "oklch(var(--intelligence-surface) / <alpha-value>)",
+          "border": "oklch(var(--intelligence-border) / <alpha-value>)"
         },
+        "chat": {
+          "deep": "oklch(var(--chat-deep) / <alpha-value>)",
+          "steel": "oklch(var(--chat-steel) / <alpha-value>)",
+          "warm": "oklch(var(--chat-warm) / <alpha-value>)"
+        },
+        "border-primary": "oklch(var(--border-literal-primary) / <alpha-value>)",
+        "border-secondary": "oklch(var(--border-literal-secondary) / <alpha-value>)",
+        "whatsapp": {
+          "DEFAULT": "var(--whatsapp)",
+          "deep": "oklch(var(--whatsapp-deep) / <alpha-value>)",
+          "light": "oklch(var(--whatsapp-light) / <alpha-value>)",
+          "faint": "oklch(var(--whatsapp-faint) / <alpha-value>)",
+          "mid": "oklch(var(--whatsapp-mid) / <alpha-value>)",
+          "bright": "oklch(var(--whatsapp-bright) / <alpha-value>)"
+        }
       },
-      borderRadius: {
-        none: "0px",
-        sm: "0px",
-        DEFAULT: "0px",
-        md: "0px",
-        lg: "0px",
-        xl: "0px",
+      "borderRadius": {
+        "none": "0px",
+        "sm": "0.375rem",
+        "default": "0.625rem",
+        "md": "0.625rem",
+        "lg": "0.875rem",
+        "xl": "1.25rem",
+        "2xl": "1.75rem",
+        "3xl": "2rem"
       },
-      fontFamily: {
-        serif: ["var(--font-serif)", "Georgia", "serif"],
-        sans: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
-        mono: ["var(--font-mono)", "JetBrains Mono", "monospace"],
+      "fontFamily": {
+        "sans": [
+          "var(--font-sans)",
+          "Inter",
+          "system-ui",
+          "sans-serif"
+        ],
+        "serif": [
+          "var(--font-serif)",
+          "Georgia",
+          "serif"
+        ],
+        "mono": [
+          "var(--font-mono)",
+          "JetBrains Mono",
+          "monospace"
+        ],
+        "arabic": [
+          "var(--font-arabic)",
+          "IBM Plex Sans Arabic",
+          "Tahoma",
+          "sans-serif"
+        ]
       },
-      keyframes: {
+      "boxShadow": {
+        "card": "0 10px 40px oklch(0% 0 0 / 0.2)",
+        "glow-gold": "0 0 24px 0 oklch(75.41% 0.085 67.1 / 0.25)",
+        "glow-teal": "0 0 24px 0 oklch(70.38% 0.123 182.5 / 0.25)"
+      },
+      "keyframes": {
         "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
+          "from": {
+            "height": "0"
+          },
+          "to": {
+            "height": "var(--radix-accordion-content-height)"
+          }
         },
         "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
+          "from": {
+            "height": "var(--radix-accordion-content-height)"
+          },
+          "to": {
+            "height": "0"
+          }
         },
         "fade-in": {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
+          "0%": {
+            "opacity": "0"
+          },
+          "100%": {
+            "opacity": "1"
+          }
         },
         "fade-in-up": {
-          "0%": { opacity: "0", transform: "translateY(20px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
+          "0%": {
+            "opacity": "0",
+            "transform": "translateY(20px)"
+          },
+          "100%": {
+            "opacity": "1",
+            "transform": "translateY(0)"
+          }
         },
         "fade-in-down": {
-          "0%": { opacity: "0", transform: "translateY(-20px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
+          "0%": {
+            "opacity": "0",
+            "transform": "translateY(-20px)"
+          },
+          "100%": {
+            "opacity": "1",
+            "transform": "translateY(0)"
+          }
         },
         "slide-in-left": {
-          "0%": { opacity: "0", transform: "translateX(-20px)" },
-          "100%": { opacity: "1", transform: "translateX(0)" },
+          "0%": {
+            "opacity": "0",
+            "transform": "translateX(-20px)"
+          },
+          "100%": {
+            "opacity": "1",
+            "transform": "translateX(0)"
+          }
         },
         "slide-in-right": {
-          "0%": { opacity: "0", transform: "translateX(20px)" },
-          "100%": { opacity: "1", transform: "translateX(0)" },
+          "0%": {
+            "opacity": "0",
+            "transform": "translateX(20px)"
+          },
+          "100%": {
+            "opacity": "1",
+            "transform": "translateX(0)"
+          }
         },
         "scale-in": {
-          "0%": { opacity: "0", transform: "scale(0.95)" },
-          "100%": { opacity: "1", transform: "scale(1)" },
+          "0%": {
+            "opacity": "0",
+            "transform": "scale(0.95)"
+          },
+          "100%": {
+            "opacity": "1",
+            "transform": "scale(1)"
+          }
         },
-        float: {
-          "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-10px)" },
-        },
+        "float": {
+          "0%, 100%": {
+            "transform": "translateY(0px)"
+          },
+          "50%": {
+            "transform": "translateY(-10px)"
+          }
+        }
       },
-      animation: {
+      "animation": {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.5s ease-out forwards",
@@ -191,10 +287,12 @@ const config: Config = {
         "slide-in-left": "slideInLeft 0.5s ease-out forwards",
         "slide-in-right": "slideInRight 0.5s ease-out forwards",
         "scale-in": "scaleIn 0.3s ease-out forwards",
-        float: "float 6s ease-in-out infinite",
-      },
-    },
+        "float": "float 6s ease-in-out infinite"
+      }
+    }
   },
-  plugins: [require("tailwindcss-animate")],
+  "plugins": []
 };
+config.plugins = [require("tailwindcss-animate")];
+
 export default config;

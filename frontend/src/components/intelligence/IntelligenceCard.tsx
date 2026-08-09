@@ -96,7 +96,7 @@ export function IntelligenceCard({
               {children && (
                 <button
                   onClick={() => setExpanded((v) => !v)}
-                  className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-white/5 transition-colors"
+                  className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-brand-cream/5 transition-colors"
                   aria-expanded={expanded}
                   aria-label={expanded ? "Collapse explanation" : "Expand explanation"}
                 >
@@ -117,7 +117,7 @@ export function IntelligenceCard({
         </div>
 
         {expanded && children && (
-          <div className="mt-4 pt-4 border-t border-white/5 animate-in fade-in slide-in-from-top-2">
+          <div className="mt-4 pt-4 border-t border-brand-cream/5 animate-in fade-in slide-in-from-top-2">
             <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-brand-teal-light mb-2">
               <Lightbulb className="w-3.5 h-3.5" />
               Reasoning & sources
@@ -132,7 +132,7 @@ export function IntelligenceCard({
               <button
                 onClick={onAction}
                 disabled={actionDisabled}
-                className="inline-flex items-center gap-2 rounded-lg bg-brand-teal px-3 py-2 text-sm font-semibold text-black hover:bg-brand-teal-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg bg-brand-teal px-3 py-2 text-sm font-semibold text-brand-night hover:bg-brand-teal-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {actionLabel}
               </button>
@@ -140,7 +140,7 @@ export function IntelligenceCard({
             {onExplain && (
               <button
                 onClick={onExplain}
-                className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg border border-brand-cream/10 px-3 py-2 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-brand-cream/5 transition-colors"
               >
                 Why this?
               </button>

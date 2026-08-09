@@ -183,14 +183,14 @@ export default function UploadPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
-      <section className="overflow-hidden rounded-3xl border border-white/10 bg-brand-night p-6 text-white shadow-2xl shadow-black/20 md:p-8">
+      <section className="overflow-hidden rounded-3xl border border-brand-cream/10 bg-brand-night p-6 text-brand-cream shadow-2xl shadow-brand-night/20 md:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.24em] text-brand-amber">Free Money Audit upload</p>
             <h1 className="mt-3 max-w-3xl text-3xl font-black leading-tight md:text-5xl">
               Upload what your POS already gives you.
             </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-white/62">
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-brand-cream/62">
               Sales file + inventory file is best. If you only have one file, start there. NazmOS will map columns,
               import safely, then show trapped cash, stockout risk, and margin leakage.
             </p>
@@ -199,14 +199,14 @@ export default function UploadPage() {
             <div className="flex items-center gap-2 font-bold">
               <ShieldCheck className="h-4 w-4" /> User-safe import
             </div>
-            <p className="mt-1 text-xs leading-5 text-white/55">Extra columns are ignored. You can re-upload corrected files anytime.</p>
+            <p className="mt-1 text-xs leading-5 text-brand-cream/55">Extra columns are ignored. You can re-upload corrected files anytime.</p>
           </div>
         </div>
       </section>
 
       <FreeAuditChecklist />
 
-      <div className="flex gap-3 overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+      <div className="flex gap-3 overflow-x-auto rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-3">
         {stepOrder.map((s, i) => (
           <div key={s} className="flex min-w-fit items-center gap-3">
             <div className="flex items-center gap-2">
@@ -214,15 +214,15 @@ export default function UploadPage() {
                 className={cn(
                   "flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold",
                   step === s
-                    ? "bg-brand-amber text-black"
+                    ? "bg-brand-amber text-brand-night"
                     : stepIndex > i
-                      ? "bg-brand-green text-black"
+                      ? "bg-brand-green text-brand-night"
                       : "bg-navy-panel-2 text-navy-muted"
                 )}
               >
                 {stepIndex > i ? <CheckCircle size={16} /> : i + 1}
               </div>
-              <span className={cn("text-sm font-bold", step === s ? "text-white" : "text-navy-muted")}>{stepLabels[s]}</span>
+              <span className={cn("text-sm font-bold", step === s ? "text-brand-cream" : "text-navy-muted")}>{stepLabels[s]}</span>
             </div>
             {i < stepOrder.length - 1 && <div className={cn("h-0.5 w-10", stepIndex > i ? "bg-brand-green" : "bg-navy-panel-2")} />}
           </div>
@@ -251,7 +251,7 @@ export default function UploadPage() {
         )}
 
         {step === "processing" && (
-          <motion.div key="processing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="rounded-3xl border border-white/10 bg-navy-panel p-8 text-center">
+          <motion.div key="processing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="rounded-3xl border border-brand-cream/10 bg-navy-panel p-8 text-center">
             <div className="mx-auto mb-6 flex h-16 w-16 animate-pulse items-center justify-center rounded-full bg-brand-amber/10">
               <Database size={24} className="text-brand-amber" />
             </div>
@@ -272,7 +272,7 @@ export default function UploadPage() {
                   <motion.div className="h-full rounded-full bg-brand-amber" initial={{ width: 0 }} animate={{ width: `${ingestionProgress.progress}%` }} transition={{ duration: 0.3 }} />
                 </div>
                 {ingestionProgress.errors.length > 0 && (
-                  <p className="mt-4 text-left text-sm text-yellow-400">{ingestionProgress.errors.length} rows need review after import.</p>
+                  <p className="mt-4 text-left text-sm text-warning">{ingestionProgress.errors.length} rows need review after import.</p>
                 )}
               </div>
             )}
@@ -280,13 +280,13 @@ export default function UploadPage() {
         )}
 
         {step === "success" && ingestionResult && (
-          <motion.div key="success" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="rounded-3xl border border-brand-green/30 bg-brand-night p-8 text-center text-white">
+          <motion.div key="success" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="rounded-3xl border border-brand-green/30 bg-brand-night p-8 text-center text-brand-cream">
             <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-brand-green/10">
               <CheckCircle size={24} className="text-brand-green" />
             </div>
             <p className="font-mono text-xs uppercase tracking-[0.24em] text-brand-green">Import complete</p>
             <h2 className="mt-2 text-2xl font-black">Your Money Audit inputs are ready.</h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-white/60">
+            <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-brand-cream/60">
               Next: open the dashboard to review trapped cash signals, or upload the second file if you only uploaded sales or inventory.
             </p>
 
@@ -297,20 +297,20 @@ export default function UploadPage() {
             </div>
 
             {ingestionResult.errors.length > 0 && (
-              <div className="mx-auto mb-6 max-h-48 max-w-2xl overflow-y-auto rounded-xl bg-white/[0.04] p-4 text-left ring-1 ring-white/10">
-                <p className="mb-2 text-sm font-bold text-white">Rows to review:</p>
+              <div className="mx-auto mb-6 max-h-48 max-w-2xl overflow-y-auto rounded-xl bg-brand-cream/[0.04] p-4 text-left ring-1 ring-brand-cream/10">
+                <p className="mb-2 text-sm font-bold text-brand-cream">Rows to review:</p>
                 {ingestionResult.errors.slice(0, 10).map((err, i) => (
-                  <p key={i} className="text-xs leading-5 text-red-300">Row {err.row}: {err.error}</p>
+                  <p key={i} className="text-xs leading-5 text-destructive">Row {err.row}: {err.error}</p>
                 ))}
                 {ingestionResult.errors.length > 10 && <p className="mt-2 text-xs text-navy-muted">...and {ingestionResult.errors.length - 10} more.</p>}
               </div>
             )}
 
             <div className="flex flex-col justify-center gap-3 sm:flex-row">
-              <button onClick={handleReset} className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 px-6 py-3 font-bold text-white/75 hover:bg-white/5">
+              <button onClick={handleReset} className="inline-flex items-center justify-center gap-2 rounded-xl border border-brand-cream/10 px-6 py-3 font-bold text-brand-cream/75 hover:bg-brand-cream/5">
                 <RefreshCw size={16} /> Upload second file
               </button>
-              <a href="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-amber px-6 py-3 font-bold text-black hover:bg-brand-gold">
+              <a href="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-amber px-6 py-3 font-bold text-brand-night hover:bg-brand-gold">
                 Open dashboard <ArrowRight size={16} />
               </a>
             </div>
@@ -318,17 +318,17 @@ export default function UploadPage() {
         )}
 
         {step === "error" && (
-          <motion.div key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="rounded-3xl border border-brand-red/30 bg-brand-red/10 p-8 text-center text-white">
-            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10">
-              <AlertCircle size={24} className="text-red-300" />
+          <motion.div key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="rounded-3xl border border-brand-red/30 bg-brand-red/10 p-8 text-center text-brand-cream">
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
+              <AlertCircle size={24} className="text-destructive" />
             </div>
             <h2 className="text-xl font-bold">This file needs attention</h2>
-            <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-white/65">{error}</p>
+            <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-brand-cream/65">{error}</p>
             <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-              <button onClick={handleReset} className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-amber px-6 py-3 font-bold text-black hover:bg-brand-gold">
+              <button onClick={handleReset} className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-amber px-6 py-3 font-bold text-brand-night hover:bg-brand-gold">
                 <RefreshCw size={16} /> Try another file
               </button>
-              <a href="/product-demo" className="rounded-xl border border-white/10 px-6 py-3 font-bold text-white/75 hover:bg-white/5">See sample format</a>
+              <a href="/product-demo" className="rounded-xl border border-brand-cream/10 px-6 py-3 font-bold text-brand-cream/75 hover:bg-brand-cream/5">See sample format</a>
             </div>
           </motion.div>
         )}
@@ -339,9 +339,9 @@ export default function UploadPage() {
 
 function Metric({ label, value, tone }: { label: string; value: string; tone: "white" | "yellow" }) {
   return (
-    <div className="rounded-2xl bg-white/[0.04] p-4 ring-1 ring-white/10">
-      <p className={cn("text-2xl font-black", tone === "yellow" ? "text-brand-amber" : "text-white")}>{value}</p>
-      <p className="mt-1 text-xs text-white/45">{label}</p>
+    <div className="rounded-2xl bg-brand-cream/[0.04] p-4 ring-1 ring-brand-cream/10">
+      <p className={cn("text-2xl font-black", tone === "yellow" ? "text-brand-amber" : "text-brand-cream")}>{value}</p>
+      <p className="mt-1 text-xs text-brand-cream/45">{label}</p>
     </div>
   );
 }
@@ -444,7 +444,7 @@ function DropZoneWithCallback({ onUploadComplete }: { onUploadComplete: (result:
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_.85fr]">
-      <div className="rounded-3xl border border-white/10 bg-navy-panel p-6 md:p-8">
+      <div className="rounded-3xl border border-brand-cream/10 bg-navy-panel p-6 md:p-8">
         {state === "preview" && uploadResult ? (
           <div className="text-center">
             <CheckCircle size={48} className="mx-auto mb-4 text-brand-green" />
@@ -458,7 +458,7 @@ function DropZoneWithCallback({ onUploadComplete }: { onUploadComplete: (result:
                 <span key={col} className="rounded bg-navy-panel-2 px-2 py-1 text-xs text-navy-chip">{col} → {mapped}</span>
               ))}
             </div>
-            <button onClick={() => onUploadComplete(uploadResult)} className="mt-6 rounded-xl bg-brand-amber px-6 py-3 font-bold text-black hover:bg-brand-gold">
+            <button onClick={() => onUploadComplete(uploadResult)} className="mt-6 rounded-xl bg-brand-amber px-6 py-3 font-bold text-brand-night hover:bg-brand-gold">
               Confirm columns
             </button>
           </div>
@@ -493,10 +493,10 @@ function DropZoneWithCallback({ onUploadComplete }: { onUploadComplete: (result:
             </div>
           </label>
         )}
-        {error && <p className="mt-4 rounded-xl bg-red-500/10 p-3 text-center text-sm text-red-300">{error}</p>}
+        {error && <p className="mt-4 rounded-xl bg-destructive/10 p-3 text-center text-sm text-destructive">{error}</p>}
       </div>
 
-      <aside className="rounded-3xl border border-white/10 bg-brand-night p-6 text-white">
+      <aside className="rounded-3xl border border-brand-cream/10 bg-brand-night p-6 text-brand-cream">
         <div className="flex items-center gap-2 text-brand-amber">
           <FileSpreadsheet className="h-5 w-5" />
           <p className="font-bold">Best audit quality</p>
@@ -506,7 +506,7 @@ function DropZoneWithCallback({ onUploadComplete }: { onUploadComplete: (result:
           <Requirement title="Inventory snapshot" body="Product name, current stock, cost price, shelf price. Barcode and category improve matching." />
           <Requirement title="Optional but powerful" body="Expiry date, batch number, brand, pack size, storage type for safe Recovery Match later." />
         </div>
-        <div className="mt-5 rounded-2xl border border-brand-green/30 bg-brand-green/10 p-4 text-sm leading-6 text-white/62">
+        <div className="mt-5 rounded-2xl border border-brand-green/30 bg-brand-green/10 p-4 text-sm leading-6 text-brand-cream/62">
           <b className="text-whatsapp-light">Do not overthink it.</b> Real merchant files are messy. NazmOS now supports manual column correction instead of forcing perfect templates.
         </div>
       </aside>
@@ -516,9 +516,9 @@ function DropZoneWithCallback({ onUploadComplete }: { onUploadComplete: (result:
 
 function Requirement({ title, body }: { title: string; body: string }) {
   return (
-    <div className="rounded-2xl bg-white/[0.04] p-4 ring-1 ring-white/5">
+    <div className="rounded-2xl bg-brand-cream/[0.04] p-4 ring-1 ring-brand-cream/5">
       <p className="font-bold">{title}</p>
-      <p className="mt-1 text-sm leading-6 text-white/55">{body}</p>
+      <p className="mt-1 text-sm leading-6 text-brand-cream/55">{body}</p>
     </div>
   );
 }

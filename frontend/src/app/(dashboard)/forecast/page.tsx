@@ -30,7 +30,7 @@ interface SummaryResponse {
 function trendTone(trend: string | null) {
   if (trend === "up") return "text-brand-green bg-brand-green/10 border-brand-green/25";
   if (trend === "down") return "text-brand-red-light bg-brand-red/10 border-brand-red/25";
-  return "text-navy-muted bg-white/5 border-white/10";
+  return "text-navy-muted bg-brand-cream/5 border-brand-cream/10";
 }
 
 function trendLabel(trend: string | null) {
@@ -119,7 +119,7 @@ export default function ForecastPage() {
         <button
           onClick={generate}
           disabled={working || noData}
-          className="inline-flex items-center gap-2 rounded-xl bg-brand-amber px-4 py-2.5 text-sm font-bold text-black hover:bg-brand-gold disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-xl bg-brand-amber px-4 py-2.5 text-sm font-bold text-brand-night hover:bg-brand-gold disabled:cursor-not-allowed disabled:opacity-50"
         >
           {working ? <RefreshCw className="h-4 w-4 animate-spin" aria-hidden /> : <Sparkles className="h-4 w-4" aria-hidden />}
           Refresh forecasts
@@ -208,7 +208,7 @@ export default function ForecastPage() {
                       </div>
                     </div>
                     {detail.from_cache !== undefined && (
-                      <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-navy-muted">
+                      <span className="rounded-full border border-brand-cream/10 bg-brand-cream/5 px-3 py-1 text-xs font-semibold text-navy-muted">
                         {detail.from_cache ? "Cached" : "Fallback"}
                       </span>
                     )}
@@ -239,7 +239,7 @@ export default function ForecastPage() {
                       </p>
                     </div>
                   ) : (
-                    <p className="mt-6 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-navy-muted">
+                    <p className="mt-6 rounded-xl border border-brand-cream/10 bg-brand-cream/5 p-4 text-sm text-navy-muted">
                       No forecast curve available yet. Refresh forecasts after importing enough sales history.
                     </p>
                   )}

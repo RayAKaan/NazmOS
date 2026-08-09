@@ -3,6 +3,9 @@ import { ImageResponse } from "next/og";
 export const size = { width: 512, height: 512 };
 export const contentType = "image/png";
 
+const BG_FROM = "#0a0a0f";
+const ACCENT = "#14B8A6";
+
 export default function Icon() {
   return new ImageResponse(
     (
@@ -13,7 +16,7 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0a0a0f",
+          background: BG_FROM,
         }}
       >
         <div
@@ -21,7 +24,7 @@ export default function Icon() {
             fontSize: 280,
             fontWeight: 800,
             fontFamily: "ui-sans-serif, system-ui, sans-serif",
-            color: "#14B8A6",
+            color: ACCENT,
             lineHeight: 1,
           }}
         >

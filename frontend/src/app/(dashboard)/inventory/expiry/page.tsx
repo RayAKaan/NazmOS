@@ -35,9 +35,9 @@ export default function ExpiryPage() {
   }).sort((a, b) => a.days_left - b.days_left);
 
   const badge = (days: number) => {
-    if (days < 30) return { text: "حرج – Critical", cls: "bg-red-500/10 text-red-400 border-red-500/30" };
-    if (days < 90) return { text: "قريب – Warning", cls: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30" };
-    return { text: "OK", cls: "bg-green-500/10 text-green-400 border-green-500/30" };
+    if (days < 30) return { text: "حرج – Critical", cls: "bg-destructive/10 text-destructive border-destructive/30" };
+    if (days < 90) return { text: "قريب – Warning", cls: "bg-warning/10 text-warning border-warning/30" };
+    return { text: "OK", cls: "bg-success/10 text-success border-success/30" };
   };
 
   return (
@@ -62,7 +62,7 @@ export default function ExpiryPage() {
             onClick={() => setFilter(f.k as any)}
             className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
               filter === f.k
-                ? "bg-accent-blue text-white"
+                ? "bg-primary text-primary-foreground"
                 : "bg-surface border border-border text-text-secondary hover:text-text-primary"
             }`}
           >
@@ -103,7 +103,7 @@ export default function ExpiryPage() {
                   </td>
                   <td className="px-5 py-4 text-right">
                     {l.days_left < 90 ? (
-                      <button className="text-xs text-accent-blue hover:underline">Discount – خصم</button>
+                      <button className="text-xs text-primary hover:underline">Discount – خصم</button>
                     ) : (
                       <span className="text-xs text-text-muted">—</span>
                     )}
@@ -119,7 +119,7 @@ export default function ExpiryPage() {
       </div>
 
       <div className="mt-4 text-xs text-text-muted">
-        SFDA recall check: <span className="text-accent-green">✓ Active – no recalls matched to your inventory</span>
+        SFDA recall check: <span className="text-success">✓ Active – no recalls matched to your inventory</span>
         <span className="mx-2">•</span>
         Last scan: just now
       </div>

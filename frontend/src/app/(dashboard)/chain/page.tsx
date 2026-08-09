@@ -64,7 +64,7 @@ export default function ChainDashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="w-12 h-12 rounded-xl bg-accent-blue animate-pulse" />
+        <div className="w-12 h-12 rounded-xl bg-primary animate-pulse" />
       </div>
     );
   }
@@ -114,8 +114,8 @@ export default function ChainDashboardPage() {
           className="bg-navy-panel rounded-2xl p-6"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-green-400" />
+            <div className="w-10 h-10 rounded-xl bg-success/20 flex items-center justify-center">
+              <DollarSign className="w-5 h-5 text-success" />
             </div>
             <span className="text-sm text-navy-muted">Today's Revenue</span>
           </div>
@@ -124,11 +124,11 @@ export default function ChainDashboardPage() {
           </p>
           <div className="flex items-center gap-1 mt-2">
             {revenueChange >= 0 ? (
-              <TrendingUp className="w-4 h-4 text-green-400" />
+              <TrendingUp className="w-4 h-4 text-success" />
             ) : (
-              <TrendingDown className="w-4 h-4 text-red-400" />
+              <TrendingDown className="w-4 h-4 text-destructive" />
             )}
-            <span className={`text-sm ${revenueChange >= 0 ? "text-green-400" : "text-red-400"}`}>
+            <span className={`text-sm ${revenueChange >= 0 ? "text-success" : "text-destructive"}`}>
               {Math.abs(revenueChange).toFixed(1)}%
             </span>
             <span className="text-sm text-navy-muted">vs yesterday</span>
@@ -142,8 +142,8 @@ export default function ChainDashboardPage() {
           className="bg-navy-panel rounded-2xl p-6"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
-              <ShoppingCart className="w-5 h-5 text-blue-400" />
+            <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+              <ShoppingCart className="w-5 h-5 text-primary" />
             </div>
             <span className="text-sm text-navy-muted">Transactions</span>
           </div>
@@ -160,8 +160,8 @@ export default function ChainDashboardPage() {
           className="bg-navy-panel rounded-2xl p-6"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
-              <Building2 className="w-5 h-5 text-purple-400" />
+            <div className="w-10 h-10 rounded-xl bg-accent-purple/20 flex items-center justify-center">
+              <Building2 className="w-5 h-5 text-accent-purple" />
             </div>
             <span className="text-sm text-navy-muted">Locations</span>
           </div>
@@ -178,15 +178,15 @@ export default function ChainDashboardPage() {
           className="bg-navy-panel rounded-2xl p-6"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center">
-              <AlertTriangle className="w-5 h-5 text-red-400" />
+            <div className="w-10 h-10 rounded-xl bg-destructive/20 flex items-center justify-center">
+              <AlertTriangle className="w-5 h-5 text-destructive" />
             </div>
             <span className="text-sm text-navy-muted">Alerts</span>
           </div>
           <p className="text-2xl font-bold text-navy-text">
             {criticalLocations.length}
           </p>
-          <p className="text-sm text-red-400 mt-2">Need attention</p>
+          <p className="text-sm text-destructive mt-2">Need attention</p>
         </motion.div>
       </div>
 
@@ -194,11 +194,11 @@ export default function ChainDashboardPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-red-500/10 border border-red-500/30 rounded-2xl p-4"
+          className="bg-destructive/10 border border-destructive/30 rounded-2xl p-4"
         >
           <div className="flex items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-red-400" />
-            <span className="text-red-400 font-medium">
+            <AlertTriangle className="w-5 h-5 text-destructive" />
+            <span className="text-destructive font-medium">
               {criticalLocations.length} location(s) performing below target
             </span>
           </div>

@@ -156,7 +156,7 @@ function ToastItem({ toast, onClose }: { toast: ToastItem; onClose: () => void }
       exit={{ opacity: 0, x: 100, scale: 0.9 }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className={cn(
-        "flex items-start gap-3 p-4 rounded-xl border shadow-xl shadow-black/20 backdrop-blur-sm min-w-[320px] max-w-md bg-bg-secondary",
+        "flex items-start gap-3 p-4 rounded-xl border shadow-xl shadow-brand-night/20 backdrop-blur-sm min-w-[320px] max-w-md bg-bg-secondary",
         config.className
       )}
     >

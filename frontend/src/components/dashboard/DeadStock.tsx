@@ -40,7 +40,7 @@ export function DeadStock({ data, isLoading }: DeadStockProps) {
   return (
     <div>
       <div className="flex items-center gap-2 mb-4">
-        <Trash2 className="w-5 h-5 text-accent-red" />
+        <Trash2 className="w-5 h-5 text-destructive" />
         <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider">
           Dead Stock
         </h3>
@@ -49,7 +49,7 @@ export function DeadStock({ data, isLoading }: DeadStockProps) {
         {data.items.slice(0, 4).map((item) => (
           <div
             key={item.item_id}
-            className="p-3 rounded-lg bg-accent-red/5 border border-accent-red/20"
+            className="p-3 rounded-lg bg-destructive/5 border border-destructive/20"
           >
             <div className="flex items-start justify-between mb-1">
               <p className="font-medium text-sm">{item.name}</p>
@@ -57,9 +57,9 @@ export function DeadStock({ data, isLoading }: DeadStockProps) {
                 className={cn(
                   "text-xs px-2 py-0.5 rounded capitalize",
                   item.recommendation === "discount"
-                    ? "bg-accent-yellow/10 text-accent-yellow"
+                    ? "bg-warning/10 text-warning"
                     : item.recommendation === "remove"
-                    ? "bg-accent-red/10 text-accent-red"
+                    ? "bg-destructive/10 text-destructive"
                     : "bg-accent-purple/10 text-accent-purple"
                 )}
               >
@@ -77,7 +77,7 @@ export function DeadStock({ data, isLoading }: DeadStockProps) {
         <div className="mt-4 pt-3 border-t border-border">
           <p className="text-sm text-text-muted">
             Total stuck value:{" "}
-            <span className="font-semibold text-accent-red">
+            <span className="font-semibold text-destructive">
               {formatCurrency(data.total_stuck_value)}
             </span>
           </p>

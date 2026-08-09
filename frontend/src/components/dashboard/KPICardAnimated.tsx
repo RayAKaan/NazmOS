@@ -158,10 +158,10 @@ function Sparkline({ data, color }: { data: number[]; color: "blue" | "green" | 
   const gradientId = `sparkline-gradient-${color}`;
 
   const colors = {
-    blue: { stroke: "#6366f1", fill: "rgba(99, 102, 241, 0.2)" },
-    green: { stroke: "#22c55e", fill: "rgba(34, 197, 94, 0.2)" },
-    yellow: { stroke: "#eab308", fill: "rgba(234, 179, 8, 0.2)" },
-    purple: { stroke: "#8b5cf6", fill: "rgba(139, 92, 246, 0.2)" },
+    blue: { stroke: "var(--chart-3)", fill: "color-mix(in oklab, var(--chart-3) 20%, transparent)" },
+    green: { stroke: "var(--chart-1)", fill: "color-mix(in oklab, var(--chart-1) 20%, transparent)" },
+    yellow: { stroke: "var(--chart-5)", fill: "color-mix(in oklab, var(--chart-5) 20%, transparent)" },
+    purple: { stroke: "var(--chart-4)", fill: "color-mix(in oklab, var(--chart-4) 20%, transparent)" },
   };
 
   const currentColor = colors[color];

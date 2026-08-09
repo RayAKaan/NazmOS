@@ -74,7 +74,7 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="w-2 h-2 bg-green-500 rounded-full" />
+              <span className="w-2 h-2 bg-success rounded-full" />
               {t.footer.systemsOperational}
             </span>
           </div>

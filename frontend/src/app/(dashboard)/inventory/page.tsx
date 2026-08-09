@@ -158,7 +158,7 @@ export default function InventoryPage() {
             </div>
             <div>
               <p className="text-sm text-text-muted">Items Needing Attention</p>
-              <p className="text-xl font-bold text-accent-yellow">
+              <p className="text-xl font-bold text-warning">
                 {inventory.summary.critical_count + inventory.summary.low_count}
               </p>
             </div>

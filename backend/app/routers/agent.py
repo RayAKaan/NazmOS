@@ -181,18 +181,30 @@ async def get_autonomy(
     return {"policies": policies}
 
 
+class AutonomyPolicyIn(BaseModel):
+    action_type: str
+    dial: int = Field(default=50, ge=0, le=100)
+    ceiling_sar: float | None = None
+    max_price_increase_pct: float | None = None
+    max_price_decrease_pct: float | None = None
+
+
+class SetAutonomyRequest(BaseModel):
+    policies: list[AutonomyPolicyIn]
+
+
 @router.put("/autonomy")
 async def set_autonomy(
     business_id: UUID,
-    policies: list,
+    body: SetAutonomyRequest,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     """Update autonomy dial – 0-100 per action_type"""
     await assert_business_access(db, business_id, current_user)
-    for p in policies:
-        action_type = p["action_type"]
-        dial = max(0, min(100, int(p.get("dial", 50))))
+    for p in body.policies:
+        action_type = p.action_type
+        dial = max(0, min(100, int(p.dial)))
         
         # Enforce safety ceilings – pricing never >50 without explicit override
         if action_type.startswith("pricing") and dial > 50:
@@ -201,27 +213,28 @@ async def set_autonomy(
         await db.execute(text("""
             INSERT INTO autonomy_policies 
             (id, business_id, action_type, dial, ceiling_sar, 
-             max_price_increase_pct, max_price_decrease_pct, updated_by, updated_at)
-            VALUES (gen_random_uuid(), :b, :a, :d, :ceil, :inc, :dec, :uid, NOW())
+             max_price_increase_pct, max_price_decrease_pct, is_active, updated_by, updated_at)
+            VALUES (gen_random_uuid(), :b, :a, :d, :ceil, :inc, :dec, true, :uid, NOW())
             ON CONFLICT (business_id, action_type) 
             DO UPDATE SET 
               dial = EXCLUDED.dial,
               ceiling_sar = EXCLUDED.ceiling_sar,
               max_price_increase_pct = EXCLUDED.max_price_increase_pct,
               max_price_decrease_pct = EXCLUDED.max_price_decrease_pct,
+              is_active = EXCLUDED.is_active,
               updated_by = EXCLUDED.updated_by,
               updated_at = NOW()
         """), {
             "b": str(business_id),
             "a": action_type,
             "d": dial,
-            "ceil": p.get("ceiling_sar"),
-            "inc": p.get("max_price_increase_pct"),
-            "dec": p.get("max_price_decrease_pct"),
+            "ceil": p.ceiling_sar,
+            "inc": p.max_price_increase_pct,
+            "dec": p.max_price_decrease_pct,
             "uid": str(current_user.id),
         })
     await db.commit()
-    return {"ok": True, "updated": len(policies)}
+    return {"ok": True, "updated": len(body.policies)}
 
 
 # ── Manual scan trigger ───────────────────────────────

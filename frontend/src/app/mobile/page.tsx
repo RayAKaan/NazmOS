@@ -167,8 +167,8 @@ export default function MobilePage() {
         </section>
 
         {topAction && (
-          <section className="rounded-2xl border border-[#E0B34A]/30 bg-[#E0B34A]/10 p-4">
-            <div className="flex items-center gap-2 text-[#E0B34A]">
+          <section className="rounded-2xl border border-brand-amber/30 bg-brand-amber/10 p-4">
+            <div className="flex items-center gap-2 text-brand-amber">
               <Sparkles className="w-4 h-4" />
               <span className="text-xs font-bold uppercase tracking-wider">Top action</span>
             </div>
@@ -179,7 +179,7 @@ export default function MobilePage() {
                 <>
                   <button
                     onClick={() => approve(topAction.id)}
-                    className="flex-1 rounded-xl bg-[#13A05A] py-2 text-sm font-bold text-black flex items-center justify-center gap-1"
+                    className="flex-1 rounded-xl bg-brand-green py-2 text-sm font-bold text-black flex items-center justify-center gap-1"
                   >
                     <CheckCircle2 className="w-4 h-4" /> Approve
                   </button>
@@ -191,7 +191,7 @@ export default function MobilePage() {
                   </button>
                 </>
               ) : (
-                <Link href="/feed" className="flex-1 rounded-xl bg-[#E0B34A] py-2 text-center text-sm font-bold text-black">
+                <Link href="/feed" className="flex-1 rounded-xl bg-brand-amber py-2 text-center text-sm font-bold text-black">
                   View in feed
                 </Link>
               )}
@@ -217,7 +217,7 @@ export default function MobilePage() {
                 <div className="mt-2 flex gap-2">
                   <button
                     onClick={() => approve(item.id)}
-                    className="rounded-lg bg-[#13A05A] px-3 py-1 text-xs font-bold text-black"
+                    className="rounded-lg bg-brand-green px-3 py-1 text-xs font-bold text-black"
                   >
                     Approve
                   </button>

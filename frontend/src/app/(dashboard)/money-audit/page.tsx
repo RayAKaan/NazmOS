@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import api from "@/lib/api";
 import { useAppStore } from "@/stores/appStore";
-import { cn } from "@/lib/utils";
+import { cn, errorMessage } from "@/lib/utils";
 import { IntelligenceCard } from "@/components/intelligence/IntelligenceCard";
 import { Sparkles } from "lucide-react";
 
@@ -61,15 +61,15 @@ function money(value: number | null | undefined) {
 }
 
 function actionTone(type: string) {
-  if (type === "reorder") return "text-[#E0B34A] bg-[#E0B34A]/10 border-[#E0B34A]/25";
-  if (type === "discount") return "text-[#ff8a73] bg-[#C8412A]/10 border-[#C8412A]/25";
-  if (type === "margin_fix") return "text-[#13A05A] bg-[#13A05A]/10 border-[#13A05A]/25";
+  if (type === "reorder") return "text-brand-amber bg-brand-amber/10 border-brand-amber/25";
+  if (type === "discount") return "text-brand-red-light bg-brand-red/10 border-brand-red/25";
+  if (type === "margin_fix") return "text-brand-green bg-brand-green/10 border-brand-green/25";
   return "text-blue-300 bg-blue-500/10 border-blue-400/20";
 }
 
 function statusTone(status: string) {
-  if (status === "completed") return "text-[#13A05A] bg-[#13A05A]/10";
-  if (status === "approved") return "text-[#E0B34A] bg-[#E0B34A]/10";
+  if (status === "completed") return "text-brand-green bg-brand-green/10";
+  if (status === "approved") return "text-brand-amber bg-brand-amber/10";
   if (status === "rejected") return "text-white/45 bg-white/10";
   return "text-blue-300 bg-blue-500/10";
 }
@@ -90,7 +90,7 @@ export default function MoneyAuditPage() {
       const res = await api.get(`/money-audit/current?business_id=${businessId}&auto_generate=true`);
       setAudit(res.data);
     } catch (err: any) {
-      setError(err?.response?.data?.detail || "Could not load Money Audit. Upload sales and inventory files first.");
+      setError(errorMessage(err, "Could not load Money Audit. Upload sales and inventory files first."));
       setAudit(null);
     } finally {
       setLoading(false);
@@ -194,7 +194,7 @@ export default function MoneyAuditPage() {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
         <div className="text-center">
-          <div className="mx-auto h-14 w-14 animate-pulse rounded-2xl bg-[#E0B34A]/20" />
+          <div className="mx-auto h-14 w-14 animate-pulse rounded-2xl bg-brand-amber/20" />
           <p className="mt-4 text-text-muted">Generating Money Audit...</p>
         </div>
       </div>
@@ -204,11 +204,11 @@ export default function MoneyAuditPage() {
   if (error && !audit) {
     return (
       <div className="space-y-6">
-        <section className="rounded-3xl border border-[#C8412A]/30 bg-[#C8412A]/10 p-8 text-white">
-          <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#ff8a73]">Money Audit unavailable</p>
+        <section className="rounded-3xl border border-brand-red/30 bg-brand-red/10 p-8 text-white">
+          <p className="font-mono text-xs uppercase tracking-[0.24em] text-brand-red-light">Money Audit unavailable</p>
           <h1 className="mt-3 text-3xl font-black">Upload sales and inventory files first.</h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-white/65">{error}</p>
-          <a href="/upload" className="mt-6 inline-flex rounded-xl bg-[#E0B34A] px-5 py-3 font-bold text-black hover:bg-[#f2cf69]">
+          <a href="/upload" className="mt-6 inline-flex rounded-xl bg-brand-amber px-5 py-3 font-bold text-black hover:bg-brand-gold">
             Upload files
           </a>
         </section>
@@ -220,10 +220,10 @@ export default function MoneyAuditPage() {
 
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-3xl border border-white/10 bg-[#0A0E0C] p-6 text-white shadow-2xl shadow-black/20 md:p-8">
+      <section className="overflow-hidden rounded-3xl border border-white/10 bg-brand-night p-6 text-white shadow-2xl shadow-black/20 md:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#E0B34A]">Free Money Audit</p>
+            <p className="font-mono text-xs uppercase tracking-[0.24em] text-brand-amber">Free Money Audit</p>
             <h1 className="mt-4 max-w-4xl font-serif text-4xl font-black leading-tight tracking-[-0.04em] md:text-6xl">
               Here is the cash trapped inside your store.
             </h1>
@@ -235,20 +235,20 @@ export default function MoneyAuditPage() {
             <button disabled={working} onClick={regenerate} className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-3 text-sm font-bold text-white/70 hover:bg-white/5">
               <RefreshCw className="h-4 w-4" /> Regenerate
             </button>
-            <button disabled={working} onClick={copyWhatsApp} className="inline-flex items-center gap-2 rounded-xl border border-[#25D366]/50 px-4 py-3 text-sm font-bold text-[#25D366] hover:bg-[#25D366]/10">
+            <button disabled={working} onClick={copyWhatsApp} className="inline-flex items-center gap-2 rounded-xl border border-whatsapp/50 px-4 py-3 text-sm font-bold text-whatsapp hover:bg-whatsapp/10">
               <MessageCircle className="h-4 w-4" /> Copy WhatsApp
             </button>
-            <button disabled={working} onClick={shareWhatsApp} className="inline-flex items-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-sm font-bold text-black hover:bg-[#54df85]">
+            <button disabled={working} onClick={shareWhatsApp} className="inline-flex items-center gap-2 rounded-xl bg-whatsapp px-4 py-3 text-sm font-bold text-black hover:bg-whatsapp-bright">
               <MessageCircle className="h-4 w-4" /> Share WhatsApp
             </button>
-            <button disabled={working} onClick={openPrint} className="inline-flex items-center gap-2 rounded-xl bg-[#E0B34A] px-4 py-3 text-sm font-bold text-black hover:bg-[#f2cf69]">
+            <button disabled={working} onClick={openPrint} className="inline-flex items-center gap-2 rounded-xl bg-brand-amber px-4 py-3 text-sm font-bold text-black hover:bg-brand-gold">
               <Download className="h-4 w-4" /> Printable report
             </button>
           </div>
         </div>
       </section>
 
-      {notice && <div className="rounded-2xl border border-[#E0B34A]/30 bg-[#E0B34A]/10 p-4 text-sm text-[#E0B34A]">{notice}</div>}
+      {notice && <div className="rounded-2xl border border-brand-amber/30 bg-brand-amber/10 p-4 text-sm text-brand-amber">{notice}</div>}
 
       <section className="grid gap-4 md:grid-cols-3">
         <Kpi icon={WalletCards} label="Money at Risk" value={money(audit.money_at_risk_sar)} tone="red" body="Dead stock + stockout risk + margin leakage." />
@@ -290,8 +290,8 @@ export default function MoneyAuditPage() {
       )}
 
       {audit.missing_data?.length > 0 && (
-        <section className="rounded-3xl border border-[#E0B34A]/25 bg-[#E0B34A]/10 p-6">
-          <div className="flex items-center gap-2 text-[#E0B34A]">
+        <section className="rounded-3xl border border-brand-amber/25 bg-brand-amber/10 p-6">
+          <div className="flex items-center gap-2 text-brand-amber">
             <AlertTriangle className="h-5 w-5" />
             <h2 className="text-xl font-bold">Data quality notes</h2>
           </div>
@@ -311,7 +311,7 @@ export default function MoneyAuditPage() {
             <h2 className="text-2xl font-bold">Recovery Actions</h2>
             <p className="mt-1 text-sm text-text-secondary">Approve, reject, or mark completed. These numbers drive Money Approved and Money Recovered.</p>
           </div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#13A05A]/10 px-3 py-2 text-xs font-bold text-[#9ff2bd]">
+          <div className="inline-flex items-center gap-2 rounded-full bg-brand-green/10 px-3 py-2 text-xs font-bold text-whatsapp-light">
             <ShieldCheck className="h-4 w-4" /> Owner stays in control
           </div>
         </div>
@@ -342,12 +342,12 @@ export default function MoneyAuditPage() {
 
 function Kpi({ icon: Icon, label, value, body, tone }: { icon: any; label: string; value: string; body: string; tone: "red" | "gold" | "green" }) {
   const tones = {
-    red: "text-[#ff8a73]",
-    gold: "text-[#E0B34A]",
-    green: "text-[#13A05A]",
+    red: "text-brand-red-light",
+    gold: "text-brand-amber",
+    green: "text-brand-green",
   };
   return (
-    <div className="rounded-3xl border border-white/10 bg-[#0A0E0C] p-6 text-white">
+    <div className="rounded-3xl border border-white/10 bg-brand-night p-6 text-white">
       <Icon className={cn("h-6 w-6", tones[tone])} />
       <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.22em] text-white/45">{label}</p>
       <p className={cn("mt-2 font-serif text-4xl font-black", tones[tone])}>{value}</p>
@@ -383,12 +383,12 @@ function ActionCard({ action, onApprove, onReject, onComplete, disabled }: { act
         </div>
         <div className="shrink-0 rounded-2xl bg-black/20 p-4 text-right">
           <p className="text-xs text-text-muted">Expected recovery</p>
-          <p className="mt-1 text-2xl font-black text-[#13A05A]">{money(action.expected_recovery_sar)}</p>
+          <p className="mt-1 text-2xl font-black text-brand-green">{money(action.expected_recovery_sar)}</p>
         </div>
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
-        {canApprove && <button disabled={disabled} onClick={onApprove} className="rounded-xl bg-[#25D366] px-4 py-2 text-sm font-bold text-black">Approve</button>}
-        {canComplete && <button disabled={disabled} onClick={onComplete} className="rounded-xl bg-[#13A05A] px-4 py-2 text-sm font-bold text-black">Mark completed</button>}
+        {canApprove && <button disabled={disabled} onClick={onApprove} className="rounded-xl bg-whatsapp px-4 py-2 text-sm font-bold text-black">Approve</button>}
+        {canComplete && <button disabled={disabled} onClick={onComplete} className="rounded-xl bg-brand-green px-4 py-2 text-sm font-bold text-black">Mark completed</button>}
         {canReject && <button disabled={disabled} onClick={onReject} className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm font-bold text-white/70 hover:bg-white/5"><XCircle className="h-4 w-4" /> Reject</button>}
         <button disabled={disabled} onClick={() => navigator.clipboard.writeText(`${action.title}\n${action.description || ""}\nExpected: ${money(action.expected_recovery_sar)}`)} className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm font-bold text-white/70 hover:bg-white/5">
           <Clipboard className="h-4 w-4" /> Copy action
@@ -401,7 +401,7 @@ function ActionCard({ action, onApprove, onReject, onComplete, disabled }: { act
 function Workflow({ title, body, icon: Icon }: { title: string; body: string; icon: any }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-      <Icon className="h-5 w-5 text-[#E0B34A]" />
+      <Icon className="h-5 w-5 text-brand-amber" />
       <h3 className="mt-3 font-bold text-white">{title}</h3>
       <p className="mt-2 text-sm leading-6 text-text-secondary">{body}</p>
     </div>

@@ -155,13 +155,22 @@ def test_legacy_distraction_terms_are_not_reintroduced_in_source():
     assert matches == []
 
 
-def test_model_router_defaults_to_openrouter_not_vendor_url():
+def test_model_router_uses_groq_and_gemini_not_gateway():
     from app.config import get_settings
-    from app.services.llm_orchestrator import LLMOrchestrator
+    from app.services.llm_orchestrator import (
+        GROQ_CHAT_URL,
+        GEMINI_API_BASE,
+        LLMOrchestrator,
+    )
 
     settings = get_settings()
-    assert settings.OPENROUTER_BASE_URL.rstrip("/") == "https://openrouter.ai/api/v1"
-    assert settings.LLM_MODEL
+    assert settings.GROQ_MODEL
+    assert settings.GOOGLE_AI_MODEL
+    assert settings.provider_order
+    assert "mock" in settings.provider_order
+    assert GROQ_CHAT_URL.startswith("https://api.groq.com/openai/v1/")
+    assert "chat/completions" in GROQ_CHAT_URL
+    assert GEMINI_API_BASE.startswith("https://generativelanguage.googleapis.com/v1beta/models")
     orchestrator = LLMOrchestrator()
-    assert orchestrator._chat_url().startswith("https://openrouter.ai/api/v1/")
-    assert "chat/completions" in orchestrator._chat_url()
+    assert orchestrator._has_key("groq") is False or settings.GROQ_API_KEY
+    assert orchestrator._real_providers() == [p for p in settings.provider_order if p in ("groq", "google")]

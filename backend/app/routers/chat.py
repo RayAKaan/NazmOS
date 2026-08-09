@@ -8,6 +8,7 @@ import uuid
 from typing import Optional
 
 from app.middleware.auth_middleware import get_current_user
+from app.middleware.business_access import assert_business_access
 from app.database import get_db, User, ChatSession, ChatMessage
 from app.services.llm_orchestrator import LLMOrchestrator
 from app.services.context_builder import ContextBuilder
@@ -39,6 +40,7 @@ async def chat(
     db=Depends(get_db),
 ):
     if business_id:
+        await assert_business_access(db, business_id, current_user)
         await require_feature_enabled(db, "chat_enabled", business_id=business_id)
 
     clean_message = sanitize_user_input(message)
@@ -94,7 +96,9 @@ async def chat(
         try:
             yield f"data: {json.dumps({'type': 'start', 'session_id': session_id, 'message_id': session_msg_id})}\n\n"
 
-            async for chunk in llm_orchestrator.stream_response(clean_message, system_prompt):
+            async for chunk in llm_orchestrator.stream_response(
+                clean_message, system_prompt, db=db, business_id=business_id
+            ):
                 full_response += chunk
                 yield f"data: {json.dumps({'type': 'token', 'content': chunk})}\n\n"
 

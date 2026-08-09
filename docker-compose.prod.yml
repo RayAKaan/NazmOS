@@ -4,7 +4,8 @@
 #   DB_PASSWORD, REDIS_PASSWORD, SECRET_KEY, CORS_ORIGINS, PUBLIC_API_URL,
 #   SENTRY_DSN, DATABASE_APP_ROLE, CREDENTIAL_MASTER_KEY
 # Optional:
-#   OPENROUTER_API_KEY, LLM_MODEL, USE_MOCK_LLM, METRICS_TOKEN
+#   GROQ_API_KEY, GOOGLE_AI_API_KEY, LLM_PROVIDER_ORDER, USE_MOCK_LLM,
+#   WHATSAPP_ENABLED, WHATSAPP_TOKEN, WHATSAPP_PHONE_ID, METRICS_TOKEN
 
 services:
   postgres:
@@ -59,11 +60,16 @@ services:
       DATABASE_APP_ROLE: ${DATABASE_APP_ROLE:?DATABASE_APP_ROLE must be set}
       UPLOAD_DIR: /app/uploads
       USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
-      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
-      OPENROUTER_BASE_URL: ${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
-      OPENROUTER_SITE_URL: ${OPENROUTER_SITE_URL:-https://nazmak.com}
-      OPENROUTER_APP_NAME: ${OPENROUTER_APP_NAME:-NazmOS by Nazmak}
-      LLM_MODEL: ${LLM_MODEL:-openrouter/auto}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
+      GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY:-}
+      GOOGLE_AI_MODEL: ${GOOGLE_AI_MODEL:-gemini-2.5-flash-lite}
+      LLM_PROVIDER_ORDER: ${LLM_PROVIDER_ORDER:-groq,google,mock}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.2}
+      LLM_MAX_TOKENS: ${LLM_MAX_TOKENS:-1000}
+      WHATSAPP_ENABLED: ${WHATSAPP_ENABLED:-mock}
+      WHATSAPP_TOKEN: ${WHATSAPP_TOKEN:-}
+      WHATSAPP_PHONE_ID: ${WHATSAPP_PHONE_ID:-}
     depends_on:
       postgres:
         condition: service_healthy
@@ -98,11 +104,16 @@ services:
       USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
       USE_CELERY: ${USE_CELERY:-true}
       USE_REDIS: ${USE_REDIS:-true}
-      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
-      OPENROUTER_BASE_URL: ${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
-      OPENROUTER_SITE_URL: ${OPENROUTER_SITE_URL:-https://nazmak.com}
-      OPENROUTER_APP_NAME: ${OPENROUTER_APP_NAME:-NazmOS by Nazmak}
-      LLM_MODEL: ${LLM_MODEL:-google/gemma-2-9b-it:free}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
+      GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY:-}
+      GOOGLE_AI_MODEL: ${GOOGLE_AI_MODEL:-gemini-2.5-flash-lite}
+      LLM_PROVIDER_ORDER: ${LLM_PROVIDER_ORDER:-groq,google,mock}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.2}
+      LLM_MAX_TOKENS: ${LLM_MAX_TOKENS:-1000}
+      WHATSAPP_ENABLED: ${WHATSAPP_ENABLED:-mock}
+      WHATSAPP_TOKEN: ${WHATSAPP_TOKEN:-}
+      WHATSAPP_PHONE_ID: ${WHATSAPP_PHONE_ID:-}
       DEFAULT_CURRENCY: SAR
       DEFAULT_TIMEZONE: Asia/Riyadh
       BACKUP_DIR: /app/backups
@@ -142,11 +153,16 @@ services:
       USE_CELERY: ${USE_CELERY:-true}
       USE_REDIS: ${USE_REDIS:-true}
       USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
-      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
-      OPENROUTER_BASE_URL: ${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
-      OPENROUTER_SITE_URL: ${OPENROUTER_SITE_URL:-https://nazmak.com}
-      OPENROUTER_APP_NAME: ${OPENROUTER_APP_NAME:-NazmOS by Nazmak}
-      LLM_MODEL: ${LLM_MODEL:-openrouter/auto}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
+      GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY:-}
+      GOOGLE_AI_MODEL: ${GOOGLE_AI_MODEL:-gemini-2.5-flash-lite}
+      LLM_PROVIDER_ORDER: ${LLM_PROVIDER_ORDER:-groq,google,mock}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.2}
+      LLM_MAX_TOKENS: ${LLM_MAX_TOKENS:-1000}
+      WHATSAPP_ENABLED: ${WHATSAPP_ENABLED:-mock}
+      WHATSAPP_TOKEN: ${WHATSAPP_TOKEN:-}
+      WHATSAPP_PHONE_ID: ${WHATSAPP_PHONE_ID:-}
     depends_on:
       migrate:
         condition: service_completed_successfully

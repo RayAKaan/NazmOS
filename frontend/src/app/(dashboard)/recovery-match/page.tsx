@@ -126,15 +126,15 @@ function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     seller_approved: "bg-brand-amber/10 text-brand-amber",
     suggested: "bg-brand-amber/10 text-brand-amber",
-    seller_interested: "bg-blue-500/10 text-blue-300",
-    buyer_interested: "bg-blue-500/10 text-blue-300",
+    seller_interested: "bg-secondary/10 text-secondary",
+    buyer_interested: "bg-secondary/10 text-secondary",
     mutual_match: "bg-whatsapp/10 text-whatsapp-faint",
     contact_revealed: "bg-brand-green/10 text-brand-green",
     completed: "bg-brand-green/10 text-brand-green",
-    rejected: "bg-white/10 text-white/50",
+    rejected: "bg-brand-cream/10 text-brand-cream/50",
     issue_reported: "bg-brand-red/10 text-brand-red-light",
   };
-  return <span className={cn("rounded-full px-3 py-1 text-xs font-bold", styles[status] || "bg-white/10 text-white/60")}>{status.replaceAll("_", " ")}</span>;
+  return <span className={cn("rounded-full px-3 py-1 text-xs font-bold", styles[status] || "bg-brand-cream/10 text-brand-cream/60")}>{status.replaceAll("_", " ")}</span>;
 }
 
 export default function RecoveryMatchPage() {
@@ -337,7 +337,7 @@ export default function RecoveryMatchPage() {
 
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-3xl border border-white/10 bg-brand-night p-6 text-white shadow-2xl shadow-black/20 md:p-8">
+      <section className="overflow-hidden rounded-3xl border border-brand-cream/10 bg-brand-night p-6 text-brand-cream shadow-2xl shadow-black/20 md:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-brand-amber/30 bg-brand-amber/10 px-3 py-2 text-xs font-bold uppercase tracking-[0.22em] text-brand-amber">
@@ -346,11 +346,11 @@ export default function RecoveryMatchPage() {
             <h1 className="mt-5 max-w-4xl font-serif text-4xl font-black leading-tight tracking-[-0.03em] md:text-6xl">
               Recovery Match turns healthy surplus stock into recovered cash.
             </h1>
-            <p className="mt-4 max-w-3xl leading-7 text-white/62">
+            <p className="mt-4 max-w-3xl leading-7 text-brand-cream/62">
               Match surplus items with nearby opted-in stores — no payments, no escrow, no delivery, and no risky categories in v1.
             </p>
           </div>
-          <button onClick={load} className="inline-flex items-center gap-2 rounded-2xl border border-white/10 px-4 py-3 text-sm font-bold text-white/70 hover:bg-white/5">
+          <button onClick={load} className="inline-flex items-center gap-2 rounded-2xl border border-brand-cream/10 px-4 py-3 text-sm font-bold text-brand-cream/70 hover:bg-brand-cream/5">
             <RefreshCw className="h-4 w-4" /> Refresh
           </button>
         </div>
@@ -358,10 +358,10 @@ export default function RecoveryMatchPage() {
 
       <section className="grid gap-3 md:grid-cols-4">
         {pilotRules.map(([title, body], index) => (
-          <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+          <div key={title} className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-brand-amber">Rule {index + 1}</p>
-            <h3 className="mt-2 font-bold text-white">{title}</h3>
-            <p className="mt-1 text-sm leading-6 text-text-secondary">{body}</p>
+            <h3 className="mt-2 font-bold text-brand-cream">{title}</h3>
+            <p className="mt-1 text-sm leading-6 text-muted-foreground">{body}</p>
           </div>
         ))}
       </section>
@@ -377,14 +377,14 @@ export default function RecoveryMatchPage() {
 
       {notice && <div className="rounded-2xl border border-brand-amber/30 bg-brand-amber/10 p-4 text-sm text-brand-amber">{notice}</div>}
 
-      <div className="flex gap-2 overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.03] p-2">
+      <div className="flex gap-2 overflow-x-auto rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-2">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
             className={cn(
               "whitespace-nowrap rounded-xl px-4 py-2 text-sm font-bold transition",
-              activeTab === tab.key ? "bg-brand-amber text-black" : "text-white/60 hover:bg-white/5 hover:text-white"
+              activeTab === tab.key ? "bg-brand-amber text-brand-night" : "text-brand-cream/60 hover:bg-brand-cream/5 hover:text-brand-cream"
             )}
           >
             {tab.label}
@@ -393,26 +393,26 @@ export default function RecoveryMatchPage() {
       </div>
 
       {activeTab === "settings" && (
-        <section className="rounded-3xl border border-border bg-surface p-6">
+        <section className="rounded-3xl border border-border bg-card p-6">
           <h2 className="text-2xl font-bold">Recovery Match Settings</h2>
-          <p className="mt-1 text-sm text-text-secondary">Opt-in is required. Contact reveal remains manual and permissioned.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Opt-in is required. Contact reveal remains manual and permissioned.</p>
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             <label className="space-y-2 text-sm">
-              <span className="text-text-secondary">Max distance km</span>
-              <input value={maxDistance} onChange={(e) => setMaxDistance(e.target.value)} className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white" />
+              <span className="text-muted-foreground">Max distance km</span>
+              <input value={maxDistance} onChange={(e) => setMaxDistance(e.target.value)} className="w-full rounded-xl border border-brand-cream/10 bg-brand-night/30 px-3 py-2 text-brand-cream" />
             </label>
-            <label className="flex items-end gap-3 rounded-xl border border-white/10 bg-black/20 p-3 text-sm">
+            <label className="flex items-end gap-3 rounded-xl border border-brand-cream/10 bg-brand-night/20 p-3 text-sm">
               <input type="checkbox" checked={allowReveal} onChange={(e) => setAllowReveal(e.target.checked)} />
               <span>Allow contact reveal after mutual approval</span>
             </label>
             <div className="flex items-end gap-2">
-              <button onClick={enableRecoveryMatch} className="rounded-xl bg-brand-amber px-4 py-2 text-sm font-bold text-black">
+              <button onClick={enableRecoveryMatch} className="rounded-xl bg-brand-amber px-4 py-2 text-sm font-bold text-brand-night">
                 {settings?.is_enabled ? "Save Settings" : "Enable Recovery Match"}
               </button>
               <button
                 onClick={activateRecoveryMatch}
                 disabled={activating || settings?.is_enabled}
-                className="rounded-xl bg-brand-green px-4 py-2 text-sm font-bold text-black disabled:opacity-50"
+                className="rounded-xl bg-brand-green px-4 py-2 text-sm font-bold text-brand-night disabled:opacity-50"
               >
                 {activating ? "Activating…" : "Activate"}
               </button>
@@ -422,11 +422,11 @@ export default function RecoveryMatchPage() {
       )}
 
       {activeTab === "preview" && (
-        <section className="rounded-3xl border border-border bg-surface p-6">
+        <section className="rounded-3xl border border-border bg-card p-6">
           <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-2xl font-bold">Recovery Match Preview</h2>
-              <p className="mt-1 text-sm text-text-secondary">{loading ? "Scanning surplus candidates..." : "Preview opportunities. Create a listing only after confirming expiry and quantity."}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{loading ? "Scanning surplus candidates..." : "Preview opportunities. Create a listing only after confirming expiry and quantity."}</p>
             </div>
             <div className="inline-flex items-center gap-2 rounded-full bg-brand-red/10 px-3 py-2 text-xs font-bold text-brand-red-light">
               <ShieldAlert className="h-4 w-4" /> Regulated/near-expiry categories excluded
@@ -434,11 +434,11 @@ export default function RecoveryMatchPage() {
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             {previewRows.map((row: any) => (
-              <div key={`${row.item_name}-${row.sku}`} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+              <div key={`${row.item_name}-${row.sku}`} className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-5">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-lg font-bold text-white">{row.item_name}</h3>
-                    <p className="mt-1 text-xs text-text-muted">SKU: {row.sku || "—"} · Barcode: {row.barcode || "—"} · {row.category || "Uncategorized"}</p>
+                    <h3 className="text-lg font-bold text-brand-cream">{row.item_name}</h3>
+                    <p className="mt-1 text-xs text-muted-foreground">SKU: {row.sku || "—"} · Barcode: {row.barcode || "—"} · {row.category || "Uncategorized"}</p>
                   </div>
                   <StatusBadge status={row.status || "preview"} />
                 </div>
@@ -448,8 +448,8 @@ export default function RecoveryMatchPage() {
                   <Info label="Surplus qty" value={String(row.estimated_surplus_qty)} />
                   <Info label="Potential recovery" value={money(row.estimated_recovery_value_sar)} good />
                 </div>
-                <p className="mt-4 text-sm leading-6 text-text-secondary">{row.next_step}</p>
-                <button onClick={() => openListingForm(row)} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-brand-amber px-4 py-2 text-sm font-bold text-black">
+                <p className="mt-4 text-sm leading-6 text-muted-foreground">{row.next_step}</p>
+                <button onClick={() => openListingForm(row)} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-brand-amber px-4 py-2 text-sm font-bold text-brand-night">
                   Offer Stock <ArrowRight className="h-4 w-4" />
                 </button>
               </div>
@@ -459,17 +459,17 @@ export default function RecoveryMatchPage() {
       )}
 
       {activeTab === "listings" && (
-        <section className="rounded-3xl border border-border bg-surface p-6">
+        <section className="rounded-3xl border border-border bg-card p-6">
           <h2 className="text-2xl font-bold">My Listings</h2>
-          <p className="mt-1 text-sm text-text-secondary">Seller-approved surplus stock. Suggest matches after creating a listing.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Seller-approved surplus stock. Suggest matches after creating a listing.</p>
           <div className="mt-5 grid gap-4">
             {listings.length === 0 && <Empty text="No real listings yet. Create one from Preview." />}
             {listings.map((listing) => (
-              <div key={listing.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+              <div key={listing.id} className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-5">
                 <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                   <div>
-                    <h3 className="text-lg font-bold text-white">{listing.item_name}</h3>
-                    <p className="mt-1 text-xs text-text-muted">SKU: {listing.sku || "—"} · Expiry: {listing.expiry_date || "—"}</p>
+                    <h3 className="text-lg font-bold text-brand-cream">{listing.item_name}</h3>
+                    <p className="mt-1 text-xs text-muted-foreground">SKU: {listing.sku || "—"} · Expiry: {listing.expiry_date || "—"}</p>
                   </div>
                   <StatusBadge status={listing.status} />
                 </div>
@@ -479,7 +479,7 @@ export default function RecoveryMatchPage() {
                   <Info label="Discount" value={`${listing.discount_pct || 0}%`} />
                   <Info label="Created" value={listing.created_at?.slice(0, 10) || "—"} />
                 </div>
-                <button onClick={() => suggestMatches(listing.id)} className="mt-5 rounded-xl bg-brand-amber px-4 py-2 text-sm font-bold text-black">
+                <button onClick={() => suggestMatches(listing.id)} className="mt-5 rounded-xl bg-brand-amber px-4 py-2 text-sm font-bold text-brand-night">
                   Suggest Nearby Buyers
                 </button>
               </div>
@@ -489,9 +489,9 @@ export default function RecoveryMatchPage() {
       )}
 
       {activeTab === "matches" && (
-        <section className="rounded-3xl border border-border bg-surface p-6">
+        <section className="rounded-3xl border border-border bg-card p-6">
           <h2 className="text-2xl font-bold">Incoming & Seller Matches</h2>
-          <p className="mt-1 text-sm text-text-secondary">Buyer interest, seller suggestions, mutual matches, and contact reveal.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Buyer interest, seller suggestions, mutual matches, and contact reveal.</p>
           <div className="mt-5 grid gap-4">
             {allMatches.filter((m) => m.status !== "completed").length === 0 && <Empty text="No matches yet. Create a listing and suggest nearby buyers." />}
             {allMatches.filter((m) => m.status !== "completed").map((match) => (
@@ -513,17 +513,17 @@ export default function RecoveryMatchPage() {
       )}
 
       {activeTab === "completed" && (
-        <section className="rounded-3xl border border-border bg-surface p-6">
+        <section className="rounded-3xl border border-border bg-card p-6">
           <h2 className="text-2xl font-bold">Completed Recovery</h2>
-          <p className="mt-1 text-sm text-text-secondary">Recovered value from completed manual-confirm matches.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Recovered value from completed manual-confirm matches.</p>
           <div className="mt-5 grid gap-4">
             {completed.length === 0 && <Empty text="No completed matches yet." />}
             {completed.map((match) => (
-              <div key={`${match.role}-${match.id}`} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+              <div key={`${match.role}-${match.id}`} className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-5">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-lg font-bold text-white">{match.item_name || "Recovery Match"}</h3>
-                    <p className="mt-1 text-sm text-text-secondary">Recovered value: <span className="font-bold text-brand-green">{money(match.recovered_value_sar)}</span></p>
+                    <h3 className="text-lg font-bold text-brand-cream">{match.item_name || "Recovery Match"}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">Recovered value: <span className="font-bold text-brand-green">{money(match.recovered_value_sar)}</span></p>
                   </div>
                   <StatusBadge status={match.status} />
                 </div>
@@ -535,18 +535,18 @@ export default function RecoveryMatchPage() {
 
       {selected && (
         <section className="rounded-3xl border border-brand-amber/30 bg-brand-amber/10 p-6">
-          <h2 className="text-xl font-bold text-white">Create seller listing: {selected.item_name}</h2>
-          <p className="mt-2 text-sm text-text-secondary">Real listings require expiry date and manual confirmation. Risky categories are blocked.</p>
+          <h2 className="text-xl font-bold text-brand-cream">Create seller listing: {selected.item_name}</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Real listings require expiry date and manual confirmation. Risky categories are blocked.</p>
           <div className="mt-5 grid gap-4 md:grid-cols-4">
             <Field label="Quantity available" value={quantity} setValue={setQuantity} />
             <Field label="Discount %" value={discount} setValue={setDiscount} />
             <label className="space-y-2 text-sm">
-              <span className="text-text-secondary">Expiry date</span>
-              <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white" />
+              <span className="text-muted-foreground">Expiry date</span>
+              <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="w-full rounded-xl border border-brand-cream/10 bg-brand-night/30 px-3 py-2 text-brand-cream" />
             </label>
             <div className="flex items-end gap-2">
-              <button onClick={createListing} className="rounded-xl bg-brand-green px-4 py-2 text-sm font-bold text-black">Create Listing</button>
-              <button onClick={() => setSelected(null)} className="rounded-xl border border-white/10 px-4 py-2 text-sm font-bold text-white">Cancel</button>
+              <button onClick={createListing} className="rounded-xl bg-brand-green px-4 py-2 text-sm font-bold text-brand-night">Create Listing</button>
+              <button onClick={() => setSelected(null)} className="rounded-xl border border-brand-cream/10 px-4 py-2 text-sm font-bold text-brand-cream">Cancel</button>
             </div>
           </div>
         </section>
@@ -554,8 +554,8 @@ export default function RecoveryMatchPage() {
 
       {contactInfo && (
         <section className="rounded-3xl border border-whatsapp/30 bg-whatsapp/10 p-6">
-          <h2 className="text-xl font-bold text-white">Contact Revealed</h2>
-          <p className="mt-2 text-sm text-text-secondary">Payment, pickup, and inspection are handled directly between merchants.</p>
+          <h2 className="text-xl font-bold text-brand-cream">Contact Revealed</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Payment, pickup, and inspection are handled directly between merchants.</p>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <Info label="Seller" value={`${contactInfo.seller?.name || "—"} · ${contactInfo.seller?.phone || "—"}`} />
             <Info label="Buyer" value={`${contactInfo.buyer?.name || "—"} · ${contactInfo.buyer?.phone || "—"}`} />
@@ -565,12 +565,12 @@ export default function RecoveryMatchPage() {
 
       {issueMatch && (
         <section className="rounded-3xl border border-brand-red/30 bg-brand-red/10 p-6">
-          <h2 className="text-xl font-bold text-white">Report Issue</h2>
-          <p className="mt-2 text-sm text-text-secondary">This flags the match for founder review.</p>
+          <h2 className="text-xl font-bold text-brand-cream">Report Issue</h2>
+          <p className="mt-2 text-sm text-muted-foreground">This flags the match for founder review.</p>
           <div className="mt-5 grid gap-4 md:grid-cols-3">
             <label className="space-y-2 text-sm">
-              <span className="text-text-secondary">Issue type</span>
-              <select value={issueType} onChange={(e) => setIssueType(e.target.value)} className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white">
+              <span className="text-muted-foreground">Issue type</span>
+              <select value={issueType} onChange={(e) => setIssueType(e.target.value)} className="w-full rounded-xl border border-brand-cream/10 bg-brand-night/30 px-3 py-2 text-brand-cream">
                 <option value="wrong_quantity">Wrong quantity</option>
                 <option value="wrong_condition">Wrong condition</option>
                 <option value="near_expiry">Near expiry</option>
@@ -580,8 +580,8 @@ export default function RecoveryMatchPage() {
             </label>
             <Field label="Notes" value={issueNotes} setValue={setIssueNotes} />
             <div className="flex items-end gap-2">
-              <button onClick={reportIssue} className="rounded-xl bg-brand-red px-4 py-2 text-sm font-bold text-white">Submit Issue</button>
-              <button onClick={() => setIssueMatch(null)} className="rounded-xl border border-white/10 px-4 py-2 text-sm font-bold text-white">Cancel</button>
+              <button onClick={reportIssue} className="rounded-xl bg-brand-red px-4 py-2 text-sm font-bold text-brand-cream">Submit Issue</button>
+              <button onClick={() => setIssueMatch(null)} className="rounded-xl border border-brand-cream/10 px-4 py-2 text-sm font-bold text-brand-cream">Cancel</button>
             </div>
           </div>
         </section>
@@ -591,15 +591,15 @@ export default function RecoveryMatchPage() {
 }
 
 function Info({ label, value, good = false }: { label: string; value: string; good?: boolean }) {
-  return <div className="rounded-xl bg-black/20 p-3"><p className="text-text-muted">{label}</p><p className={cn("mt-1 font-bold text-white", good && "text-brand-green")}>{value}</p></div>;
+  return <div className="rounded-xl bg-brand-night/20 p-3"><p className="text-muted-foreground">{label}</p><p className={cn("mt-1 font-bold text-brand-cream", good && "text-brand-green")}>{value}</p></div>;
 }
 
 function Field({ label, value, setValue }: { label: string; value: string; setValue: (value: string) => void }) {
-  return <label className="space-y-2 text-sm"><span className="text-text-secondary">{label}</span><input value={value} onChange={(e) => setValue(e.target.value)} className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white" /></label>;
+  return <label className="space-y-2 text-sm"><span className="text-muted-foreground">{label}</span><input value={value} onChange={(e) => setValue(e.target.value)} className="w-full rounded-xl border border-brand-cream/10 bg-brand-night/30 px-3 py-2 text-brand-cream" /></label>;
 }
 
 function Empty({ text }: { text: string }) {
-  return <div className="rounded-2xl border border-dashed border-white/10 p-8 text-center text-sm text-text-muted">{text}</div>;
+  return <div className="rounded-2xl border border-dashed border-brand-cream/10 p-8 text-center text-sm text-muted-foreground">{text}</div>;
 }
 
 function MatchCard({
@@ -628,11 +628,11 @@ function MatchCard({
   const canComplete = ["contact_revealed"].includes(match.status);
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+    <div className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-5">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
-          <h3 className="text-lg font-bold text-white">{match.item_name || "Recovery Match"}</h3>
-          <p className="mt-1 text-xs text-text-muted">Role: {role} · Score: {Number(match.match_score || 0).toFixed(0)} · Distance: {match.distance_km ?? "—"} km</p>
+          <h3 className="text-lg font-bold text-brand-cream">{match.item_name || "Recovery Match"}</h3>
+          <p className="mt-1 text-xs text-muted-foreground">Role: {role} · Score: {Number(match.match_score || 0).toFixed(0)} · Distance: {match.distance_km ?? "—"} km</p>
         </div>
         <StatusBadge status={match.status} />
       </div>
@@ -643,10 +643,10 @@ function MatchCard({
         <Info label="Recovered" value={money(match.recovered_value_sar)} good />
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
-        {canBuyerAccept && <button onClick={onBuyerInterest} className="rounded-xl bg-whatsapp px-4 py-2 text-sm font-bold text-black">Interested</button>}
-        {canReveal && <button onClick={onReveal} className="rounded-xl bg-brand-amber px-4 py-2 text-sm font-bold text-black">Reveal Contact</button>}
-        {canComplete && <><input placeholder="Recovered SAR" value={recoveredValue} onChange={(e) => onRecoveredValue(e.target.value)} className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white" /><button onClick={onComplete} className="rounded-xl bg-brand-green px-4 py-2 text-sm font-bold text-black">Mark Completed</button></>}
-        {!match.status.includes("rejected") && match.status !== "completed" && <button onClick={onReject} className="rounded-xl border border-white/10 px-4 py-2 text-sm font-bold text-white/70">Reject</button>}
+        {canBuyerAccept && <button onClick={onBuyerInterest} className="rounded-xl bg-whatsapp px-4 py-2 text-sm font-bold text-brand-night">Interested</button>}
+        {canReveal && <button onClick={onReveal} className="rounded-xl bg-brand-amber px-4 py-2 text-sm font-bold text-brand-night">Reveal Contact</button>}
+        {canComplete && <><input placeholder="Recovered SAR" value={recoveredValue} onChange={(e) => onRecoveredValue(e.target.value)} className="rounded-xl border border-brand-cream/10 bg-brand-night/30 px-3 py-2 text-sm text-brand-cream" /><button onClick={onComplete} className="rounded-xl bg-brand-green px-4 py-2 text-sm font-bold text-brand-night">Mark Completed</button></>}
+        {!match.status.includes("rejected") && match.status !== "completed" && <button onClick={onReject} className="rounded-xl border border-brand-cream/10 px-4 py-2 text-sm font-bold text-brand-cream/70">Reject</button>}
         <button onClick={onReport} className="rounded-xl border border-brand-red/30 px-4 py-2 text-sm font-bold text-brand-red-light">Report Issue</button>
       </div>
     </div>

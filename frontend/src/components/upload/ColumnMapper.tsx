@@ -118,9 +118,9 @@ export function ColumnMapper({
     >
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#E0B34A]">Step 2 · Confirm columns</p>
-          <h2 className="mt-2 text-2xl font-black text-[#f0f0f5]">Tell NazmOS what each column means</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-[#8888a0]">
+          <p className="font-mono text-xs uppercase tracking-[0.24em] text-brand-amber">Step 2 · Confirm columns</p>
+          <h2 className="mt-2 text-2xl font-black text-navy-text">Tell NazmOS what each column means</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-navy-muted">
             We guessed the columns. You only need <b className="text-white">Product name</b> plus either
             <b className="text-white"> Current stock</b> for an inventory file, or
             <b className="text-white"> Sale date + price/total</b> for a sales file.
@@ -128,7 +128,7 @@ export function ColumnMapper({
         </div>
         <button
           onClick={onBack}
-          className="rounded-xl border border-white/10 px-4 py-2 text-sm font-bold text-[#8888a0] hover:bg-white/5 hover:text-[#f0f0f5]"
+          className="rounded-xl border border-white/10 px-4 py-2 text-sm font-bold text-navy-muted hover:bg-white/5 hover:text-navy-text"
         >
           Back to upload
         </button>
@@ -149,8 +149,8 @@ export function ColumnMapper({
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl bg-[#1a1a2e] ring-1 ring-white/10">
-        <div className="border-b border-[#2a2a3e] p-4">
+      <div className="overflow-hidden rounded-2xl bg-navy-panel ring-1 ring-white/10">
+        <div className="border-b border-navy-panel-2 p-4">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-2">
               {readyToImport ? (
@@ -158,17 +158,17 @@ export function ColumnMapper({
               ) : (
                 <AlertTriangle size={18} className="text-yellow-400" />
               )}
-              <span className="text-sm font-medium text-[#f0f0f5]">
+              <span className="text-sm font-medium text-navy-text">
                 {readyToImport ? `Ready: ${modeLabel}` : "Map the minimum fields to continue"}
               </span>
             </div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-[#E0B34A]/10 px-3 py-1 text-xs font-bold text-[#E0B34A]">
+            <div className="inline-flex items-center gap-2 rounded-full bg-brand-amber/10 px-3 py-1 text-xs font-bold text-brand-amber">
               <Info className="h-3.5 w-3.5" /> Unneeded columns are ignored safely
             </div>
           </div>
         </div>
 
-        <div className="divide-y divide-[#2a2a3e]">
+        <div className="divide-y divide-navy-panel-2">
           {TARGET_COLUMNS.map((targetCol) => {
             const mappedSource = Object.entries(mappings).find(([, target]) => target === targetCol)?.[0];
             const sampleValues = mappedSource ? getSampleValues(mappedSource) : [];
@@ -181,16 +181,16 @@ export function ColumnMapper({
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-sm font-semibold text-[#f0f0f5]">{COLUMN_LABELS[targetCol]}</span>
+                      <span className="text-sm font-semibold text-navy-text">{COLUMN_LABELS[targetCol]}</span>
                       {isRequired && <span className="rounded bg-red-500/20 px-2 py-0.5 text-xs text-red-300">Required</span>}
-                      {isCoreSignal && !isRequired && <span className="rounded bg-[#E0B34A]/15 px-2 py-0.5 text-xs text-[#E0B34A]">Audit signal</span>}
+                      {isCoreSignal && !isRequired && <span className="rounded bg-brand-amber/15 px-2 py-0.5 text-xs text-brand-amber">Audit signal</span>}
                       {mappedSource && (
                         <span className={cn("text-xs", getConfidenceColor(confidence))}>
                           {confidence ? `${Math.round(confidence * 100)}% guess` : "manual"}
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 text-xs leading-5 text-[#8888a0]">{COLUMN_HELP[targetCol]}</p>
+                    <p className="mt-1 text-xs leading-5 text-navy-muted">{COLUMN_HELP[targetCol]}</p>
                   </div>
 
                   <div className="relative md:min-w-[260px]">
@@ -200,7 +200,7 @@ export function ColumnMapper({
                         "flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors",
                         mappedSource
                           ? "bg-blue-500/20 text-blue-300"
-                          : "bg-[#2a2a3e] text-[#8888a0] hover:text-[#f0f0f5]"
+                          : "bg-navy-panel-2 text-navy-muted hover:text-navy-text"
                       )}
                     >
                       <span className="truncate">{mappedSource || "Select source column"}</span>
@@ -211,7 +211,7 @@ export function ColumnMapper({
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="absolute right-0 top-full z-20 mt-2 max-h-72 w-full overflow-y-auto rounded-xl border border-[#2a2a3e] bg-[#111126] shadow-2xl"
+                        className="absolute right-0 top-full z-20 mt-2 max-h-72 w-full overflow-y-auto rounded-xl border border-navy-panel-2 bg-navy-deep-2 shadow-2xl"
                       >
                         {sourceColumns.map((sourceCol) => {
                           const usedBy = Object.entries(mappings).find(([source, target]) => source !== sourceCol && target === targetCol)?.[0];
@@ -221,12 +221,12 @@ export function ColumnMapper({
                               key={sourceCol}
                               onClick={() => handleMappingChange(sourceCol, targetCol)}
                               className={cn(
-                                "flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-[#2a2a3e]",
+                                "flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-navy-panel-2",
                                 mappedSource === sourceCol && "bg-blue-500/20"
                               )}
                             >
-                              <span className="truncate text-[#f0f0f5]">{sourceCol}</span>
-                              <span className="shrink-0 text-xs text-[#8888a0]">
+                              <span className="truncate text-navy-text">{sourceCol}</span>
+                              <span className="shrink-0 text-xs text-navy-muted">
                                 {alreadyMappedTo && alreadyMappedTo !== targetCol ? COLUMN_LABELS[alreadyMappedTo as TargetColumn] || "mapped" : usedBy ? "in use" : ""}
                               </span>
                             </button>
@@ -234,7 +234,7 @@ export function ColumnMapper({
                         })}
                         <button
                           onClick={() => removeMapping(targetCol)}
-                          className="w-full border-t border-[#2a2a3e] px-4 py-2.5 text-left text-sm text-red-400 hover:bg-[#2a2a3e]"
+                          className="w-full border-t border-navy-panel-2 px-4 py-2.5 text-left text-sm text-red-400 hover:bg-navy-panel-2"
                         >
                           Remove mapping
                         </button>
@@ -246,7 +246,7 @@ export function ColumnMapper({
                 {mappedSource && sampleValues.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {sampleValues.map((val, i) => (
-                      <span key={`${mappedSource}-${i}`} className="rounded bg-[#2a2a3e] px-2 py-1 text-xs text-[#8888a0]">
+                      <span key={`${mappedSource}-${i}`} className="rounded bg-navy-panel-2 px-2 py-1 text-xs text-navy-muted">
                         {String(val).slice(0, 38)}
                       </span>
                     ))}
@@ -258,7 +258,7 @@ export function ColumnMapper({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-[#8888a0]">
+      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-navy-muted">
         <b className="text-white">Founder tip:</b> If you are not sure, import anyway after the minimum fields.
         NazmOS will ignore extra columns and you can upload a corrected file later. Cost price improves trapped-cash accuracy.
       </div>
@@ -266,7 +266,7 @@ export function ColumnMapper({
       <div className="flex flex-col-reverse gap-3 md:flex-row md:justify-end">
         <button
           onClick={onBack}
-          className="rounded-xl px-6 py-3 text-sm font-bold text-[#8888a0] hover:text-[#f0f0f5]"
+          className="rounded-xl px-6 py-3 text-sm font-bold text-navy-muted hover:text-navy-text"
         >
           Cancel
         </button>
@@ -276,8 +276,8 @@ export function ColumnMapper({
           className={cn(
             "rounded-xl px-6 py-3 text-sm font-bold transition-colors",
             readyToImport && !isSubmitting
-              ? "bg-[#E0B34A] text-black hover:bg-[#f2cf69]"
-              : "cursor-not-allowed bg-[#2a2a3e] text-[#8888a0]"
+              ? "bg-brand-amber text-black hover:bg-brand-gold"
+              : "cursor-not-allowed bg-navy-panel-2 text-navy-muted"
           )}
         >
           {isSubmitting ? "Starting import..." : "Import for Money Audit"}

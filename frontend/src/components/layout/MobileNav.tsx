@@ -57,7 +57,7 @@ export function MobileNav() {
 
   return (
     <>
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-border z-50">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50">
         <div className="flex items-center justify-around py-2">
           {primaryNav.map((item) => {
             const Icon = item.icon;
@@ -68,7 +68,7 @@ export function MobileNav() {
                 aria-label={item.label}
                 className={cn(
                   "flex flex-col items-center gap-1 px-3 py-2 min-w-[64px]",
-                  isActive(item.href) ? "text-accent-blue" : "text-text-muted"
+                  isActive(item.href) ? "text-primary" : "text-muted-foreground"
                 )}
               >
                 <Icon className="w-5 h-5" />
@@ -82,7 +82,7 @@ export function MobileNav() {
             aria-expanded={open}
             className={cn(
               "flex flex-col items-center gap-1 px-3 py-2 min-w-[64px]",
-              open ? "text-accent-blue" : "text-text-muted"
+              open ? "text-primary" : "text-muted-foreground"
             )}
           >
             <MoreHorizontal className="w-5 h-5" />
@@ -93,12 +93,12 @@ export function MobileNav() {
 
       {open && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setOpen(false)} aria-hidden />
-          <div className="absolute inset-x-0 bottom-0 bg-surface border-t border-border rounded-t-3xl max-h-[80vh] overflow-y-auto pb-6">
-            <div className="sticky top-0 bg-surface flex items-center justify-between px-5 py-4 border-b border-border">
+          <div className="absolute inset-0 bg-overlay" onClick={() => setOpen(false)} aria-hidden />
+          <div className="absolute inset-x-0 bottom-0 bg-card border-t border-border rounded-t-3xl max-h-[80vh] overflow-y-auto pb-6">
+            <div className="sticky top-0 bg-card flex items-center justify-between px-5 py-4 border-b border-border">
               <p className="font-semibold">{t.sidebar.allTools}</p>
               <button onClick={() => setOpen(false)} aria-label={t.sidebar.close}>
-                <X className="w-5 h-5 text-text-secondary" />
+                <X className="w-5 h-5 text-muted-foreground" />
               </button>
             </div>
             <nav className="p-3 space-y-1">
@@ -112,8 +112,8 @@ export function MobileNav() {
                     className={cn(
                       "flex items-center gap-3 px-4 py-3 rounded-xl transition-colors",
                       isActive(item.href)
-                        ? "bg-accent-blue/10 text-accent-blue"
-                        : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:bg-card-hover hover:text-foreground"
                     )}
                   >
                     <Icon className="w-5 h-5" />

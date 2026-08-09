@@ -43,8 +43,8 @@ export function Sidebar() {
         className={cn(
           "flex items-center gap-3 px-4 py-3 rounded-xl transition-colors",
           isActive
-            ? "bg-accent-blue/10 text-accent-blue border border-accent-blue/30"
-            : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+            ? "bg-primary/10 text-primary border border-primary/30"
+            : "text-muted-foreground hover:bg-card-hover hover:text-foreground"
         )}
       >
         <Icon className="w-5 h-5" />
@@ -52,7 +52,7 @@ export function Sidebar() {
         {item.badge && (
           <span className={cn(
             "text-xs px-2 py-0.5 rounded ms-auto",
-            item.badge === "AI" ? "bg-accent-purple/10 text-accent-purple" : "bg-surface-hover"
+            item.badge === "AI" ? "bg-secondary/10 text-secondary" : "bg-card-hover"
           )}>
             {item.badge}
           </span>
@@ -62,15 +62,15 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="hidden md:flex flex-col w-60 border-e border-border bg-surface h-screen fixed start-0 top-0">
+    <aside className="hidden md:flex flex-col w-60 border-e border-border bg-card h-screen fixed start-0 top-0">
       <div className="p-5 border-b border-border">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-accent-blue flex items-center justify-center">
-            <span className="text-white font-bold text-xl font-serif">ن</span>
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+            <span className="text-primary-foreground font-bold text-xl font-serif">ن</span>
           </div>
           <div>
             <div className="font-bold text-lg">NazmOS</div>
-            <p className="text-xs text-text-muted">{isAr ? "نظام – الرياض" : "نظام – KSA"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "نظام – الرياض" : "نظام – KSA"}</p>
           </div>
         </div>
       </div>
@@ -80,7 +80,7 @@ export function Sidebar() {
         
         {toolsNavItems.length > 0 && (
           <div className="pt-4 mt-4 border-t border-border space-y-2">
-            <div className="px-4 text-xs text-text-muted uppercase tracking-wider">{t.sidebar.tools}</div>
+            <div className="px-4 text-xs text-muted-foreground uppercase tracking-wider">{t.sidebar.tools}</div>
             {toolsNavItems.map(renderItem)}
           </div>
         )}
@@ -91,25 +91,25 @@ export function Sidebar() {
             className={cn(
               "flex items-center gap-3 px-4 py-3 rounded-xl transition-colors",
               pathname?.startsWith("/settings")
-                ? "bg-accent-blue/10 text-accent-blue"
-                : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground hover:bg-card-hover hover:text-foreground"
             )}
           >
             <Settings className="w-5 h-5" />
             <span className="font-medium">{t.sidebar.autonomy}</span>
-            <span className="text-xs bg-surface-hover px-2 py-0.5 rounded ms-auto">نظم</span>
+            <span className="text-xs bg-card-hover px-2 py-0.5 rounded ms-auto">نظم</span>
           </Link>
         </div>
       </nav>
 
       <div className="p-4 border-t border-border">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-accent-purple/20 flex items-center justify-center">
-            <span className="text-accent-purple font-medium">KSA</span>
+          <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center">
+            <span className="text-secondary font-medium">KSA</span>
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-medium truncate">NazmOS KSA</p>
-            <p className="text-xs text-text-muted">{isAr ? "الرياض • ر.س" : "Riyadh • SAR"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "الرياض • ر.س" : "Riyadh • SAR"}</p>
           </div>
         </div>
       </div>

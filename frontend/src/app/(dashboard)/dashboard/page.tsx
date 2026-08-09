@@ -160,7 +160,7 @@ export default function DashboardPage() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-text-secondary">Today&apos;s Profit</span>
-                <span className="font-semibold text-accent-green">﷼ {summary.today.profit.toLocaleString()}</span>
+                <span className="font-semibold text-success">﷼ {summary.today.profit.toLocaleString()}</span>
               </div>
             </div>
           </div>

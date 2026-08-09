@@ -42,7 +42,7 @@ export function InventoryFilters({
             placeholder="Search items..."
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent-blue transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
           />
         </div>
       </div>
@@ -56,7 +56,7 @@ export function InventoryFilters({
         <select
           value={statusValue}
           onChange={(e) => onStatusChange(e.target.value)}
-          className="px-3 py-1.5 bg-surface border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-accent-blue cursor-pointer"
+          className="px-3 py-1.5 bg-surface border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-primary cursor-pointer"
         >
           <option value="all">All Status</option>
           <option value="critical">Critical</option>
@@ -69,7 +69,7 @@ export function InventoryFilters({
         <select
           value={categoryValue}
           onChange={(e) => onCategoryChange(e.target.value)}
-          className="px-3 py-1.5 bg-surface border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-accent-blue cursor-pointer"
+          className="px-3 py-1.5 bg-surface border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-primary cursor-pointer"
         >
           <option value="all">All Categories</option>
           {categories.map((cat) => (

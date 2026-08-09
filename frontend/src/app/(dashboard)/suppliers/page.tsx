@@ -86,7 +86,7 @@ export default function SuppliersPage() {
                       <a
                         href={`https://wa.me/${s.whatsapp_number.replace(/[^0-9]/g, "")}`}
                         target="_blank"
-                        className="text-xs text-accent-green hover:underline"
+                        className="text-xs text-success hover:underline"
                       >
                         WhatsApp →
                       </a>
@@ -99,7 +99,7 @@ export default function SuppliersPage() {
         </div>
       )}
 
-      <div className="mt-4 bg-accent-blue/5 border border-accent-blue/20 rounded-xl p-4 text-sm">
+      <div className="mt-4 bg-primary/5 border border-primary/20 rounded-xl p-4 text-sm">
         <b>Network effect – تأثير الشبكة:</b> Once NazmOS routes orders from 30+ shops to the same distributor, we negotiate better prices / faster fulfillment for all our shops. You benefit automatically – no extra work.
         <br />
         <span className="text-text-muted">حاليا: تتبع فقط – التفاوض يبدأ عند 30 متجر نشط</span>

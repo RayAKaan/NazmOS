@@ -113,8 +113,8 @@ export function ReorderModal({ item, isOpen, onClose }: ReorderModalProps) {
           </div>
 
           {reorder_recommendation.should_reorder && (
-            <div className="p-4 rounded-xl bg-accent-yellow/10 border border-accent-yellow/30">
-              <h4 className="font-semibold text-accent-yellow mb-2">Reorder Recommendation</h4>
+            <div className="p-4 rounded-xl bg-warning/10 border border-warning/30">
+              <h4 className="font-semibold text-warning mb-2">Reorder Recommendation</h4>
               <p className="text-sm text-text-secondary mb-2">
                 {reorder_recommendation.reason}
               </p>

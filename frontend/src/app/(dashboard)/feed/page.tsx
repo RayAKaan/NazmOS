@@ -97,7 +97,7 @@ export default function FeedPage() {
 
       <div className="space-y-3">
         {items.map((it) => (
-          <div key={it.id} className="bg-surface border border-border rounded-2xl p-5 hover:border-accent-blue/30 transition-colors">
+          <div key={it.id} className="bg-surface border border-border rounded-2xl p-5 hover:border-primary/30 transition-colors">
             <div className="flex items-start justify-between mb-2">
               <div className="text-xs uppercase tracking-wider text-text-muted">
                 {it.action_type.replace("_", " ")} • confidence {(it.confidence * 100).toFixed(0)}%
@@ -118,7 +118,7 @@ export default function FeedPage() {
               <div className="flex gap-2">
                 <button
                   onClick={() => act(it.id, "approve")}
-                  className="flex-1 bg-accent-green text-white py-2.5 rounded-xl font-medium hover:opacity-90"
+                  className="flex-1 bg-success text-success-foreground py-2.5 rounded-xl font-medium hover:opacity-90"
                 >
                   ✅ Approve – موافق
                 </button>
@@ -137,7 +137,7 @@ export default function FeedPage() {
       </div>
 
       <div className="mt-8 text-center text-xs text-text-muted">
-        Autonomy dial: <a href="/settings/autonomy" className="text-accent-blue hover:underline">Settings → التحكم الذاتي</a>
+        Autonomy dial: <a href="/settings/autonomy" className="text-primary hover:underline">Settings → التحكم الذاتي</a>
       </div>
     </div>
   );

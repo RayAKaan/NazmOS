@@ -337,7 +337,7 @@ export default function RecoveryMatchPage() {
 
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-3xl border border-brand-cream/10 bg-brand-night p-6 text-brand-cream shadow-2xl shadow-black/20 md:p-8">
+      <section className="overflow-hidden rounded-3xl border border-brand-cream/10 bg-brand-night p-6 text-brand-cream shadow-2xl shadow-brand-night/20 md:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-brand-amber/30 bg-brand-amber/10 px-3 py-2 text-xs font-bold uppercase tracking-[0.22em] text-brand-amber">

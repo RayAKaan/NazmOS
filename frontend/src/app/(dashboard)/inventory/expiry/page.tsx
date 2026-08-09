@@ -103,7 +103,7 @@ export default function ExpiryPage() {
                   </td>
                   <td className="px-5 py-4 text-right">
                     {l.days_left < 90 ? (
-                      <button className="text-xs text-accent-blue hover:underline">Discount – خصم</button>
+                      <button className="text-xs text-primary hover:underline">Discount – خصم</button>
                     ) : (
                       <span className="text-xs text-text-muted">—</span>
                     )}
@@ -119,7 +119,7 @@ export default function ExpiryPage() {
       </div>
 
       <div className="mt-4 text-xs text-text-muted">
-        SFDA recall check: <span className="text-accent-green">✓ Active – no recalls matched to your inventory</span>
+        SFDA recall check: <span className="text-success">✓ Active – no recalls matched to your inventory</span>
         <span className="mx-2">•</span>
         Last scan: just now
       </div>

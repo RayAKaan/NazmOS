@@ -16,10 +16,12 @@ const TW_COLOR_CLASS = new RegExp(
 const ARB_COLOR_CLASS = new RegExp(
   "\\b" + PREFIX + "-\\[\\s*(?:#|(?:rgb|rgba|hsl|hsla|oklch|oklab|hwb|lab|lch)\\()"
 );
+const TOKEN_ACCENT = /^(?:text|bg|border|ring|fill|stroke|outline)-(?:accent-blue|accent-green|accent-yellow|accent-red|accent-purple|accent-orange)(?:\/\S+)?$/;
 
 function detect(str) {
   const found = new Set();
   for (const token of str.split(/\s+/)) {
+    if (TOKEN_ACCENT.test(token)) continue;
     if (HEX.test(token)) found.add(token);
     else if (COLOR_FN.test(token)) found.add(token);
     else if (TW_COLOR_CLASS.test(token)) found.add(token);

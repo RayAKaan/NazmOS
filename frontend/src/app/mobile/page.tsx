@@ -97,7 +97,7 @@ export default function MobilePage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-accent-blue animate-pulse" />
+          <div className="w-10 h-10 rounded-xl bg-primary animate-pulse" />
           <p className="text-text-muted text-sm">Loading your briefing…</p>
         </div>
       </div>
@@ -110,7 +110,7 @@ export default function MobilePage() {
         <div className="text-center space-y-4">
           <h1 className="text-2xl font-bold">NazmOS Mobile</h1>
           <p className="text-text-muted">Please log in to view your owner briefing.</p>
-          <Link href="/login" className="inline-block rounded-xl bg-accent-blue px-6 py-3 text-white font-medium">
+          <Link href="/login" className="inline-block rounded-xl bg-primary px-6 py-3 text-primary-foreground font-medium">
             Sign in
           </Link>
         </div>
@@ -126,8 +126,8 @@ export default function MobilePage() {
       <header className="sticky top-0 z-30 border-b border-border bg-surface/95 backdrop-blur px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-accent-blue flex items-center justify-center">
-              <span className="text-white font-bold">ن</span>
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <span className="text-brand-cream font-bold">ن</span>
             </div>
             <div>
               <p className="text-xs text-text-muted">NazmOS Mobile</p>
@@ -137,7 +137,7 @@ export default function MobilePage() {
           {canInstall && (
             <button
               onClick={promptInstall}
-              className="flex items-center gap-1 rounded-full bg-accent-blue/10 px-3 py-1.5 text-xs font-bold text-accent-blue"
+              className="flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary"
             >
               <Download className="w-3.5 h-3.5" /> Install
             </button>
@@ -150,7 +150,7 @@ export default function MobilePage() {
 
       <main className="p-4 space-y-4">
         {notice && (
-          <div className="rounded-xl border border-accent-blue/30 bg-accent-blue/10 px-4 py-2 text-sm text-accent-blue">
+          <div className="rounded-xl border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-primary">
             {notice}
           </div>
         )}
@@ -179,19 +179,19 @@ export default function MobilePage() {
                 <>
                   <button
                     onClick={() => approve(topAction.id)}
-                    className="flex-1 rounded-xl bg-brand-green py-2 text-sm font-bold text-black flex items-center justify-center gap-1"
+                    className="flex-1 rounded-xl bg-brand-green py-2 text-sm font-bold text-brand-night flex items-center justify-center gap-1"
                   >
                     <CheckCircle2 className="w-4 h-4" /> Approve
                   </button>
                   <button
                     onClick={() => reject(topAction.id)}
-                    className="flex-1 rounded-xl border border-white/10 py-2 text-sm font-bold text-white/80 flex items-center justify-center gap-1"
+                    className="flex-1 rounded-xl border border-brand-cream/10 py-2 text-sm font-bold text-brand-cream/80 flex items-center justify-center gap-1"
                   >
                     <XCircle className="w-4 h-4" /> Reject
                   </button>
                 </>
               ) : (
-                <Link href="/feed" className="flex-1 rounded-xl bg-brand-amber py-2 text-center text-sm font-bold text-black">
+                <Link href="/feed" className="flex-1 rounded-xl bg-brand-amber py-2 text-center text-sm font-bold text-brand-night">
                   View in feed
                 </Link>
               )}
@@ -202,7 +202,7 @@ export default function MobilePage() {
         <section className="rounded-2xl border border-border bg-surface p-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-bold flex items-center gap-2">
-              <Bell className="w-4 h-4 text-accent-blue" /> Pending approvals
+              <Bell className="w-4 h-4 text-primary" /> Pending approvals
             </h2>
             <span className="text-xs text-text-muted">{pending.length}</span>
           </div>
@@ -211,19 +211,19 @@ export default function MobilePage() {
           )}
           <div className="space-y-2">
             {pending.slice(0, 5).map((item) => (
-              <div key={item.id} className="rounded-xl border border-white/5 bg-white/[0.02] p-3">
+              <div key={item.id} className="rounded-xl border border-brand-cream/5 bg-brand-cream/[0.02] p-3">
                 <p className="text-sm font-medium">{item.title}</p>
                 <p className="text-xs text-text-muted line-clamp-1">{item.summary}</p>
                 <div className="mt-2 flex gap-2">
                   <button
                     onClick={() => approve(item.id)}
-                    className="rounded-lg bg-brand-green px-3 py-1 text-xs font-bold text-black"
+                    className="rounded-lg bg-brand-green px-3 py-1 text-xs font-bold text-brand-night"
                   >
                     Approve
                   </button>
                   <button
                     onClick={() => reject(item.id)}
-                    className="rounded-lg border border-white/10 px-3 py-1 text-xs font-bold text-white/80"
+                    className="rounded-lg border border-brand-cream/10 px-3 py-1 text-xs font-bold text-brand-cream/80"
                   >
                     Reject
                   </button>
@@ -246,9 +246,9 @@ export default function MobilePage() {
 
 function Metric({ label, value, good }: { label: string; value: string; good?: boolean }) {
   return (
-    <div className="rounded-xl bg-white/[0.03] p-3">
+    <div className="rounded-xl bg-brand-cream/[0.03] p-3">
       <p className="text-xs text-text-muted">{label}</p>
-      <p className={cn("mt-1 text-lg font-bold", good && "text-accent-green")}>{value}</p>
+      <p className={cn("mt-1 text-lg font-bold", good && "text-success")}>{value}</p>
     </div>
   );
 }

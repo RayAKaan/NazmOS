@@ -35,7 +35,7 @@ export default function OrchestratorPage() {
     <div className="p-6 max-w-6xl mx-auto space-y-8 animate-fade-in">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
-          <div className="flex items-center gap-2 text-accent-blue font-semibold text-sm">
+          <div className="flex items-center gap-2 text-primary font-semibold text-sm">
             <Sparkles className="w-4 h-4 animate-pulse" />
             <span>UNIVERSAL AGENTIC OPERATING SYSTEM (v3.0)</span>
           </div>
@@ -46,7 +46,7 @@ export default function OrchestratorPage() {
 
       {loading ? (
         <div className="p-12 text-center text-text-secondary font-mono text-sm flex items-center justify-center gap-3">
-          <RefreshCw className="w-5 h-5 animate-spin text-accent-blue" />
+          <RefreshCw className="w-5 h-5 animate-spin text-primary" />
           Analyzing multi-branch ledgers and wholesale cost inflation...
         </div>
       ) : (
@@ -55,8 +55,8 @@ export default function OrchestratorPage() {
           <div className="bg-surface p-6 rounded-3xl border border-border space-y-6 shadow-xl flex flex-col justify-between">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-accent-blue uppercase tracking-wider">Stock Rebalancing</span>
-                <span className="text-xs bg-green-500/10 text-green-400 px-3 py-1 rounded-full border border-green-500/20 font-mono font-bold">
+                <span className="text-xs font-bold text-primary uppercase tracking-wider">Stock Rebalancing</span>
+                <span className="text-xs bg-success/10 text-success px-3 py-1 rounded-full border border-success/20 font-mono font-bold">
                   {rebalanceData?.total_working_capital_saved_sar || 1440} SAR Saved
                 </span>
               </div>
@@ -66,18 +66,18 @@ export default function OrchestratorPage() {
               </p>
             </div>
 
-            <div className="bg-black/30 p-4 rounded-2xl border border-border/50 space-y-3 font-mono text-xs">
-              <div className="flex justify-between items-center text-green-400">
+            <div className="bg-brand-night/30 p-4 rounded-2xl border border-border/50 space-y-3 font-mono text-xs">
+              <div className="flex justify-between items-center text-success">
                 <span>Ethiopian Beans (Branch 1: North Riyadh)</span>
                 <span>Surplus: 68d</span>
               </div>
-              <div className="flex justify-between items-center text-yellow-400">
+              <div className="flex justify-between items-center text-warning">
                 <span>Ethiopian Beans (Branch 2: Buraidah Qassim)</span>
                 <span>Deficit: 3d</span>
               </div>
-              <div className="pt-2 border-t border-white/5 flex items-center justify-between text-white font-bold">
+              <div className="pt-2 border-t border-brand-cream/5 flex items-center justify-between text-brand-cream font-bold">
                 <span>Recommended Action:</span>
-                <button type="button" className="text-accent-blue font-bold hover:underline">Transfer 40 Bags Immediately</button>
+                <button type="button" className="text-primary font-bold hover:underline">Transfer 40 Bags Immediately</button>
               </div>
             </div>
           </div>
@@ -87,7 +87,7 @@ export default function OrchestratorPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-accent-purple uppercase tracking-wider">Margin Defense</span>
-                <span className="text-xs bg-purple-500/10 text-purple-300 px-3 py-1 rounded-full border border-purple-500/20 font-mono font-bold">
+                <span className="text-xs bg-accent-purple/10 text-accent-purple px-3 py-1 rounded-full border border-accent-purple/20 font-mono font-bold">
                   Shariah Anti-Ihtikar Approved
                 </span>
               </div>
@@ -97,18 +97,18 @@ export default function OrchestratorPage() {
               </p>
             </div>
 
-            <div className="bg-black/30 p-4 rounded-2xl border border-border/50 space-y-3 font-mono text-xs">
-              <div className="flex justify-between items-center text-red-400">
+            <div className="bg-brand-night/30 p-4 rounded-2xl border border-border/50 space-y-3 font-mono text-xs">
+              <div className="flex justify-between items-center text-destructive">
                 <span>Almarai Fresh Cream (Wholesale Cost)</span>
                 <span>14.00 SAR → 14.85 SAR</span>
               </div>
-              <div className="flex justify-between items-center text-yellow-300">
+              <div className="flex justify-between items-center text-warning">
                 <span>Current Retail Shelf Price</span>
                 <span>18.00 SAR (Margin: 17.5%)</span>
               </div>
-              <div className="pt-2 border-t border-white/5 flex items-center justify-between text-white font-bold">
+              <div className="pt-2 border-t border-brand-cream/5 flex items-center justify-between text-brand-cream font-bold">
                 <span>Target Price (20% Margin):</span>
-                <button type="button" className="text-green-400 font-bold hover:text-green-300 transition-colors">18.50 SAR (+320 SAR/mo Profit)</button>
+                <button type="button" className="text-success font-bold hover:text-success transition-colors">18.50 SAR (+320 SAR/mo Profit)</button>
               </div>
             </div>
           </div>

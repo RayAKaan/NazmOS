@@ -20,9 +20,9 @@ export function KPICard({
   icon,
 }: KPICardProps) {
   const accentBorderColors = {
-    blue: "border-l-accent-blue",
-    green: "border-l-accent-green",
-    yellow: "border-l-accent-yellow",
+    blue: "border-l-primary",
+    green: "border-l-success",
+    yellow: "border-l-warning",
     purple: "border-l-accent-purple",
   };
 
@@ -57,8 +57,8 @@ export function KPICard({
             className={cn(
               "text-sm font-medium px-2 py-0.5 rounded",
               change >= 0
-                ? "bg-accent-green/10 text-accent-green"
-                : "bg-accent-red/10 text-accent-red"
+                ? "bg-success/10 text-success"
+                : "bg-destructive/10 text-destructive"
             )}
           >
             {change >= 0 ? "↑" : "↓"} {formatPercent(Math.abs(change))}

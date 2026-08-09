@@ -62,7 +62,7 @@ export default function AutonomyPage() {
   };
 
   const labelFor = (d: number) => d === 0 ? "Inform – إخبار" : d < 50 ? "Suggest – اقتراح" : d < 95 ? "Approve – موافقة" : "Auto – تلقائي";
-  const colorFor = (d: number) => d === 0 ? "text-text-muted" : d < 50 ? "text-yellow-400" : d < 95 ? "text-accent-blue" : "text-accent-green";
+  const colorFor = (d: number) => d === 0 ? "text-text-muted" : d < 50 ? "text-warning" : d < 95 ? "text-primary" : "text-success";
 
   return (
     <div className="p-6 md:p-8 max-w-2xl mx-auto">
@@ -88,7 +88,7 @@ export default function AutonomyPage() {
               step="5"
               value={p.dial}
               onChange={(e) => setDial(p.action_type, parseInt(e.target.value))}
-              className="w-full accent-blue-500"
+              className="w-full accent-primary"
             />
             <div className="flex justify-between text-xs text-text-muted mt-1">
               <span>0 Inform</span>
@@ -99,7 +99,7 @@ export default function AutonomyPage() {
               <div className="text-xs text-text-muted mt-2">Auto-spend ceiling: ﷼ {p.ceiling_sar} SAR</div>
             )}
             {p.max_price_increase_pct !== undefined && (
-              <div className="text-xs text-yellow-400 mt-2">⚠️ Max auto price increase: {p.max_price_increase_pct}% – higher requires manual approval</div>
+              <div className="text-xs text-warning mt-2">⚠️ Max auto price increase: {p.max_price_increase_pct}% – higher requires manual approval</div>
             )}
           </div>
         ))}
@@ -108,7 +108,7 @@ export default function AutonomyPage() {
       <button
         onClick={save}
         disabled={saving}
-        className="w-full mt-6 bg-accent-blue text-white py-3 rounded-xl font-medium hover:opacity-90 disabled:opacity-50"
+        className="w-full mt-6 bg-primary text-primary-foreground py-3 rounded-xl font-medium hover:opacity-90 disabled:opacity-50"
       >
         {saving ? "Saving…" : "Save – حفظ"}
       </button>

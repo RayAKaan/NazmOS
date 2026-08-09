@@ -105,11 +105,11 @@ export function InventoryTable({ data, isLoading, onItemClick }: InventoryTableP
                     "font-medium",
                     item.days_until_stockout !== null &&
                       item.days_until_stockout < 3 &&
-                      "text-accent-red",
+                      "text-destructive",
                     item.days_until_stockout !== null &&
                       item.days_until_stockout >= 3 &&
                       item.days_until_stockout < 7 &&
-                      "text-accent-yellow",
+                      "text-warning",
                     (item.days_until_stockout === null || item.days_until_stockout === undefined) &&
                       "text-text-muted"
                   )}

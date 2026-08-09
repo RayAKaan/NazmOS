@@ -18,17 +18,17 @@ export function AlertCard({ alert, onAction }: AlertCardProps) {
   const Icon = icons[alert.type] || Info;
 
   const typeStyles = {
-    critical: "bg-accent-red/5 border-accent-red/30 text-accent-red",
-    warning: "bg-accent-yellow/5 border-accent-yellow/30 text-accent-yellow",
-    info: "bg-accent-blue/5 border-accent-blue/30 text-accent-blue",
-    success: "bg-accent-green/5 border-accent-green/30 text-accent-green",
+    critical: "bg-destructive/5 border-destructive/30 text-destructive",
+    warning: "bg-warning/5 border-warning/30 text-warning",
+    info: "bg-primary/5 border-primary/30 text-primary",
+    success: "bg-success/5 border-success/30 text-success",
   };
 
   const borderColors = {
-    critical: "border-l-accent-red",
-    warning: "border-l-accent-yellow",
-    info: "border-l-accent-blue",
-    success: "border-l-accent-green",
+    critical: "border-l-destructive",
+    warning: "border-l-warning",
+    info: "border-l-primary",
+    success: "border-l-success",
   };
 
   return (
@@ -50,7 +50,7 @@ export function AlertCard({ alert, onAction }: AlertCardProps) {
             <p className="text-xs text-text-muted mb-2">{alert.detail}</p>
           )}
           {alert.action_text && (
-            <div className="flex items-center gap-1 text-xs text-accent-blue font-medium">
+            <div className="flex items-center gap-1 text-xs text-primary font-medium">
               <span>{alert.action_text}</span>
               <ChevronRight className="w-3 h-3" />
             </div>

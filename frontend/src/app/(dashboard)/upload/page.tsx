@@ -183,7 +183,7 @@ export default function UploadPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
-      <section className="overflow-hidden rounded-3xl border border-brand-cream/10 bg-brand-night p-6 text-brand-cream shadow-2xl shadow-black/20 md:p-8">
+      <section className="overflow-hidden rounded-3xl border border-brand-cream/10 bg-brand-night p-6 text-brand-cream shadow-2xl shadow-brand-night/20 md:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.24em] text-brand-amber">Free Money Audit upload</p>

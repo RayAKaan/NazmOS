@@ -31,7 +31,7 @@ export function TopProducts({ data, isLoading }: TopProductsProps) {
   return (
     <div>
       <div className="flex items-center gap-2 mb-4">
-        <Trophy className="w-5 h-5 text-accent-yellow" />
+        <Trophy className="w-5 h-5 text-warning" />
         <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider">
           Top Sellers
         </h3>
@@ -46,11 +46,11 @@ export function TopProducts({ data, isLoading }: TopProductsProps) {
               className={cn(
                 "w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold",
                 product.rank === 1
-                  ? "bg-accent-yellow/20 text-accent-yellow"
+                  ? "bg-warning/20 text-warning"
                   : product.rank === 2
                   ? "bg-text-muted/20 text-text-muted"
                   : product.rank === 3
-                  ? "bg-accent-orange/20 text-accent-orange"
+                  ? "bg-warning/20 text-warning"
                   : "bg-surface text-text-muted"
               )}
             >
@@ -72,9 +72,9 @@ export function TopProducts({ data, isLoading }: TopProductsProps) {
               className={cn(
                 "text-sm font-medium",
                 product.trend === "up"
-                  ? "text-accent-green"
+                  ? "text-success"
                   : product.trend === "down"
-                  ? "text-accent-red"
+                  ? "text-destructive"
                   : "text-text-muted"
               )}
             >

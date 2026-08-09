@@ -3,6 +3,12 @@ import { ImageResponse } from "next/og";
 export const size = { width: 1200, height: 600 };
 export const contentType = "image/png";
 
+const BG_FROM = "#0a0a0f";
+const BG_TO = "#1a1a2e";
+const FG = "#ffffff";
+const ACCENT = "#14B8A6";
+const MUTED = "#94a3b8";
+
 export default function TwitterImage() {
   return new ImageResponse(
     (
@@ -14,7 +20,7 @@ export default function TwitterImage() {
           flexDirection: "column",
           justifyContent: "center",
           padding: 80,
-          background: "linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)",
+          background: `linear-gradient(135deg, ${BG_FROM} 0%, ${BG_TO} 100%)`,
         }}
       >
         <div
@@ -22,7 +28,7 @@ export default function TwitterImage() {
             fontSize: 120,
             fontWeight: 900,
             fontFamily: "ui-sans-serif, system-ui, sans-serif",
-            color: "#ffffff",
+            color: FG,
             letterSpacing: "-0.04em",
             lineHeight: 1,
           }}
@@ -35,7 +41,7 @@ export default function TwitterImage() {
             fontSize: 44,
             fontWeight: 600,
             fontFamily: "ui-sans-serif, system-ui, sans-serif",
-            color: "#14B8A6",
+            color: ACCENT,
             letterSpacing: "-0.02em",
           }}
         >
@@ -48,7 +54,7 @@ export default function TwitterImage() {
             right: 64,
             fontSize: 28,
             fontWeight: 500,
-            color: "#94a3b8",
+            color: MUTED,
             fontFamily: "ui-monospace, monospace",
           }}
         >

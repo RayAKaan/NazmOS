@@ -19,7 +19,7 @@ export function Sidebar() {
     { href: "/chat", label: t.sidebar.copilot || "Nazm Copilot", icon: Sparkles, badge: "AI" },
     { href: "/dashboard", label: t.sidebar.dashboard, icon: LayoutDashboard },
     { href: "/money-audit", label: "Money Audit", icon: WalletCards, badge: "Free" },
-    { href: "/orchestrator", label: t.sidebar.orchestrator || "Recovery Engine", icon: Sparkles, badge: "Recovery" },
+    { href: "/orchestrator", label: t.sidebar.orchestrator || "Recovery Engine", icon: Sparkles, badge: "Pilot" },
     { href: "/inventory", label: t.sidebar.inventory, icon: Package },
     { href: "/forecast", label: t.sidebar.forecast, icon: TrendingUp },
     { href: "/upload", label: t.sidebar.upload, icon: Upload },
@@ -51,7 +51,7 @@ export function Sidebar() {
         <span className="font-medium">{item.label}</span>
         {item.badge && (
           <span className={cn(
-            "text-xs px-2 py-0.5 rounded ml-auto",
+            "text-xs px-2 py-0.5 rounded ms-auto",
             item.badge === "AI" ? "bg-accent-purple/10 text-accent-purple" : "bg-surface-hover"
           )}>
             {item.badge}
@@ -62,7 +62,7 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="hidden md:flex flex-col w-60 border-r border-border bg-surface h-screen fixed left-0 top-0">
+    <aside className="hidden md:flex flex-col w-60 border-e border-border bg-surface h-screen fixed start-0 top-0">
       <div className="p-5 border-b border-border">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-accent-blue flex items-center justify-center">
@@ -97,7 +97,7 @@ export function Sidebar() {
           >
             <Settings className="w-5 h-5" />
             <span className="font-medium">{t.sidebar.autonomy}</span>
-            <span className="text-xs bg-surface-hover px-2 py-0.5 rounded ml-auto">نظم</span>
+            <span className="text-xs bg-surface-hover px-2 py-0.5 rounded ms-auto">نظم</span>
           </Link>
         </div>
       </nav>

@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-[#0A0E0C] px-5 py-12 text-[#F4EFE6] md:px-8">
+    <main className="min-h-screen bg-brand-night px-5 py-12 text-brand-cream md:px-8">
       <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:p-10">
-        <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#E0B34A]">Nazmak privacy baseline</p>
+        <p className="font-mono text-xs uppercase tracking-[0.24em] text-brand-amber">Nazmak privacy baseline</p>
         <h1 className="mt-4 font-serif text-4xl font-black tracking-[-0.04em] md:text-6xl">Privacy Policy</h1>
         <p className="mt-4 text-sm leading-7 text-white/62">
           This pilot privacy policy is written for the NazmOS Retail Recovery System. It is not a replacement for formal legal review before scale.
@@ -44,7 +44,7 @@ export default function PrivacyPage() {
           </section>
         </div>
 
-        <Link href="/" className="mt-8 inline-flex rounded-xl bg-[#E0B34A] px-5 py-3 font-bold text-black hover:bg-[#f2cf69]">Back to NazmOS</Link>
+        <Link href="/" className="mt-8 inline-flex rounded-xl bg-brand-amber px-5 py-3 font-bold text-black hover:bg-brand-gold">Back to NazmOS</Link>
       </div>
     </main>
   );

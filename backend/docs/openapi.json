@@ -724,6 +724,16 @@
             "title": "Access Token",
             "type": "string"
           },
+          "capabilities": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CapabilitiesOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "refresh_token": {
             "title": "Refresh Token",
             "type": "string"
@@ -1491,6 +1501,66 @@
           "action_type"
         ],
         "title": "CandidateAction",
+        "type": "object"
+      },
+      "CapabilitiesOut": {
+        "description": "What the current user can do, computed server-side.\n\nMirrors app/services/capabilities_service.py. The frontend renders from\nthis object; it never independently decides permissions.",
+        "properties": {
+          "business_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Business Id"
+          },
+          "can_approve_actions": {
+            "default": false,
+            "title": "Can Approve Actions",
+            "type": "boolean"
+          },
+          "can_manage_team": {
+            "default": false,
+            "title": "Can Manage Team",
+            "type": "boolean"
+          },
+          "can_run_admin_tools": {
+            "default": false,
+            "title": "Can Run Admin Tools",
+            "type": "boolean"
+          },
+          "can_run_orchestrator": {
+            "default": false,
+            "title": "Can Run Orchestrator",
+            "type": "boolean"
+          },
+          "can_view_ops_console": {
+            "default": false,
+            "title": "Can View Ops Console",
+            "type": "boolean"
+          },
+          "is_platform_operator": {
+            "default": false,
+            "title": "Is Platform Operator",
+            "type": "boolean"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          }
+        },
+        "title": "CapabilitiesOut",
         "type": "object"
       },
       "CategoryBreakdownItem": {
@@ -3875,6 +3945,48 @@
           "business_id"
         ],
         "title": "MatchActionRequest",
+        "type": "object"
+      },
+      "MeResponse": {
+        "description": "Session/session-identity response for GET /auth/me.",
+        "properties": {
+          "business_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Business Id"
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/CapabilitiesOut"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserResponse"
+          }
+        },
+        "required": [
+          "user",
+          "capabilities",
+          "business_id",
+          "role"
+        ],
+        "title": "MeResponse",
         "type": "object"
       },
       "MemoryChangesOut": {
@@ -9063,7 +9175,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
+                  "$ref": "#/components/schemas/MeResponse"
                 }
               }
             },
@@ -9320,7 +9432,7 @@
     },
     "/api/v1/businesses/bootstrap": {
       "post": {
-        "description": "Create the user's first store if none exists, otherwise return it.\n\nThis makes founder-led pilots and first login usable without manual DB seeding.",
+        "description": "Create the user's first store if none exists, otherwise return it.\n\nThis makes founder-led pilots and first login usable without manual DB seeding.\n\nAtomic by construction: the unique partial index\nuq_businesses_active_owner (owner_id WHERE is_active = true) plus\nON CONFLICT DO NOTHING means concurrent bootstraps can never create\ntwo stores for the same owner.",
         "operationId": "bootstrap_business_api_v1_businesses_bootstrap_post",
         "parameters": [
           {
@@ -19738,7 +19850,7 @@
     },
     "/api/v1/ops/pilot-console": {
       "get": {
-        "description": "Founder/operator console for controlled pilots.\n\nThis is intentionally operational, not merchant-facing: uploads, audit queue,\nfailed imports, and Recovery Match issues in one place.",
+        "description": "Founder/operator console for controlled pilots.\n\nThis is intentionally operational, not merchant-facing: uploads, audit queue,\nfailed imports, and Recovery Match issues in one place. The business_id here\nis the *target* of a pilot, not the caller's own tenant, so the gate is the\nplatform-operator identity \u2014 a merchant owner alone must never reach it.\nDenials are recorded to the AuditLog and surfaced as 403.",
         "operationId": "pilot_console_api_v1_ops_pilot_console_get",
         "parameters": [
           {
@@ -22357,7 +22469,7 @@
     },
     "/api/v1/pos/admin/webhooks/{event_id}/replay": {
       "post": {
-        "description": "Replay a previously received webhook. Admin/owner only.",
+        "description": "Replay a previously received webhook. Platform operator only.\n\nPreviously gated by ``require_role(\"admin\", \"owner\")``, which let any\nbusiness owner replay another tenant's webhook events (cross-tenant IDOR).",
         "operationId": "replay_webhook_api_v1_pos_admin_webhooks__event_id__replay_post",
         "parameters": [
           {
@@ -27613,7 +27725,7 @@
         ]
       },
       "post": {
-        "description": "Receive WhatsApp interactive button replies and inbound D2C text inquiries.\nIf WHATSAPP_APP_SECRET is configured, verify Meta X-Hub-Signature-256 HMAC.",
+        "description": "Receive WhatsApp interactive button replies and inbound D2C text inquiries.\n\nMeta X-Hub-Signature-256 HMAC is always enforced. When WHATSAPP_APP_SECRET\nis not configured the endpoint fails closed (401/503) so unauthenticated\ncallers cannot trigger agent-action approvals, rejections, or notifications.",
         "operationId": "receive_webhook_api_v1_whatsapp_webhook_post",
         "responses": {
           "200": {

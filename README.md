@@ -1,301 +1,292 @@
-# NazmOS
+# NazmOS Retail Recovery
 
-AI-powered decision layer for physical businesses (supermarkets, cafes, retail shops, hotels).
+**Find the cash trapped in your store.**
 
-## Features
+NazmOS is a Retail Recovery System for Saudi retailers — baqalas, supermarkets, cafes, restaurants, and retail shops. Send two exports (sales + inventory), and NazmOS finds the cash hiding in your business: dead stock, stockout risk, and margin leakage — then helps you recover it, with approvals over WhatsApp.
 
-### Phase 1 - Core Platform
-- 📊 **Dashboard** - Real-time KPIs, alerts, sales trends, and health scores
-- 📦 **Inventory Management** - Track stock levels, identify dead stock, and manage reorders
-- 🔔 **Smart Alerts** - Get notified about low stock, trends, and opportunities
-- 📈 **Analytics** - Sales trends, category breakdown, and top products
-- 🔐 **Authentication** - JWT-based secure authentication
+نظام استرداد تموزوس (نزموس) لقطاع التجزئة السعودي — أرسل ملفين فقط (المبيعات والمخزون)، وستجد نزموس السيولة النقدية المحبوسة في متجرك: بضائع راكدة، مخاطر نفاد مخزون، وتسريبات هامش ربح — ثم يساعدك على استردادها عبر واتساب.
 
-### Phase 2 - AI & Automation
-- 🤖 **Baseer AI Chat** - Conversational AI for business insights and recommendations
-- 📤 **Data Upload** - CSV/Excel upload with automatic ETL pipeline
-- 📉 **Demand Forecasting** - Prophet-based sales forecasting with festival alerts
-- 🎯 **Decision Engine** - AI-powered actionable recommendations with prioritization
-- ⚡ **Real-time Updates** - SSE streaming for instant AI responses
-- 🗄️ **Redis Caching** - Fast cached forecasts and chat memory
-- 🔄 **Background Tasks** - Celery workers for heavy processing
+---
 
-## Tech Stack
+## What NazmOS does
 
-### Backend
-- Python 3.13+
-- FastAPI
-- SQLAlchemy 2.0 (async)
-- PostgreSQL 17+
-- Alembic (migrations)
-- Pydantic v2 / pydantic-settings
-- Redis + Celery (optional background tasks; zero-cost mode disables both)
-- OpenRouter gateway (model-agnostic; default `google/gemma-2-9b-it:free`)
-- Prophet (forecasting)
+| Feature | What it means for your store |
+|---|---|
+| 🧾 **Free Money Audit** | Send sales + inventory exports → a full audit in 48 hours showing exactly where cash is trapped. |
+| 📦 **Dead-stock detection** | Items sitting too long with no sales — cash you could free up today. |
+| ⚠️ **Stockout risk** | Fast movers about to run out — lost sales you can prevent. |
+| 💸 **Margin leakage** | Price, cost, and discount issues quietly eating your profit. |
+| 📬 **Weekly Money Report** | A plain-language summary of what to fix next. |
+| ✅ **WhatsApp approvals** | Approve recovery actions from your phone — no dashboard required. |
+| 🤝 **Recovery Match preview** | Preview opportunities to match slow stock with nearby stores that can sell it. |
 
-### Frontend
-- Next.js 16 (App Router)
-- React 18
-- TypeScript
-- Tailwind CSS
-- Recharts
-- Zustand
-- React Hook Form + Zod
-- Framer Motion (animations)
-- React Dropzone (file upload)
+**The first wedge:** send two files — a sales export and an inventory export. NazmOS returns your Money Audit within 48 hours.
 
-## Quick Start
+## How the loop works
 
-### Prerequisites
-
-- Docker & Docker Compose (optional)
-- Node.js 20+ (for local development)
-- Python 3.13+ (for local development)
-- PostgreSQL 17+ (local or Docker)
-
-### Using Docker (Recommended)
-
-```bash
-cd NazmOS
-# Zero-cost/SQLite mode
-docker-compose -f docker-compose.sqlite.yml up
-
-# Full local stack (Postgres 17 + Redis + backend + frontend)
-docker-compose -f docker-compose.local.yml up
+```txt
+Sales + inventory upload
+        │
+        ▼
+   Money Audit
+        │
+        ▼
+   Owner approves (WhatsApp / app)
+        │
+        ▼
+   Action completed
+        │
+        ▼
+   Money recovered
 ```
 
-The application will be available at:
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- API Docs: http://localhost:8000/docs
-- Flower (Celery): http://localhost:5555
+## API groups
 
-### Local Development
+NazmOS exposes **174 endpoints** across focused API groups. Interactive docs are live at `/docs` on any running backend; the full OpenAPI contract is committed at [`backend/docs/openapi.json`](backend/docs/openapi.json). Every response carries `X-NazmOS-API-Version: 2.1.0-ksa`.
 
-#### Backend
+| Group | Purpose | Key endpoints |
+|---|---|---|
+| Auth | Registration, login, sessions | `POST /api/v1/auth/register`, `POST /api/v1/auth/login`, `GET /api/v1/auth/me` |
+| Businesses | Tenant bootstrap & context | `POST /api/v1/businesses/bootstrap`, `GET /api/v1/businesses/current` |
+| Upload / ETL | Import messy CSV/XLS/XLSX | `POST /api/v1/upload/`, `POST /api/v1/upload/{id}/map`, `GET /api/v1/upload/{id}/status` |
+| Money Audit | The core recovery loop | `POST /api/v1/money-audit/generate`, `POST .../actions/{id}/approve`, `POST .../actions/{id}/complete`, `GET .../whatsapp-summary` |
+| Recovery Match | Nearby-store stock matching | `GET /api/v1/recovery-match/preview`, `GET /api/v1/recovery-match/matches`, `POST .../matches/{id}/reveal-contact` |
+| Ops console | Founder/operator pilot console | `GET /api/v1/ops/pilot-console` (platform operator only) |
+| Agent OS | Rule-based business agents | `POST /api/v1/agent/scan`, `GET /api/v1/agent/feed`, `POST /api/v1/agent/reason` |
+| Intelligence | Reasoning, planning, memory, graphs | `POST /api/v1/intelligence/analyze`, `POST /api/v1/intelligence/plan`, `POST /api/v1/intelligence/simulate` |
+| Pharmacy | Expiry / FEFO / SFDA vertical | `GET,POST /api/v1/pharmacy/lots`, `GET /api/v1/pharmacy/recalls` |
+| POS webhooks | Foodics + Salla integrations | `POST /api/v1/pos/foodics/webhook`, `POST /api/v1/pos/salla/webhook` |
+| WhatsApp | Approval bridge (mock $0 / live) | `GET,POST /api/v1/whatsapp/webhook`, `POST /api/v1/whatsapp/test-approve/{id}` |
+| Partners | Accountants / Monshaat advisors | `POST /api/v1/partners/apply`, `GET /api/v1/partners/dashboard`, `GET /api/v1/partners/public` |
+| Suppliers | Supplier network moat | `GET /api/v1/suppliers`, `GET /api/v1/suppliers/purchase-orders` |
+| Compliance | GDPR / PDPL erasure & export | `GET /api/v1/compliance/export/{id}`, `DELETE /api/v1/compliance/delete/{id}` |
+| Dashboard | KPIs, trends, alerts | `GET /api/v1/dashboard/summary`, `GET .../alerts`, `GET .../top-products` |
+| Inventory | Stock, details, restock | `GET /api/v1/inventory`, `GET /api/v1/inventory/{id}/detail`, `POST /api/v1/inventory/restock` |
+| Subscriptions / Billing | Plans, usage, checkout | `GET /api/v1/subscriptions/plans`, `POST /api/v1/subscriptions/checkout`, `GET /api/v1/subscriptions/usage` |
+| Organizations | Multi-store chains & teams | `GET /api/v1/organizations/`, `GET .../chain/dashboard`, `POST .../team/invite` |
+| Events | Event engine & subscriptions | `GET,POST /api/v1/events`, `POST /api/v1/events/batch` |
+| Health & Ops | Health, readiness, metrics | `GET /api/v1/health`, `GET /api/v1/ready`, `GET /api/v1/live`, `GET /metrics` |
+
+> Auth is required for all merchant endpoints; the ops console additionally requires the **platform-operator** identity (see [Security](#security-model)).
+
+---
+
+## Architecture
+
+NazmOS is designed to run **at zero cost**: a single backend service with in-process background tasks and an optional client-side CSV parser. PostgreSQL, Redis, and Celery are optional upgrades — not requirements.
+
+### Tech stack
+
+**Backend**
+- Python 3.13+, FastAPI, async SQLAlchemy 2.0, PostgreSQL 17
+- Alembic migrations, Pydantic v2 / pydantic-settings, PyJWT
+- LLM via **direct Groq + Google Gemini** providers (no gateway); `USE_MOCK_LLM=true` runs rule-based responses at $0 in development
+- Optional: Redis, Celery, Prophet/scikit-learn for forecasting
+
+**Frontend**
+- Next.js 16 (App Router), React 18, TypeScript, Tailwind CSS
+- Recharts, Zustand, React Hook Form + Zod, Framer Motion, PapaParse (client-side ETL)
+
+### Zero-cost mode
+
+| Setting | Default | Effect |
+|---|---|---|
+| `USE_CELERY` | `false` | Background tasks run in-process instead of a Celery worker |
+| `USE_REDIS` | `false` | In-memory cache & rate limiting instead of Redis |
+| `USE_CLIENT_ETL` | `false` | Server-side ETL; set `true` for browser-side CSV parsing |
+| `USE_MOCK_LLM` | `true` | Rule-based LLM responses at $0 when no provider keys are set |
+
+---
+
+## Security model
+
+- **JWT authentication** with refresh tokens and role-based access.
+- **PostgreSQL Row-Level Security (RLS)** — tenant isolation policies across business-scoped tables, enforced via the restricted `nazmos_app` database role in production.
+- **Capability-based authorization** — a single server-side capability model (see [`ACCESS_MODEL.md`](ACCESS_MODEL.md)) gates every route; the ops console is strictly **platform-operator** only (DB flag or `FOUNDER_EMAILS` allowlist).
+- **Idempotency keys** for safe retries of POST/PATCH/PUT.
+- **Credential vault** (AES) for POS integration secrets, plus **PII-redacted structured logs**.
+- **Production fail-closed checks** on startup (secrets, Sentry, mock-LLM, SQLite).
+
+---
+
+## Quick start
+
+### Option A — Zero-cost (SQLite, no Docker dependencies) ⭐
+
+```bash
+docker compose -f docker-compose.sqlite.yml up --build
+```
+
+- Backend: http://localhost:8000 · Docs: http://localhost:8000/docs
+
+### Option B — Full local stack (Postgres 17 + Redis + Celery + frontend)
+
+```bash
+docker compose -f docker-compose.local.yml up --build
+```
+
+- Frontend: http://localhost:3000 · Backend: http://localhost:8000 · Flower: http://localhost:5555
+
+### Option C — Manual backend
 
 ```bash
 cd backend
-
-# Create virtual environment
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install dependencies
+# Windows: .venv\Scripts\activate   |   macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
-
-# Create .env file
-cp .env.example .env
-# Edit .env with your DATABASE_URL, SECRET_KEY, and optional OpenRouter key.
-
-# Run PostgreSQL 17 (local example)
-sudo service postgresql start
-# Ensure a `nazmos` user/database exist, or point DATABASE_URL at your instance.
-
-# Apply migrations
+cp .env.example .env          # then edit DATABASE_URL, SECRET_KEY, etc.
 python -m alembic upgrade head
-
-# Run Redis (optional; zero-cost mode works without it)
-redis-server
-
-# Run Celery worker (optional, for background tasks)
-celery -A celery_app worker --loglevel=info
-
-# Run Celery beat (optional, for scheduled tasks)
-celery -A celery_app beat --loglevel=info
-
-# Run the server
 uvicorn app.main:app --reload
 ```
 
-#### Frontend
+### Manual frontend
 
 ```bash
 cd frontend
-
-# Install dependencies
 npm install
-
-# Create .env.local file
-cp .env.local.example .env.local
-
-# Run the development server
+cp .env.example .env.local
 npm run dev
 ```
 
-## Phase 2 Setup
+### Ops console access
 
-### Environment Variables
-
-Key backend `.env` values:
+The pilot console (`/ops`) requires the platform-operator identity. Set the allowlist in the backend environment:
 
 ```env
-# Core
+FOUNDER_EMAILS=founder@example.com
+```
+
+(Or set `is_platform_operator=true` on the user row in the database.)
+
+---
+
+## Environment variables (key ones)
+
+Backend (`backend/.env`):
+
+```env
 ENVIRONMENT=development
 DATABASE_URL=postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos
-SECRET_KEY=change-me-in-production-minimum-48-chars
+# SQLite: sqlite+aiosqlite:///./nazmos.db
+SECRET_KEY=change-me-in-production-minimum-32-chars
+CORS_ORIGINS=http://localhost:3000
 
-# Zero-cost architecture
+# Zero-cost mode
 USE_CELERY=false
 USE_REDIS=false
 USE_CLIENT_ETL=false
 
-# Redis (optional)
-REDIS_URL=redis://localhost:6379/0
-
-# LLM via OpenRouter (mock LLM is used when OPENROUTER_API_KEY is empty)
-OPENROUTER_API_KEY=sk-or-v1-...
-OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+# LLM — direct providers, at least one key required in production
+GROQ_API_KEY=
+GOOGLE_AI_API_KEY=
+LLM_PROVIDER_ORDER=groq,google,mock
 USE_MOCK_LLM=true
-LLM_MODEL=google/gemma-2-9b-it:free
 
-# Uploads / object storage
-UPLOAD_DIR=./uploads
-STORAGE_BACKEND=local  # local | s3 | minio
-# STORAGE_BUCKET=...
-# STORAGE_ENDPOINT=...
-# STORAGE_ACCESS_KEY=...
-# STORAGE_SECRET_KEY=...
+# WhatsApp — mock ($0) or live
+WHATSAPP_ENABLED=mock
+WHATSAPP_TOKEN=
+WHATSAPP_PHONE_ID=
 
-# Observability
-SENTRY_DSN=
-SENTRY_ENVIRONMENT=development
-PROMETHEUS_ENABLED=true
+# Platform operator allowlist
+FOUNDER_EMAILS=
 
-# PostgreSQL Row-Level Security (production)
-# Leave empty in dev to run as table owner; set in prod to enforce RLS.
+# Production hardening
 DATABASE_APP_ROLE=nazmos_app
+CREDENTIAL_MASTER_KEY=
+SENTRY_DSN=
+METRICS_TOKEN=
 ```
 
-### Feature Flags
+Frontend (`frontend/.env.local`):
 
-Feature flags are now dynamic (database-backed) and support per-business
-overrides and plan-level gating. Static env booleans are used as a fallback
-before the flag table is seeded.
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+API_URL=http://localhost:8000
+NEXT_PUBLIC_APP_NAME=NazmOS KSA
+NEXT_PUBLIC_CURRENCY=SAR
+NEXT_PUBLIC_LOCALE=ar-SA
+NEXT_PUBLIC_CHAT_ENABLED=false
+NEXT_PUBLIC_AGENT_ENABLED=true
+```
 
-- `AGENT_ENABLED`, `CHAT_ENABLED`, `BILLING_ENABLED`, etc. — static defaults.
-- Run migrations; `seed_default_flags()` populates the `feature_flags` table on
-  startup.
-- Use `is_feature_enabled()` / `set_business_override()` to control rollout or
-  kill-switches without a redeploy.
+See [`backend/.env.example`](backend/.env.example) and [`frontend/.env.example`](frontend/.env.example) for the full lists.
 
-## Project Structure
+---
+
+## Testing & CI
+
+```bash
+# Everything
+make verify
+
+# Backend unit + contract tests
+make backend-test
+
+# Frontend lint + build + audit
+make frontend-test
+
+# Retail Recovery contract test
+make contract
+
+# Runtime E2E (requires a running backend)
+make runtime-e2e
+```
+
+CI (`.github/workflows/ci.yml`) runs: backend compile + `pip-audit` CVE gate, backend pytest against PostgreSQL, runtime E2E smoke tests, and frontend lint/build/audit/Jest/accessibility.
+
+---
+
+## Deployment & operations
+
+- **Production-like local/staging**: `docker-compose.yml` (Postgres, Redis, API, Celery, nginx, Prometheus, Grafana).
+- **Production compose**: `docker-compose.prod.yml`.
+- **Terraform**: `infrastructure/terraform/` for cloud provisioning.
+- **Backups**: `deployment/nazmos-backup.{service,timer}` + `scripts/backup_postgres.py`.
+- **Runbooks**: [`RUNBOOKS.md`](RUNBOOKS.md) and [`docs/runbooks.md`](docs/runbooks.md).
+
+---
+
+## Project structure
 
 ```
 NazmOS/
-├── docker-compose.yml
 ├── backend/
 │   ├── app/
-│   │   ├── main.py          # FastAPI app
-│   │   ├── config.py        # Settings
-│   │   ├── database/        # Models, connection, seeder
-│   │   ├── schemas/         # Pydantic schemas
-│   │   ├── routers/         # API routes
-│   │   ├── services/        # Business logic
-│   │   ├── tasks/           # Celery tasks
-│   │   ├── middleware/      # Auth, rate limiting
-│   │   └── utils/           # Security, logging, currency
-│   ├── celery_app.py       # Celery configuration
-│   ├── alembic/            # Database migrations
-│   └── tests/               # Unit tests
+│   │   ├── main.py           # FastAPI app + router registration
+│   │   ├── config.py         # pydantic-settings
+│   │   ├── routers/          # 30+ API routers (auth, money-audit, recovery-match, agent, …)
+│   │   ├── services/         # Business logic (money_audit, recovery_match, etl, …)
+│   │   ├── middleware/       # Auth, RLS, idempotency, rate limit, logging, metrics
+│   │   ├── database/         # Models, connection, seeders
+│   │   └── utils/            # Security, tracing, problem-details, OpenAPI helpers
+│   ├── alembic/              # Migrations
+│   ├── docs/openapi.json     # Committed OpenAPI golden (174 endpoints)
+│   └── tests/                # Backend test suite
 ├── frontend/
-│   ├── src/
-│   │   ├── app/            # Next.js pages
-│   │   │   └── (dashboard)/
-│   │   │       ├── dashboard/
-│   │   │       ├── inventory/
-│   │   │       ├── chat/       # Baseer AI chat
-│   │   │       └── upload/      # Data upload
-│   │   ├── components/
-│   │   │   ├── chat/           # Chat UI components
-│   │   │   ├── upload/         # Upload components
-│   │   │   └── dashboard/      # Dashboard components
-│   │   ├── hooks/          # Custom hooks
-│   │   ├── stores/         # Zustand stores
-│   │   ├── lib/            # Utilities
-│   │   └── types/          # TypeScript types
-│   └── __tests__/          # Tests
-└── README.md
+│   └── src/app/(dashboard)/  # dashboard, inventory, upload, money-audit, recovery-match, ops, …
+├── scripts/                  # E2E, smoke, backup/restore, demo-data generators
+├── sample_data/              # Sample CSV exports for demos
+├── infrastructure/terraform/ # Cloud provisioning
+├── deployment/               # systemd backup units
+└── docs/                     # Runbooks, pilot SOP
 ```
 
-## API Endpoints
+---
 
-### Authentication
-- `POST /api/v1/auth/register` - Register new user
-- `POST /api/v1/auth/login` - Login
-- `POST /api/v1/auth/refresh` - Refresh token
-- `GET /api/v1/auth/me` - Get current user
+## Documentation index
 
-### Dashboard
-- `GET /api/v1/dashboard/summary` - Get dashboard KPIs
-- `GET /api/v1/dashboard/alerts` - Get alerts
-- `GET /api/v1/dashboard/sales-trend` - Get sales trend
-- `GET /api/v1/dashboard/top-products` - Get top products
-- `GET /api/v1/dashboard/dead-stock` - Get dead stock items
-- `GET /api/v1/dashboard/hourly-pattern` - Get hourly sales pattern
-- `GET /api/v1/dashboard/category-breakdown` - Get category breakdown
+| Doc | What it covers |
+|---|---|
+| [`README_KSA.md`](README_KSA.md) | KSA merchant pitch (Arabic market) |
+| [`ACCESS_MODEL.md`](ACCESS_MODEL.md) | Capability & authorization model |
+| [`docs/PILOT_SOP.md`](docs/PILOT_SOP.md) | Controlled-pilot operating procedure |
+| [`RUNBOOKS.md`](RUNBOOKS.md), [`docs/runbooks.md`](docs/runbooks.md) | Production runbooks & ops |
+| [`backend/docs/openapi.json`](backend/docs/openapi.json) | Full OpenAPI contract |
+| [`CHANGELOG.md`](CHANGELOG.md) | API changelog |
+| [`FRONTEND_PAGE_MAP.md`](FRONTEND_PAGE_MAP.md) | Frontend page ↔ endpoint map |
 
-### Inventory
-- `GET /api/v1/inventory` - Get inventory list
-- `GET /api/v1/inventory/:id/detail` - Get item details
-- `POST /api/v1/inventory/restock` - Restock item
-
-### Chat (Phase 2)
-- `POST /api/v1/chat/` - Send message to Baseer
-- `POST /api/v1/chat/stream` - SSE streaming chat
-- `GET /api/v1/chat/history` - Get chat history
-- `DELETE /api/v1/chat/sessions/:id` - Clear session
-
-### Upload (Phase 2)
-- `POST /api/v1/upload/` - Upload CSV/Excel file
-- `POST /api/v1/upload/:id/map` - Confirm column mapping
-- `GET /api/v1/upload/:id/status` - Get ingestion status
-- `GET /api/v1/upload/:id/result` - Get ingestion result
-
-### Forecast (Phase 2)
-- `POST /api/v1/forecast/` - Generate forecasts
-- `POST /api/v1/forecast/product` - Forecast by product
-- `GET /api/v1/forecast/summary` - Get forecast summary
-- `GET /api/v1/forecast/cache` - Get cached forecasts
-
-### Decisions (Phase 2)
-- `POST /api/v1/decisions/` - Generate decisions
-- `GET /api/v1/decisions/history` - Get decision history
-- `PATCH /api/v1/decisions/:id` - Update decision status
-- `GET /api/v1/decisions/stats` - Get decision statistics
-
-### Health & Observability
-- `GET /health` - Root health check
-- `GET /api/v1/health` - Detailed health check with dependency probes
-- `GET /ready` - Kubernetes readiness probe
-- `GET /live` - Kubernetes liveness probe
-- `GET /metrics` - Prometheus metrics (when `PROMETHEUS_ENABLED=true`)
-
-All responses include `X-NazmOS-API-Version: 2.1.0-ksa`.
-
-## Development
-
-### Running Tests
-
-```bash
-# Backend
-cd backend
-pytest
-
-# Frontend
-cd frontend
-npm run test
-```
-
-### Building for Production
-
-```bash
-# Frontend
-cd frontend
-npm run build
-npm start
-```
+---
 
 ## License
 
-MIT
+Proprietary. © Nazmak. All rights reserved. This repository is not open-source and may not be copied, redistributed, or used commercially without written permission.

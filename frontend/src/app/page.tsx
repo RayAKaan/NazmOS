@@ -115,10 +115,10 @@ function DemoPanel({ active }: { active: DemoTab }) {
               Recommended reorder:
               <br />
               <b className="text-brand-amber">120 units · SAR 840</b>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <button className="rounded-xl bg-whatsapp py-3 font-bold text-brand-night">✓ Approve</button>
-              <button className="rounded-xl bg-brand-cream/10 py-3 font-bold text-brand-cream">Reject</button>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <button className="rounded-xl bg-whatsapp py-3 font-bold text-brand-night">✓ Approve</button>
+                <button className="rounded-xl bg-brand-cream/10 py-3 font-bold text-brand-cream">Reject</button>
+              </div>
             </div>
           </div>
         </div>
@@ -161,7 +161,7 @@ function DemoPanel({ active }: { active: DemoTab }) {
             <p className="font-mono text-xs uppercase tracking-[.22em] text-brand-amber">Sample Money Audit</p>
             <h3 className="mt-1 font-serif text-2xl font-black">Abu Fahad Markets</h3>
           </div>
-          <span className="rounded-full bg-brand-red/15 px-3 py-1 text-xs font-bold text-brand-red-light">48h report</span>
+          <span className="rounded-full bg-brand-red/15 px-3 py-1 text-xs font-bold text-brand-cream">48h report</span>
         </div>
         <div className="space-y-3">
           {moneyRows.map(([label, value, desc, color]) => (

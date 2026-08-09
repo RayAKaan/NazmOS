@@ -43,6 +43,32 @@ function elementAttributes(jsxEl) {
   return attrs.filter((a) => a.type === "JSXAttribute").map((a) => a.name && a.name.name);
 }
 
+// Extract only rendered TEXT content (JSXText + literal expressions), never attribute
+// strings (className/style), so digit detection reflects what the user sees, not code.
+function collectText(node, out) {
+  if (!node) return;
+  if (node.type === "JSXText") {
+    out.push(node.value);
+    return;
+  }
+  if (node.type === "JSXExpressionContainer") {
+    const e = node.expression;
+    if (e && e.type === "Literal") out.push(String(e.value));
+    return;
+  }
+  if (node.type === "JSXElement") {
+    for (const child of node.children || []) collectText(child, out);
+    return;
+  }
+  for (const key of Object.keys(node)) {
+    if (key === "parent" || key === "loc" || key === "range") continue;
+    const val = node[key];
+    if (Array.isArray(val)) {
+      for (const child of val) if (child && typeof child.type === "string") collectText(child, out);
+    } else if (val && typeof val.type === "string") collectText(val, out);
+  }
+}
+
 function hasAction(node) {
   if (!node) return false;
   if (node.type === "JSXElement") {
@@ -96,7 +122,7 @@ module.exports = {
           const isDestructive = strings.some((s) => DESTRUCTIVE_TEXT.test(s));
           if (isDestructive) {
             const text = [];
-            collectStrings(el, text);
+            collectText(el, text);
             const hasMoney = text.some((s) => CURRENCY_OR_DIGIT.test(s));
             if (hasMoney) {
               const unit = stack[stack.length - 2] || null;

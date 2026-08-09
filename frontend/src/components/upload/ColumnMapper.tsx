@@ -118,7 +118,7 @@ export function ColumnMapper({
     >
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.24em] text-brand-amber">Step 2 · Confirm columns</p>
+          <p className="font-mono text-xs uppercase tracking-[0.24em] text-primary">Step 2 · Confirm columns</p>
           <h2 className="mt-2 text-2xl font-black text-navy-text">Tell NazmOS what each column means</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-navy-muted">
             We guessed the columns. You only need <b className="text-white">Product name</b> plus either

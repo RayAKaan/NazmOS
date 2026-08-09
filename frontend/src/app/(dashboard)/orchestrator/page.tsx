@@ -77,7 +77,7 @@ export default function OrchestratorPage() {
               </div>
               <div className="pt-2 border-t border-white/5 flex items-center justify-between text-white font-bold">
                 <span>Recommended Action:</span>
-                <span className="text-accent-blue">Transfer 40 Bags Immediately</span>
+                <button type="button" className="text-accent-blue font-bold hover:underline">Transfer 40 Bags Immediately</button>
               </div>
             </div>
           </div>
@@ -108,7 +108,7 @@ export default function OrchestratorPage() {
               </div>
               <div className="pt-2 border-t border-white/5 flex items-center justify-between text-white font-bold">
                 <span>Target Price (20% Margin):</span>
-                <span className="text-green-400">18.50 SAR (+320 SAR/mo Profit)</span>
+                <button type="button" className="text-green-400 font-bold hover:text-green-300 transition-colors">18.50 SAR (+320 SAR/mo Profit)</button>
               </div>
             </div>
           </div>

@@ -17,7 +17,7 @@ from app.adapters.foodics import handle_foodics_order_created
 from app.adapters.salla import handle_salla_order_created
 from app.config import get_settings
 from app.middleware.auth_middleware import get_current_user
-from app.middleware.rbac import require_role
+from app.middleware.business_access import assert_platform_operator
 from app.services.webhook_audit_service import (
     record_webhook_event,
     mark_webhook_processed,
@@ -234,9 +234,13 @@ async def replay_webhook(
     event_id: UUID,
     db: AsyncSession = Depends(get_db),
     current_user = Depends(get_current_user),
-    _admin: None = Depends(require_role("admin", "owner")),
 ):
-    """Replay a previously received webhook. Admin/owner only."""
+    """Replay a previously received webhook. Platform operator only.
+
+    Previously gated by ``require_role("admin", "owner")``, which let any
+    business owner replay another tenant's webhook events (cross-tenant IDOR).
+    """
+    await assert_platform_operator(db, current_user)
     event = await get_webhook_event(db, event_id)
     if not event:
         return problem_response(

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Truck } from "lucide-react";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 type Supplier = {
   id: string;
@@ -44,49 +46,58 @@ export default function SuppliersPage() {
         </div>
       </div>
 
-      <div className="bg-surface border border-border rounded-2xl overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-surface-hover text-xs uppercase tracking-wider text-text-muted">
-            <tr>
-              <th className="text-left px-5 py-3">Supplier</th>
-              <th className="text-left px-5 py-3">City</th>
-              <th className="text-left px-5 py-3">Category</th>
-              <th className="text-right px-5 py-3">Lead</th>
-              <th className="text-right px-5 py-3">Orders</th>
-              <th className="text-right px-5 py-3">Volume SAR</th>
-              <th className="text-right px-5 py-3"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {suppliers.map(s => (
-              <tr key={s.id} className="hover:bg-surface-hover/50">
-                <td className="px-5 py-4">
-                  <div className="font-medium">{s.name_ar}</div>
-                  <div className="text-xs text-text-muted">{s.name_en}</div>
-                </td>
-                <td className="px-5 py-4 text-sm">{s.city}</td>
-                <td className="px-5 py-4 text-xs">
-                  <span className="px-2 py-1 rounded bg-surface-hover text-text-muted">{s.category}</span>
-                </td>
-                <td className="px-5 py-4 text-right text-sm">{s.lead_time_days}d</td>
-                <td className="px-5 py-4 text-right font-mono">{s.total_orders}</td>
-                <td className="px-5 py-4 text-right font-mono">﷼ {s.total_volume_sar.toLocaleString("ar-SA")}</td>
-                <td className="px-5 py-4 text-right">
-                  {s.whatsapp_number && (
-                    <a
-                      href={`https://wa.me/${s.whatsapp_number.replace(/[^0-9]/g, "")}`}
-                      target="_blank"
-                      className="text-xs text-accent-green hover:underline"
-                    >
-                      WhatsApp →
-                    </a>
-                  )}
-                </td>
+      {suppliers.length === 0 ? (
+        <EmptyState
+          icon={Truck}
+          title="No suppliers yet"
+          description="Import your purchase orders to build your supplier network. NazmOS aggregates volume across shops to negotiate better prices."
+          actions={[{ label: "Upload files", href: "/upload", primary: true }]}
+        />
+      ) : (
+        <div className="bg-surface border border-border rounded-2xl overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-surface-hover text-xs uppercase tracking-wider text-text-muted">
+              <tr>
+                <th className="text-left px-5 py-3">Supplier</th>
+                <th className="text-left px-5 py-3">City</th>
+                <th className="text-left px-5 py-3">Category</th>
+                <th className="text-right px-5 py-3">Lead</th>
+                <th className="text-right px-5 py-3">Orders</th>
+                <th className="text-right px-5 py-3">Volume SAR</th>
+                <th className="text-right px-5 py-3"></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {suppliers.map(s => (
+                <tr key={s.id} className="hover:bg-surface-hover/50">
+                  <td className="px-5 py-4">
+                    <div className="font-medium">{s.name_ar}</div>
+                    <div className="text-xs text-text-muted">{s.name_en}</div>
+                  </td>
+                  <td className="px-5 py-4 text-sm">{s.city}</td>
+                  <td className="px-5 py-4 text-xs">
+                    <span className="px-2 py-1 rounded bg-surface-hover text-text-muted">{s.category}</span>
+                  </td>
+                  <td className="px-5 py-4 text-right text-sm">{s.lead_time_days}d</td>
+                  <td className="px-5 py-4 text-right font-mono">{s.total_orders}</td>
+                  <td className="px-5 py-4 text-right font-mono">﷼ {s.total_volume_sar.toLocaleString("ar-SA")}</td>
+                  <td className="px-5 py-4 text-right">
+                    {s.whatsapp_number && (
+                      <a
+                        href={`https://wa.me/${s.whatsapp_number.replace(/[^0-9]/g, "")}`}
+                        target="_blank"
+                        className="text-xs text-accent-green hover:underline"
+                      >
+                        WhatsApp →
+                      </a>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <div className="mt-4 bg-accent-blue/5 border border-accent-blue/20 rounded-xl p-4 text-sm">
         <b>Network effect – تأثير الشبكة:</b> Once NazmOS routes orders from 30+ shops to the same distributor, we negotiate better prices / faster fulfillment for all our shops. You benefit automatically – no extra work.

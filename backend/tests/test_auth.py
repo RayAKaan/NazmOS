@@ -87,7 +87,8 @@ async def test_get_me(client: AsyncClient):
         headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 200
-    assert response.json()["email"] == "me@example.com"
+    assert response.json()["user"]["email"] == "me@example.com"
+    assert "capabilities" in response.json()
 
 
 @pytest.mark.asyncio

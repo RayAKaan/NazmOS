@@ -116,12 +116,15 @@ export function AlertCardExpanded({ alert, onDismiss, onApply }: AlertCardExpand
           <button
             onClick={() => setExpanded(!expanded)}
             className="p-1.5 rounded-lg hover:bg-bg-hover text-text-muted hover:text-text-primary transition-colors"
+            aria-label={expanded ? "Collapse alert details" : "Expand alert details"}
+            aria-expanded={expanded}
           >
             {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </button>
           <button
             onClick={() => setDismissed(true)}
             className="p-1.5 rounded-lg hover:bg-bg-hover text-text-muted hover:text-text-primary transition-colors"
+            aria-label="Dismiss alert"
           >
             <X size={16} />
           </button>

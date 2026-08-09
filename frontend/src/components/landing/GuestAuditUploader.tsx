@@ -134,7 +134,7 @@ export function GuestAuditUploader() {
                   "flex flex-col items-center justify-center rounded-3xl border-2 border-dashed p-8 text-center transition-all md:p-10",
                   isDragging
                     ? "border-brand-amber bg-brand-amber/10"
-                    : "border-white/15 bg-white/[0.04] hover:border-brand-amber/60 hover:bg-white/[0.06]"
+                    : "border-brand-cream/15 bg-brand-cream/[0.04] hover:border-brand-amber/60 hover:bg-brand-cream/[0.06]"
                 )}
               >
                 <input
@@ -152,12 +152,12 @@ export function GuestAuditUploader() {
                 <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-amber/15">
                   <UploadCloud className="h-8 w-8 text-brand-amber" />
                 </div>
-                <h3 className="text-xl font-bold text-white">Drop your sales or inventory file</h3>
-                <p className="mt-2 text-sm text-white/55">CSV or Excel · max 2 MB · no sign-up required</p>
-                <div className="mt-6 flex flex-wrap justify-center gap-2 text-xs text-white/40">
-                  <span className="rounded-full bg-white/5 px-3 py-1">product name</span>
-                  <span className="rounded-full bg-white/5 px-3 py-1">quantity / stock</span>
-                  <span className="rounded-full bg-white/5 px-3 py-1">price / cost</span>
+                <h3 className="text-xl font-bold text-brand-cream">Drop your sales or inventory file</h3>
+                <p className="mt-2 text-sm text-brand-cream/55">CSV or Excel · max 2 MB · no sign-up required</p>
+                <div className="mt-6 flex flex-wrap justify-center gap-2 text-xs text-brand-cream/40">
+                  <span className="rounded-full bg-brand-cream/5 px-3 py-1">product name</span>
+                  <span className="rounded-full bg-brand-cream/5 px-3 py-1">quantity / stock</span>
+                  <span className="rounded-full bg-brand-cream/5 px-3 py-1">price / cost</span>
                 </div>
               </div>
             </label>
@@ -170,7 +170,7 @@ export function GuestAuditUploader() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="rounded-3xl border border-white/10 bg-brand-night p-10 text-center text-white"
+            className="rounded-3xl border border-brand-cream/10 bg-brand-night p-10 text-center text-brand-cream"
           >
             <div className="mx-auto mb-5 flex h-16 w-16 animate-pulse items-center justify-center rounded-full bg-brand-amber/15">
               <RefreshCw className="h-7 w-7 animate-spin text-brand-amber" />
@@ -178,7 +178,7 @@ export function GuestAuditUploader() {
             <h3 className="text-xl font-bold">
               {status === "scanning" ? "Scanning columns…" : "Finding trapped cash…"}
             </h3>
-            <p className="mt-2 text-sm text-white/55">
+            <p className="mt-2 text-sm text-brand-cream/55">
               {file ? file.name : ""} · This usually takes under 10 seconds
             </p>
           </motion.div>
@@ -190,7 +190,7 @@ export function GuestAuditUploader() {
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            className="overflow-hidden rounded-3xl border border-brand-green/30 bg-brand-night text-white shadow-2xl"
+            className="overflow-hidden rounded-3xl border border-brand-green/30 bg-brand-night text-brand-cream shadow-2xl"
           >
             <div className="bg-brand-green/10 p-6 md:p-8">
               <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -199,13 +199,13 @@ export function GuestAuditUploader() {
                   <h3 className="mt-2 font-serif text-3xl font-black md:text-4xl">
                     {money(result.summary.money_at_risk_sar)} is at risk
                   </h3>
-                  <p className="mt-2 text-sm text-white/60">
+                  <p className="mt-2 text-sm text-brand-cream/60">
                     Based on {result.summary.row_count.toLocaleString()} rows · confidence{" "}
                     {Math.round(result.summary.confidence_score)}%
                   </p>
                 </div>
                 <div className="text-left md:text-right">
-                  <p className="text-xs text-white/45">{result.actions.length} recommended action(s)</p>
+                  <p className="text-xs text-brand-cream/45">{result.actions.length} recommended action(s)</p>
                 </div>
               </div>
 
@@ -217,16 +217,16 @@ export function GuestAuditUploader() {
             </div>
 
             <div className="p-6 md:p-8">
-              <h4 className="text-sm font-bold uppercase tracking-wider text-white/55">Top actions</h4>
+              <h4 className="text-sm font-bold uppercase tracking-wider text-brand-cream/55">Top actions</h4>
               <div className="mt-4 space-y-3">
                 {result.actions.slice(0, 3).map((action, idx) => (
                   <div
                     key={idx}
-                    className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 md:flex-row md:items-center md:justify-between"
+                    className="flex flex-col gap-2 rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.04] p-4 md:flex-row md:items-center md:justify-between"
                   >
                     <div>
-                      <p className="font-semibold text-white">{action.title}</p>
-                      <p className="mt-1 text-sm leading-5 text-white/55">{action.description}</p>
+                      <p className="font-semibold text-brand-cream">{action.title}</p>
+                      <p className="mt-1 text-sm leading-5 text-brand-cream/55">{action.description}</p>
                     </div>
                     <div className="shrink-0 text-left md:text-right">
                       <p className="text-lg font-black text-brand-green">{money(action.expected_recovery_sar)}</p>
@@ -238,7 +238,7 @@ export function GuestAuditUploader() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <button
                   onClick={reset}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 px-5 py-3 text-sm font-bold text-white/75 hover:bg-white/5"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-brand-cream/10 px-5 py-3 text-sm font-bold text-brand-cream/75 hover:bg-brand-cream/5"
                 >
                   <RefreshCw className="h-4 w-4" /> Try another file
                 </button>
@@ -259,11 +259,11 @@ export function GuestAuditUploader() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="rounded-3xl border border-brand-red/30 bg-brand-red/10 p-8 text-center text-white"
+            className="rounded-3xl border border-brand-red/30 bg-brand-red/10 p-8 text-center text-brand-cream"
           >
             <AlertTriangle className="mx-auto mb-4 h-10 w-10 text-brand-red-light" />
             <h3 className="text-lg font-bold">Could not run preview</h3>
-            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-white/65">{error}</p>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-brand-cream/65">{error}</p>
             <button
               onClick={reset}
               className="mt-5 inline-flex items-center gap-2 rounded-xl bg-brand-amber px-5 py-3 text-sm font-bold text-brand-night hover:bg-brand-gold-soft"
@@ -284,8 +284,8 @@ function Kpi({ label, value, tone }: { label: string; value: string; tone: "red"
     green: "text-brand-green",
   };
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-      <p className="text-xs uppercase tracking-wider text-white/45">{label}</p>
+    <div className="rounded-2xl border border-brand-cream/10 bg-brand-night/20 p-4">
+      <p className="text-xs uppercase tracking-wider text-brand-cream/45">{label}</p>
       <p className={cn("mt-1 font-serif text-2xl font-black", colors[tone])}>{value}</p>
     </div>
   );

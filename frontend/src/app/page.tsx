@@ -35,10 +35,10 @@ const moneyRows = [
 ];
 
 const watchCards = [
-  ['Cash Leakage', 'Dead stock, overstock, and slow-moving inventory trapping cash.', WalletCards, '#C8412A'],
-  ['Stockout Risk', 'Fast-moving items likely to finish before weekend or Ramadan demand.', Store, '#E0B34A'],
-  ['Margin Drops', 'Supplier costs increasing quietly reducing your profit.', TrendingUp, '#13A05A'],
-  ['Branch Imbalance', 'One branch overstocked while another is about to run out.', Activity, '#F4EFE6'],
+  ['Cash Leakage', 'Dead stock, overstock, and slow-moving inventory trapping cash.', WalletCards, 'var(--brand-red)'],
+  ['Stockout Risk', 'Fast-moving items likely to finish before weekend or Ramadan demand.', Store, 'var(--brand-amber)'],
+  ['Margin Drops', 'Supplier costs increasing quietly reducing your profit.', TrendingUp, 'var(--brand-green)'],
+  ['Branch Imbalance', 'One branch overstocked while another is about to run out.', Activity, 'var(--brand-cream)'],
 ];
 
 const pricingCards = [
@@ -60,9 +60,9 @@ function NazmakMark({ className = '' }: { className?: string }) {
     <svg viewBox="0 0 96 96" className={className} aria-hidden="true">
       <defs>
         <linearGradient id="nazmakGold" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0%" stopColor="#F1DEC2" />
-          <stop offset="55%" stopColor="#CBB38A" />
-          <stop offset="100%" stopColor="#8B6A39" />
+          <stop offset="0%" stopColor="var(--brand-gold)" />
+          <stop offset="55%" stopColor="var(--brand-gold-soft)" />
+          <stop offset="100%" stopColor="var(--brand-sand)" />
         </linearGradient>
       </defs>
       <path
@@ -97,28 +97,28 @@ function SectionLabel({ children, dark = false }: { children: React.ReactNode; d
 function DemoPanel({ active }: { active: DemoTab }) {
   if (active === 'whatsapp') {
     return (
-      <div className="mx-auto w-full max-w-sm rounded-[2rem] border border-white/10 bg-black p-4 shadow-2xl shadow-black/40">
+      <div className="mx-auto w-full max-w-sm rounded-[2rem] border border-brand-cream/10 bg-brand-night p-4 shadow-2xl shadow-brand-night/40">
         <div className="rounded-[1.5rem] bg-chat-deep p-4">
-          <div className="mb-4 flex items-center gap-3 border-b border-white/10 pb-3">
+          <div className="mb-4 flex items-center gap-3 border-b border-brand-cream/10 pb-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-whatsapp-deep font-bold">N</div>
             <div>
-              <p className="font-bold text-white">NazmOS</p>
-              <p className="text-xs text-white/45">by Nazmak · business account</p>
+              <p className="font-bold text-brand-cream">NazmOS</p>
+              <p className="text-xs text-brand-cream/45">by Nazmak · business account</p>
             </div>
           </div>
           <div className="space-y-3">
-            <div className="rounded-2xl bg-chat-warm p-4 text-sm leading-6 text-white">
+            <div className="rounded-2xl bg-chat-warm p-4 text-sm leading-6 text-brand-cream">
               <b className="text-brand-red-light">Stockout warning</b>
               <br />Almarai Milk may finish in 1.8 days.
             </div>
-            <div className="rounded-2xl bg-chat-steel p-4 text-sm leading-6 text-white">
+            <div className="rounded-2xl bg-chat-steel p-4 text-sm leading-6 text-brand-cream">
               Recommended reorder:
               <br />
               <b className="text-brand-amber">120 units · SAR 840</b>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <button className="rounded-xl bg-whatsapp py-3 font-bold text-black">✓ Approve</button>
-              <button className="rounded-xl bg-white/10 py-3 font-bold text-white">Reject</button>
+              <button className="rounded-xl bg-whatsapp py-3 font-bold text-brand-night">✓ Approve</button>
+              <button className="rounded-xl bg-brand-cream/10 py-3 font-bold text-brand-cream">Reject</button>
             </div>
           </div>
         </div>
@@ -128,8 +128,8 @@ function DemoPanel({ active }: { active: DemoTab }) {
 
   if (active === 'report') {
     return (
-      <div className="rounded-[2rem] border border-white/10 bg-brand-cream p-5 text-brand-night shadow-2xl">
-        <div className="mb-5 flex items-start justify-between border-b border-black/10 pb-4">
+      <div className="rounded-[2rem] border border-brand-night/10 bg-brand-cream p-5 text-brand-night shadow-2xl">
+        <div className="mb-5 flex items-start justify-between border-b border-brand-night/10 pb-4">
           <div>
             <p className="font-mono text-xs uppercase tracking-[.22em] text-whatsapp-deep">Thursday Money Report</p>
             <h3 className="mt-1 font-serif text-3xl font-black">Store Health: 82/100</h3>
@@ -138,10 +138,10 @@ function DemoPanel({ active }: { active: DemoTab }) {
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
           {moneyRows.map(([label, value, desc, color]) => (
-            <div key={label} className="rounded-2xl border border-black/10 bg-white/60 p-4">
-              <p className="font-mono text-[10px] uppercase tracking-[.2em] text-black/40">{label}</p>
+            <div key={label} className="rounded-2xl border border-brand-night/10 bg-brand-cream/60 p-4">
+              <p className="font-mono text-[10px] uppercase tracking-[.2em] text-brand-night/40">{label}</p>
               <p className={`mt-2 font-serif text-2xl font-black ${color}`}>{value}</p>
-              <p className="mt-2 text-xs leading-5 text-black/55">{desc}</p>
+              <p className="mt-2 text-xs leading-5 text-brand-night/55">{desc}</p>
             </div>
           ))}
         </div>
@@ -154,9 +154,9 @@ function DemoPanel({ active }: { active: DemoTab }) {
   }
 
   return (
-    <div className="rounded-[2rem] border border-white/10 bg-brand-cream p-5 text-brand-night shadow-2xl">
+    <div className="rounded-[2rem] border border-brand-night/10 bg-brand-cream p-5 text-brand-night shadow-2xl">
       <div className="rounded-[1.5rem] bg-brand-night p-5 text-brand-cream">
-        <div className="mb-5 flex items-center justify-between border-b border-white/10 pb-4">
+        <div className="mb-5 flex items-center justify-between border-b border-brand-cream/10 pb-4">
           <div>
             <p className="font-mono text-xs uppercase tracking-[.22em] text-brand-amber">Sample Money Audit</p>
             <h3 className="mt-1 font-serif text-2xl font-black">Abu Fahad Markets</h3>
@@ -165,10 +165,10 @@ function DemoPanel({ active }: { active: DemoTab }) {
         </div>
         <div className="space-y-3">
           {moneyRows.map(([label, value, desc, color]) => (
-            <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-              <p className="font-mono text-[10px] uppercase tracking-[.22em] text-white/45">{label}</p>
+            <div key={label} className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.04] p-4">
+              <p className="font-mono text-[10px] uppercase tracking-[.22em] text-brand-cream/45">{label}</p>
               <p className={`mt-1 font-serif text-3xl font-black ${color}`}>{value}</p>
-              <p className="mt-1 text-sm text-white/55">{desc}</p>
+              <p className="mt-1 text-sm text-brand-cream/55">{desc}</p>
             </div>
           ))}
         </div>
@@ -182,7 +182,7 @@ export default function LandingPage() {
 
   return (
     <main className="min-h-screen bg-brand-night text-brand-cream selection:bg-brand-amber selection:text-brand-night">
-      <nav className="sticky top-0 z-40 border-b border-white/10 bg-brand-night/80 backdrop-blur-xl">
+      <nav className="sticky top-0 z-40 border-b border-brand-cream/10 bg-brand-night/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
           <Link href="/" className="flex items-center gap-3">
             <NazmakMark className="h-9 w-9" />
@@ -192,9 +192,9 @@ export default function LandingPage() {
             </div>
           </Link>
           <div className="hidden items-center gap-8 text-sm text-brand-cream/65 md:flex">
-            <a href="#product" className="hover:text-white">NazmOS</a>
-            <a href="#demo" className="hover:text-white">Demo</a>
-            <a href="#pricing" className="hover:text-white">Pricing</a>
+            <a href="#product" className="hover:text-brand-cream">NazmOS</a>
+            <a href="#demo" className="hover:text-brand-cream">Demo</a>
+            <a href="#pricing" className="hover:text-brand-cream">Pricing</a>
           </div>
           <Link href="/product-demo" className="rounded-full border border-brand-amber/50 px-4 py-2 text-sm font-semibold text-brand-amber hover:bg-brand-amber hover:text-brand-night">
             Run interactive demo
@@ -203,11 +203,11 @@ export default function LandingPage() {
       </nav>
 
       <section className="relative overflow-hidden px-5 py-20 md:px-8 md:py-28">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_18%,rgba(203,179,138,.22),transparent_34%),radial-gradient(circle_at_20%_82%,rgba(19,160,90,.16),transparent_34%)]" />
-        <div className="absolute inset-0 opacity-[0.03] [background-image:linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:72px_72px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_18%,color-mix(in_oklab,var(--brand-gold)_22%,transparent),transparent_34%),radial-gradient(circle_at_20%_82%,color-mix(in_oklab,var(--brand-green)_16%,transparent),transparent_34%)]" />
+        <div className="absolute inset-0 opacity-[0.03] [background-image:linear-gradient(var(--brand-cream)_1px,transparent_1px),linear-gradient(90deg,var(--brand-cream)_1px,transparent_1px)] [background-size:72px_72px]" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_.95fr]">
           <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-8">
-            <motion.div variants={fadeUp} className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-brand-amber">
+            <motion.div variants={fadeUp} className="inline-flex items-center gap-3 rounded-full border border-brand-cream/10 bg-brand-cream/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-brand-amber">
               <NazmakMark className="h-5 w-5" /> Bring order to business
             </motion.div>
             <motion.div variants={fadeUp}>
@@ -223,7 +223,7 @@ export default function LandingPage() {
               <Link href="/register?intent=free-audit" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-amber px-6 py-4 font-bold text-brand-night shadow-2xl shadow-brand-amber/20 hover:bg-brand-gold-soft">
                 Get a Free Money Audit <ArrowRight className="h-4 w-4" />
               </Link>
-              <a href="#demo" className="inline-flex items-center justify-center rounded-2xl border border-white/12 px-6 py-4 font-semibold text-white/80 hover:bg-white/5">
+              <a href="#demo" className="inline-flex items-center justify-center rounded-2xl border border-brand-cream/12 px-6 py-4 font-semibold text-brand-cream/80 hover:bg-brand-cream/5">
                 Watch the demo
               </a>
             </motion.div>
@@ -238,14 +238,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="border-y border-white/10 bg-brand-night px-5 py-16 md:px-8">
+      <section className="border-y border-brand-cream/10 bg-brand-night px-5 py-16 md:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 text-center">
             <SectionLabel dark>Try it free</SectionLabel>
             <h2 className="mt-4 font-serif text-4xl font-black tracking-[-.03em] md:text-5xl">
               See your trapped cash in under 60 seconds
             </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-white/60">
+            <p className="mx-auto mt-3 max-w-2xl text-brand-cream/60">
               Upload a sales or inventory export. No sign-up, no credit card, no customer data needed.
             </p>
           </div>
@@ -253,7 +253,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="border-y border-white/10 bg-brand-cream px-5 py-12 text-brand-night md:px-8">
+      <section className="border-y border-brand-night/10 bg-brand-cream px-5 py-12 text-brand-night md:px-8">
         <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-3">
           {[
             [FileSpreadsheet, 'Send two files', 'Sales export + inventory export. No customer names needed.'],
@@ -262,10 +262,10 @@ export default function LandingPage() {
           ].map(([Icon, title, body]) => {
             const LucideIcon = Icon as typeof FileSpreadsheet;
             return (
-              <div key={title as string} className="rounded-3xl border border-black/10 bg-brand-cream-dark p-6">
+              <div key={title as string} className="rounded-3xl border border-brand-night/10 bg-brand-cream-dark p-6">
                 <LucideIcon className="mb-4 h-6 w-6 text-whatsapp-deep" />
                 <h3 className="font-serif text-2xl font-black">{title as string}</h3>
-                <p className="mt-3 leading-7 text-black/62">{body as string}</p>
+                <p className="mt-3 leading-7 text-brand-night/62">{body as string}</p>
               </div>
             );
           })}
@@ -279,17 +279,17 @@ export default function LandingPage() {
             <h2 className="mt-4 font-serif text-4xl font-black leading-tight tracking-[-.03em] md:text-6xl">A company for business order. A product for retail recovery.</h2>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-6">
+            <div className="rounded-3xl border border-brand-cream/10 bg-brand-cream/[0.04] p-6">
               <NazmakMark className="mb-5 h-12 w-12" />
               <p className="font-mono text-xs uppercase tracking-[.22em] text-brand-amber">Company</p>
               <h3 className="mt-3 font-serif text-3xl font-black">Nazmak</h3>
-              <p className="mt-3 leading-7 text-white/58">Builds recovery systems that bring order to Saudi business operations.</p>
+              <p className="mt-3 leading-7 text-brand-cream/58">Builds recovery systems that bring order to Saudi business operations.</p>
             </div>
             <div className="rounded-3xl border border-brand-amber/25 bg-brand-amber/10 p-6">
               <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-amber font-serif text-xl font-black text-brand-night">N</div>
               <p className="font-mono text-xs uppercase tracking-[.22em] text-brand-amber">Product</p>
               <h3 className="mt-3 font-serif text-3xl font-black">NazmOS</h3>
-              <p className="mt-3 leading-7 text-white/58">The Retail Recovery System that finds cash leakage and sends owner actions.</p>
+              <p className="mt-3 leading-7 text-brand-cream/58">The Retail Recovery System that finds cash leakage and sends owner actions.</p>
             </div>
           </div>
         </div>
@@ -305,13 +305,13 @@ export default function LandingPage() {
             {watchCards.map(([title, body, Icon, color], i) => {
               const LucideIcon = Icon as typeof WalletCards;
               return (
-                <div key={title as string} className="rounded-3xl border border-black/10 bg-brand-cream-dark p-6">
+                <div key={title as string} className="rounded-3xl border border-brand-night/10 bg-brand-cream-dark p-6">
                   <div className="mb-10 flex items-center justify-between">
-                    <span className="font-mono text-xs text-black/40">0{i + 1}</span>
+                    <span className="font-mono text-xs text-brand-night/40">0{i + 1}</span>
                     <LucideIcon className="h-5 w-5" style={{ color: color as string }} />
                   </div>
                   <h3 className="font-serif text-2xl font-black">{title as string}</h3>
-                  <p className="mt-4 leading-7 text-black/62">{body as string}</p>
+                  <p className="mt-4 leading-7 text-brand-night/62">{body as string}</p>
                 </div>
               );
             })}
@@ -324,13 +324,13 @@ export default function LandingPage() {
           <div>
             <SectionLabel dark>Product demo</SectionLabel>
             <h2 className="mt-4 font-serif text-4xl font-black leading-tight tracking-[-.03em] md:text-6xl">The dashboard is not the product. The weekly recovery habit is.</h2>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-white/62">Use the tabs to see the three moments that matter: audit, approval, and weekly proof.</p>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-brand-cream/62">Use the tabs to see the three moments that matter: audit, approval, and weekly proof.</p>
             <div className="mt-8 flex flex-wrap gap-2">
               {demoTabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveDemo(tab.id)}
-                  className={`rounded-full px-4 py-2 text-sm font-bold transition ${activeDemo === tab.id ? 'bg-brand-amber text-brand-night' : 'border border-white/10 text-white/62 hover:bg-white/5 hover:text-white'}`}
+                  className={`rounded-full px-4 py-2 text-sm font-bold transition ${activeDemo === tab.id ? 'bg-brand-amber text-brand-night' : 'border border-brand-cream/10 text-brand-cream/62 hover:bg-brand-cream/5 hover:text-brand-cream'}`}
                 >
                   {tab.label}
                 </button>
@@ -349,13 +349,13 @@ export default function LandingPage() {
           </div>
           <div className="grid gap-5 lg:grid-cols-3">
             {pricingCards.map(([title, price, body, features]) => (
-              <div key={title as string} className="rounded-3xl border border-black/10 bg-brand-cream-dark p-7">
+              <div key={title as string} className="rounded-3xl border border-brand-night/10 bg-brand-cream-dark p-7">
                 <h3 className="font-serif text-2xl font-black">{title as string}</h3>
                 <p className="mt-4 font-serif text-3xl font-black text-whatsapp-deep">{price as string}</p>
-                <p className="mt-4 leading-7 text-black/62">{body as string}</p>
+                <p className="mt-4 leading-7 text-brand-night/62">{body as string}</p>
                 <ul className="mt-6 space-y-2">
                   {(features as string[]).map((feature) => (
-                    <li key={feature} className="flex items-start gap-2 text-sm text-black/65">
+                    <li key={feature} className="flex items-start gap-2 text-sm text-brand-night/65">
                       <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-whatsapp-deep" /> {feature}
                     </li>
                   ))}
@@ -367,14 +367,14 @@ export default function LandingPage() {
       </section>
 
       <section className="px-5 py-16 md:px-8">
-        <div className="mx-auto max-w-7xl rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 md:p-10">
+        <div className="mx-auto max-w-7xl rounded-[2rem] border border-brand-cream/10 bg-brand-cream/[0.03] p-8 md:p-10">
           <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
             <div>
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-400/10 px-3 py-2 text-xs font-bold text-emerald-300">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-success/10 px-3 py-2 text-xs font-bold text-success">
                 <ShieldCheck className="h-4 w-4" /> Free tier honesty
               </div>
               <h2 className="font-serif text-3xl font-black md:text-5xl">Free proves value. Paid plans unlock continuous recovery.</h2>
-              <p className="mt-4 max-w-3xl leading-7 text-white/60">Free shows your Money Audit. Paid plans unlock weekly recovery reports, live approvals, and Recovery Match between nearby stores.</p>
+              <p className="mt-4 max-w-3xl leading-7 text-brand-cream/60">Free shows your Money Audit. Paid plans unlock weekly recovery reports, live approvals, and Recovery Match between nearby stores.</p>
             </div>
             <Link href="/register?intent=free-audit" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-amber px-6 py-4 font-bold text-brand-night hover:bg-brand-gold-soft">
               Get a Free Money Audit <ArrowRight className="h-4 w-4" />
@@ -384,17 +384,17 @@ export default function LandingPage() {
       </section>
 
       <footer className="px-5 py-12 md:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-6 border-t border-white/10 pt-8 md:flex-row md:items-center">
+        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-6 border-t border-brand-cream/10 pt-8 md:flex-row md:items-center">
           <div className="flex items-center gap-3">
             <NazmakMark className="h-10 w-10" />
             <div>
               <p className="font-serif text-2xl font-black">nazmak</p>
-              <p className="mt-1 text-sm text-white/50">Company behind NazmOS Retail Recovery.</p>
+              <p className="mt-1 text-sm text-brand-cream/50">Company behind NazmOS Retail Recovery.</p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <Link href="/privacy" className="text-sm font-semibold text-white/45 hover:text-white">Privacy</Link>
-            <Link href="/terms" className="text-sm font-semibold text-white/45 hover:text-white">Terms</Link>
+            <Link href="/privacy" className="text-sm font-semibold text-brand-cream/45 hover:text-brand-cream">Privacy</Link>
+            <Link href="/terms" className="text-sm font-semibold text-brand-cream/45 hover:text-brand-cream">Terms</Link>
             <Link href="/register?intent=free-audit" className="inline-flex items-center gap-2 rounded-2xl bg-brand-amber px-5 py-3 font-bold text-brand-night">
               Get a Free Money Audit <ArrowRight className="h-4 w-4" />
             </Link>

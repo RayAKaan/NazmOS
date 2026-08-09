@@ -14,14 +14,14 @@ interface GradientTextProps {
 export function GradientText({
   children,
   className,
-  from = "#6366f1",
-  via = "#8b5cf6",
-  to = "#06b6d4",
+  from = "var(--brand-gold)",
+  via = "var(--brand-amber)",
+  to = "var(--brand-teal)",
 }: GradientTextProps) {
   return (
     <span
       className={cn(
-        "bg-gradient-to-r from-brand-primary via-brand-secondary to-brand-accent bg-clip-text text-transparent",
+        "bg-gradient-to-r from-brand-gold via-brand-amber to-brand-teal bg-clip-text text-transparent",
         className
       )}
       style={{

@@ -53,9 +53,10 @@ services:
       CHAT_ENABLED: "true"
       BILLING_ENABLED: "true"
       AGENT_ENABLED: "true"
-      USE_MOCK_LLM: "true"
-      OPENROUTER_BASE_URL: https://openrouter.ai/api/v1
-      LLM_MODEL: openrouter/auto
+      USE_MOCK_LLM: "false"
+      LLM_PROVIDER_ORDER: groq,google,mock
+      LLM_TEMPERATURE: 0.2
+      LLM_MAX_TOKENS: 1000
       ALLOW_DEMO_SEED: "false"
     depends_on:
       postgres:
@@ -77,8 +78,9 @@ services:
       SECRET_KEY: dev-secret-key-change-in-production-minimum-32-chars
       UPLOAD_DIR: /app/uploads
       USE_MOCK_LLM: "true"
-      OPENROUTER_BASE_URL: https://openrouter.ai/api/v1
-      LLM_MODEL: openrouter/auto
+      LLM_PROVIDER_ORDER: groq,google,mock
+      LLM_TEMPERATURE: 0.2
+      LLM_MAX_TOKENS: 1000
     depends_on:
       postgres:
         condition: service_healthy

@@ -8,6 +8,8 @@ from app.schemas.auth import (
     RefreshTokenRequest,
     UserResponse,
     AuthResponse,
+    MeResponse,
+    CapabilitiesOut,
     TokenResponse,
 )
 from app.services.auth_service import (
@@ -15,6 +17,7 @@ from app.services.auth_service import (
     login_user,
     refresh_access_token,
 )
+from app.services.capabilities_service import build_capabilities
 from app.utils.security import create_access_token, create_refresh_token
 from app.middleware.auth_middleware import get_current_user
 from app.database import User
@@ -25,6 +28,15 @@ settings = get_settings()
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
+async def _capabilities_out(db: AsyncSession, user: User) -> CapabilitiesOut:
+    caps = await build_capabilities(db, user)
+    return CapabilitiesOut(
+        **caps.to_dict(),
+        role=caps.role,
+        business_id=caps.business_id,
+    )
+
+
 @router.post("/register", response_model=AuthResponse, status_code=status.HTTP_201_CREATED)
 async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)):
     user, access_token, refresh_token = await register_user(db, data)
@@ -32,6 +44,7 @@ async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)):
         user=UserResponse.model_validate(user),
         access_token=access_token,
         refresh_token=refresh_token,
+        capabilities=await _capabilities_out(db, user),
     )
 
 
@@ -42,6 +55,7 @@ async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
         user=UserResponse.model_validate(user),
         access_token=access_token,
         refresh_token=refresh_token,
+        capabilities=await _capabilities_out(db, user),
     )
 
 
@@ -51,9 +65,22 @@ async def refresh(data: RefreshTokenRequest, db: AsyncSession = Depends(get_db))
     return TokenResponse(access_token=access_token)
 
 
-@router.get("/me", response_model=UserResponse)
-async def get_me(current_user: User = Depends(get_current_user)):
-    return UserResponse.model_validate(current_user)
+@router.get("/me", response_model=MeResponse)
+async def get_me(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    caps = await build_capabilities(db, current_user)
+    return MeResponse(
+        user=UserResponse.model_validate(current_user),
+        capabilities=CapabilitiesOut(
+            **caps.to_dict(),
+            role=caps.role,
+            business_id=caps.business_id,
+        ),
+        business_id=caps.business_id,
+        role=caps.role,
+    )
 
 
 @router.post("/demo-login", response_model=AuthResponse)
@@ -85,4 +112,5 @@ async def demo_login(db: AsyncSession = Depends(get_db)):
         user=UserResponse.model_validate(user),
         access_token=access_token,
         refresh_token=refresh_token,
+        capabilities=await _capabilities_out(db, user),
     )

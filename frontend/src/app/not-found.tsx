@@ -2,9 +2,9 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#0A0E0C] px-5 py-20 text-[#F4EFE6]">
+    <main className="flex min-h-screen items-center justify-center bg-brand-night px-5 py-20 text-brand-cream">
       <div className="max-w-lg text-center">
-        <p className="font-mono text-xs font-bold uppercase tracking-[0.28em] text-[#E0B34A]">404</p>
+        <p className="font-mono text-xs font-bold uppercase tracking-[0.28em] text-brand-amber">404</p>
         <h1 className="mt-4 font-serif text-5xl font-black leading-[0.95] tracking-[-0.04em] md:text-7xl">
           Page not found
         </h1>
@@ -14,7 +14,7 @@ export default function NotFound() {
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
             href="/"
-            className="inline-flex items-center justify-center rounded-2xl bg-[#E0B34A] px-6 py-3 font-bold text-[#0A0E0C] hover:bg-[#f0c765]"
+            className="inline-flex items-center justify-center rounded-2xl bg-brand-amber px-6 py-3 font-bold text-brand-night hover:bg-brand-gold-soft"
           >
             Back to NazmOS
           </Link>

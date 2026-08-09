@@ -6,6 +6,7 @@ from app.database import get_db, User
 from app.middleware.auth_middleware import get_current_user
 from app.services.audit_log_service import record_access_denial
 from app.services.capabilities_service import is_platform_operator
+from app.services.multi_tenant import MultiTenantService
 
 
 async def _log_denial(
@@ -16,6 +17,16 @@ async def _log_denial(
     capability: str,
     reason: str,
 ) -> None:
+    if business_id is None:
+        # Denials must be tenant-scoped (audit_log.business_id is NOT NULL).
+        # When no target business is known (e.g. replay endpoints), fall back to
+        # the caller's own accessible business; skip the write if the caller
+        # belongs to none.
+        mts = MultiTenantService(db)
+        accessible = await mts.get_business_ids_for_user(current_user.id)
+        business_id = accessible[0] if accessible else None
+    if business_id is None:
+        return
     await record_access_denial(
         business_id=business_id,
         user_id=current_user.id,

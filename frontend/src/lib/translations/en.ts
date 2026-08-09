@@ -45,6 +45,9 @@ export const en = {
     suppliers: "Suppliers",
     autonomy: "Autonomy",
     tools: "Tools",
+    more: "More",
+    allTools: "All tools",
+    close: "Close menu",
   },
 
   header: {

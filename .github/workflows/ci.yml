@@ -128,3 +128,13 @@ jobs:
           npm run lint
           npm run build
           npm audit --audit-level=moderate --omit=dev
+      - name: Frontend unit tests (Jest + RouteGuard access-control)
+        working-directory: frontend
+        run: |
+          npm test -- --ci --runInBand
+      - name: Frontend route/link integrity check
+        working-directory: frontend
+        run: node scripts/check_frontend_routes.mjs
+      - name: Frontend axe accessibility scan (static pages)
+        working-directory: frontend
+        run: node scripts/check_a11y.mjs

@@ -28,7 +28,7 @@ export function ReorderModal({ item, isOpen, onClose }: ReorderModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-overlay backdrop-blur-sm" onClick={onClose} />
       <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-surface border border-border rounded-2xl shadow-xl">
         <div className="sticky top-0 bg-surface border-b border-border p-4 flex items-center justify-between">
           <div>
@@ -81,10 +81,10 @@ export function ReorderModal({ item, isOpen, onClose }: ReorderModalProps) {
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={sales_history_30d}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e1e2e" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
                   <XAxis
                     dataKey="date"
-                    stroke="#555570"
+                    stroke="var(--muted-foreground)"
                     fontSize={10}
                     tickLine={false}
                     tickFormatter={(value) => {
@@ -92,18 +92,18 @@ export function ReorderModal({ item, isOpen, onClose }: ReorderModalProps) {
                       return `${date.getDate()}/${date.getMonth() + 1}`;
                     }}
                   />
-                  <YAxis stroke="#555570" fontSize={10} tickLine={false} />
+                  <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "#12121a",
-                      border: "1px solid #1e1e2e",
+                      backgroundColor: "var(--background)",
+                      border: "1px solid var(--border)",
                       borderRadius: "8px",
                     }}
                   />
                   <Line
                     type="monotone"
                     dataKey="quantity"
-                    stroke="#3b82f6"
+                    stroke="var(--chart-3)"
                     strokeWidth={2}
                     dot={false}
                   />

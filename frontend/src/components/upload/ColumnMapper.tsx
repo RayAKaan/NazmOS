@@ -105,9 +105,9 @@ export function ColumnMapper({
   };
 
   const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 0.9) return "text-green-400";
-    if (confidence >= 0.7) return "text-yellow-400";
-    return "text-red-400";
+    if (confidence >= 0.9) return "text-success";
+    if (confidence >= 0.7) return "text-warning";
+    return "text-destructive";
   };
 
   return (
@@ -121,42 +121,42 @@ export function ColumnMapper({
           <p className="font-mono text-xs uppercase tracking-[0.24em] text-primary">Step 2 · Confirm columns</p>
           <h2 className="mt-2 text-2xl font-black text-navy-text">Tell NazmOS what each column means</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-navy-muted">
-            We guessed the columns. You only need <b className="text-white">Product name</b> plus either
-            <b className="text-white"> Current stock</b> for an inventory file, or
-            <b className="text-white"> Sale date + price/total</b> for a sales file.
+            We guessed the columns. You only need <b className="text-navy-text">Product name</b> plus either
+            <b className="text-navy-text"> Current stock</b> for an inventory file, or
+            <b className="text-navy-text"> Sale date + price/total</b> for a sales file.
           </p>
         </div>
         <button
           onClick={onBack}
-          className="rounded-xl border border-white/10 px-4 py-2 text-sm font-bold text-navy-muted hover:bg-white/5 hover:text-navy-text"
+          className="rounded-xl border border-brand-cream/10 px-4 py-2 text-sm font-bold text-navy-muted hover:bg-brand-cream/5 hover:text-navy-text"
         >
           Back to upload
         </button>
       </div>
 
       <div className="grid gap-3 md:grid-cols-3">
-        <div className={cn("rounded-2xl border p-4", hasItemName ? "border-emerald-400/30 bg-emerald-400/10" : "border-red-400/30 bg-red-400/10")}>
-          <p className="text-sm font-bold text-white">1. Product names</p>
-          <p className="mt-1 text-xs text-white/55">{hasItemName ? "Mapped" : "Required before import"}</p>
+        <div className={cn("rounded-2xl border p-4", hasItemName ? "border-success/30 bg-success/10" : "border-destructive/30 bg-destructive/10")}>
+          <p className="text-sm font-bold text-navy-text">1. Product names</p>
+          <p className="mt-1 text-xs text-navy-muted">{hasItemName ? "Mapped" : "Required before import"}</p>
         </div>
-        <div className={cn("rounded-2xl border p-4", hasInventorySignal ? "border-emerald-400/30 bg-emerald-400/10" : "border-white/10 bg-white/[0.03]")}>
-          <p className="text-sm font-bold text-white">2A. Inventory snapshot</p>
-          <p className="mt-1 text-xs text-white/55">Current stock column</p>
+        <div className={cn("rounded-2xl border p-4", hasInventorySignal ? "border-success/30 bg-success/10" : "border-brand-cream/10 bg-brand-cream/[0.03]")}>
+          <p className="text-sm font-bold text-navy-text">2A. Inventory snapshot</p>
+          <p className="mt-1 text-xs text-navy-muted">Current stock column</p>
         </div>
-        <div className={cn("rounded-2xl border p-4", hasSalesSignal ? "border-emerald-400/30 bg-emerald-400/10" : "border-white/10 bg-white/[0.03]")}>
-          <p className="text-sm font-bold text-white">2B. Sales history</p>
-          <p className="mt-1 text-xs text-white/55">Sale date + price or total</p>
+        <div className={cn("rounded-2xl border p-4", hasSalesSignal ? "border-success/30 bg-success/10" : "border-brand-cream/10 bg-brand-cream/[0.03]")}>
+          <p className="text-sm font-bold text-navy-text">2B. Sales history</p>
+          <p className="mt-1 text-xs text-navy-muted">Sale date + price or total</p>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl bg-navy-panel ring-1 ring-white/10">
+          <div className="overflow-hidden rounded-2xl bg-navy-panel ring-1 ring-brand-cream/10">
         <div className="border-b border-navy-panel-2 p-4">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-2">
               {readyToImport ? (
-                <CheckCircle size={18} className="text-green-400" />
+                <CheckCircle size={18} className="text-success" />
               ) : (
-                <AlertTriangle size={18} className="text-yellow-400" />
+                <AlertTriangle size={18} className="text-warning" />
               )}
               <span className="text-sm font-medium text-navy-text">
                 {readyToImport ? `Ready: ${modeLabel}` : "Map the minimum fields to continue"}
@@ -182,7 +182,7 @@ export function ColumnMapper({
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-sm font-semibold text-navy-text">{COLUMN_LABELS[targetCol]}</span>
-                      {isRequired && <span className="rounded bg-red-500/20 px-2 py-0.5 text-xs text-red-300">Required</span>}
+                      {isRequired && <span className="rounded bg-destructive/20 px-2 py-0.5 text-xs text-destructive">Required</span>}
                       {isCoreSignal && !isRequired && <span className="rounded bg-brand-amber/15 px-2 py-0.5 text-xs text-brand-amber">Audit signal</span>}
                       {mappedSource && (
                         <span className={cn("text-xs", getConfidenceColor(confidence))}>
@@ -199,7 +199,7 @@ export function ColumnMapper({
                       className={cn(
                         "flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors",
                         mappedSource
-                          ? "bg-blue-500/20 text-blue-300"
+                          ? "bg-secondary/20 text-secondary"
                           : "bg-navy-panel-2 text-navy-muted hover:text-navy-text"
                       )}
                     >
@@ -222,7 +222,7 @@ export function ColumnMapper({
                               onClick={() => handleMappingChange(sourceCol, targetCol)}
                               className={cn(
                                 "flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-navy-panel-2",
-                                mappedSource === sourceCol && "bg-blue-500/20"
+                                mappedSource === sourceCol && "bg-secondary/20"
                               )}
                             >
                               <span className="truncate text-navy-text">{sourceCol}</span>
@@ -234,7 +234,7 @@ export function ColumnMapper({
                         })}
                         <button
                           onClick={() => removeMapping(targetCol)}
-                          className="w-full border-t border-navy-panel-2 px-4 py-2.5 text-left text-sm text-red-400 hover:bg-navy-panel-2"
+                          className="w-full border-t border-navy-panel-2 px-4 py-2.5 text-left text-sm text-destructive hover:bg-navy-panel-2"
                         >
                           Remove mapping
                         </button>
@@ -258,8 +258,8 @@ export function ColumnMapper({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-navy-muted">
-        <b className="text-white">Founder tip:</b> If you are not sure, import anyway after the minimum fields.
+      <div className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-4 text-sm leading-6 text-navy-muted">
+        <b className="text-navy-text">Founder tip:</b> If you are not sure, import anyway after the minimum fields.
         NazmOS will ignore extra columns and you can upload a corrected file later. Cost price improves trapped-cash accuracy.
       </div>
 
@@ -276,7 +276,7 @@ export function ColumnMapper({
           className={cn(
             "rounded-xl px-6 py-3 text-sm font-bold transition-colors",
             readyToImport && !isSubmitting
-              ? "bg-brand-amber text-black hover:bg-brand-gold"
+              ? "bg-brand-amber text-brand-night hover:bg-brand-gold"
               : "cursor-not-allowed bg-navy-panel-2 text-navy-muted"
           )}
         >

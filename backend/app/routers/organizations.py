@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select
 from uuid import UUID
 from datetime import datetime, timezone
 import re
@@ -81,46 +81,6 @@ async def list_organizations(
     return result.scalars().all()
 
 
-@router.get("/{org_id}", response_model=OrganizationResponse)
-async def get_organization(
-    org_id: UUID,
-    db: AsyncSession = Depends(get_db),
-    tenant: TenantContext = Depends(get_current_tenant),
-):
-    org = await db.get(Organization, org_id)
-    if not org:
-        raise HTTPException(404, "Organization not found")
-    
-    if org.owner_id != tenant.user_id:
-        raise HTTPException(403, "Access denied")
-    
-    return org
-
-
-@router.patch("/{org_id}", response_model=OrganizationResponse)
-async def update_organization(
-    org_id: UUID,
-    data: OrganizationUpdate,
-    db: AsyncSession = Depends(get_db),
-    tenant: TenantContext = Depends(get_current_tenant),
-):
-    org = await db.get(Organization, org_id)
-    if not org:
-        raise HTTPException(404, "Organization not found")
-    
-    if org.owner_id != tenant.user_id:
-        raise HTTPException(403, "Access denied")
-    
-    for key, value in data.model_dump(exclude_unset=True).items():
-        setattr(org, key, value)
-    
-    org.updated_at = datetime.now(timezone.utc)
-    await db.commit()
-    await db.refresh(org)
-    
-    return org
-
-
 @router.post("/locations", response_model=BusinessLocationResponse)
 async def create_location(
     data: BusinessLocationCreate,
@@ -184,22 +144,9 @@ async def get_chain_dashboard(
         )
     
     businesses = result.scalars().all()
-    business_ids = [b.id for b in businesses]
-    
-    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-    yesterday_start = today_start.replace(day=today_start.day - 1) if today_start.day > 1 else today_start.replace(month=today_start.month - 1, day=28)
-    
+
     locations_summary = []
     for biz in businesses:
-        sales_result = await db.execute(
-            select(func.sum(func.coalesce(func.jsonb_extract_path_text(
-                func.cast(func.max(func.jsonb_build_object(
-                    'total', 'total_sales',
-                    'transactions', 'total_transactions'
-                )), 'x'), 'total'), 0)).cast(func.Numeric))
-            .where(func.extract('year', func.cast(today_start, func.Date)) == func.extract('year', Business.created_at))
-        )
-        
         locations_summary.append({
             "id": str(biz.id),
             "name": biz.name,
@@ -322,3 +269,45 @@ async def remove_team_member(
         raise HTTPException(404, "Team member not found")
     
     return {"message": "Team member removed"}
+
+
+# NOTE: these dynamic routes are registered last so the static routes above
+# (/locations, /team, /team/invitations, /chain/dashboard) are matched first.
+@router.get("/{org_id}", response_model=OrganizationResponse)
+async def get_organization(
+    org_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    tenant: TenantContext = Depends(get_current_tenant),
+):
+    org = await db.get(Organization, org_id)
+    if not org:
+        raise HTTPException(404, "Organization not found")
+    
+    if org.owner_id != tenant.user_id:
+        raise HTTPException(403, "Access denied")
+    
+    return org
+
+
+@router.patch("/{org_id}", response_model=OrganizationResponse)
+async def update_organization(
+    org_id: UUID,
+    data: OrganizationUpdate,
+    db: AsyncSession = Depends(get_db),
+    tenant: TenantContext = Depends(get_current_tenant),
+):
+    org = await db.get(Organization, org_id)
+    if not org:
+        raise HTTPException(404, "Organization not found")
+    
+    if org.owner_id != tenant.user_id:
+        raise HTTPException(403, "Access denied")
+    
+    for key, value in data.model_dump(exclude_unset=True).items():
+        setattr(org, key, value)
+    
+    org.updated_at = datetime.now(timezone.utc)
+    await db.commit()
+    await db.refresh(org)
+    
+    return org

@@ -101,6 +101,7 @@ jobs:
           USE_CELERY: false
           USE_REDIS: false
           API_BASE_URL: http://localhost:8000
+          FOUNDER_EMAILS: pilot-test@example.com,demo-retail@example.com
         run: |
           python -m alembic upgrade head
           uvicorn app.main:app --host 127.0.0.1 --port 8000 --log-level warning &

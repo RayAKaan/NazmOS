@@ -63,10 +63,22 @@ def main() -> int:
         else:
             _ok("CORS_ORIGINS does not include localhost")
 
-        if not re.match(r"^https?://", settings.OPENROUTER_BASE_URL or ""):
-            _warn("OPENROUTER_BASE_URL does not look like a valid URL")
+        if not settings.GROQ_API_KEY and not settings.GOOGLE_AI_API_KEY:
+            _fail("At least one of GROQ_API_KEY or GOOGLE_AI_API_KEY must be set in production")
+            exit_code = 1
         else:
-            _ok("OpenRouter base URL is set")
+            _ok("LLM provider keys are configured (Groq and/or Google Gemini)")
+
+        if settings.WHATSAPP_ENABLED == "live" and (
+            not settings.WHATSAPP_TOKEN or not settings.WHATSAPP_PHONE_ID
+        ):
+            _fail("WHATSAPP_ENABLED=live requires WHATSAPP_TOKEN and WHATSAPP_PHONE_ID")
+            exit_code = 1
+        elif settings.WHATSAPP_ENABLED not in ("mock", "live"):
+            _fail("WHATSAPP_ENABLED must be 'mock' or 'live'")
+            exit_code = 1
+        else:
+            _ok(f"WhatsApp mode is {settings.WHATSAPP_ENABLED}")
 
     else:
         _ok(f"Environment is {settings.ENVIRONMENT}; production-only checks skipped")

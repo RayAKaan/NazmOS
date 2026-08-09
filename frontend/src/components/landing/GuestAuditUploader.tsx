@@ -133,8 +133,8 @@ export function GuestAuditUploader() {
                 className={cn(
                   "flex flex-col items-center justify-center rounded-3xl border-2 border-dashed p-8 text-center transition-all md:p-10",
                   isDragging
-                    ? "border-[#E0B34A] bg-[#E0B34A]/10"
-                    : "border-white/15 bg-white/[0.04] hover:border-[#E0B34A]/60 hover:bg-white/[0.06]"
+                    ? "border-brand-amber bg-brand-amber/10"
+                    : "border-white/15 bg-white/[0.04] hover:border-brand-amber/60 hover:bg-white/[0.06]"
                 )}
               >
                 <input
@@ -149,8 +149,8 @@ export function GuestAuditUploader() {
                     }
                   }}
                 />
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#E0B34A]/15">
-                  <UploadCloud className="h-8 w-8 text-[#E0B34A]" />
+                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-amber/15">
+                  <UploadCloud className="h-8 w-8 text-brand-amber" />
                 </div>
                 <h3 className="text-xl font-bold text-white">Drop your sales or inventory file</h3>
                 <p className="mt-2 text-sm text-white/55">CSV or Excel · max 2 MB · no sign-up required</p>
@@ -170,10 +170,10 @@ export function GuestAuditUploader() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="rounded-3xl border border-white/10 bg-[#0A0E0C] p-10 text-center text-white"
+            className="rounded-3xl border border-white/10 bg-brand-night p-10 text-center text-white"
           >
-            <div className="mx-auto mb-5 flex h-16 w-16 animate-pulse items-center justify-center rounded-full bg-[#E0B34A]/15">
-              <RefreshCw className="h-7 w-7 animate-spin text-[#E0B34A]" />
+            <div className="mx-auto mb-5 flex h-16 w-16 animate-pulse items-center justify-center rounded-full bg-brand-amber/15">
+              <RefreshCw className="h-7 w-7 animate-spin text-brand-amber" />
             </div>
             <h3 className="text-xl font-bold">
               {status === "scanning" ? "Scanning columns…" : "Finding trapped cash…"}
@@ -190,12 +190,12 @@ export function GuestAuditUploader() {
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            className="overflow-hidden rounded-3xl border border-[#13A05A]/30 bg-[#0A0E0C] text-white shadow-2xl"
+            className="overflow-hidden rounded-3xl border border-brand-green/30 bg-brand-night text-white shadow-2xl"
           >
-            <div className="bg-[#13A05A]/10 p-6 md:p-8">
+            <div className="bg-brand-green/10 p-6 md:p-8">
               <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
-                  <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#9ff2bd]">Free preview result</p>
+                  <p className="font-mono text-xs uppercase tracking-[0.24em] text-whatsapp-light">Free preview result</p>
                   <h3 className="mt-2 font-serif text-3xl font-black md:text-4xl">
                     {money(result.summary.money_at_risk_sar)} is at risk
                   </h3>
@@ -229,7 +229,7 @@ export function GuestAuditUploader() {
                       <p className="mt-1 text-sm leading-5 text-white/55">{action.description}</p>
                     </div>
                     <div className="shrink-0 text-left md:text-right">
-                      <p className="text-lg font-black text-[#13A05A]">{money(action.expected_recovery_sar)}</p>
+                      <p className="text-lg font-black text-brand-green">{money(action.expected_recovery_sar)}</p>
                     </div>
                   </div>
                 ))}
@@ -244,7 +244,7 @@ export function GuestAuditUploader() {
                 </button>
                 <a
                   href="/register?intent=free-audit"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#E0B34A] px-5 py-3 text-sm font-bold text-[#0A0E0C] hover:bg-[#f0c765]"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-amber px-5 py-3 text-sm font-bold text-brand-night hover:bg-brand-gold-soft"
                 >
                   Get the full free audit <ArrowRight className="h-4 w-4" />
                 </a>
@@ -259,14 +259,14 @@ export function GuestAuditUploader() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="rounded-3xl border border-[#C8412A]/30 bg-[#C8412A]/10 p-8 text-center text-white"
+            className="rounded-3xl border border-brand-red/30 bg-brand-red/10 p-8 text-center text-white"
           >
-            <AlertTriangle className="mx-auto mb-4 h-10 w-10 text-[#ff8a73]" />
+            <AlertTriangle className="mx-auto mb-4 h-10 w-10 text-brand-red-light" />
             <h3 className="text-lg font-bold">Could not run preview</h3>
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-white/65">{error}</p>
             <button
               onClick={reset}
-              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#E0B34A] px-5 py-3 text-sm font-bold text-[#0A0E0C] hover:bg-[#f0c765]"
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-brand-amber px-5 py-3 text-sm font-bold text-brand-night hover:bg-brand-gold-soft"
             >
               <RefreshCw className="h-4 w-4" /> Try again
             </button>
@@ -279,9 +279,9 @@ export function GuestAuditUploader() {
 
 function Kpi({ label, value, tone }: { label: string; value: string; tone: "red" | "gold" | "green" }) {
   const colors = {
-    red: "text-[#ff8a73]",
-    gold: "text-[#E0B34A]",
-    green: "text-[#13A05A]",
+    red: "text-brand-red-light",
+    gold: "text-brand-amber",
+    green: "text-brand-green",
   };
   return (
     <div className="rounded-2xl border border-white/10 bg-black/20 p-4">

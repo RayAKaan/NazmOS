@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
@@ -18,10 +18,13 @@ export default function DashboardLayout({
   const { isAuthenticated, isLoading } = useAuth();
   const { businessId, setBusinessId } = useAppStore();
   const router = useRouter();
+  const bootstrapInFlight = useRef(false);
 
   useEffect(() => {
     const initBusiness = async () => {
       if (!isAuthenticated || businessId) return;
+      if (bootstrapInFlight.current) return;
+      bootstrapInFlight.current = true;
       try {
         const response = await api.post("/businesses/bootstrap", {
           name: "My Store",
@@ -33,6 +36,8 @@ export default function DashboardLayout({
         }
       } catch (error) {
         console.error("Failed to initialize business", error);
+      } finally {
+        bootstrapInFlight.current = false;
       }
     };
     initBusiness();
@@ -62,7 +67,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
-      <div className="md:ml-60 pb-20 md:pb-0">
+      <div className="md:ms-60 pb-20 md:pb-0">
         <Header />
         <main className="p-4 md:p-6">{children}</main>
       </div>

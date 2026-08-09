@@ -52,6 +52,8 @@ def _settings(environment: str):
         SENTRY_DSN="https://key@o.ingest.sentry.io/proj" if environment == "production" else "",
         DATABASE_APP_ROLE="nazmos_app" if environment == "production" else "",
         USE_MOCK_LLM=False if environment == "production" else True,
+        GROQ_API_KEY=("g" * 48) if environment == "production" else "",
+        GOOGLE_AI_API_KEY="",
         CORS_ORIGINS="https://app.example.com" if environment == "production" else "",
         CREDENTIAL_MASTER_KEY=("m" * 48) if environment == "production" else "",
     )
@@ -68,6 +70,8 @@ class TestConfigProductionValidators:
                 SENTRY_DSN="https://key@o.ingest.sentry.io/proj",
                 DATABASE_APP_ROLE="",
                 USE_MOCK_LLM=False,
+                GROQ_API_KEY="g" * 48,
+                GOOGLE_AI_API_KEY="",
                 CORS_ORIGINS="https://app.example.com",
                 CREDENTIAL_MASTER_KEY="m" * 48,
             )

@@ -26,6 +26,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       setLocale(saved);
       document.documentElement.dir = saved === "ar" ? "rtl" : "ltr";
       document.documentElement.lang = saved;
+      document.cookie = `nazmos-locale=${saved}; path=/; max-age=31536000; samesite=lax`;
     }
   }, [locale]);
 
@@ -34,6 +35,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("nazmos-locale", l);
     document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
     document.documentElement.lang = l;
+    document.cookie = `nazmos-locale=${l}; path=/; max-age=31536000; samesite=lax`;
   }, []);
 
   const t = locale === "ar" ? ar : en;

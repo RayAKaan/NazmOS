@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 from typing import Optional
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import Business, User, get_db
+from app.database import User, get_db
 from app.middleware.auth_middleware import get_current_user
 
 router = APIRouter(prefix="/api/v1/businesses", tags=["Businesses"])
@@ -65,6 +65,11 @@ async def bootstrap_business(
     """Create the user's first store if none exists, otherwise return it.
 
     This makes founder-led pilots and first login usable without manual DB seeding.
+
+    Atomic by construction: the unique partial index
+    uq_businesses_active_owner (owner_id WHERE is_active = true) plus
+    ON CONFLICT DO NOTHING means concurrent bootstraps can never create
+    two stores for the same owner.
     """
     existing = await db.execute(text("""
         SELECT b.*
@@ -78,18 +83,32 @@ async def bootstrap_business(
     if row:
         return _business_row(row)
 
-    business = Business(
-        name=payload.name,
-        type=payload.type,
-        address=payload.address,
-        city=payload.city,
-        owner_id=current_user.id,
-        currency="SAR",
-        timezone="Asia/Riyadh",
-        contact_phone=payload.contact_phone,
-        is_demo=False,
-    )
-    db.add(business)
+    business_id = str(uuid4())
+    await db.execute(text("""
+        INSERT INTO businesses
+            (id, name, type, address, city, owner_id, currency, timezone, contact_phone, is_demo, is_active)
+        VALUES
+            (:id, :name, :type, :address, :city, :owner_id, 'SAR', 'Asia/Riyadh', :contact_phone, false, true)
+        ON CONFLICT (owner_id) WHERE is_active = true DO NOTHING
+    """), {
+        "id": business_id,
+        "name": payload.name,
+        "type": payload.type,
+        "address": payload.address,
+        "city": payload.city,
+        "owner_id": str(current_user.id),
+        "contact_phone": payload.contact_phone,
+    })
     await db.commit()
-    await db.refresh(business)
-    return _business_row(business)
+
+    result = await db.execute(text("""
+        SELECT b.*
+        FROM businesses b
+        WHERE b.is_active = true AND b.owner_id = :uid
+        ORDER BY b.created_at ASC
+        LIMIT 1
+    """), {"uid": str(current_user.id)})
+    created = result.fetchone()
+    if created is None:
+        raise HTTPException(500, "Failed to bootstrap business")
+    return _business_row(created)

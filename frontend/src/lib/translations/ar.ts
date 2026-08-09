@@ -45,6 +45,9 @@ export const ar = {
     suppliers: "الموردين",
     autonomy: "التحكم الذاتي",
     tools: "الأدوات",
+    more: "المزيد",
+    allTools: "جميع الأدوات",
+    close: "إغلاق القائمة",
   },
 
   header: {

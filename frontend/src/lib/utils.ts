@@ -37,3 +37,17 @@ export function getGreeting() {
   if (hour < 17) return "Good afternoon";
   return "Good evening";
 }
+
+export function errorMessage(err: unknown, fallback: string): string {
+  const detail = (err as any)?.response?.data?.detail;
+  if (typeof detail === "string" && detail.length > 0) return detail;
+  if (Array.isArray(detail)) {
+    const first = detail[0]?.msg;
+    if (typeof first === "string") return first;
+  }
+  if (typeof (err as any)?.message === "string") {
+    const msg = (err as any).message;
+    if (msg !== "Network Error") return msg;
+  }
+  return fallback;
+}

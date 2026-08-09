@@ -41,7 +41,7 @@ export function HealthScore({ score, isLoading }: HealthScoreProps) {
               cy="64"
               r="45"
               strokeWidth="10"
-              stroke="#1e1e2e"
+              stroke="var(--chart-grid)"
               fill="none"
             />
             <circle

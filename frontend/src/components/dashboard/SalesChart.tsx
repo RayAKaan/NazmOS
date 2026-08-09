@@ -25,7 +25,7 @@ export function SalesChart({ data, isLoading }: SalesChartProps) {
 
   if (!data || data.data.length === 0) {
     return (
-      <div className="w-full h-[300px] flex items-center justify-center text-text-muted">
+      <div className="w-full h-[300px] flex items-center justify-center text-muted-foreground">
         No sales data available
       </div>
     );
@@ -34,15 +34,15 @@ export function SalesChart({ data, isLoading }: SalesChartProps) {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-surface border border-border rounded-lg p-3 shadow-lg">
-          <p className="text-xs text-text-muted mb-2">{formatDate(label)}</p>
-          <p className="text-sm font-medium text-accent-blue">
+        <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
+          <p className="text-xs text-muted-foreground mb-2">{formatDate(label)}</p>
+          <p className="text-sm font-medium text-chart-3">
             Sales: {formatCurrency(payload[0].value)}
           </p>
-          <p className="text-sm font-medium text-accent-green">
+          <p className="text-sm font-medium text-chart-1">
             Profit: {formatCurrency(payload[1]?.value || 0)}
           </p>
-          <p className="text-xs text-text-secondary mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             {payload[2]?.value || 0} transactions
           </p>
         </div>
@@ -54,17 +54,17 @@ export function SalesChart({ data, isLoading }: SalesChartProps) {
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider">
+        <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
           Sales Trend
         </h3>
         <div className="flex items-center gap-4 text-xs">
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-accent-blue" />
-            <span className="text-text-muted">Sales</span>
+            <div className="w-3 h-3 rounded-full bg-chart-3" />
+            <span className="text-muted-foreground">Sales</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-accent-green" />
-            <span className="text-text-muted">Profit</span>
+            <div className="w-3 h-3 rounded-full bg-chart-1" />
+            <span className="text-muted-foreground">Profit</span>
           </div>
         </div>
       </div>
@@ -76,18 +76,18 @@ export function SalesChart({ data, isLoading }: SalesChartProps) {
           >
             <defs>
               <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="var(--chart-3)" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+                <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e1e2e" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
             <XAxis
               dataKey="date"
-              stroke="#555570"
+              stroke="var(--muted-foreground)"
               fontSize={10}
               tickLine={false}
               axisLine={false}
@@ -98,7 +98,7 @@ export function SalesChart({ data, isLoading }: SalesChartProps) {
               interval="preserveStartEnd"
             />
             <YAxis
-              stroke="#555570"
+              stroke="var(--muted-foreground)"
               fontSize={10}
               tickLine={false}
               axisLine={false}
@@ -108,7 +108,7 @@ export function SalesChart({ data, isLoading }: SalesChartProps) {
             <Area
               type="monotone"
               dataKey="sales"
-              stroke="#3b82f6"
+              stroke="var(--chart-3)"
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#colorSales)"
@@ -116,7 +116,7 @@ export function SalesChart({ data, isLoading }: SalesChartProps) {
             <Area
               type="monotone"
               dataKey="profit"
-              stroke="#22c55e"
+              stroke="var(--chart-1)"
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#colorProfit)"

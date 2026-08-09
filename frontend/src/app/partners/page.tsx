@@ -42,7 +42,7 @@ export default function PartnersPage() {
     <div className="min-h-screen bg-background">
       <section className="border-b border-border bg-surface px-6 py-12 text-center">
         <div className="mx-auto max-w-2xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#E0B34A]/30 bg-[#E0B34A]/10 px-3 py-2 text-xs font-bold uppercase tracking-[0.22em] text-[#E0B34A]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-brand-amber/30 bg-brand-amber/10 px-3 py-2 text-xs font-bold uppercase tracking-[0.22em] text-brand-amber">
             <Share2 className="h-4 w-4" /> Partner Program
           </div>
           <h1 className="mt-5 font-serif text-4xl font-black tracking-tight md:text-5xl">
@@ -62,7 +62,7 @@ export default function PartnersPage() {
         </div>
 
         {submitted ? (
-          <div className="mt-10 rounded-2xl border border-[#13A05A]/30 bg-[#13A05A]/10 p-8 text-center">
+          <div className="mt-10 rounded-2xl border border-brand-green/30 bg-brand-green/10 p-8 text-center">
             <h2 className="text-2xl font-bold text-white">Application received</h2>
             <p className="mt-2 text-text-secondary">
               The Nazmak team will review your profile and send your partner referral code within 2 business days.
@@ -71,7 +71,7 @@ export default function PartnersPage() {
         ) : (
           <form onSubmit={submit} className="mt-10 space-y-5 rounded-2xl border border-border bg-surface p-6 md:p-8">
             <h2 className="text-xl font-bold">Apply to become a partner</h2>
-            {error && <div className="rounded-xl border border-[#C8412A]/30 bg-[#C8412A]/10 p-3 text-sm text-[#ff8a73]">{error}</div>}
+            {error && <div className="rounded-xl border border-brand-red/30 bg-brand-red/10 p-3 text-sm text-brand-red-light">{error}</div>}
 
             <div className="grid gap-4 md:grid-cols-2">
               <Field label="Full name / اسم" value={form.name} onChange={(v) => setForm({ ...form, name: v })} required />

@@ -59,6 +59,7 @@
           },
           "external_actions": {
             "items": {
+              "additionalProperties": true,
               "type": "object"
             },
             "title": "External Actions",
@@ -78,12 +79,14 @@
             "type": "boolean"
           },
           "new_state": {
+            "additionalProperties": true,
             "title": "New State",
             "type": "object"
           },
           "outcome": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -93,6 +96,7 @@
             "title": "Outcome"
           },
           "previous_state": {
+            "additionalProperties": true,
             "title": "Previous State",
             "type": "object"
           },
@@ -182,6 +186,7 @@
             "type": "string"
           },
           "new_state": {
+            "additionalProperties": true,
             "title": "New State",
             "type": "object"
           }
@@ -426,6 +431,7 @@
             "type": "number"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -460,6 +466,7 @@
             "type": "string"
           },
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           }
@@ -473,6 +480,7 @@
       "AgentReasonRequest": {
         "properties": {
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           },
@@ -608,6 +616,7 @@
       "AnalyzeOut": {
         "properties": {
           "context_evidence": {
+            "additionalProperties": true,
             "title": "Context Evidence",
             "type": "object"
           },
@@ -623,12 +632,14 @@
           },
           "graph_evidence": {
             "items": {
+              "additionalProperties": true,
               "type": "object"
             },
             "title": "Graph Evidence",
             "type": "array"
           },
           "memory_snapshot": {
+            "additionalProperties": true,
             "title": "Memory Snapshot",
             "type": "object"
           },
@@ -675,6 +686,7 @@
       "AnalyzeRequest": {
         "properties": {
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           },
@@ -774,6 +786,59 @@
         "title": "AutonomyEvaluateRequest",
         "type": "object"
       },
+      "AutonomyPolicyIn": {
+        "properties": {
+          "action_type": {
+            "title": "Action Type",
+            "type": "string"
+          },
+          "ceiling_sar": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ceiling Sar"
+          },
+          "dial": {
+            "default": 50,
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Dial",
+            "type": "integer"
+          },
+          "max_price_decrease_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Price Decrease Pct"
+          },
+          "max_price_increase_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Price Increase Pct"
+          }
+        },
+        "required": [
+          "action_type"
+        ],
+        "title": "AutonomyPolicyIn",
+        "type": "object"
+      },
       "BillingEventResponse": {
         "properties": {
           "amount_cents": {
@@ -801,6 +866,7 @@
             "type": "string"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -824,6 +890,7 @@
       "Body_create_connection_api_v1_pos_connections_post": {
         "properties": {
           "credentials": {
+            "additionalProperties": true,
             "title": "Credentials",
             "type": "object"
           },
@@ -836,20 +903,6 @@
           "credentials"
         ],
         "title": "Body_create_connection_api_v1_pos_connections_post",
-        "type": "object"
-      },
-      "Body_set_autonomy_api_v1_agent_autonomy_put": {
-        "properties": {
-          "policies": {
-            "items": {},
-            "title": "Policies",
-            "type": "array"
-          }
-        },
-        "required": [
-          "policies"
-        ],
-        "title": "Body_set_autonomy_api_v1_agent_autonomy_put",
         "type": "object"
       },
       "Body_upload_file_api_v1_upload__post": {
@@ -957,6 +1010,7 @@
             "title": "Effective Until"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -1035,6 +1089,7 @@
             "type": "string"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -1310,6 +1365,7 @@
             "type": "string"
           },
           "data": {
+            "additionalProperties": true,
             "title": "Data",
             "type": "object"
           },
@@ -1415,6 +1471,7 @@
             "title": "Expected Roi"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -1496,6 +1553,7 @@
         "properties": {
           "locations_summary": {
             "items": {
+              "additionalProperties": true,
               "type": "object"
             },
             "title": "Locations Summary",
@@ -1542,6 +1600,7 @@
       "ChatReasonRequest": {
         "properties": {
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           },
@@ -1738,6 +1797,7 @@
             "type": "string"
           },
           "data": {
+            "additionalProperties": true,
             "title": "Data",
             "type": "object"
           },
@@ -1881,6 +1941,7 @@
           "estimated_impact": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -1910,6 +1971,7 @@
         "properties": {
           "alternative_actions": {
             "items": {
+              "additionalProperties": true,
               "type": "object"
             },
             "title": "Alternative Actions",
@@ -1929,6 +1991,7 @@
             "type": "string"
           },
           "evidence": {
+            "additionalProperties": true,
             "title": "Evidence",
             "type": "object"
           },
@@ -1953,6 +2016,7 @@
           "ranked_action": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -1993,6 +2057,7 @@
       "DecisionGenerateRequest": {
         "properties": {
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           },
@@ -2053,6 +2118,7 @@
           },
           "candidate_actions": {
             "items": {
+              "additionalProperties": true,
               "type": "object"
             },
             "title": "Candidate Actions",
@@ -2065,6 +2131,7 @@
           "context_evidence": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2094,12 +2161,14 @@
             "title": "Expected Roi"
           },
           "explanation": {
+            "additionalProperties": true,
             "title": "Explanation",
             "type": "object"
           },
           "graph_evidence": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2123,6 +2192,7 @@
           "memory_snapshot": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2134,6 +2204,7 @@
           "ranked_action": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2277,6 +2348,7 @@
           "evidence": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2326,6 +2398,7 @@
           "evidence": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2395,6 +2468,7 @@
           "context_snapshot": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2434,6 +2508,7 @@
             "title": "Occurred At"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -2513,6 +2588,7 @@
           "context_snapshot": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2559,6 +2635,7 @@
             "type": "string"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -2729,6 +2806,7 @@
           "example": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2744,6 +2822,7 @@
             "type": "string"
           },
           "schema": {
+            "additionalProperties": true,
             "title": "Schema",
             "type": "object"
           },
@@ -2781,6 +2860,7 @@
           "example": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2803,6 +2883,7 @@
             "type": "string"
           },
           "schema": {
+            "additionalProperties": true,
             "title": "Schema",
             "type": "object"
           },
@@ -2907,6 +2988,7 @@
             "type": "string"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -2925,6 +3007,7 @@
           "result": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2995,6 +3078,7 @@
             "type": "string"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -3070,6 +3154,7 @@
         "description": "Request schema for setting merchant goals.",
         "properties": {
           "goals": {
+            "additionalProperties": true,
             "description": "Arbitrary goal payload, e.g. profit or stockout targets",
             "title": "Goals",
             "type": "object"
@@ -3084,6 +3169,7 @@
       "GraphEntityCreate": {
         "properties": {
           "attributes": {
+            "additionalProperties": true,
             "title": "Attributes",
             "type": "object"
           },
@@ -3136,6 +3222,7 @@
       "GraphEntityOut": {
         "properties": {
           "attributes": {
+            "additionalProperties": true,
             "title": "Attributes",
             "type": "object"
           },
@@ -3358,6 +3445,7 @@
           "checks": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -3590,6 +3678,7 @@
             "anyOf": [
               {
                 "items": {
+                  "additionalProperties": true,
                   "type": "object"
                 },
                 "type": "array"
@@ -3678,6 +3767,7 @@
             "anyOf": [
               {
                 "items": {
+                  "additionalProperties": true,
                   "type": "object"
                 },
                 "type": "array"
@@ -4204,6 +4294,7 @@
       "OutcomeFeedbackCreate": {
         "properties": {
           "actual_outcome": {
+            "additionalProperties": true,
             "title": "Actual Outcome",
             "type": "object"
           },
@@ -4287,6 +4378,7 @@
       "OutcomeFeedbackOut": {
         "properties": {
           "actual_outcome": {
+            "additionalProperties": true,
             "title": "Actual Outcome",
             "type": "object"
           },
@@ -4324,6 +4416,7 @@
             "title": "Decision Type"
           },
           "delta": {
+            "additionalProperties": true,
             "title": "Delta",
             "type": "object"
           },
@@ -4349,6 +4442,7 @@
             "type": "string"
           },
           "predicted_outcome": {
+            "additionalProperties": true,
             "title": "Predicted Outcome",
             "type": "object"
           },
@@ -4705,6 +4799,7 @@
           },
           "errors": {
             "items": {
+              "additionalProperties": true,
               "type": "object"
             },
             "title": "Errors",
@@ -4903,6 +4998,7 @@
       "PlanCreate": {
         "properties": {
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           },
@@ -5039,6 +5135,7 @@
           },
           "steps": {
             "items": {
+              "additionalProperties": true,
               "type": "object"
             },
             "title": "Steps",
@@ -5073,6 +5170,7 @@
       "PlanRequest": {
         "properties": {
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           },
@@ -5277,6 +5375,7 @@
       "ReasonRequest": {
         "properties": {
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           },
@@ -5523,6 +5622,7 @@
       "RememberOut": {
         "properties": {
           "data": {
+            "additionalProperties": true,
             "title": "Data",
             "type": "object"
           },
@@ -5548,6 +5648,7 @@
           "goals": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -5815,9 +5916,26 @@
         "title": "SalesTrendSummary",
         "type": "object"
       },
+      "SetAutonomyRequest": {
+        "properties": {
+          "policies": {
+            "items": {
+              "$ref": "#/components/schemas/AutonomyPolicyIn"
+            },
+            "title": "Policies",
+            "type": "array"
+          }
+        },
+        "required": [
+          "policies"
+        ],
+        "title": "SetAutonomyRequest",
+        "type": "object"
+      },
       "SimulationCreate": {
         "properties": {
           "assumptions": {
+            "additionalProperties": true,
             "title": "Assumptions",
             "type": "object"
           },
@@ -5828,6 +5946,7 @@
             "type": "string"
           },
           "scenario": {
+            "additionalProperties": true,
             "title": "Scenario",
             "type": "object"
           }
@@ -5841,6 +5960,7 @@
       "SimulationOut": {
         "properties": {
           "assumptions": {
+            "additionalProperties": true,
             "title": "Assumptions",
             "type": "object"
           },
@@ -5878,6 +5998,7 @@
           "results": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -5887,6 +6008,7 @@
             "title": "Results"
           },
           "scenario": {
+            "additionalProperties": true,
             "title": "Scenario",
             "type": "object"
           },
@@ -6262,6 +6384,7 @@
           "context_snapshot": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -6285,6 +6408,7 @@
             "type": "string"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -6492,14 +6616,17 @@
       "UsageResponse": {
         "properties": {
           "ai_queries": {
+            "additionalProperties": true,
             "title": "Ai Queries",
             "type": "object"
           },
           "decisions": {
+            "additionalProperties": true,
             "title": "Decisions",
             "type": "object"
           },
           "notifications": {
+            "additionalProperties": true,
             "title": "Notifications",
             "type": "object"
           }
@@ -6592,6 +6719,7 @@
             "type": "string"
           },
           "summary": {
+            "additionalProperties": true,
             "title": "Summary",
             "type": "object"
           }
@@ -8190,9 +8318,9 @@
         ],
         "requestBody": {
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Body_set_autonomy_api_v1_agent_autonomy_put"
+                "$ref": "#/components/schemas/SetAutonomyRequest"
               }
             }
           },
@@ -12710,6 +12838,232 @@
           }
         },
         "summary": "Get All Forecasts",
+        "tags": [
+          "forecast"
+        ]
+      }
+    },
+    "/api/v1/forecast/cache": {
+      "get": {
+        "description": "List cached forecasts for a business.",
+        "operationId": "get_cached_forecasts_api_v1_forecast_cache_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "business_id",
+            "required": true,
+            "schema": {
+              "title": "Business Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Rate Limited"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Cached Forecasts",
+        "tags": [
+          "forecast"
+        ]
+      }
+    },
+    "/api/v1/forecast/summary": {
+      "get": {
+        "description": "Get a summary of all active forecasts for a business.",
+        "operationId": "get_forecast_summary_api_v1_forecast_summary_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "business_id",
+            "required": true,
+            "schema": {
+              "title": "Business Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Rate Limited"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Forecast Summary",
         "tags": [
           "forecast"
         ]
@@ -26400,6 +26754,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": true,
                 "title": "Payload",
                 "type": "object"
               }
@@ -26640,6 +26995,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": true,
                 "title": "Payload",
                 "type": "object"
               }

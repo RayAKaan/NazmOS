@@ -162,6 +162,7 @@ class User(Base):
     phone = Column(String(20), nullable=True)
     role = Column(String(20), default="owner")
     is_active = Column(Boolean, default=True)
+    is_platform_operator = Column(Boolean, nullable=False, server_default=text("false"), default=False)
     last_login = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -215,6 +216,7 @@ class Business(Base):
     __table_args__ = (
         CheckConstraint("type IN ('supermart', 'cafe', 'retail', 'hotel', 'restaurant', 'pharmacy', 'grocery', 'baqala')", name="business_type_check"),
         Index("idx_business_owner", "owner_id"),
+        Index("uq_businesses_active_owner", "owner_id", unique=True, postgresql_where=text("is_active = true")),
         Index("idx_businesses_organization", "organization_id"),
     )
 

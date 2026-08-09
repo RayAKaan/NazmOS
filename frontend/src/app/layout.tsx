@@ -62,6 +62,11 @@ export default function RootLayout({
     <html lang="en" dir="ltr">
       <head>
         <StructuredData />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var l=localStorage.getItem("nazmos-locale");if(l==="ar"){document.documentElement.dir="rtl";document.documentElement.lang="ar";}}catch(e){}})();`,
+          }}
+        />
       </head>
       <body className="min-h-screen bg-bg-primary text-text-primary font-sans antialiased">
         <Providers>

@@ -3,6 +3,7 @@ from sqlalchemy import text
 from datetime import datetime, timedelta
 
 from app.middleware.auth_middleware import get_current_user
+from app.middleware.business_access import assert_business_access
 from app.database import get_db, User
 from app.services.decision_engine import DecisionEngine
 
@@ -15,6 +16,7 @@ async def get_recommendations(
     current_user: User = Depends(get_current_user),
     db=Depends(get_db),
 ):
+    await assert_business_access(db, business_id, current_user)
     result = await db.execute(
         text("""
             SELECT i.id, i.name, i.unit, i.cost_price, i.sell_price,

@@ -1,4 +1,4 @@
-from pydantic import field_validator, ValidationInfo
+from pydantic import field_validator, model_validator, ValidationInfo
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 import secrets
@@ -51,15 +51,26 @@ class Settings(BaseSettings):
     # Zero-Cost Free Trial Settings
     FREE_TRIAL_ENABLED: bool = True
     FREE_TRIAL_DURATION_DAYS: int = 30
-    USE_META_FREE_TIER_QUOTA: int = 1000  # Meta 1,000 free monthly service conversations
-    
-    # LLM / Model Router — OpenRouter is the gateway, not a hardcoded model vendor.
-    OPENROUTER_API_KEY: str = ""
-    OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
-    OPENROUTER_SITE_URL: str = "https://nazmak.com"
-    OPENROUTER_APP_NAME: str = "NazmOS by Nazmak"
+    # Legacy Meta "1,000 free monthly service conversations" cap (pre-Nov-2024).
+    # Meta now bills per message (Jul 1 2025) and service+utility conversations
+    # become chargeable again Oct 1 2026 — repurposed as a soft per-merchant cap
+    # for the free trial WhatsApp tier. Keep WHATSAPP_ENABLED=mock for $0.
+    USE_META_FREE_TIER_QUOTA: int = 1000
+
+    # LLM / Model Router — direct provider integrations (no gateway).
+    # Groq (OpenAI-compatible) and Google Gemini are tried in LLM_PROVIDER_ORDER.
+    # "mock" is a dev-only last resort: it is used only when USE_MOCK_LLM=true or
+    # when no provider key is configured. Real-provider rate-limit exhaustion
+    # never falls back to mock — it yields an honest capacity message instead.
+    GROQ_API_KEY: str = ""
+    GROQ_MODEL: str = "llama-3.3-70b-versatile"
+    GOOGLE_AI_API_KEY: str = ""
+    GOOGLE_AI_MODEL: str = "gemini-2.5-flash-lite"
+    # Comma-separated provider order, e.g. "groq,google,mock". Kept as a plain
+    # string so env parsing works across pydantic-settings versions; use the
+    # ``provider_order`` property to consume it as a list.
+    LLM_PROVIDER_ORDER: str = "groq,google,mock"
     USE_MOCK_LLM: bool = True
-    LLM_MODEL: str = "google/gemma-2-9b-it:free"
     LLM_TEMPERATURE: float = 0.2
     LLM_MAX_TOKENS: int = 1000
     
@@ -92,12 +103,24 @@ class Settings(BaseSettings):
 
     CREDENTIAL_MASTER_KEY: str = ""
 
+    # WhatsApp Business Cloud API — outbound approvals & notifications.
+    # "mock" ($0) logs to console and returns deep-link fallbacks; "live" posts
+    # to graph.facebook.com and requires WHATSAPP_TOKEN + WHATSAPP_PHONE_ID.
+    WHATSAPP_ENABLED: str = "mock"  # mock | live
+    WHATSAPP_TOKEN: str = ""
+    WHATSAPP_PHONE_ID: str = ""
+
     # WhatsApp webhook security
     WHATSAPP_VERIFY_TOKEN: str = "nazmos_ksa_whatsapp_2026"
     WHATSAPP_APP_SECRET: str = ""  # Meta X-Hub-Signature-256 HMAC secret
 
     # Demo fixtures/seeding
     ALLOW_DEMO_SEED: bool = False
+
+    # Comma-separated allowlist of platform founder/operator emails. Combined
+    # with the users.is_platform_operator flag, this decides which identities
+    # hold platform capabilities (ops console, admin tools, nightly scans).
+    FOUNDER_EMAILS: str = ""
 
     # File/object storage abstraction (local disk, S3, or MinIO)
     STORAGE_BACKEND: str = "local"  # local | s3 | minio
@@ -207,6 +230,50 @@ class Settings(BaseSettings):
             )
         return v
 
+    @field_validator("WHATSAPP_ENABLED")
+    @classmethod
+    def validate_whatsapp_enabled(cls, v: str) -> str:
+        value = (v or "mock").lower().strip()
+        if value not in ("mock", "live"):
+            raise ValueError("WHATSAPP_ENABLED must be 'mock' or 'live'")
+        return value
+
+    @field_validator("LLM_PROVIDER_ORDER")
+    @classmethod
+    def validate_llm_provider_order(cls, v: str) -> str:
+        allowed = {"groq", "google", "mock"}
+        cleaned = []
+        for provider in (v or "").split(","):
+            provider = (provider or "").strip().lower()
+            if provider and provider not in allowed:
+                raise ValueError(f"LLM_PROVIDER_ORDER contains unknown provider '{provider}'")
+            if provider:
+                cleaned.append(provider)
+        return ",".join(cleaned) if cleaned else "groq,google,mock"
+
+    @property
+    def provider_order(self) -> list[str]:
+        """Comma-separated LLM_PROVIDER_ORDER as a list."""
+        return [p.strip() for p in (self.LLM_PROVIDER_ORDER or "").split(",") if p.strip()]
+
+    @model_validator(mode="after")
+    def validate_production_cross_fields(self) -> "Settings":
+        env = self.ENVIRONMENT
+        if env != "production":
+            return self
+        if not self.GROQ_API_KEY and not self.GOOGLE_AI_API_KEY:
+            raise ValueError(
+                "At least one of GROQ_API_KEY or GOOGLE_AI_API_KEY is required in "
+                "production (merchant-facing LLM responses must use a real provider)"
+            )
+        if self.WHATSAPP_ENABLED == "live" and (
+            not self.WHATSAPP_TOKEN or not self.WHATSAPP_PHONE_ID
+        ):
+            raise ValueError(
+                "WHATSAPP_ENABLED=live requires WHATSAPP_TOKEN and WHATSAPP_PHONE_ID"
+            )
+        return self
+
 
 @lru_cache()
 def get_settings() -> Settings:
@@ -219,6 +286,15 @@ def get_settings() -> Settings:
             raise RuntimeError("FATAL: SENTRY_DSN is required in production")
         if s.USE_MOCK_LLM:
             raise RuntimeError("FATAL: USE_MOCK_LLM must be False in production")
+        if not s.GROQ_API_KEY and not s.GOOGLE_AI_API_KEY:
+            raise RuntimeError(
+                "FATAL: at least one of GROQ_API_KEY or GOOGLE_AI_API_KEY is "
+                "required in production (merchant-facing LLM responses must use a real provider)"
+            )
+        if s.WHATSAPP_ENABLED == "live" and (not s.WHATSAPP_TOKEN or not s.WHATSAPP_PHONE_ID):
+            raise RuntimeError(
+                "FATAL: WHATSAPP_ENABLED=live requires WHATSAPP_TOKEN and WHATSAPP_PHONE_ID"
+            )
         if not s.CREDENTIAL_MASTER_KEY or len(s.CREDENTIAL_MASTER_KEY) < 32:
             raise RuntimeError("FATAL: CREDENTIAL_MASTER_KEY is required in production and must be >= 32 chars")
     # Auto-detect SQLite mode: no Celery/Redis needed

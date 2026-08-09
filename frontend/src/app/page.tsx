@@ -29,9 +29,9 @@ const stagger = {
 };
 
 const moneyRows = [
-  ['Money at Risk', 'SAR 143,000', 'Potential annual leakage found in 48 hours', 'text-[#C8412A]'],
-  ['Money Approved', 'SAR 41,000', 'Owner-approved recovery actions', 'text-[#E0B34A]'],
-  ['Money Recovered', 'SAR 27,000', 'Protected or recovered after action', 'text-[#13A05A]'],
+  ['Money at Risk', 'SAR 143,000', 'Potential annual leakage found in 48 hours', 'text-brand-red'],
+  ['Money Approved', 'SAR 41,000', 'Owner-approved recovery actions', 'text-brand-amber'],
+  ['Money Recovered', 'SAR 27,000', 'Protected or recovered after action', 'text-brand-green'],
 ];
 
 const watchCards = [
@@ -87,8 +87,8 @@ function NazmakMark({ className = '' }: { className?: string }) {
 
 function SectionLabel({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
   return (
-    <div className={`inline-flex items-center gap-3 font-mono text-[11px] font-bold uppercase tracking-[0.28em] ${dark ? 'text-[#E0B34A]' : 'text-[#0B6B3A]'}`}>
-      <span className={`h-px w-8 ${dark ? 'bg-[#E0B34A]/60' : 'bg-[#0B6B3A]/60'}`} />
+    <div className={`inline-flex items-center gap-3 font-mono text-[11px] font-bold uppercase tracking-[0.28em] ${dark ? 'text-brand-amber' : 'text-whatsapp-deep'}`}>
+      <span className={`h-px w-8 ${dark ? 'bg-brand-amber/60' : 'bg-whatsapp-deep/60'}`} />
       {children}
     </div>
   );
@@ -98,26 +98,26 @@ function DemoPanel({ active }: { active: DemoTab }) {
   if (active === 'whatsapp') {
     return (
       <div className="mx-auto w-full max-w-sm rounded-[2rem] border border-white/10 bg-black p-4 shadow-2xl shadow-black/40">
-        <div className="rounded-[1.5rem] bg-[#0B141A] p-4">
+        <div className="rounded-[1.5rem] bg-chat-deep p-4">
           <div className="mb-4 flex items-center gap-3 border-b border-white/10 pb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0B6B3A] font-bold">N</div>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-whatsapp-deep font-bold">N</div>
             <div>
               <p className="font-bold text-white">NazmOS</p>
               <p className="text-xs text-white/45">by Nazmak · business account</p>
             </div>
           </div>
           <div className="space-y-3">
-            <div className="rounded-2xl bg-[#3D2820] p-4 text-sm leading-6 text-white">
-              <b className="text-[#ff8a73]">Stockout warning</b>
+            <div className="rounded-2xl bg-chat-warm p-4 text-sm leading-6 text-white">
+              <b className="text-brand-red-light">Stockout warning</b>
               <br />Almarai Milk may finish in 1.8 days.
             </div>
-            <div className="rounded-2xl bg-[#1F2C33] p-4 text-sm leading-6 text-white">
+            <div className="rounded-2xl bg-chat-steel p-4 text-sm leading-6 text-white">
               Recommended reorder:
               <br />
-              <b className="text-[#E0B34A]">120 units · SAR 840</b>
+              <b className="text-brand-amber">120 units · SAR 840</b>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <button className="rounded-xl bg-[#25D366] py-3 font-bold text-black">✓ Approve</button>
+              <button className="rounded-xl bg-whatsapp py-3 font-bold text-black">✓ Approve</button>
               <button className="rounded-xl bg-white/10 py-3 font-bold text-white">Reject</button>
             </div>
           </div>
@@ -128,13 +128,13 @@ function DemoPanel({ active }: { active: DemoTab }) {
 
   if (active === 'report') {
     return (
-      <div className="rounded-[2rem] border border-white/10 bg-[#F4EFE6] p-5 text-[#0A0E0C] shadow-2xl">
+      <div className="rounded-[2rem] border border-white/10 bg-brand-cream p-5 text-brand-night shadow-2xl">
         <div className="mb-5 flex items-start justify-between border-b border-black/10 pb-4">
           <div>
-            <p className="font-mono text-xs uppercase tracking-[.22em] text-[#0B6B3A]">Thursday Money Report</p>
+            <p className="font-mono text-xs uppercase tracking-[.22em] text-whatsapp-deep">Thursday Money Report</p>
             <h3 className="mt-1 font-serif text-3xl font-black">Store Health: 82/100</h3>
           </div>
-          <span className="rounded-full bg-[#0B6B3A]/10 px-3 py-1 text-xs font-bold text-[#0B6B3A]">Sample</span>
+          <span className="rounded-full bg-whatsapp-deep/10 px-3 py-1 text-xs font-bold text-whatsapp-deep">Sample</span>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
           {moneyRows.map(([label, value, desc, color]) => (
@@ -145,8 +145,8 @@ function DemoPanel({ active }: { active: DemoTab }) {
             </div>
           ))}
         </div>
-        <div className="mt-4 rounded-2xl bg-[#0A0E0C] p-4 text-[#F4EFE6]">
-          <p className="font-mono text-[10px] uppercase tracking-[.2em] text-[#E0B34A]">Top action</p>
+        <div className="mt-4 rounded-2xl bg-brand-night p-4 text-brand-cream">
+          <p className="font-mono text-[10px] uppercase tracking-[.2em] text-brand-amber">Top action</p>
           <p className="mt-2 font-serif text-xl font-black">Transfer milk from Branch 2 before Friday.</p>
         </div>
       </div>
@@ -154,14 +154,14 @@ function DemoPanel({ active }: { active: DemoTab }) {
   }
 
   return (
-    <div className="rounded-[2rem] border border-white/10 bg-[#F4EFE6] p-5 text-[#0A0E0C] shadow-2xl">
-      <div className="rounded-[1.5rem] bg-[#0A0E0C] p-5 text-[#F4EFE6]">
+    <div className="rounded-[2rem] border border-white/10 bg-brand-cream p-5 text-brand-night shadow-2xl">
+      <div className="rounded-[1.5rem] bg-brand-night p-5 text-brand-cream">
         <div className="mb-5 flex items-center justify-between border-b border-white/10 pb-4">
           <div>
-            <p className="font-mono text-xs uppercase tracking-[.22em] text-[#E0B34A]">Sample Money Audit</p>
+            <p className="font-mono text-xs uppercase tracking-[.22em] text-brand-amber">Sample Money Audit</p>
             <h3 className="mt-1 font-serif text-2xl font-black">Abu Fahad Markets</h3>
           </div>
-          <span className="rounded-full bg-[#C8412A]/15 px-3 py-1 text-xs font-bold text-[#ff8a73]">48h report</span>
+          <span className="rounded-full bg-brand-red/15 px-3 py-1 text-xs font-bold text-brand-red-light">48h report</span>
         </div>
         <div className="space-y-3">
           {moneyRows.map(([label, value, desc, color]) => (
@@ -181,22 +181,22 @@ export default function LandingPage() {
   const [activeDemo, setActiveDemo] = useState<DemoTab>('audit');
 
   return (
-    <main className="min-h-screen bg-[#0A0E0C] text-[#F4EFE6] selection:bg-[#E0B34A] selection:text-[#0A0E0C]">
-      <nav className="sticky top-0 z-40 border-b border-white/10 bg-[#0A0E0C]/80 backdrop-blur-xl">
+    <main className="min-h-screen bg-brand-night text-brand-cream selection:bg-brand-amber selection:text-brand-night">
+      <nav className="sticky top-0 z-40 border-b border-white/10 bg-brand-night/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
           <Link href="/" className="flex items-center gap-3">
             <NazmakMark className="h-9 w-9" />
             <div>
               <span className="block font-serif text-xl font-black tracking-tight">nazmak</span>
-              <span className="block font-mono text-[9px] uppercase tracking-[0.28em] text-[#CBB38A]">creators of NazmOS</span>
+              <span className="block font-mono text-[9px] uppercase tracking-[0.28em] text-brand-sand">creators of NazmOS</span>
             </div>
           </Link>
-          <div className="hidden items-center gap-8 text-sm text-[#F4EFE6]/65 md:flex">
+          <div className="hidden items-center gap-8 text-sm text-brand-cream/65 md:flex">
             <a href="#product" className="hover:text-white">NazmOS</a>
             <a href="#demo" className="hover:text-white">Demo</a>
             <a href="#pricing" className="hover:text-white">Pricing</a>
           </div>
-          <Link href="/product-demo" className="rounded-full border border-[#E0B34A]/50 px-4 py-2 text-sm font-semibold text-[#E0B34A] hover:bg-[#E0B34A] hover:text-[#0A0E0C]">
+          <Link href="/product-demo" className="rounded-full border border-brand-amber/50 px-4 py-2 text-sm font-semibold text-brand-amber hover:bg-brand-amber hover:text-brand-night">
             Run interactive demo
           </Link>
         </div>
@@ -207,27 +207,27 @@ export default function LandingPage() {
         <div className="absolute inset-0 opacity-[0.03] [background-image:linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:72px_72px]" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_.95fr]">
           <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-8">
-            <motion.div variants={fadeUp} className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-[#E0B34A]">
+            <motion.div variants={fadeUp} className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-brand-amber">
               <NazmakMark className="h-5 w-5" /> Bring order to business
             </motion.div>
             <motion.div variants={fadeUp}>
-              <p className="mb-4 font-mono text-xs uppercase tracking-[0.28em] text-[#CBB38A]">Nazmak presents NazmOS</p>
+              <p className="mb-4 font-mono text-xs uppercase tracking-[0.28em] text-brand-sand">Nazmak presents NazmOS</p>
               <h1 className="max-w-4xl font-serif text-5xl font-black leading-[0.95] tracking-[-0.04em] md:text-7xl lg:text-8xl">
                 Find the cash trapped inside your store.
               </h1>
             </motion.div>
-            <motion.p variants={fadeUp} className="max-w-2xl text-lg leading-8 text-[#F4EFE6]/72 md:text-xl">
+            <motion.p variants={fadeUp} className="max-w-2xl text-lg leading-8 text-brand-cream/72 md:text-xl">
               Nazmak builds NazmOS — the Retail Recovery System that audits your sales and inventory, finds dead stock, prevents stockouts, protects margins, and sends owner approvals on WhatsApp.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-col gap-3 sm:flex-row">
-              <Link href="/register?intent=free-audit" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E0B34A] px-6 py-4 font-bold text-[#0A0E0C] shadow-2xl shadow-[#E0B34A]/20 hover:bg-[#f0c765]">
+              <Link href="/register?intent=free-audit" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-amber px-6 py-4 font-bold text-brand-night shadow-2xl shadow-brand-amber/20 hover:bg-brand-gold-soft">
                 Get a Free Money Audit <ArrowRight className="h-4 w-4" />
               </Link>
               <a href="#demo" className="inline-flex items-center justify-center rounded-2xl border border-white/12 px-6 py-4 font-semibold text-white/80 hover:bg-white/5">
                 Watch the demo
               </a>
             </motion.div>
-            <motion.p variants={fadeUp} className="text-sm text-[#F4EFE6]/50">
+            <motion.p variants={fadeUp} className="text-sm text-brand-cream/50">
               No POS replacement. No customer names needed. Excel, CSV, or POS export is fine.
             </motion.p>
           </motion.div>
@@ -238,7 +238,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="border-y border-white/10 bg-[#0A0E0C] px-5 py-16 md:px-8">
+      <section className="border-y border-white/10 bg-brand-night px-5 py-16 md:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 text-center">
             <SectionLabel dark>Try it free</SectionLabel>
@@ -253,7 +253,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="border-y border-white/10 bg-[#F4EFE6] px-5 py-12 text-[#0A0E0C] md:px-8">
+      <section className="border-y border-white/10 bg-brand-cream px-5 py-12 text-brand-night md:px-8">
         <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-3">
           {[
             [FileSpreadsheet, 'Send two files', 'Sales export + inventory export. No customer names needed.'],
@@ -262,8 +262,8 @@ export default function LandingPage() {
           ].map(([Icon, title, body]) => {
             const LucideIcon = Icon as typeof FileSpreadsheet;
             return (
-              <div key={title as string} className="rounded-3xl border border-black/10 bg-[#ECE5D6] p-6">
-                <LucideIcon className="mb-4 h-6 w-6 text-[#0B6B3A]" />
+              <div key={title as string} className="rounded-3xl border border-black/10 bg-brand-cream-dark p-6">
+                <LucideIcon className="mb-4 h-6 w-6 text-whatsapp-deep" />
                 <h3 className="font-serif text-2xl font-black">{title as string}</h3>
                 <p className="mt-3 leading-7 text-black/62">{body as string}</p>
               </div>
@@ -281,13 +281,13 @@ export default function LandingPage() {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-6">
               <NazmakMark className="mb-5 h-12 w-12" />
-              <p className="font-mono text-xs uppercase tracking-[.22em] text-[#E0B34A]">Company</p>
+              <p className="font-mono text-xs uppercase tracking-[.22em] text-brand-amber">Company</p>
               <h3 className="mt-3 font-serif text-3xl font-black">Nazmak</h3>
               <p className="mt-3 leading-7 text-white/58">Builds recovery systems that bring order to Saudi business operations.</p>
             </div>
-            <div className="rounded-3xl border border-[#E0B34A]/25 bg-[#E0B34A]/10 p-6">
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#E0B34A] font-serif text-xl font-black text-[#0A0E0C]">N</div>
-              <p className="font-mono text-xs uppercase tracking-[.22em] text-[#E0B34A]">Product</p>
+            <div className="rounded-3xl border border-brand-amber/25 bg-brand-amber/10 p-6">
+              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-amber font-serif text-xl font-black text-brand-night">N</div>
+              <p className="font-mono text-xs uppercase tracking-[.22em] text-brand-amber">Product</p>
               <h3 className="mt-3 font-serif text-3xl font-black">NazmOS</h3>
               <p className="mt-3 leading-7 text-white/58">The Retail Recovery System that finds cash leakage and sends owner actions.</p>
             </div>
@@ -295,7 +295,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="audit" className="bg-[#F4EFE6] px-5 py-20 text-[#0A0E0C] md:px-8">
+      <section id="audit" className="bg-brand-cream px-5 py-20 text-brand-night md:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 max-w-3xl">
             <SectionLabel>What NazmOS watches</SectionLabel>
@@ -305,7 +305,7 @@ export default function LandingPage() {
             {watchCards.map(([title, body, Icon, color], i) => {
               const LucideIcon = Icon as typeof WalletCards;
               return (
-                <div key={title as string} className="rounded-3xl border border-black/10 bg-[#ECE5D6] p-6">
+                <div key={title as string} className="rounded-3xl border border-black/10 bg-brand-cream-dark p-6">
                   <div className="mb-10 flex items-center justify-between">
                     <span className="font-mono text-xs text-black/40">0{i + 1}</span>
                     <LucideIcon className="h-5 w-5" style={{ color: color as string }} />
@@ -330,7 +330,7 @@ export default function LandingPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveDemo(tab.id)}
-                  className={`rounded-full px-4 py-2 text-sm font-bold transition ${activeDemo === tab.id ? 'bg-[#E0B34A] text-[#0A0E0C]' : 'border border-white/10 text-white/62 hover:bg-white/5 hover:text-white'}`}
+                  className={`rounded-full px-4 py-2 text-sm font-bold transition ${activeDemo === tab.id ? 'bg-brand-amber text-brand-night' : 'border border-white/10 text-white/62 hover:bg-white/5 hover:text-white'}`}
                 >
                   {tab.label}
                 </button>
@@ -341,7 +341,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="pricing" className="bg-[#F4EFE6] px-5 py-20 text-[#0A0E0C] md:px-8">
+      <section id="pricing" className="bg-brand-cream px-5 py-20 text-brand-night md:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 max-w-3xl">
             <SectionLabel>Start small, prove value</SectionLabel>
@@ -349,14 +349,14 @@ export default function LandingPage() {
           </div>
           <div className="grid gap-5 lg:grid-cols-3">
             {pricingCards.map(([title, price, body, features]) => (
-              <div key={title as string} className="rounded-3xl border border-black/10 bg-[#ECE5D6] p-7">
+              <div key={title as string} className="rounded-3xl border border-black/10 bg-brand-cream-dark p-7">
                 <h3 className="font-serif text-2xl font-black">{title as string}</h3>
-                <p className="mt-4 font-serif text-3xl font-black text-[#0B6B3A]">{price as string}</p>
+                <p className="mt-4 font-serif text-3xl font-black text-whatsapp-deep">{price as string}</p>
                 <p className="mt-4 leading-7 text-black/62">{body as string}</p>
                 <ul className="mt-6 space-y-2">
                   {(features as string[]).map((feature) => (
                     <li key={feature} className="flex items-start gap-2 text-sm text-black/65">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#0B6B3A]" /> {feature}
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-whatsapp-deep" /> {feature}
                     </li>
                   ))}
                 </ul>
@@ -376,7 +376,7 @@ export default function LandingPage() {
               <h2 className="font-serif text-3xl font-black md:text-5xl">Free proves value. Paid plans unlock continuous recovery.</h2>
               <p className="mt-4 max-w-3xl leading-7 text-white/60">Free shows your Money Audit. Paid plans unlock weekly recovery reports, live approvals, and Recovery Match between nearby stores.</p>
             </div>
-            <Link href="/register?intent=free-audit" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E0B34A] px-6 py-4 font-bold text-[#0A0E0C] hover:bg-[#f0c765]">
+            <Link href="/register?intent=free-audit" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-amber px-6 py-4 font-bold text-brand-night hover:bg-brand-gold-soft">
               Get a Free Money Audit <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -395,7 +395,7 @@ export default function LandingPage() {
           <div className="flex flex-wrap items-center gap-4">
             <Link href="/privacy" className="text-sm font-semibold text-white/45 hover:text-white">Privacy</Link>
             <Link href="/terms" className="text-sm font-semibold text-white/45 hover:text-white">Terms</Link>
-            <Link href="/register?intent=free-audit" className="inline-flex items-center gap-2 rounded-2xl bg-[#E0B34A] px-5 py-3 font-bold text-[#0A0E0C]">
+            <Link href="/register?intent=free-audit" className="inline-flex items-center gap-2 rounded-2xl bg-brand-amber px-5 py-3 font-bold text-brand-night">
               Get a Free Money Audit <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

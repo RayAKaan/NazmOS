@@ -40,14 +40,14 @@ export default function DashboardPage() {
   if (error) {
     return (
       <div className="space-y-6 animate-in">
-        <div className="rounded-3xl border border-[#C8412A]/30 bg-[#C8412A]/10 p-6 text-white">
-          <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#ff8a73]">Dashboard data not loaded</p>
+        <div className="rounded-3xl border border-brand-red/30 bg-brand-red/10 p-6 text-white">
+          <p className="font-mono text-xs uppercase tracking-[0.24em] text-brand-red-light">Dashboard data not loaded</p>
           <h1 className="mt-3 text-2xl font-black">NazmOS could not load this store overview.</h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-white/60">
             {error}. If this is a new merchant account, start with the Free Money Audit upload.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
-            <button onClick={() => window.location.reload()} className="rounded-xl bg-[#E0B34A] px-4 py-2 font-bold text-black">
+            <button onClick={() => window.location.reload()} className="rounded-xl bg-brand-amber px-4 py-2 font-bold text-black">
               Retry
             </button>
             <a href="/upload" className="rounded-xl border border-white/10 px-4 py-2 font-bold text-white/75 hover:bg-white/5">

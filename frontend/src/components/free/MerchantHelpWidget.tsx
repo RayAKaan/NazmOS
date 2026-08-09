@@ -22,10 +22,10 @@ export function MerchantHelpWidget() {
   return (
     <div className="fixed bottom-24 right-4 z-50 md:bottom-6">
       {open && (
-        <div className="mb-3 w-[min(92vw,360px)] rounded-3xl border border-white/10 bg-[#0A0E0C] p-4 text-white shadow-2xl shadow-black/40">
+        <div className="mb-3 w-[min(92vw,360px)] rounded-3xl border border-white/10 bg-brand-night p-4 text-white shadow-2xl shadow-black/40">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#E0B34A]">Founder help</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-brand-amber">Founder help</p>
               <h3 className="mt-2 text-lg font-black">Stuck on files?</h3>
               <p className="mt-2 text-sm leading-6 text-white/60">
                 The best products reduce user confusion fast. Copy this support message, paste it to the founder/support channel,
@@ -48,7 +48,7 @@ export function MerchantHelpWidget() {
 
           <button
             onClick={copyMessage}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#E0B34A] px-4 py-3 text-sm font-bold text-black hover:bg-[#f2cf69]"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-amber px-4 py-3 text-sm font-bold text-black hover:bg-brand-gold"
           >
             {copied ? <CheckCircle2 className="h-4 w-4" /> : <Clipboard className="h-4 w-4" />}
             {copied ? "Message copied" : "Copy help message"}
@@ -58,7 +58,7 @@ export function MerchantHelpWidget() {
 
       <button
         onClick={() => setOpen((value) => !value)}
-        className="flex items-center gap-2 rounded-full border border-[#E0B34A]/40 bg-[#0A0E0C] px-4 py-3 text-sm font-bold text-[#E0B34A] shadow-2xl shadow-black/30 hover:bg-[#E0B34A] hover:text-black"
+        className="flex items-center gap-2 rounded-full border border-brand-amber/40 bg-brand-night px-4 py-3 text-sm font-bold text-brand-amber shadow-2xl shadow-black/30 hover:bg-brand-amber hover:text-black"
       >
         <MessageCircle className="h-4 w-4" /> Need help?
       </button>

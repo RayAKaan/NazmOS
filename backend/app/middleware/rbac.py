@@ -6,11 +6,13 @@ Roles: owner > admin > manager > staff
 """
 from functools import wraps
 from typing import List, Optional, Callable
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db, User
 from app.middleware.auth_middleware import get_current_user
+from app.services.audit_log_service import record_access_denial
+from app.services.capabilities_service import build_capabilities
 
 
 ROLE_HIERARCHY = {
@@ -100,6 +102,54 @@ def require_any_permission(*permissions: str):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"Role '{user_role}' lacks required permissions: {', '.join(permissions)}",
+            )
+        return current_user
+    return dependency
+
+
+def require_capability(capability: str, business_id: str | None = None):
+    """Require a capability computed by ``capabilities_service``.
+
+    This is the enforcement half of the capabilities model: the same object
+    the frontend renders from is re-checked here on every request, so a UI
+    decision is never the actual gate. ``business_id`` is the request parameter
+    name (query or path) to read when the capability is business-scoped; when
+    omitted, the capability is evaluated at platform level or against the
+    request's validated tenant context.
+
+    Denials are recorded to the AuditLog (action_category="authorization")
+    and surfaced as 403.
+    """
+    async def dependency(
+        request: Request,
+        current_user: User = Depends(get_current_user),
+        db: AsyncSession = Depends(get_db),
+    ) -> User:
+        biz = None
+        if business_id:
+            raw = request.query_params.get(business_id) or request.path_params.get(business_id)
+            if raw:
+                biz = str(raw)
+        if biz is None and hasattr(request.state, "tenant_context"):
+            tenant_context = request.state.tenant_context
+            if tenant_context is not None and getattr(tenant_context, "business_id", None):
+                biz = str(tenant_context.business_id)
+
+        caps = await build_capabilities(db, current_user, biz)
+        if not caps.has(capability):
+            await record_access_denial(
+                business_id=biz or (caps.business_id if caps.business_id else None),
+                user_id=current_user.id,
+                user_email=current_user.email,
+                user_role=current_user.role,
+                capability=capability,
+                reason=f"missing capability: {capability}",
+                path=request.url.path,
+                ip_address=request.client.host if request.client else None,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Missing capability: {capability}",
             )
         return current_user
     return dependency

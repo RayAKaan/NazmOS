@@ -48,6 +48,17 @@ def validate_production_secrets() -> None:
         raise RuntimeError("FATAL: SENTRY_DSN is required in production")
     if settings.USE_MOCK_LLM:
         raise RuntimeError("FATAL: USE_MOCK_LLM must be False in production")
+    if not settings.GROQ_API_KEY and not settings.GOOGLE_AI_API_KEY:
+        raise RuntimeError(
+            "FATAL: at least one of GROQ_API_KEY or GOOGLE_AI_API_KEY is "
+            "required in production (merchant-facing LLM responses must use a real provider)"
+        )
+    if settings.WHATSAPP_ENABLED == "live" and (
+        not settings.WHATSAPP_TOKEN or not settings.WHATSAPP_PHONE_ID
+    ):
+        raise RuntimeError(
+            "FATAL: WHATSAPP_ENABLED=live requires WHATSAPP_TOKEN and WHATSAPP_PHONE_ID"
+        )
     if not settings.CREDENTIAL_MASTER_KEY or len(settings.CREDENTIAL_MASTER_KEY) < 32:
         raise RuntimeError("FATAL: CREDENTIAL_MASTER_KEY is required in production and must be >= 32 chars")
     if "dev-secret-key" in settings.SECRET_KEY:

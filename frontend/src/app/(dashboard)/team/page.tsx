@@ -136,8 +136,8 @@ export default function TeamPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#f0f0f5]">Team</h1>
-          <p className="text-sm text-[#8888a0]">
+          <h1 className="text-2xl font-bold text-navy-text">Team</h1>
+          <p className="text-sm text-navy-muted">
             Manage your team members and their permissions
           </p>
         </div>
@@ -151,48 +151,48 @@ export default function TeamPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-[#1a1a2e] rounded-2xl p-6">
+        <div className="bg-navy-panel rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
             <Users className="w-5 h-5 text-blue-400" />
-            <span className="text-sm text-[#8888a0]">Total Members</span>
+            <span className="text-sm text-navy-muted">Total Members</span>
           </div>
-          <p className="text-2xl font-bold text-[#f0f0f5]">{members.length}</p>
+          <p className="text-2xl font-bold text-navy-text">{members.length}</p>
         </div>
-        <div className="bg-[#1a1a2e] rounded-2xl p-6">
+        <div className="bg-navy-panel rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
             <Clock className="w-5 h-5 text-yellow-400" />
-            <span className="text-sm text-[#8888a0]">Pending Invites</span>
+            <span className="text-sm text-navy-muted">Pending Invites</span>
           </div>
-          <p className="text-2xl font-bold text-[#f0f0f5]">{invitations.length}</p>
+          <p className="text-2xl font-bold text-navy-text">{invitations.length}</p>
         </div>
-        <div className="bg-[#1a1a2e] rounded-2xl p-6">
+        <div className="bg-navy-panel rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
             <Shield className="w-5 h-5 text-green-400" />
-            <span className="text-sm text-[#8888a0]">Admins</span>
+            <span className="text-sm text-navy-muted">Admins</span>
           </div>
-          <p className="text-2xl font-bold text-[#f0f0f5]">
+          <p className="text-2xl font-bold text-navy-text">
             {members.filter((m) => m.role === "admin" || m.role === "owner").length}
           </p>
         </div>
       </div>
 
-      <div className="bg-[#1a1a2e] rounded-2xl overflow-hidden">
-        <div className="p-4 border-b border-[#2a2a3e]">
-          <h2 className="text-lg font-semibold text-[#f0f0f5]">Team Members</h2>
+      <div className="bg-navy-panel rounded-2xl overflow-hidden">
+        <div className="p-4 border-b border-navy-panel-2">
+          <h2 className="text-lg font-semibold text-navy-text">Team Members</h2>
         </div>
         
-        <div className="divide-y divide-[#2a2a3e]">
+        <div className="divide-y divide-navy-panel-2">
           {members.map((member) => (
             <div key={member.id} className="flex items-center justify-between p-4">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-[#2a2a3e] flex items-center justify-center">
-                  <span className="text-[#f0f0f5] font-medium">
+                <div className="w-10 h-10 rounded-full bg-navy-panel-2 flex items-center justify-center">
+                  <span className="text-navy-text font-medium">
                     {member.full_name.charAt(0).toUpperCase()}
                   </span>
                 </div>
                 <div>
-                  <p className="font-medium text-[#f0f0f5]">{member.full_name}</p>
-                  <p className="text-sm text-[#8888a0]">{member.email}</p>
+                  <p className="font-medium text-navy-text">{member.full_name}</p>
+                  <p className="text-sm text-navy-muted">{member.email}</p>
                 </div>
               </div>
               
@@ -215,6 +215,7 @@ export default function TeamPage() {
                   <button
                     onClick={() => handleRemoveMember(member.id)}
                     className="p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                    aria-label={`Remove ${member.full_name} from team`}
                   >
                     <XCircle className="w-4 h-4" />
                   </button>
@@ -226,21 +227,21 @@ export default function TeamPage() {
       </div>
 
       {invitations.length > 0 && (
-        <div className="bg-[#1a1a2e] rounded-2xl overflow-hidden">
-          <div className="p-4 border-b border-[#2a2a3e]">
-            <h2 className="text-lg font-semibold text-[#f0f0f5]">Pending Invitations</h2>
+        <div className="bg-navy-panel rounded-2xl overflow-hidden">
+          <div className="p-4 border-b border-navy-panel-2">
+            <h2 className="text-lg font-semibold text-navy-text">Pending Invitations</h2>
           </div>
           
-          <div className="divide-y divide-[#2a2a3e]">
+          <div className="divide-y divide-navy-panel-2">
             {invitations.map((invite) => (
               <div key={invite.id} className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-[#2a2a3e] flex items-center justify-center">
-                    <Mail className="w-5 h-5 text-[#8888a0]" />
+                  <div className="w-10 h-10 rounded-full bg-navy-panel-2 flex items-center justify-center">
+                    <Mail className="w-5 h-5 text-navy-muted" />
                   </div>
                   <div>
-                    <p className="font-medium text-[#f0f0f5]">{invite.email}</p>
-                    <p className="text-sm text-[#8888a0]">
+                    <p className="font-medium text-navy-text">{invite.email}</p>
+                    <p className="text-sm text-navy-muted">
                       Invited as {invite.role} • Expires {new Date(invite.expires_at).toLocaleDateString()}
                     </p>
                   </div>
@@ -253,6 +254,7 @@ export default function TeamPage() {
                   <button
                     onClick={() => handleResendInvite(invite.id)}
                     className="p-2 text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors"
+                    aria-label={`Resend invitation to ${invite.email}`}
                   >
                     <RefreshCw className="w-4 h-4" />
                   </button>
@@ -268,28 +270,28 @@ export default function TeamPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-[#1a1a2e] rounded-2xl p-6 w-full max-w-md"
+            className="bg-navy-panel rounded-2xl p-6 w-full max-w-md"
           >
-            <h3 className="text-lg font-semibold text-[#f0f0f5] mb-4">Invite Team Member</h3>
+            <h3 className="text-lg font-semibold text-navy-text mb-4">Invite Team Member</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-[#8888a0] mb-2">Email</label>
+                <label className="block text-sm text-navy-muted mb-2">Email</label>
                 <input
                   type="email"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#2a2a3e] rounded-xl text-[#f0f0f5] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 bg-navy-panel-2 rounded-xl text-navy-text focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="colleague@company.com"
                 />
               </div>
               
               <div>
-                <label className="block text-sm text-[#8888a0] mb-2">Role</label>
+                <label className="block text-sm text-navy-muted mb-2">Role</label>
                 <select
                   value={inviteRole}
                   onChange={(e) => setInviteRole(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#2a2a3e] rounded-xl text-[#f0f0f5] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 bg-navy-panel-2 rounded-xl text-navy-text focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="admin">Admin</option>
                   <option value="manager">Manager</option>
@@ -302,7 +304,7 @@ export default function TeamPage() {
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={() => setShowInviteModal(false)}
-                  className="flex-1 px-4 py-3 bg-[#2a2a3e] text-[#f0f0f5] rounded-xl hover:bg-[#3a3a4e] transition-colors"
+                  className="flex-1 px-4 py-3 bg-navy-panel-2 text-navy-text rounded-xl hover:bg-navy-panel-3 transition-colors"
                 >
                   Cancel
                 </button>

@@ -12,26 +12,17 @@ from app.schemas.inventory import (
 from app.services.analytics_service import get_inventory_list, get_item_detail
 from app.services.inventory_service import restock_item
 from app.middleware.auth_middleware import get_current_user
+from app.middleware.business_access import assert_business_access
 
 router = APIRouter(prefix="/inventory", tags=["Inventory"])
 
 
 async def _verify_business_access(db: AsyncSession, business_id: UUID, user: User):
-    result = await db.execute(
-        text("SELECT owner_id FROM businesses WHERE id = :id"),
-        {"id": str(business_id)}
-    )
-    biz = result.fetchone()
-    if not biz:
-        raise HTTPException(404, "Business not found")
-    if str(biz.owner_id) == str(user.id):
-        return
-    tm = await db.execute(text(
-        "SELECT 1 FROM team_members WHERE business_id = :bid AND user_id = :uid AND is_active = true"
-    ), {"bid": str(business_id), "uid": str(user.id)})
-    if tm.fetchone():
-        return
-    raise HTTPException(403, "Not authorized")
+    """Verify ownership or active team membership via the shared gate.
+
+    Also records denials to the AuditLog.
+    """
+    await assert_business_access(db, business_id, user)
 
 
 @router.get("", response_model=InventoryResponse)

@@ -26,7 +26,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         "font-src 'self' https://fonts.gstatic.com",
         "img-src 'self' data: https: blob:",
         "media-src 'self' data: blob:",
-        "connect-src 'self' https://openrouter.ai https://api.stripe.com",
+        "connect-src 'self' https://api.groq.com https://generativelanguage.googleapis.com https://api.stripe.com",
         "frame-src 'none'",
         "object-src 'none'",
         "base-uri 'self'",

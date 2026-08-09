@@ -195,5 +195,7 @@ def _settings(environment: str):
         REDIS_URL="redis://localhost:6379/0",
         DATABASE_APP_ROLE="nazmos_app" if environment == "production" else "",
         USE_MOCK_LLM=False if environment == "production" else True,
+        GROQ_API_KEY="test-groq-key" if environment == "production" else "",
+        GOOGLE_AI_API_KEY="",
         CREDENTIAL_MASTER_KEY=("y" * 48) if environment == "production" else "",
     )

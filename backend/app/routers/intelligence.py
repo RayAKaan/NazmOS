@@ -9,11 +9,13 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.database.models import Business, BusinessMemory, MemoryType, User
+from app.database.models import Business, BusinessMemory, GraphRelationship, MemoryType, User
 from app.middleware.auth_middleware import get_current_user
+from app.middleware.business_access import assert_business_access
 from app.schemas.business_memory import (
     BusinessMemoryOut,
     GoalSetRequest,
@@ -115,21 +117,15 @@ async def _verify_business_access(
     business_id: UUID,
     user: User,
 ) -> Business:
-    """Ensure the user owns or belongs to the business."""
-    result = await session.execute(
-        select(Business).where(
-            (Business.id == business_id)
-            & (
-                (Business.owner_id == user.id)
-                | Business.id.in_(
-                    select(Business.id).where(Business.id == business_id)  # placeholder for team check
-                )
-            )
-        )
-    )
-    business = result.scalar_one_or_none()
-    if not business:
-        raise HTTPException(status_code=404, detail="Business not found or access denied")
+    """Ensure the user owns or is an active team member of the business.
+
+    Delegates to the shared ``assert_business_access`` gate so the tenant
+    check is a real ownership/team-membership verification (the previous
+    inline implementation was a tautology that only confirmed the business
+    existed). Denials are recorded to the AuditLog and surfaced as 404/403.
+    """
+    await assert_business_access(session, business_id, user)
+    business = await session.get(Business, business_id)
     return business
 
 
@@ -228,20 +224,40 @@ async def create_graph_relationship(
 ):
     """Create or strengthen a graph relationship."""
     await _verify_business_access(db, business_id, current_user)
-    rel = await upsert_relationship(
-        db,
-        business_id,
-        data.source_id,
-        data.target_id,
-        data.relation_type,
-        strength_delta=0.0,
-        evidence_event_id=data.evidence_event_ids[0] if data.evidence_event_ids else None,
-        valid_from=data.valid_from,
-        valid_until=data.valid_until,
-    )
-    await db.commit()
-    await db.refresh(rel)
-    return rel
+    try:
+        rel = await upsert_relationship(
+            db,
+            business_id,
+            data.source_id,
+            data.target_id,
+            data.relation_type,
+            strength_delta=0.0,
+            evidence_event_id=data.evidence_event_ids[0] if data.evidence_event_ids else None,
+            valid_from=data.valid_from,
+            valid_until=data.valid_until,
+        )
+        await db.commit()
+        await db.refresh(rel)
+        return rel
+    except IntegrityError as exc:
+        await db.rollback()
+        # Duplicate relationship → return the existing one idempotently.
+        existing = (
+            await db.execute(
+                select(GraphRelationship).where(
+                    GraphRelationship.business_id == business_id,
+                    GraphRelationship.source_id == data.source_id,
+                    GraphRelationship.target_id == data.target_id,
+                    GraphRelationship.relation_type == data.relation_type,
+                )
+            )
+        ).scalar_one_or_none()
+        if existing:
+            return existing
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid relationship: source or target entity does not exist",
+        )
 
 
 @router.get("/graph/expand")
@@ -297,7 +313,11 @@ async def add_context(
 ):
     """Manually add external context for a business."""
     await _verify_business_access(db, business_id, current_user)
-    ctx = await create_context(db, business_id, data.model_dump())
+    try:
+        ctx = await create_context(db, business_id, data.model_dump())
+    except ValueError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc))
     await db.commit()
     await db.refresh(ctx)
     return ctx
@@ -654,6 +674,12 @@ async def create_feedback(
         )
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid decision_id or execution_job_id reference",
+        )
     await db.commit()
     await db.refresh(feedback)
     return feedback

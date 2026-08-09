@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "test": "jest",
     "analyze": "ANALYZE=true next build --webpack",
-    "build:tokens": "node scripts/build_design_tokens.ts"
+    "build:tokens": "node scripts/build_design_tokens.ts",
+    "baseline:tokens": "node scripts/gen_eslint_baseline.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",

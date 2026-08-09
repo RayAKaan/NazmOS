@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.database.models import Business, Event, EventType, User
 from app.middleware.auth_middleware import get_current_user
+from app.middleware.business_access import assert_business_access
 from app.schemas.events import (
     EventBatchIngest,
     EventIngest,
@@ -41,20 +42,15 @@ async def _verify_business_access(
     business_id: UUID,
     user: User,
 ) -> Business:
-    """Ensure the user owns or belongs to the business."""
-    result = await session.execute(
-        select(Business).where(
-            (Business.id == business_id) & (
-                (Business.owner_id == user.id) |
-                Business.id.in_(
-                    select(Business.id).where(Business.id == business_id)  # placeholder for team check
-                )
-            )
-        )
-    )
-    business = result.scalar_one_or_none()
-    if not business:
-        raise HTTPException(status_code=404, detail="Business not found or access denied")
+    """Ensure the user owns or is an active team member of the business.
+
+    Delegates to the shared ``assert_business_access`` gate so the tenant
+    check is a real ownership/team-membership verification (the previous
+    inline implementation was a tautology that only confirmed the business
+    existed). Denials are recorded to the AuditLog and surfaced as 404/403.
+    """
+    await assert_business_access(session, business_id, user)
+    business = await session.get(Business, business_id)
     return business
 
 

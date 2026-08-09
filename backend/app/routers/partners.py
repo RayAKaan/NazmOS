@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db, User
 from app.middleware.auth_middleware import get_current_user
+from app.middleware.business_access import assert_platform_operator
 from app.services.partner_service import (
     register_partner,
     get_partner_by_user,
@@ -46,10 +47,6 @@ class ReferralRequest(BaseModel):
 class ReferralStatusUpdate(BaseModel):
     status: str = Field(..., pattern=r"^(lead|converted|churned)$")
     payout_sar: float | None = Field(None, ge=0)
-
-
-def _is_admin(user: User) -> bool:
-    return getattr(user, "role", None) == "admin"
 
 
 @router.post("/apply")
@@ -162,8 +159,9 @@ async def admin_approve_partner(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if not _is_admin(current_user):
-        raise HTTPException(403, "Admin required")
+    # Gated by the platform-operator identity (the owner) rather than the
+    # non-existent "admin" role.
+    await assert_platform_operator(db, current_user)
     try:
         partner = await approve_partner(db, partner_id, current_user.id)
         return {"ok": True, "partner": partner}

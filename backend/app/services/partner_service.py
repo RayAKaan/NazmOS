@@ -252,7 +252,11 @@ async def update_referral_status(
 
 
 async def list_active_partners(db: AsyncSession, city: str | None = None, limit: int = 100) -> list[dict]:
-    query = "SELECT * FROM partners WHERE status = 'active'"
+    query = """
+        SELECT id, partner_type, name, city, commission_pct, total_converted
+        FROM partners
+        WHERE status = 'active'
+    """
     params: dict[str, Any] = {}
     if city:
         query += " AND city = :city"

@@ -33,10 +33,35 @@ class UserResponse(BaseModel):
         from_attributes = True
 
 
+class CapabilitiesOut(BaseModel):
+    """What the current user can do, computed server-side.
+
+    Mirrors app/services/capabilities_service.py. The frontend renders from
+    this object; it never independently decides permissions.
+    """
+    is_platform_operator: bool = False
+    can_view_ops_console: bool = False
+    can_run_admin_tools: bool = False
+    can_manage_team: bool = False
+    can_run_orchestrator: bool = False
+    can_approve_actions: bool = False
+    role: str | None = None
+    business_id: UUID | None = None
+
+
+class MeResponse(BaseModel):
+    """Session/session-identity response for GET /auth/me."""
+    user: UserResponse
+    capabilities: CapabilitiesOut
+    business_id: UUID | None
+    role: str | None
+
+
 class AuthResponse(BaseModel):
     user: UserResponse
     access_token: str
     refresh_token: str
+    capabilities: CapabilitiesOut | None = None
 
 
 class TokenResponse(BaseModel):

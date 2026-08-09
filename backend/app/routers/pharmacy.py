@@ -11,6 +11,7 @@ from datetime import date
 
 from app.database import get_db, User
 from app.middleware.auth_middleware import get_current_user
+from app.middleware.business_access import assert_business_access
 from app.config import get_settings
 
 settings = get_settings()
@@ -32,6 +33,7 @@ async def list_lots(
 ):
     """FEFO expiry tracker – list all lots with days-to-expiry"""
     _require_pharmacy()
+    await assert_business_access(db, business_id, current_user)
     
     # Ensure table exists – create empty if first run
     try:

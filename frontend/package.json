@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "test": "jest",
-    "analyze": "ANALYZE=true next build --webpack"
+    "analyze": "ANALYZE=true next build --webpack",
+    "build:tokens": "node scripts/build_design_tokens.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",

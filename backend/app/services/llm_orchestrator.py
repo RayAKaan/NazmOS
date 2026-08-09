@@ -1,9 +1,109 @@
 import json
+import logging
 from typing import AsyncGenerator
 from app.config import get_settings
 from app.utils.prompt_sanitizer import sanitize_user_input
+from app.services.llm_rate_limiter import (
+    llm_rate_limiter,
+    LLMRateLimitExceeded,
+    estimate_tokens,
+)
 
 settings = get_settings()
+
+logger = logging.getLogger("llm_orchestrator")
+
+GROQ_CHAT_URL = "https://api.groq.com/openai/v1/chat/completions"
+GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta/models"
+
+CAPACITY_MESSAGE = "Baseer is at capacity right now, try again in a minute."
+
+
+class LLMProviderUnavailable(Exception):
+    """A real provider call failed at the transport/HTTP level (not rate limit)."""
+
+
+def _safe_json(value) -> dict:
+    if isinstance(value, dict):
+        return value
+    try:
+        parsed = json.loads(value) if value else {}
+        return parsed if isinstance(parsed, dict) else {"value": parsed}
+    except Exception:
+        return {}
+
+
+def _to_gemini_contents(messages) -> tuple[list[dict], str]:
+    """Convert OpenAI-style messages into Gemini contents + system instruction text."""
+    contents = []
+    system_parts = []
+    for m in messages or []:
+        role = m.get("role")
+        if role == "system":
+            system_parts.append(m.get("content", ""))
+            continue
+        parts = []
+        if m.get("content") and role != "tool":
+            parts.append({"text": m["content"]})
+        if role == "tool":
+            name = m.get("name") or (m.get("tool_call_id") or "unknown")
+            content = m.get("content") or "{}"
+            try:
+                parsed = json.loads(content)
+            except Exception:
+                parsed = {"result": content}
+            parts.append({"functionResponse": {"name": name, "response": parsed}})
+        for tc in m.get("tool_calls") or []:
+            fn = tc.get("function", {})
+            parts.append({"functionCall": {"name": fn.get("name"), "args": _safe_json(fn.get("arguments"))}})
+        if not parts:
+            continue
+        gemini_role = "model" if role == "assistant" else "user"
+        contents.append({"role": gemini_role, "parts": parts})
+    return contents, "".join(system_parts)
+
+
+def _to_gemini_tools(tools) -> list[dict]:
+    declarations = []
+    for t in tools or []:
+        fn = t.get("function", {})
+        declarations.append({
+            "name": fn.get("name"),
+            "description": fn.get("description", ""),
+            "parameters": fn.get("parameters"),
+        })
+    return [{"functionDeclarations": declarations}]
+
+
+def _from_gemini_response(data: dict) -> dict:
+    """Normalize a Gemini generateContent response to the OpenAI chat shape."""
+    choices = []
+    candidates = data.get("candidates") or []
+    if candidates:
+        content = candidates[0].get("content") or {}
+        parts = content.get("parts") or []
+        text = "".join(p.get("text", "") for p in parts if "text" in p)
+        tool_calls = []
+        for i, p in enumerate(parts):
+            fc = p.get("functionCall")
+            if fc:
+                tool_calls.append({
+                    "id": f"call_gemini_{i}",
+                    "type": "function",
+                    "function": {"name": fc.get("name"), "arguments": json.dumps(fc.get("args", {}))},
+                })
+        message = {"role": "assistant", "content": text or None}
+        if tool_calls:
+            message["tool_calls"] = tool_calls
+        choices.append({"message": message})
+    usage = data.get("usageMetadata") or {}
+    return {
+        "choices": choices,
+        "usage": {
+            "prompt_tokens": usage.get("promptTokenCount"),
+            "completion_tokens": usage.get("candidatesTokenCount"),
+        },
+    }
 
 
 MOCK_RESPONSES = {
@@ -82,7 +182,7 @@ Your inventory has items that are not moving. Start with controlled discounts or
 
 class LLMOrchestrator:
     def __init__(self):
-        self.use_mock = settings.USE_MOCK_LLM or not settings.OPENROUTER_API_KEY
+        self.use_mock = settings.USE_MOCK_LLM or not (settings.GROQ_API_KEY or settings.GOOGLE_AI_API_KEY)
         self.fallback_mode = False
         self.backoff_until = None
         self.total_requests = 0
@@ -96,25 +196,73 @@ class LLMOrchestrator:
         self.circuit_half_open = False
         self._circuit_opened_at = None
 
-    def _headers(self) -> dict[str, str]:
+    # --- provider plumbing -------------------------------------------------
+
+    def _has_key(self, provider: str) -> bool:
+        if provider == "groq":
+            return bool(settings.GROQ_API_KEY)
+        if provider == "google":
+            return bool(settings.GOOGLE_AI_API_KEY)
+        return False
+
+    def _real_providers(self) -> list[str]:
+        return [p for p in settings.provider_order if p in ("groq", "google")]
+
+    async def _post_json(self, url: str, headers: dict, json_body: dict) -> dict:
+        """POST JSON and return parsed body. Handles 429 (sets backoff_until)."""
+        import asyncio
+        import httpx
+        from datetime import datetime, timedelta
+
+        request_coro = httpx.AsyncClient().post(url, headers=headers, json=json_body)
+        response = await asyncio.wait_for(request_coro, timeout=getattr(self, "timeout", 20))
+        if getattr(response, "status_code", 200) == 429:
+            retry_after = int(getattr(response, "headers", {}).get("Retry-After", 60))
+            self.backoff_until = datetime.utcnow() + timedelta(seconds=retry_after)
+            raise RuntimeError("rate_limited")
+        if getattr(response, "status_code", 200) >= 400:
+            raise RuntimeError(f"llm_http_error:{getattr(response, 'status_code', 'unknown')}")
+        return response.json()
+
+    async def _groq_chat(self, payload: dict) -> dict:
+        """Call Groq's OpenAI-compatible chat/completions; returns OpenAI-shaped dict."""
         headers = {
-            "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}",
+            "Authorization": f"Bearer {settings.GROQ_API_KEY}",
             "Content-Type": "application/json",
         }
-        if settings.OPENROUTER_SITE_URL:
-            headers["HTTP-Referer"] = settings.OPENROUTER_SITE_URL
-        if settings.OPENROUTER_APP_NAME:
-            headers["X-Title"] = settings.OPENROUTER_APP_NAME
-        return headers
+        body = {**payload, "model": settings.GROQ_MODEL}
+        return await self._post_json(GROQ_CHAT_URL, headers, body)
 
-    def _chat_url(self) -> str:
-        return settings.OPENROUTER_BASE_URL.rstrip("/") + "/chat/completions"
+    async def _google_ai_chat(self, payload: dict) -> dict:
+        """Call Google Gemini generateContent; normalizes response to OpenAI shape."""
+        model = settings.GOOGLE_AI_MODEL
+        url = f"{GEMINI_API_BASE}/{model}:generateContent?key={settings.GOOGLE_AI_API_KEY}"
+        headers = {"Content-Type": "application/json"}
+        messages = payload.get("messages") or []
+        contents, system = _to_gemini_contents(messages)
+        body: dict = {"contents": contents}
+        if system:
+            body["systemInstruction"] = {"parts": [{"text": system}]}
+        if payload.get("tools"):
+            body["tools"] = _to_gemini_tools(payload["tools"])
+        body["generationConfig"] = {
+            "temperature": payload.get("temperature", settings.LLM_TEMPERATURE),
+            "maxOutputTokens": payload.get("max_tokens", settings.LLM_MAX_TOKENS),
+        }
+        data = await self._post_json(url, headers, body)
+        return _from_gemini_response(data)
+
+    # --- non-streaming (retained contract for recovery/chaos tests) --------
 
     async def generate_response(self, prompt: str, context: dict | None = None):
-        """Non-streaming OpenRouter-compatible API with graceful failure behavior."""
+        """Non-streaming provider call with graceful failure + circuit breaker.
+
+        Always attempts the real providers in LLM_PROVIDER_ORDER (this is the
+        legacy contract exercised by the chaos/contract tests). Rate-limit
+        pre-flight skips a provider; if every provider fails, returns None and
+        marks the circuit breaker.
+        """
         import asyncio
-        from datetime import datetime, timedelta
-        import httpx
         import time
 
         self.total_requests += 1
@@ -126,30 +274,36 @@ class LLMOrchestrator:
             else:
                 return None
 
-        request_coro = None
-        try:
-            payload = {
-                "model": settings.LLM_MODEL,
-                "messages": [
-                    {"role": "system", "content": "You are NazmOS, a retail recovery assistant. Use only provided business context."},
-                    {"role": "user", "content": prompt},
-                ],
-                "temperature": settings.LLM_TEMPERATURE,
-                "max_tokens": settings.LLM_MAX_TOKENS,
-            }
-            if context:
-                payload["messages"].insert(1, {"role": "system", "content": f"Context: {json.dumps(context, default=str)[:4000]}"})
+        payload = {
+            "messages": [
+                {"role": "system", "content": "You are NazmOS, a retail recovery assistant. Use only provided business context."},
+                {"role": "user", "content": prompt},
+            ],
+            "temperature": settings.LLM_TEMPERATURE,
+            "max_tokens": settings.LLM_MAX_TOKENS,
+        }
+        if context:
+            payload["messages"].insert(1, {"role": "system", "content": f"Context: {json.dumps(context, default=str)[:4000]}"})
 
-            request_coro = httpx.AsyncClient().post(self._chat_url(), headers=self._headers(), json=payload)
-            response = await asyncio.wait_for(request_coro, timeout=getattr(self, "timeout", 20))
-            if getattr(response, "status_code", 200) == 429:
-                retry_after = int(getattr(response, "headers", {}).get("Retry-After", 60))
-                self.backoff_until = datetime.utcnow() + timedelta(seconds=retry_after)
-                raise RuntimeError("rate_limited")
-            if getattr(response, "status_code", 200) >= 400:
-                raise RuntimeError(f"llm_http_error:{getattr(response, 'status_code', 'unknown')}")
+        prompt_tokens = estimate_tokens(json.dumps(payload, default=str))
 
-            result = response.json()
+        for provider in self._real_providers():
+            try:
+                await llm_rate_limiter.consume(
+                    provider,
+                    prompt_tokens=prompt_tokens,
+                    output_tokens=settings.LLM_MAX_TOKENS,
+                )
+            except LLMRateLimitExceeded as exc:
+                self._log_rate_limit(provider, exc)
+                continue
+            try:
+                if provider == "groq":
+                    result = await self._groq_chat(payload)
+                else:
+                    result = await self._google_ai_chat(payload)
+            except Exception:
+                continue
             self.fallback_mode = False
             self.success_count += 1
             self.failure_count = 0
@@ -157,28 +311,135 @@ class LLMOrchestrator:
                 self.circuit_half_open = False
                 self.circuit_open = False
             return result
-        except Exception:
-            if request_coro is not None and hasattr(request_coro, "close"):
-                try:
-                    request_coro.close()
-                except Exception:
-                    pass
-            self.fallback_mode = True
-            self.failed_requests += 1
-            self.failure_count += 1
-            if self.failure_count >= getattr(self, "failure_threshold", 3):
-                self.circuit_open = True
-                self.circuit_half_open = True
-                self._circuit_opened_at = time.time()
-            return None
 
-    async def stream_response(self, message: str, system_prompt: str) -> AsyncGenerator[str, None]:
+        self.fallback_mode = True
+        self.failed_requests += 1
+        self.failure_count += 1
+        if self.failure_count >= getattr(self, "failure_threshold", 3):
+            self.circuit_open = True
+            self.circuit_half_open = True
+            self._circuit_opened_at = time.time()
+        return None
+
+    @staticmethod
+    def _log_rate_limit(provider: str, exc: LLMRateLimitExceeded) -> None:
+        import logging
+        logging.getLogger("llm_orchestrator").info(
+            f"LLM rate limited on {provider}, skipping: {exc}"
+        )
+
+    # --- streaming (production chat path) ----------------------------------
+
+    async def stream_response(
+        self,
+        message: str,
+        system_prompt: str,
+        db=None,
+        business_id=None,
+    ) -> AsyncGenerator[str, None]:
         if self.use_mock:
             async for chunk in self._mock_stream(message):
                 yield chunk
-        else:
-            async for chunk in self._openrouter_stream(message, system_prompt):
-                yield chunk
+            return
+
+        for provider in self._real_providers():
+            if not self._has_key(provider):
+                continue
+            try:
+                async for chunk in self._provider_stream(provider, message, system_prompt, db, business_id):
+                    yield chunk
+                return
+            except LLMRateLimitExceeded as exc:
+                self._log_rate_limit(provider, exc)
+                continue
+            except LLMProviderUnavailable as exc:
+                import logging
+                logging.getLogger("llm_orchestrator").warning(
+                    f"LLM provider {provider} unavailable: {exc}"
+                )
+                continue
+
+        yield CAPACITY_MESSAGE
+
+    async def _provider_stream(
+        self,
+        provider: str,
+        message: str,
+        system_prompt: str,
+        db=None,
+        business_id=None,
+    ) -> AsyncGenerator[str, None]:
+        from app.services.agent_tools import AGENT_TOOLS_SCHEMA, execute_agent_tool
+
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": sanitize_user_input(message)},
+        ]
+        payload = {
+            "messages": messages,
+            "tools": AGENT_TOOLS_SCHEMA,
+            "temperature": settings.LLM_TEMPERATURE,
+            "max_tokens": settings.LLM_MAX_TOKENS,
+        }
+
+        result = await self._call_provider(provider, payload)
+        choice = (result.get("choices") or [{}])[0]
+        message_obj = choice.get("message") or {}
+        tool_calls = message_obj.get("tool_calls") or []
+
+        if tool_calls and db and business_id:
+            messages.append(message_obj)
+            for tool_call in tool_calls:
+                func_name = tool_call.get("function", {}).get("name") or "unknown"
+                raw_args = tool_call.get("function", {}).get("arguments") or "{}"
+                func_args = _safe_json(raw_args)
+                try:
+                    tool_result = await execute_agent_tool(func_name, func_args, business_id, db)
+                except Exception as exc:
+                    logger.warning("agent tool execution failed", tool=func_name, error=str(exc))
+                    tool_result = {"error": f"Tool '{func_name}' failed to execute"}
+                messages.append({
+                    "tool_call_id": tool_call.get("id"),
+                    "role": "tool",
+                    "name": func_name,
+                    "content": json.dumps(tool_result, default=str),
+                })
+            follow_result = await self._call_provider(provider, {
+                "messages": messages,
+                "temperature": settings.LLM_TEMPERATURE,
+                "max_tokens": settings.LLM_MAX_TOKENS,
+            })
+            choice = (follow_result.get("choices") or [{}])[0]
+            message_obj = choice.get("message") or {}
+
+        content = message_obj.get("content") or ""
+        if not content and tool_calls:
+            # The model produced only tool calls (no prose); stream a graceful
+            # reply instead of a silent empty 200 response.
+            content = "I checked your business data. What would you like to dig into next?"
+        for char in content:
+            yield char
+
+    async def _call_provider(self, provider: str, payload: dict) -> dict:
+        """Rate-limited single provider call; raises on transport/rate errors."""
+        prompt_tokens = estimate_tokens(json.dumps(payload, default=str))
+        await llm_rate_limiter.consume(
+            provider,
+            prompt_tokens=prompt_tokens,
+            output_tokens=settings.LLM_MAX_TOKENS,
+        )
+        try:
+            if provider == "groq":
+                return await self._groq_chat(payload)
+            return await self._google_ai_chat(payload)
+        except RuntimeError as exc:
+            if str(exc) == "rate_limited":
+                raise LLMRateLimitExceeded(provider, "rpm", 0, 0)
+            raise LLMProviderUnavailable(str(exc)) from exc
+        except Exception as exc:
+            raise LLMProviderUnavailable(str(exc)) from exc
+
+    # --- mock streaming -----------------------------------------------------
 
     async def _mock_stream(self, message: str) -> AsyncGenerator[str, None]:
         message_lower = message.lower()
@@ -210,60 +471,3 @@ I can help with:
             yield char
             import asyncio
             await asyncio.sleep(0.015)
-
-    async def _openrouter_stream(self, message: str, system_prompt: str, db=None, business_id=None) -> AsyncGenerator[str, None]:
-        import httpx
-        from app.services.agent_tools import AGENT_TOOLS_SCHEMA, execute_agent_tool
-
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": sanitize_user_input(message)},
-        ]
-        payload = {
-            "model": settings.LLM_MODEL,
-            "messages": messages,
-            "tools": AGENT_TOOLS_SCHEMA,
-            "temperature": settings.LLM_TEMPERATURE,
-            "max_tokens": settings.LLM_MAX_TOKENS,
-            "stream": False,
-        }
-
-        try:
-            async with httpx.AsyncClient(timeout=60) as client:
-                response = await client.post(self._chat_url(), headers=self._headers(), json=payload)
-                response.raise_for_status()
-                result = response.json()
-                choice = (result.get("choices") or [{}])[0]
-                message_obj = choice.get("message") or {}
-                tool_calls = message_obj.get("tool_calls") or []
-
-                if tool_calls and db and business_id:
-                    messages.append(message_obj)
-                    for tool_call in tool_calls:
-                        func_name = tool_call.get("function", {}).get("name")
-                        raw_args = tool_call.get("function", {}).get("arguments") or "{}"
-                        func_args = json.loads(raw_args)
-                        tool_result = await execute_agent_tool(func_name, func_args, business_id, db)
-                        messages.append({
-                            "tool_call_id": tool_call.get("id"),
-                            "role": "tool",
-                            "name": func_name,
-                            "content": json.dumps(tool_result),
-                        })
-                    response = await client.post(self._chat_url(), headers=self._headers(), json={
-                        "model": settings.LLM_MODEL,
-                        "messages": messages,
-                        "temperature": settings.LLM_TEMPERATURE,
-                        "max_tokens": settings.LLM_MAX_TOKENS,
-                    })
-                    response.raise_for_status()
-                    result = response.json()
-                    choice = (result.get("choices") or [{}])[0]
-                    message_obj = choice.get("message") or {}
-
-                content = message_obj.get("content") or ""
-                for char in content:
-                    yield char
-        except Exception as exc:
-            self.fallback_mode = True
-            yield f"I could not reach the model router. NazmOS can continue with rule-based recovery actions. ({type(exc).__name__})"

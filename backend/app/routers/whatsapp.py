@@ -44,15 +44,19 @@ async def receive_webhook(
 ):
     """
     Receive WhatsApp interactive button replies and inbound D2C text inquiries.
-    If WHATSAPP_APP_SECRET is configured, verify Meta X-Hub-Signature-256 HMAC.
+
+    Meta X-Hub-Signature-256 HMAC is always enforced. When WHATSAPP_APP_SECRET
+    is not configured the endpoint fails closed (401/503) so unauthenticated
+    callers cannot trigger agent-action approvals, rejections, or notifications.
     """
     raw_body = await request.body()
     app_secret = getattr(settings, "WHATSAPP_APP_SECRET", "")
-    if app_secret:
-        signature = request.headers.get("x-hub-signature-256", "")
-        expected = "sha256=" + hmac.new(app_secret.encode(), raw_body, hashlib.sha256).hexdigest()
-        if not hmac.compare_digest(expected, signature):
-            raise HTTPException(401, "Invalid WhatsApp webhook signature")
+    if not app_secret:
+        raise HTTPException(503, "WhatsApp webhook not configured (WHATSAPP_APP_SECRET not set)")
+    signature = request.headers.get("x-hub-signature-256", "")
+    expected = "sha256=" + hmac.new(app_secret.encode(), raw_body, hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(expected, signature):
+        raise HTTPException(401, "Invalid WhatsApp webhook signature")
 
     try:
         body = json.loads(raw_body.decode("utf-8") or "{}")

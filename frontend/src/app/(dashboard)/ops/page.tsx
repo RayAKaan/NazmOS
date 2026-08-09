@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { AlertTriangle, CheckCircle2, ClipboardList, FileSpreadsheet, RefreshCw, ShieldAlert, WalletCards } from "lucide-react";
 import api from "@/lib/api";
 import { useAppStore } from "@/stores/appStore";
+import { errorMessage } from "@/lib/utils";
+import RouteGuard from "@/components/RouteGuard";
 
 interface OpsData {
   upload_counts: Record<string, number>;
@@ -32,7 +34,7 @@ export default function OpsPage() {
       const res = await api.get(`/ops/pilot-console?business_id=${businessId}`);
       setData(res.data);
     } catch (err: any) {
-      setError(err?.response?.data?.detail || "Could not load pilot console.");
+      setError(errorMessage(err, "Could not load pilot console."));
     } finally {
       setLoading(false);
     }
@@ -48,7 +50,7 @@ export default function OpsPage() {
 
   if (error || !data) {
     return (
-      <div className="rounded-3xl border border-[#C8412A]/30 bg-[#C8412A]/10 p-6 text-white">
+      <div className="rounded-3xl border border-brand-red/30 bg-brand-red/10 p-6 text-white">
         <h1 className="text-2xl font-bold">Pilot console unavailable</h1>
         <p className="mt-2 text-white/60">{error}</p>
       </div>
@@ -60,17 +62,18 @@ export default function OpsPage() {
   const pendingActions = data.action_queue.filter((a) => a.status === "suggested").length;
 
   return (
-    <div className="space-y-8">
-      <section className="rounded-3xl border border-white/10 bg-[#0A0E0C] p-6 text-white md:p-8">
+    <RouteGuard require="can_view_ops_console">
+      <div className="space-y-8">
+      <section className="rounded-3xl border border-white/10 bg-brand-night p-6 text-white md:p-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#E0B34A]">Founder pilot console</p>
+            <p className="font-mono text-xs uppercase tracking-[0.24em] text-brand-amber">Founder pilot console</p>
             <h1 className="mt-3 font-serif text-4xl font-black tracking-[-0.04em] md:text-6xl">Operate the pilot safely.</h1>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-white/62">
               Failed uploads, audit queue, pending recovery actions, and Recovery Match issues in one place.
             </p>
           </div>
-          <button onClick={load} className="inline-flex items-center gap-2 rounded-xl bg-[#E0B34A] px-4 py-3 text-sm font-bold text-black">
+          <button onClick={load} className="inline-flex items-center gap-2 rounded-xl bg-brand-amber px-4 py-3 text-sm font-bold text-black">
             <RefreshCw className="h-4 w-4" /> Refresh
           </button>
         </div>
@@ -96,7 +99,7 @@ export default function OpsPage() {
                   </div>
                   <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-white/60">{upload.status}</span>
                 </div>
-                {upload.error_summary && <p className="mt-3 text-sm text-[#ff8a73]">{upload.error_summary}</p>}
+                {upload.error_summary && <p className="mt-3 text-sm text-brand-red-light">{upload.error_summary}</p>}
               </div>
             ))}
           </div>
@@ -106,7 +109,7 @@ export default function OpsPage() {
           <div className="space-y-3">
             {data.operator_next_steps.map((step, index) => (
               <div key={step} className="flex gap-3 rounded-2xl bg-white/[0.03] p-4 ring-1 ring-white/10">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 text-[#13A05A]" />
+                <CheckCircle2 className="mt-0.5 h-5 w-5 text-brand-green" />
                 <div>
                   <p className="font-bold text-white">Step {index + 1}</p>
                   <p className="mt-1 text-sm leading-6 text-text-secondary">{step}</p>
@@ -128,7 +131,7 @@ export default function OpsPage() {
                     <p className="font-bold text-white">{action.title}</p>
                     <p className="mt-1 text-xs text-text-muted">{action.action_type} · priority {action.priority}</p>
                   </div>
-                  <p className="shrink-0 font-bold text-[#13A05A]">{money(action.expected_recovery_sar)}</p>
+                  <p className="shrink-0 font-bold text-brand-green">{money(action.expected_recovery_sar)}</p>
                 </div>
               </div>
             ))}
@@ -139,9 +142,9 @@ export default function OpsPage() {
           <div className="space-y-3">
             {data.recovery_issues.length === 0 && <Empty text="No reported Recovery Match issues." />}
             {data.recovery_issues.map((issue) => (
-              <div key={issue.id} className="rounded-2xl border border-[#C8412A]/25 bg-[#C8412A]/10 p-4">
+              <div key={issue.id} className="rounded-2xl border border-brand-red/25 bg-brand-red/10 p-4">
                 <div className="flex gap-3">
-                  <ShieldAlert className="mt-0.5 h-5 w-5 text-[#ff8a73]" />
+                  <ShieldAlert className="mt-0.5 h-5 w-5 text-brand-red-light" />
                   <div>
                     <p className="font-bold text-white">{issue.payload?.issue_type || "Issue reported"}</p>
                     <p className="mt-1 text-sm leading-6 text-white/60">{issue.notes || "Founder review required."}</p>
@@ -152,16 +155,17 @@ export default function OpsPage() {
           </div>
         </Panel>
       </section>
-    </div>
+      </div>
+    </RouteGuard>
   );
 }
 
 function Kpi({ icon: Icon, label, value, danger = false }: { icon: any; label: string; value: string; danger?: boolean }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-      <Icon className={danger ? "h-5 w-5 text-[#ff8a73]" : "h-5 w-5 text-[#E0B34A]"} />
+      <Icon className={danger ? "h-5 w-5 text-brand-red-light" : "h-5 w-5 text-brand-amber"} />
       <p className="mt-3 text-xs text-text-muted">{label}</p>
-      <p className={danger ? "mt-1 text-2xl font-black text-[#ff8a73]" : "mt-1 text-2xl font-black text-white"}>{value}</p>
+      <p className={danger ? "mt-1 text-2xl font-black text-brand-red-light" : "mt-1 text-2xl font-black text-white"}>{value}</p>
     </div>
   );
 }

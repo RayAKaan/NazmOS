@@ -15,6 +15,9 @@ const PROTECTED_SEGMENTS = [
   "chain",
 ];
 
+// Auth pages: already-authenticated users are sent to their dashboard.
+const AUTH_SEGMENTS = ["login", "register"];
+
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
@@ -30,10 +33,20 @@ export function middleware(req: NextRequest) {
     return NextResponse.next({ request: { headers } });
   }
 
-  // Guard dashboard routes on the server.
+  const loggedIn = req.cookies.get(SESSION_COOKIE)?.value === "1";
   const firstSegment = pathname.split("/")[1];
+
+  // Authenticated users should not see login/register.
+  if (loggedIn && AUTH_SEGMENTS.includes(firstSegment)) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/dashboard";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
+  // Guard dashboard routes on the server (authentication only; capability
+  // gating happens client-side from the server-declared capabilities object).
   if (PROTECTED_SEGMENTS.includes(firstSegment)) {
-    const loggedIn = req.cookies.get(SESSION_COOKIE)?.value === "1";
     if (!loggedIn) {
       const url = req.nextUrl.clone();
       url.pathname = "/login";
@@ -48,6 +61,8 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     "/api/v1/:path*",
+    "/login/:path*",
+    "/register/:path*",
     "/feed/:path*",
     "/dashboard/:path*",
     "/orchestrator/:path*",

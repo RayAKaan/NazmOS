@@ -1,5 +1,7 @@
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Badge } from "@/components/ui/Badge";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Package } from "lucide-react";
 import { InventoryResponse } from "@/types/inventory";
 import { formatCurrency, cn } from "@/lib/utils";
 
@@ -22,9 +24,13 @@ export function InventoryTable({ data, isLoading, onItemClick }: InventoryTableP
 
   if (!data || data.items.length === 0) {
     return (
-      <div className="text-center py-12 text-text-muted">
-        <p>No inventory items found</p>
-      </div>
+      <EmptyState
+        icon={Package}
+        title="No inventory items found"
+        description="Upload your inventory snapshot to start tracking stock levels, critical counts, and recovery opportunities."
+        actions={[{ label: "Upload files", href: "/upload", primary: true }]}
+        className="border-0 bg-transparent"
+      />
     );
   }
 

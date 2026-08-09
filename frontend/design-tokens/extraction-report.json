@@ -1,0 +1,1158 @@
+{
+  "generatedAt": "2026-08-09T19:45:38.511Z",
+  "scope": "frontend/src + tailwind.config.ts + public/manifest.json",
+  "filesWithRawColors": 60,
+  "filesWithRawColorsList": [
+    "src/app/(auth)/login/page.tsx",
+    "src/app/(auth)/onboarding/page.tsx",
+    "src/app/(auth)/register/page.tsx",
+    "src/app/(dashboard)/chain/page.tsx",
+    "src/app/(dashboard)/dashboard/page.tsx",
+    "src/app/(dashboard)/error.tsx",
+    "src/app/(dashboard)/feed/page.tsx",
+    "src/app/(dashboard)/forecast/page.tsx",
+    "src/app/(dashboard)/integrations/page.tsx",
+    "src/app/(dashboard)/inventory/expiry/page.tsx",
+    "src/app/(dashboard)/money-audit/page.tsx",
+    "src/app/(dashboard)/ops/page.tsx",
+    "src/app/(dashboard)/orchestrator/page.tsx",
+    "src/app/(dashboard)/recovery-match/page.tsx",
+    "src/app/(dashboard)/settings/autonomy/page.tsx",
+    "src/app/(dashboard)/team/page.tsx",
+    "src/app/(dashboard)/upload/page.tsx",
+    "src/app/error.tsx",
+    "src/app/globals.css",
+    "src/app/icon.tsx",
+    "src/app/layout.tsx",
+    "src/app/mobile/page.tsx",
+    "src/app/not-found.tsx",
+    "src/app/opengraph-image.tsx",
+    "src/app/page.tsx",
+    "src/app/partners/page.tsx",
+    "src/app/privacy/page.tsx",
+    "src/app/product-demo/page.tsx",
+    "src/app/terms/page.tsx",
+    "src/app/twitter-image.tsx",
+    "src/components/dashboard/AlertCardExpanded.tsx",
+    "src/components/dashboard/HealthScore.tsx",
+    "src/components/dashboard/KPICardAnimated.tsx",
+    "src/components/dashboard/SalesChart.tsx",
+    "src/components/free/FreeAuditChecklist.tsx",
+    "src/components/free/MerchantHelpWidget.tsx",
+    "src/components/free/MoneyAuditEmptyState.tsx",
+    "src/components/free/WhatsAppAlertButton.tsx",
+    "src/components/intelligence/IntelligenceCard.tsx",
+    "src/components/intelligence/IntelligenceChat.tsx",
+    "src/components/intelligence/SourceChips.tsx",
+    "src/components/inventory/ReorderModal.tsx",
+    "src/components/landing/FeaturesBento.tsx",
+    "src/components/landing/FeatureSection.tsx",
+    "src/components/landing/Footer.tsx",
+    "src/components/landing/GradientText.tsx",
+    "src/components/landing/GuestAuditUploader.tsx",
+    "src/components/landing/ShimmerButton.tsx",
+    "src/components/layout/Logo.tsx",
+    "src/components/layout/MobileNav.tsx",
+    "src/components/layout/Sidebar.tsx",
+    "src/components/ui/Card.tsx",
+    "src/components/ui/CommandMenu.tsx",
+    "src/components/ui/EmptyState.tsx",
+    "src/components/ui/FeatureGate.tsx",
+    "src/components/ui/Toast.tsx",
+    "src/components/upload/ColumnMapper.tsx",
+    "src/types/decision.ts",
+    "tailwind.config.ts",
+    "public/manifest.json"
+  ],
+  "colors": {
+    "#14B8A6": [
+      {
+        "file": "src/app/globals.css",
+        "line": 16,
+        "context": "/* Brand teal (#14B8A6) mapped to primary action / intelligence surfaces. */"
+      },
+      {
+        "file": "src/app/globals.css",
+        "line": 39,
+        "context": "--brand-teal: #14B8A6;"
+      },
+      {
+        "file": "src/app/globals.css",
+        "line": 138,
+        "context": "@apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14B8A6] focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary;"
+      },
+      {
+        "file": "src/app/icon.tsx",
+        "line": 24,
+        "context": "color: \"#14B8A6\","
+      },
+      {
+        "file": "src/app/layout.tsx",
+        "line": 49,
+        "context": "themeColor: \"#14B8A6\","
+      },
+      {
+        "file": "src/app/opengraph-image.tsx",
+        "line": 38,
+        "context": "color: \"#14B8A6\","
+      },
+      {
+        "file": "src/app/twitter-image.tsx",
+        "line": 38,
+        "context": "color: \"#14B8A6\","
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 60,
+        "context": "teal: \"#14B8A6\","
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 101,
+        "context": "DEFAULT: \"#14B8A6\","
+      },
+      {
+        "file": "public/manifest.json",
+        "line": 8,
+        "context": "\"theme_color\": \"#14B8A6\","
+      }
+    ],
+    "#5EEAD4": [
+      {
+        "file": "src/app/globals.css",
+        "line": 40,
+        "context": "--brand-teal-light: #5EEAD4;"
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 61,
+        "context": "\"teal-light\": \"#5EEAD4\","
+      }
+    ],
+    "#0F766E": [
+      {
+        "file": "src/app/globals.css",
+        "line": 41,
+        "context": "--brand-teal-dark: #0F766E;"
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 62,
+        "context": "\"teal-dark\": \"#0F766E\","
+      }
+    ],
+    "#E0B34A": [
+      {
+        "file": "src/app/globals.css",
+        "line": 42,
+        "context": "--brand-amber: #E0B34A;"
+      },
+      {
+        "file": "src/app/page.tsx",
+        "line": 39,
+        "context": "['Stockout Risk', 'Fast-moving items likely to finish before weekend or Ramadan demand.', Store, '#E0B34A'],"
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 63,
+        "context": "amber: \"#E0B34A\","
+      }
+    ],
+    "#F2CF69": [
+      {
+        "file": "src/app/globals.css",
+        "line": 43,
+        "context": "--brand-amber-light: #F2CF69;"
+      }
+    ],
+    "#13A05A": [
+      {
+        "file": "src/app/globals.css",
+        "line": 44,
+        "context": "--brand-green: #13A05A;"
+      },
+      {
+        "file": "src/app/page.tsx",
+        "line": 40,
+        "context": "['Margin Drops', 'Supplier costs increasing quietly reducing your profit.', TrendingUp, '#13A05A'],"
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 64,
+        "context": "green: \"#13A05A\","
+      }
+    ],
+    "#C8412A": [
+      {
+        "file": "src/app/globals.css",
+        "line": 45,
+        "context": "--brand-red: #C8412A;"
+      },
+      {
+        "file": "src/app/page.tsx",
+        "line": 38,
+        "context": "['Cash Leakage', 'Dead stock, overstock, and slow-moving inventory trapping cash.', WalletCards, '#C8412A'],"
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 66,
+        "context": "red: \"#C8412A\","
+      }
+    ],
+    "rgba(0, 0, 0, 0.3)": [
+      {
+        "file": "src/app/globals.css",
+        "line": 90,
+        "context": "box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.02);"
+      }
+    ],
+    "rgba(255, 255, 255, 0.02)": [
+      {
+        "file": "src/app/globals.css",
+        "line": 90,
+        "context": "box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.02);"
+      }
+    ],
+    "rgba(212, 165, 116, 0.15)": [
+      {
+        "file": "src/app/globals.css",
+        "line": 94,
+        "context": "box-shadow: 0 0 20px rgba(212, 165, 116, 0.15);"
+      }
+    ],
+    "rgba(212, 165, 116, 0.2)": [
+      {
+        "file": "src/app/globals.css",
+        "line": 98,
+        "context": "box-shadow: 0 0 40px rgba(212, 165, 116, 0.2);"
+      }
+    ],
+    "rgba(20, 184, 166, 0.15)": [
+      {
+        "file": "src/app/globals.css",
+        "line": 102,
+        "context": "box-shadow: 0 0 24px rgba(20, 184, 166, 0.15);"
+      }
+    ],
+    "rgba(20, 184, 166, 0.22)": [
+      {
+        "file": "src/app/globals.css",
+        "line": 106,
+        "context": "box-shadow: 0 0 40px rgba(20, 184, 166, 0.22);"
+      }
+    ],
+    "#0a0a0f": [
+      {
+        "file": "src/app/icon.tsx",
+        "line": 16,
+        "context": "background: \"#0a0a0f\","
+      },
+      {
+        "file": "src/app/opengraph-image.tsx",
+        "line": 17,
+        "context": "background: \"linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)\","
+      },
+      {
+        "file": "src/app/twitter-image.tsx",
+        "line": 17,
+        "context": "background: \"linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)\","
+      }
+    ],
+    "#1a1a2e": [
+      {
+        "file": "src/app/opengraph-image.tsx",
+        "line": 17,
+        "context": "background: \"linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)\","
+      },
+      {
+        "file": "src/app/twitter-image.tsx",
+        "line": 17,
+        "context": "background: \"linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)\","
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 81,
+        "context": "panel: \"#1a1a2e\","
+      }
+    ],
+    "#ffffff": [
+      {
+        "file": "src/app/opengraph-image.tsx",
+        "line": 25,
+        "context": "color: \"#ffffff\","
+      },
+      {
+        "file": "src/app/twitter-image.tsx",
+        "line": 25,
+        "context": "color: \"#ffffff\","
+      }
+    ],
+    "#94a3b8": [
+      {
+        "file": "src/app/opengraph-image.tsx",
+        "line": 51,
+        "context": "color: \"#94a3b8\","
+      },
+      {
+        "file": "src/app/twitter-image.tsx",
+        "line": 51,
+        "context": "color: \"#94a3b8\","
+      }
+    ],
+    "#F4EFE6": [
+      {
+        "file": "src/app/page.tsx",
+        "line": 41,
+        "context": "['Branch Imbalance', 'One branch overstocked while another is about to run out.', Activity, '#F4EFE6'],"
+      }
+    ],
+    "#F1DEC2": [
+      {
+        "file": "src/app/page.tsx",
+        "line": 63,
+        "context": "<stop offset=\"0%\" stopColor=\"#F1DEC2\" />"
+      }
+    ],
+    "#CBB38A": [
+      {
+        "file": "src/app/page.tsx",
+        "line": 64,
+        "context": "<stop offset=\"55%\" stopColor=\"#CBB38A\" />"
+      }
+    ],
+    "#8B6A39": [
+      {
+        "file": "src/app/page.tsx",
+        "line": 65,
+        "context": "<stop offset=\"100%\" stopColor=\"#8B6A39\" />"
+      }
+    ],
+    "rgba(203,179,138,.22)": [
+      {
+        "file": "src/app/page.tsx",
+        "line": 206,
+        "context": "<div className=\"absolute inset-0 bg-[radial-gradient(circle_at_75%_18%,rgba(203,179,138,.22),transparent_34%),radial-gradient(circle_at_20%_82%,rgba(19,160,9..."
+      }
+    ],
+    "rgba(19,160,90,.16)": [
+      {
+        "file": "src/app/page.tsx",
+        "line": 206,
+        "context": "<div className=\"absolute inset-0 bg-[radial-gradient(circle_at_75%_18%,rgba(203,179,138,.22),transparent_34%),radial-gradient(circle_at_20%_82%,rgba(19,160,9..."
+      }
+    ],
+    "rgba(203,179,138,.20)": [
+      {
+        "file": "src/app/product-demo/page.tsx",
+        "line": 51,
+        "context": "<section className=\"relative overflow-hidden px-5 py-12 md:py-16\"><div className=\"absolute inset-0 bg-[radial-gradient(circle_at_75%_18%,rgba(203,179,138,.20..."
+      }
+    ],
+    "rgba(19,160,90,.15)": [
+      {
+        "file": "src/app/product-demo/page.tsx",
+        "line": 51,
+        "context": "<section className=\"relative overflow-hidden px-5 py-12 md:py-16\"><div className=\"absolute inset-0 bg-[radial-gradient(circle_at_75%_18%,rgba(203,179,138,.20..."
+      }
+    ],
+    "#1e1e2e": [
+      {
+        "file": "src/components/dashboard/HealthScore.tsx",
+        "line": 44,
+        "context": "stroke=\"#1e1e2e\""
+      },
+      {
+        "file": "src/components/dashboard/SalesChart.tsx",
+        "line": 87,
+        "context": "<CartesianGrid strokeDasharray=\"3 3\" stroke=\"#1e1e2e\" />"
+      },
+      {
+        "file": "src/components/inventory/ReorderModal.tsx",
+        "line": 84,
+        "context": "<CartesianGrid strokeDasharray=\"3 3\" stroke=\"#1e1e2e\" />"
+      },
+      {
+        "file": "src/components/inventory/ReorderModal.tsx",
+        "line": 99,
+        "context": "border: \"1px solid #1e1e2e\","
+      }
+    ],
+    "rgba(0, 0, 0, 0.2)": [
+      {
+        "file": "src/components/dashboard/KPICardAnimated.tsx",
+        "line": 96,
+        "context": "whileHover={{ y: -2, boxShadow: \"0 10px 40px rgba(0, 0, 0, 0.2)\" }}"
+      }
+    ],
+    "#6366f1": [
+      {
+        "file": "src/components/dashboard/KPICardAnimated.tsx",
+        "line": 161,
+        "context": "blue: { stroke: \"#6366f1\", fill: \"rgba(99, 102, 241, 0.2)\" },"
+      },
+      {
+        "file": "src/components/landing/GradientText.tsx",
+        "line": 17,
+        "context": "from = \"#6366f1\","
+      }
+    ],
+    "rgba(99, 102, 241, 0.2)": [
+      {
+        "file": "src/components/dashboard/KPICardAnimated.tsx",
+        "line": 161,
+        "context": "blue: { stroke: \"#6366f1\", fill: \"rgba(99, 102, 241, 0.2)\" },"
+      }
+    ],
+    "#22c55e": [
+      {
+        "file": "src/components/dashboard/KPICardAnimated.tsx",
+        "line": 162,
+        "context": "green: { stroke: \"#22c55e\", fill: \"rgba(34, 197, 94, 0.2)\" },"
+      },
+      {
+        "file": "src/components/dashboard/SalesChart.tsx",
+        "line": 83,
+        "context": "<stop offset=\"5%\" stopColor=\"#22c55e\" stopOpacity={0.3} />"
+      },
+      {
+        "file": "src/components/dashboard/SalesChart.tsx",
+        "line": 84,
+        "context": "<stop offset=\"95%\" stopColor=\"#22c55e\" stopOpacity={0} />"
+      },
+      {
+        "file": "src/components/dashboard/SalesChart.tsx",
+        "line": 119,
+        "context": "stroke=\"#22c55e\""
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 51,
+        "context": "green: \"#22c55e\","
+      }
+    ],
+    "rgba(34, 197, 94, 0.2)": [
+      {
+        "file": "src/components/dashboard/KPICardAnimated.tsx",
+        "line": 162,
+        "context": "green: { stroke: \"#22c55e\", fill: \"rgba(34, 197, 94, 0.2)\" },"
+      }
+    ],
+    "#eab308": [
+      {
+        "file": "src/components/dashboard/KPICardAnimated.tsx",
+        "line": 163,
+        "context": "yellow: { stroke: \"#eab308\", fill: \"rgba(234, 179, 8, 0.2)\" },"
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 52,
+        "context": "yellow: \"#eab308\","
+      }
+    ],
+    "rgba(234, 179, 8, 0.2)": [
+      {
+        "file": "src/components/dashboard/KPICardAnimated.tsx",
+        "line": 163,
+        "context": "yellow: { stroke: \"#eab308\", fill: \"rgba(234, 179, 8, 0.2)\" },"
+      }
+    ],
+    "#8b5cf6": [
+      {
+        "file": "src/components/dashboard/KPICardAnimated.tsx",
+        "line": 164,
+        "context": "purple: { stroke: \"#8b5cf6\", fill: \"rgba(139, 92, 246, 0.2)\" },"
+      },
+      {
+        "file": "src/components/landing/GradientText.tsx",
+        "line": 18,
+        "context": "via = \"#8b5cf6\","
+      }
+    ],
+    "rgba(139, 92, 246, 0.2)": [
+      {
+        "file": "src/components/dashboard/KPICardAnimated.tsx",
+        "line": 164,
+        "context": "purple: { stroke: \"#8b5cf6\", fill: \"rgba(139, 92, 246, 0.2)\" },"
+      }
+    ],
+    "#3b82f6": [
+      {
+        "file": "src/components/dashboard/SalesChart.tsx",
+        "line": 79,
+        "context": "<stop offset=\"5%\" stopColor=\"#3b82f6\" stopOpacity={0.3} />"
+      },
+      {
+        "file": "src/components/dashboard/SalesChart.tsx",
+        "line": 80,
+        "context": "<stop offset=\"95%\" stopColor=\"#3b82f6\" stopOpacity={0} />"
+      },
+      {
+        "file": "src/components/dashboard/SalesChart.tsx",
+        "line": 111,
+        "context": "stroke=\"#3b82f6\""
+      },
+      {
+        "file": "src/components/inventory/ReorderModal.tsx",
+        "line": 106,
+        "context": "stroke=\"#3b82f6\""
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 50,
+        "context": "blue: \"#3b82f6\","
+      }
+    ],
+    "#555570": [
+      {
+        "file": "src/components/dashboard/SalesChart.tsx",
+        "line": 90,
+        "context": "stroke=\"#555570\""
+      },
+      {
+        "file": "src/components/dashboard/SalesChart.tsx",
+        "line": 101,
+        "context": "stroke=\"#555570\""
+      },
+      {
+        "file": "src/components/inventory/ReorderModal.tsx",
+        "line": 87,
+        "context": "stroke=\"#555570\""
+      },
+      {
+        "file": "src/components/inventory/ReorderModal.tsx",
+        "line": 95,
+        "context": "<YAxis stroke=\"#555570\" fontSize={10} tickLine={false} />"
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 78,
+        "context": "faint: \"#555570\","
+      }
+    ],
+    "#12121a": [
+      {
+        "file": "src/components/inventory/ReorderModal.tsx",
+        "line": 98,
+        "context": "backgroundColor: \"#12121a\","
+      }
+    ],
+    "rgba(255,255,255,0.02)": [
+      {
+        "file": "src/components/landing/FeatureSection.tsx",
+        "line": 78,
+        "context": "whileHover={{ backgroundColor: \"rgba(255,255,255,0.02)\" }}"
+      },
+      {
+        "file": "src/components/ui/Card.tsx",
+        "line": 16,
+        "context": "\"shadow-[0_0_0_1px_rgba(255,255,255,0.02)]\","
+      }
+    ],
+    "#06b6d4": [
+      {
+        "file": "src/components/landing/GradientText.tsx",
+        "line": 19,
+        "context": "to = \"#06b6d4\","
+      }
+    ],
+    "hsl(var(--border)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 20,
+        "context": "border: \"hsl(var(--border))\","
+      }
+    ],
+    "#262626": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 21,
+        "context": "\"border-primary\": \"#262626\","
+      }
+    ],
+    "#1a1a1a": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 22,
+        "context": "\"border-secondary\": \"#1a1a1a\","
+      }
+    ],
+    "hsl(var(--input)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 23,
+        "context": "input: \"hsl(var(--input))\","
+      }
+    ],
+    "hsl(var(--ring)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 24,
+        "context": "ring: \"hsl(var(--ring))\","
+      }
+    ],
+    "hsl(var(--background)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 25,
+        "context": "background: \"hsl(var(--background))\","
+      }
+    ],
+    "hsl(var(--foreground)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 26,
+        "context": "foreground: \"hsl(var(--foreground))\","
+      }
+    ],
+    "hsl(var(--primary)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 28,
+        "context": "DEFAULT: \"hsl(var(--primary))\","
+      }
+    ],
+    "hsl(var(--primary-foreground)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 29,
+        "context": "foreground: \"hsl(var(--primary-foreground))\","
+      }
+    ],
+    "hsl(var(--secondary)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 32,
+        "context": "DEFAULT: \"hsl(var(--secondary))\","
+      }
+    ],
+    "hsl(var(--secondary-foreground)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 33,
+        "context": "foreground: \"hsl(var(--secondary-foreground))\","
+      }
+    ],
+    "hsl(var(--destructive)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 36,
+        "context": "DEFAULT: \"hsl(var(--destructive))\","
+      }
+    ],
+    "hsl(var(--destructive-foreground)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 37,
+        "context": "foreground: \"hsl(var(--destructive-foreground))\","
+      }
+    ],
+    "hsl(var(--muted)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 40,
+        "context": "DEFAULT: \"hsl(var(--muted))\","
+      }
+    ],
+    "hsl(var(--muted-foreground)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 41,
+        "context": "foreground: \"hsl(var(--muted-foreground))\","
+      }
+    ],
+    "#d4a574": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 44,
+        "context": "DEFAULT: \"#d4a574\","
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 46,
+        "context": "primary: \"#d4a574\","
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 57,
+        "context": "primary: \"#d4a574\","
+      }
+    ],
+    "hsl(var(--accent-foreground)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 45,
+        "context": "foreground: \"hsl(var(--accent-foreground))\","
+      }
+    ],
+    "#c99a6a": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 47,
+        "context": "\"primary-hover\": \"#c99a6a\","
+      }
+    ],
+    "#8c8c8c": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 48,
+        "context": "secondary: \"#8c8c8c\","
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 58,
+        "context": "secondary: \"#8c8c8c\","
+      }
+    ],
+    "#a3a3a3": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 49,
+        "context": "\"secondary-hover\": \"#a3a3a3\","
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 59,
+        "context": "accent: \"#a3a3a3\","
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 123,
+        "context": "secondary: \"#a3a3a3\","
+      }
+    ],
+    "#ef4444": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 53,
+        "context": "red: \"#ef4444\","
+      }
+    ],
+    "#a855f7": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 54,
+        "context": "purple: \"#a855f7\","
+      }
+    ],
+    "#4ade80": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 65,
+        "context": "\"green-light\": \"#4ade80\","
+      },
+      {
+        "file": "tailwind.config.ts",
+        "line": 128,
+        "context": "success: \"#4ade80\","
+      }
+    ],
+    "#ff8a73": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 67,
+        "context": "\"red-light\": \"#ff8a73\","
+      }
+    ],
+    "#0A0E0C": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 68,
+        "context": "night: \"#0A0E0C\","
+      },
+      {
+        "file": "public/manifest.json",
+        "line": 7,
+        "context": "\"background_color\": \"#0A0E0C\","
+      }
+    ],
+    "#f2cf69": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 69,
+        "context": "gold: \"#f2cf69\","
+      }
+    ],
+    "#f0c765": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 70,
+        "context": "\"gold-soft\": \"#f0c765\","
+      }
+    ],
+    "#f4efe6": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 71,
+        "context": "cream: \"#f4efe6\","
+      }
+    ],
+    "#ece5d6": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 72,
+        "context": "\"cream-dark\": \"#ece5d6\","
+      }
+    ],
+    "#cbb38a": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 73,
+        "context": "sand: \"#cbb38a\","
+      }
+    ],
+    "#f0f0f5": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 76,
+        "context": "text: \"#f0f0f5\","
+      }
+    ],
+    "#8888a0": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 77,
+        "context": "muted: \"#8888a0\","
+      }
+    ],
+    "#66667a": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 79,
+        "context": "\"faint-2\": \"#66667a\","
+      }
+    ],
+    "#b9b9c8": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 80,
+        "context": "chip: \"#b9b9c8\","
+      }
+    ],
+    "#2a2a3e": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 82,
+        "context": "\"panel-2\": \"#2a2a3e\","
+      }
+    ],
+    "#3a3a4e": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 83,
+        "context": "\"panel-3\": \"#3a3a4e\","
+      }
+    ],
+    "#0f0f1a": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 84,
+        "context": "deep: \"#0f0f1a\","
+      }
+    ],
+    "#111126": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 85,
+        "context": "\"deep-2\": \"#111126\","
+      }
+    ],
+    "#25D366": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 88,
+        "context": "DEFAULT: \"#25D366\","
+      }
+    ],
+    "#0b6b3a": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 89,
+        "context": "deep: \"#0b6b3a\","
+      }
+    ],
+    "#9ff2bd": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 90,
+        "context": "light: \"#9ff2bd\","
+      }
+    ],
+    "#8ff0b2": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 91,
+        "context": "faint: \"#8ff0b2\","
+      }
+    ],
+    "#20b858": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 92,
+        "context": "mid: \"#20b858\","
+      }
+    ],
+    "#54df85": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 93,
+        "context": "bright: \"#54df85\","
+      }
+    ],
+    "#0B141A": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 96,
+        "context": "deep: \"#0B141A\","
+      }
+    ],
+    "#1F2C33": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 97,
+        "context": "steel: \"#1F2C33\","
+      }
+    ],
+    "#3D2820": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 98,
+        "context": "warm: \"#3D2820\","
+      }
+    ],
+    "#115E59": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 102,
+        "context": "muted: \"#115E59\","
+      }
+    ],
+    "#042F2E": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 103,
+        "context": "surface: \"#042F2E\","
+      }
+    ],
+    "#134E4A": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 104,
+        "context": "border: \"#134E4A\","
+      }
+    ],
+    "hsl(var(--popover)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 107,
+        "context": "DEFAULT: \"hsl(var(--popover))\","
+      }
+    ],
+    "hsl(var(--popover-foreground)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 108,
+        "context": "foreground: \"hsl(var(--popover-foreground))\","
+      }
+    ],
+    "hsl(var(--card)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 111,
+        "context": "DEFAULT: \"hsl(var(--card))\","
+      }
+    ],
+    "hsl(var(--card-foreground)": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 112,
+        "context": "foreground: \"hsl(var(--card-foreground))\","
+      }
+    ],
+    "#0a0a0a": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 115,
+        "context": "primary: \"#0a0a0a\","
+      }
+    ],
+    "#111111": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 116,
+        "context": "secondary: \"#111111\","
+      }
+    ],
+    "#171717": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 117,
+        "context": "tertiary: \"#171717\","
+      }
+    ],
+    "#0f0f0f": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 118,
+        "context": "surface: \"#0f0f0f\","
+      }
+    ],
+    "#0d0c0c": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 119,
+        "context": "warm: \"#0d0c0c\","
+      }
+    ],
+    "#ededed": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 122,
+        "context": "primary: \"#ededed\","
+      }
+    ],
+    "#737373": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 124,
+        "context": "muted: \"#737373\","
+      }
+    ],
+    "#525252": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 125,
+        "context": "subtle: \"#525252\","
+      }
+    ],
+    "#fbbf24": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 129,
+        "context": "warning: \"#fbbf24\","
+      }
+    ],
+    "#f87171": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 130,
+        "context": "error: \"#f87171\","
+      }
+    ],
+    "#60a5fa": [
+      {
+        "file": "tailwind.config.ts",
+        "line": 131,
+        "context": "info: \"#60a5fa\","
+      }
+    ]
+  },
+  "paletteClasses": {
+    "text-white": 119,
+    "border-white/10": 98,
+    "text-black": 59,
+    "bg-white/5": 27,
+    "bg-white/[0.03]": 25,
+    "text-white/55": 20,
+    "text-red-400": 17,
+    "text-white/60": 16,
+    "text-white/62": 16,
+    "text-green-400": 15,
+    "bg-white/[.04]": 15,
+    "text-white/45": 13,
+    "text-white/50": 12,
+    "text-blue-400": 11,
+    "text-yellow-400": 11,
+    "bg-white/10": 10,
+    "bg-black/20": 10,
+    "bg-red-500/10": 9,
+    "bg-white/[0.04]": 9,
+    "bg-black/30": 8,
+    "text-white/75": 7,
+    "bg-blue-500/10": 7,
+    "text-white/70": 7,
+    "text-blue-300": 6,
+    "shadow-black/20": 6,
+    "border-white/5": 6,
+    "border-black/10": 6,
+    "bg-blue-500/20": 5,
+    "bg-blue-500": 5,
+    "bg-blue-600": 5,
+    "text-red-300": 5,
+    "bg-emerald-400/10": 5,
+    "text-purple-400": 4,
+    "text-white/65": 4,
+    "ring-white/10": 4,
+    "ring-white/5": 4,
+    "text-white/80": 4,
+    "bg-green-500/20": 3,
+    "bg-red-500/20": 3,
+    "text-gray-400": 3,
+    "bg-green-500/10": 3,
+    "bg-black/50": 3,
+    "bg-white/[0.02]": 3,
+    "text-black/62": 3,
+    "border-emerald-400/30": 3,
+    "from-blue-500": 2,
+    "to-purple-600": 2,
+    "bg-purple-500/20": 2,
+    "border-red-500/30": 2,
+    "bg-yellow-500/20": 2,
+    "bg-gray-500/20": 2,
+    "bg-yellow-500/10": 2,
+    "bg-purple-500/10": 2,
+    "text-orange-400": 2,
+    "ring-blue-500": 2,
+    "bg-black": 2,
+    "shadow-black/40": 2,
+    "text-black/40": 2,
+    "text-white/58": 2,
+    "text-emerald-300": 2,
+    "text-white/68": 2,
+    "text-white/40": 2,
+    "text-amber-300": 2,
+    "bg-black/70": 1,
+    "border-blue-500": 1,
+    "border-red-500/20": 1,
+    "border-yellow-500/30": 1,
+    "border-green-500/30": 1,
+    "border-blue-400/20": 1,
+    "border-green-500/20": 1,
+    "text-purple-300": 1,
+    "border-purple-500/20": 1,
+    "text-yellow-300": 1,
+    "bg-orange-500/20": 1,
+    "bg-white/60": 1,
+    "text-black/55": 1,
+    "border-white/12": 1,
+    "text-black/65": 1,
+    "border-white/20": 1,
+    "text-black/60": 1,
+    "bg-white/70": 1,
+    "bg-white/[.06]": 1,
+    "bg-white/[.03]": 1,
+    "shadow-black/30": 1,
+    "bg-green-500": 1,
+    "border-white/15": 1,
+    "bg-white/[0.06]": 1,
+    "via-white/20": 1,
+    "bg-black/60": 1,
+    "shadow-black/10": 1,
+    "bg-amber-400/10": 1,
+    "text-amber-300/80": 1,
+    "bg-amber-300": 1,
+    "bg-amber-200": 1,
+    "border-red-400/30": 1,
+    "bg-red-400/10": 1,
+    "bg-orange-500/10": 1,
+    "bg-gray-500/10": 1
+  },
+  "arbitraryColorValues": {
+    "10px": 15,
+    "9px": 2,
+    "#14B8A6": 1,
+    "11px": 1,
+    "radial-gradient(circle_at_75%_18%,rgba(203,179,138,.22),transparent_34%),radial-gradient(circle_at_20%_82%,rgba(19,160,90,.16),transparent_34%)": 1,
+    "radial-gradient(circle_at_75%_18%,rgba(203,179,138,.20),transparent_32%),radial-gradient(circle_at_18%_85%,rgba(19,160,90,.15),transparent_34%)": 1,
+    "0_0_0_1px_rgba(255,255,255,0.02)": 1
+  }
+}

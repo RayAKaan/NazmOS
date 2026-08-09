@@ -44,7 +44,7 @@ export function Toast({ message, type = "info", onClose, duration = 5000 }: Toas
         )}
       >
         <span className="flex-1">{message}</span>
-        <button onClick={onClose} className="hover:opacity-70 transition-opacity">
+        <button onClick={onClose} className="hover:opacity-70 transition-opacity" aria-label="Close notification">
           <X className="w-4 h-4" />
         </button>
       </div>

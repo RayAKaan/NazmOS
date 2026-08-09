@@ -20,7 +20,7 @@ services:
       USE_CELERY: "false"
       USE_REDIS: "false"
       USE_MOCK_LLM: "true"
-      LLM_MODEL: google/gemma-2-9b-it:free
+      LLM_PROVIDER_ORDER: groq,google,mock
       ALLOW_DEMO_SEED: "true"
       DEFAULT_CURRENCY: SAR
       DEFAULT_TIMEZONE: Asia/Riyadh

@@ -60,7 +60,7 @@ async def test_foodics_webhook_dedupes_by_external_event_id(
     assert second.json()["status"] == "already_processed"
 
 
-async def test_webhook_replay_requires_admin_or_owner(
+async def test_webhook_replay_requires_platform_operator(
     authenticated_client: dict, monkeypatch, db_session
 ):
     ctx = authenticated_client
@@ -82,6 +82,17 @@ async def test_webhook_replay_requires_admin_or_owner(
         external_event_id="replay-1",
     )
 
+    # A merchant owner is not a platform operator: replay is denied (403).
+    denied = await client.post(
+        f"/api/v1/pos/admin/webhooks/{event.id}/replay",
+        headers=ctx["headers"],
+    )
+    assert denied.status_code == 403, denied.text
+
+    # Platform operator identity may replay the webhook.
+    monkeypatch.setattr(
+        "app.middleware.business_access.is_platform_operator", lambda user: True
+    )
     response = await client.post(
         f"/api/v1/pos/admin/webhooks/{event.id}/replay",
         headers=ctx["headers"],

@@ -8,8 +8,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import User, get_db
 from app.middleware.auth_middleware import get_current_user
-from app.middleware.business_access import assert_business_access
+from app.middleware.business_access import assert_platform_operator
 from app.services.money_audit_service import get_latest_money_audit
+from app.services.llm_rate_limiter import llm_rate_limiter
 
 router = APIRouter(prefix="/api/v1/ops", tags=["Pilot Ops"])
 
@@ -23,9 +24,14 @@ async def pilot_console(
     """Founder/operator console for controlled pilots.
 
     This is intentionally operational, not merchant-facing: uploads, audit queue,
-    failed imports, and Recovery Match issues in one place.
+    failed imports, and Recovery Match issues in one place. The business_id here
+    is the *target* of a pilot, not the caller's own tenant, so the gate is the
+    platform-operator identity — a merchant owner alone must never reach it.
+    Denials are recorded to the AuditLog and surfaced as 403.
     """
-    await assert_business_access(db, str(business_id), current_user)
+    await assert_platform_operator(db, current_user, business_id=business_id)
+
+    llm_usage = await llm_rate_limiter.usage()
 
     upload_counts_res = await db.execute(text("""
         SELECT status, COUNT(*) AS count
@@ -106,6 +112,7 @@ async def pilot_console(
         "latest_audit": latest_audit,
         "action_queue": action_queue,
         "recovery_issues": recovery_issues,
+        "llm_usage": llm_usage,
         "operator_next_steps": [
             "Review failed uploads before merchant call.",
             "Regenerate Money Audit after corrected files are imported.",

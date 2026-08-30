@@ -1,0 +1,139 @@
+Date,Transaction ID,Branch,City,Product,SKU,Category,Qty,Unit Price SAR,Total SAR,Cost SAR,Payment Method
+2026-09-11,TX-B5_cash_constrained_restaurant-d30-000001,Khobar - Main Kitchen,Khobar,Saffron 10g Premium,STR-SAF-01,Ingredients,1,0.0,0.0,180.0,mada
+2026-09-13,TX-B5_cash_constrained_restaurant-d30-000002,Khobar - Main Kitchen,Khobar,Saffron 10g Premium,STR-SAF-01,Ingredients,1,0.0,0.0,180.0,cash
+2026-09-14,TX-B5_cash_constrained_restaurant-d30-000003,Khobar - Main Kitchen,Khobar,Saffron 10g Premium,STR-SAF-01,Ingredients,1,0.0,0.0,180.0,card
+2026-09-15,TX-B5_cash_constrained_restaurant-d30-000004,Khobar - Main Kitchen,Khobar,Saffron 10g Premium,STR-SAF-01,Ingredients,1,0.0,0.0,180.0,mada
+2026-09-16,TX-B5_cash_constrained_restaurant-d30-000005,Khobar - Main Kitchen,Khobar,Saffron 10g Premium,STR-SAF-01,Ingredients,1,0.0,0.0,180.0,card
+2026-09-17,TX-B5_cash_constrained_restaurant-d30-000006,Khobar - Main Kitchen,Khobar,Saffron 10g Premium,STR-SAF-01,Ingredients,1,0.0,0.0,180.0,mada
+2026-09-18,TX-B5_cash_constrained_restaurant-d30-000007,Khobar - Main Kitchen,Khobar,Saffron 10g Premium,STR-SAF-01,Ingredients,1,0.0,0.0,180.0,mada
+2026-09-19,TX-B5_cash_constrained_restaurant-d30-000008,Khobar - Main Kitchen,Khobar,Saffron 10g Premium,STR-SAF-01,Ingredients,1,0.0,0.0,180.0,cash
+2026-09-22,TX-B5_cash_constrained_restaurant-d30-000009,Khobar - Main Kitchen,Khobar,Saffron 10g Premium,STR-SAF-01,Ingredients,1,0.0,0.0,180.0,mada
+2026-09-23,TX-B5_cash_constrained_restaurant-d30-000010,Khobar - Main Kitchen,Khobar,Saffron 10g Premium,STR-SAF-01,Ingredients,1,0.0,0.0,180.0,mada
+2026-09-10,TX-B5_cash_constrained_restaurant-d30-000011,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,cash
+2026-09-11,TX-B5_cash_constrained_restaurant-d30-000012,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,card
+2026-09-11,TX-B5_cash_constrained_restaurant-d30-000013,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,mada
+2026-09-12,TX-B5_cash_constrained_restaurant-d30-000014,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,cash
+2026-09-12,TX-B5_cash_constrained_restaurant-d30-000015,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,card
+2026-09-14,TX-B5_cash_constrained_restaurant-d30-000016,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,cash
+2026-09-14,TX-B5_cash_constrained_restaurant-d30-000017,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,cash
+2026-09-15,TX-B5_cash_constrained_restaurant-d30-000018,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,card
+2026-09-15,TX-B5_cash_constrained_restaurant-d30-000019,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,cash
+2026-09-16,TX-B5_cash_constrained_restaurant-d30-000020,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,cash
+2026-09-17,TX-B5_cash_constrained_restaurant-d30-000021,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,card
+2026-09-18,TX-B5_cash_constrained_restaurant-d30-000022,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,cash
+2026-09-18,TX-B5_cash_constrained_restaurant-d30-000023,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,card
+2026-09-19,TX-B5_cash_constrained_restaurant-d30-000024,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,card
+2026-09-20,TX-B5_cash_constrained_restaurant-d30-000025,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,mada
+2026-09-21,TX-B5_cash_constrained_restaurant-d30-000026,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,mada
+2026-09-21,TX-B5_cash_constrained_restaurant-d30-000027,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,cash
+2026-09-22,TX-B5_cash_constrained_restaurant-d30-000028,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,mada
+2026-09-23,TX-B5_cash_constrained_restaurant-d30-000029,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,mada
+2026-09-24,TX-B5_cash_constrained_restaurant-d30-000030,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,card
+2026-09-24,TX-B5_cash_constrained_restaurant-d30-000031,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,cash
+2026-09-25,TX-B5_cash_constrained_restaurant-d30-000032,Khobar - Main Kitchen,Khobar,Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,1,0.0,0.0,95.0,cash
+2026-09-10,TX-B5_cash_constrained_restaurant-d30-000033,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-10,TX-B5_cash_constrained_restaurant-d30-000034,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-10,TX-B5_cash_constrained_restaurant-d30-000035,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-10,TX-B5_cash_constrained_restaurant-d30-000036,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-11,TX-B5_cash_constrained_restaurant-d30-000037,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-11,TX-B5_cash_constrained_restaurant-d30-000038,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-11,TX-B5_cash_constrained_restaurant-d30-000039,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-11,TX-B5_cash_constrained_restaurant-d30-000040,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-12,TX-B5_cash_constrained_restaurant-d30-000041,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-12,TX-B5_cash_constrained_restaurant-d30-000042,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-12,TX-B5_cash_constrained_restaurant-d30-000043,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-12,TX-B5_cash_constrained_restaurant-d30-000044,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-13,TX-B5_cash_constrained_restaurant-d30-000045,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-13,TX-B5_cash_constrained_restaurant-d30-000046,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-13,TX-B5_cash_constrained_restaurant-d30-000047,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-14,TX-B5_cash_constrained_restaurant-d30-000048,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-14,TX-B5_cash_constrained_restaurant-d30-000049,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-14,TX-B5_cash_constrained_restaurant-d30-000050,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-14,TX-B5_cash_constrained_restaurant-d30-000051,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-15,TX-B5_cash_constrained_restaurant-d30-000052,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-15,TX-B5_cash_constrained_restaurant-d30-000053,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-15,TX-B5_cash_constrained_restaurant-d30-000054,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-15,TX-B5_cash_constrained_restaurant-d30-000055,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-16,TX-B5_cash_constrained_restaurant-d30-000056,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-16,TX-B5_cash_constrained_restaurant-d30-000057,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-16,TX-B5_cash_constrained_restaurant-d30-000058,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-17,TX-B5_cash_constrained_restaurant-d30-000059,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-17,TX-B5_cash_constrained_restaurant-d30-000060,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-18,TX-B5_cash_constrained_restaurant-d30-000061,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-18,TX-B5_cash_constrained_restaurant-d30-000062,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-18,TX-B5_cash_constrained_restaurant-d30-000063,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-19,TX-B5_cash_constrained_restaurant-d30-000064,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-19,TX-B5_cash_constrained_restaurant-d30-000065,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-19,TX-B5_cash_constrained_restaurant-d30-000066,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-20,TX-B5_cash_constrained_restaurant-d30-000067,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-20,TX-B5_cash_constrained_restaurant-d30-000068,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-20,TX-B5_cash_constrained_restaurant-d30-000069,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-21,TX-B5_cash_constrained_restaurant-d30-000070,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-21,TX-B5_cash_constrained_restaurant-d30-000071,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-21,TX-B5_cash_constrained_restaurant-d30-000072,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-22,TX-B5_cash_constrained_restaurant-d30-000073,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-22,TX-B5_cash_constrained_restaurant-d30-000074,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-22,TX-B5_cash_constrained_restaurant-d30-000075,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-22,TX-B5_cash_constrained_restaurant-d30-000076,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-23,TX-B5_cash_constrained_restaurant-d30-000077,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-23,TX-B5_cash_constrained_restaurant-d30-000078,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-23,TX-B5_cash_constrained_restaurant-d30-000079,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,card
+2026-09-24,TX-B5_cash_constrained_restaurant-d30-000080,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-24,TX-B5_cash_constrained_restaurant-d30-000081,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-25,TX-B5_cash_constrained_restaurant-d30-000082,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,mada
+2026-09-25,TX-B5_cash_constrained_restaurant-d30-000083,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-25,TX-B5_cash_constrained_restaurant-d30-000084,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-25,TX-B5_cash_constrained_restaurant-d30-000085,Khobar - Main Kitchen,Khobar,Tomato Puree Catering Pack,ING-TOM-03,Ingredients,1,0.0,0.0,48.0,cash
+2026-09-10,TX-B5_cash_constrained_restaurant-d30-000086,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,card
+2026-09-10,TX-B5_cash_constrained_restaurant-d30-000087,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,cash
+2026-09-11,TX-B5_cash_constrained_restaurant-d30-000088,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,cash
+2026-09-11,TX-B5_cash_constrained_restaurant-d30-000089,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,cash
+2026-09-12,TX-B5_cash_constrained_restaurant-d30-000090,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,card
+2026-09-12,TX-B5_cash_constrained_restaurant-d30-000091,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,card
+2026-09-13,TX-B5_cash_constrained_restaurant-d30-000092,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,mada
+2026-09-14,TX-B5_cash_constrained_restaurant-d30-000093,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,cash
+2026-09-14,TX-B5_cash_constrained_restaurant-d30-000094,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,mada
+2026-09-15,TX-B5_cash_constrained_restaurant-d30-000095,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,card
+2026-09-15,TX-B5_cash_constrained_restaurant-d30-000096,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,mada
+2026-09-16,TX-B5_cash_constrained_restaurant-d30-000097,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,mada
+2026-09-16,TX-B5_cash_constrained_restaurant-d30-000098,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,card
+2026-09-17,TX-B5_cash_constrained_restaurant-d30-000099,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,mada
+2026-09-17,TX-B5_cash_constrained_restaurant-d30-000100,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,card
+2026-09-18,TX-B5_cash_constrained_restaurant-d30-000101,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,mada
+2026-09-18,TX-B5_cash_constrained_restaurant-d30-000102,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,mada
+2026-09-18,TX-B5_cash_constrained_restaurant-d30-000103,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,mada
+2026-09-19,TX-B5_cash_constrained_restaurant-d30-000104,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,card
+2026-09-19,TX-B5_cash_constrained_restaurant-d30-000105,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,mada
+2026-09-20,TX-B5_cash_constrained_restaurant-d30-000106,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,card
+2026-09-20,TX-B5_cash_constrained_restaurant-d30-000107,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,cash
+2026-09-21,TX-B5_cash_constrained_restaurant-d30-000108,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,card
+2026-09-21,TX-B5_cash_constrained_restaurant-d30-000109,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,cash
+2026-09-21,TX-B5_cash_constrained_restaurant-d30-000110,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,card
+2026-09-22,TX-B5_cash_constrained_restaurant-d30-000111,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,mada
+2026-09-22,TX-B5_cash_constrained_restaurant-d30-000112,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,mada
+2026-09-23,TX-B5_cash_constrained_restaurant-d30-000113,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,mada
+2026-09-23,TX-B5_cash_constrained_restaurant-d30-000114,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,mada
+2026-09-24,TX-B5_cash_constrained_restaurant-d30-000115,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,card
+2026-09-24,TX-B5_cash_constrained_restaurant-d30-000116,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,cash
+2026-09-25,TX-B5_cash_constrained_restaurant-d30-000117,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,cash
+2026-09-25,TX-B5_cash_constrained_restaurant-d30-000118,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,mada
+2026-09-25,TX-B5_cash_constrained_restaurant-d30-000119,Khobar - Main Kitchen,Khobar,Calrose Rice 20kg,ING-RIC-04,Ingredients,1,0.0,0.0,88.0,card
+2026-09-10,TX-B5_cash_constrained_restaurant-d30-000120,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,cash
+2026-09-11,TX-B5_cash_constrained_restaurant-d30-000121,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,mada
+2026-09-12,TX-B5_cash_constrained_restaurant-d30-000122,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,card
+2026-09-14,TX-B5_cash_constrained_restaurant-d30-000123,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,card
+2026-09-15,TX-B5_cash_constrained_restaurant-d30-000124,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,mada
+2026-09-16,TX-B5_cash_constrained_restaurant-d30-000125,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,card
+2026-09-17,TX-B5_cash_constrained_restaurant-d30-000126,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,cash
+2026-09-18,TX-B5_cash_constrained_restaurant-d30-000127,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,cash
+2026-09-19,TX-B5_cash_constrained_restaurant-d30-000128,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,mada
+2026-09-20,TX-B5_cash_constrained_restaurant-d30-000129,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,cash
+2026-09-21,TX-B5_cash_constrained_restaurant-d30-000130,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,mada
+2026-09-22,TX-B5_cash_constrained_restaurant-d30-000131,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,mada
+2026-09-23,TX-B5_cash_constrained_restaurant-d30-000132,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,mada
+2026-09-24,TX-B5_cash_constrained_restaurant-d30-000133,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,cash
+2026-09-25,TX-B5_cash_constrained_restaurant-d30-000134,Khobar - Main Kitchen,Khobar,Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,1,0.0,0.0,0.0,card
+2026-09-10,TX-B5_cash_constrained_restaurant-d30-000135,Khobar - Main Kitchen,Khobar,Mystery Bulk Item B,HOLE-NODATA-02,Ingredients,1,0.0,0.0,0.0,mada
+2026-09-13,TX-B5_cash_constrained_restaurant-d30-000136,Khobar - Main Kitchen,Khobar,Mystery Bulk Item B,HOLE-NODATA-02,Ingredients,1,0.0,0.0,0.0,cash
+2026-09-24,TX-B5_cash_constrained_restaurant-d30-000137,Khobar - Main Kitchen,Khobar,Mystery Bulk Item B,HOLE-NODATA-02,Ingredients,1,0.0,0.0,0.0,mada
+2026-09-25,TX-B5_cash_constrained_restaurant-d30-000138,Khobar - Main Kitchen,Khobar,Mystery Bulk Item B,HOLE-NODATA-02,Ingredients,1,0.0,0.0,0.0,card

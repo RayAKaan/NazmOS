@@ -1,0 +1,18 @@
+PO Number,Date,Supplier,SKU,Product,Qty,Unit Cost SAR,Total Cost SAR,Status,Expected Delivery,Actual Delivery,Is Ghost
+PO-al_noor_supermarket-C001,2026-08-21,Almarai Supply,DAI-MLK-01,Full Cream Milk 1L,80,3.2,256.0,confirmed,2026-08-24,,False
+PO-al_noor_supermarket-C002,2026-08-23,Almarai Supply,DAI-YOG-02,Greek Yogurt 500g,36,2.8,100.8,confirmed,2026-08-26,,False
+PO-al_noor_supermarket-C003,2026-08-22,Almarai Supply,DAI-CHS-03,Processed Cheese Slices,92,6.0,552.0,confirmed,2026-08-25,,False
+PO-al_noor_supermarket-C004,2026-08-20,Almarai Supply,DAI-BTR-04,Butter Blocks 200g,27,4.5,121.5,confirmed,2026-08-23,,False
+PO-al_noor_supermarket-C005,2026-08-21,Almarai Supply,DAI-EGG-05,Free-Range Eggs 30pc,63,14.0,882.0,confirmed,2026-08-24,,False
+PO-al_noor_supermarket-C006,2026-08-23,Almarai Supply,DAI-MLK-46,Low-Fat Milk 1L,58,3.0,174.0,confirmed,2026-08-26,,False
+PO-al_noor_supermarket-C007,2026-08-23,Almarai Supply,DAI-JRT-47,Yogurt Drink 330ml,96,2.2,211.2,confirmed,2026-08-26,,False
+PO-al_noor_supermarket-C008,2026-08-21,Almarai Supply,DAI-CRM-69,Cooking Cream 200ml,51,3.5,178.5,confirmed,2026-08-24,,False
+PO-al_noor_supermarket-C009,2026-08-22,Almarai Supply,DAI-MLK-85,Organic Milk 1L,48,5.0,240.0,confirmed,2026-08-25,,False
+PO-al_noor_supermarket-C010,2026-08-20,Almarai Supply,DAI-CHS-86,Cheese Block 200g,86,4.0,344.0,confirmed,2026-08-23,,False
+PO-al_noor_supermarket-C011,2026-08-20,Tamimi Supply,SNK-CRP-06,Caramel Popcorn 150g,72,4.0,288.0,confirmed,2026-08-23,,False
+PO-al_noor_supermarket-C012,2026-08-19,Tamimi Supply,SNK-NUT-07,Mixed Nuts Premium 200g,73,12.0,876.0,confirmed,2026-08-22,,False
+PO-al_noor_supermarket-C013,2026-08-21,Snacks Direct,SNK-BSC-08,Digestive Biscuits 300g,67,2.5,167.5,confirmed,2026-08-24,,False
+PO-al_noor_supermarket-C014,2026-08-23,Snacks Direct,SNK-CHP-09,Potato Chips Classic 170g,71,3.0,213.0,confirmed,2026-08-26,,False
+PO-al_noor_supermarket-C015,2026-08-19,Tamimi Supply,SNK-CHC-10,Chocolate Protein Bar,29,5.0,145.0,confirmed,2026-08-22,,False
+PO-al_noor_supermarket-G001,2026-06-27,Snacks Direct,SNK-BSC-08,Digestive Biscuits 300g,200,2.5,500.0,confirmed,2026-06-30,,True
+PO-al_noor_supermarket-G002,2026-05-28,Snacks Direct,SNK-ORE-87,Oreo Cookies 154g,150,2.5,375.0,confirmed,2026-06-02,,True

@@ -1,0 +1,114 @@
+item_sku,item_name,category_name,cost_price,sell_price,current_stock,reorder_level,max_stock,supplier
+V12-DEAD-001,GT V12-DEAD-001,Home & Durable,8.00,15.00,50,0,250,Global Foods Traders
+V12-DEAD-002,GT V12-DEAD-002,Home & Durable,25.00,45.00,120,0,600,Global Foods Traders
+V12-DEAD-003,GT V12-DEAD-003,Home & Durable,10.00,20.00,0,0,10,Global Foods Traders
+V12-SLOW-001,GT V12-SLOW-001,Beverages,6.00,12.00,0,1,10,Global Foods Traders
+V12-SLOW-002,GT V12-SLOW-002,Beverages,4.00,8.00,40,0,200,Global Foods Traders
+V12-FAST-001,GT V12-FAST-001,Groceries,5.00,11.00,100,4,500,Global Foods Traders
+V12-FAST-002,GT V12-FAST-002,Groceries,7.00,14.00,0,6,10,Global Foods Traders
+V12-FAST-003,GT V12-FAST-003,Groceries,9.00,18.00,0,7,10,Global Foods Traders
+V12-FAST-004,GT V12-FAST-004,Bulk,2.00,5.00,2000,3,10000,Global Foods Traders
+V12-SEASONAL-001,GT V12-SEASONAL-001,Seasonal,10.00,22.00,150,0,750,Global Foods Traders
+V12-SEASONAL-002,GT V12-SEASONAL-002,Seasonal,3.00,7.00,90,0,450,Global Foods Traders
+V12-OVERSTOCK-001,GT V12-OVERSTOCK-001,Bulk,15.00,30.00,500,2,2500,Global Foods Traders
+V12-GROWTH-001,GT V12-GROWTH-001,Fresh,6.00,13.00,80,3,400,Global Foods Traders
+V12-GROWTH-002,GT V12-GROWTH-002,Fresh,12.00,26.00,30,4,150,Global Foods Traders
+V12-MARGIN-001,GT V12-MARGIN-001,Impulse,15.00,9.00,40,1,200,Global Foods Traders
+V12-MARGIN-002,GT V12-MARGIN-002,Impulse,20.00,14.00,60,4,300,Global Foods Traders
+V12-OWNER-001,GT V12-OWNER-001,Strategic,20.00,40.00,200,0,1000,Global Foods Traders
+V12-OWNER-002,GT V12-OWNER-002,Strategic,8.00,17.00,150,0,750,Global Foods Traders
+V12-PO-001,GT V12-PO-001,Groceries,4.00,9.00,0,4,10,Global Foods Traders
+V12-PO-002,GT V12-PO-002,Groceries,5.00,10.00,70,2,350,Global Foods Traders
+V12-UNKNOWN-001,GT V12-UNKNOWN-001,Home & Durable,3.00,7.00,25,0,125,Global Foods Traders
+V12-UNKNOWN-002,GT V12-UNKNOWN-002,Home & Durable,2.00,5.00,30,0,150,Global Foods Traders
+V12-HEALTHY-001,GT V12-HEALTHY-001,Groceries,6.00,12.00,60,2,300,Global Foods Traders
+V12-HEALTHY-002,GT V12-HEALTHY-002,Groceries,4.00,9.00,45,1,225,Global Foods Traders
+V12-HEALTHY-003,GT V12-HEALTHY-003,Groceries,5.00,11.00,20,0,100,Global Foods Traders
+V12-OVERSTOCK-002,GT V12-OVERSTOCK-002,Bulk,40.00,80.00,120,1,600,Global Foods Traders
+V12-STOCKOUT-001,GT V12-STOCKOUT-001,Groceries,8.00,16.00,10,7,50,Global Foods Traders
+V12-SEASONAL-003,GT V12-SEASONAL-003,Seasonal,7.00,15.00,20,5,100,Global Foods Traders
+V12-SEASONAL-004,GT V12-SEASONAL-004,Seasonal,9.00,20.00,60,4,300,Global Foods Traders
+V12-DEAD-004,GT V12-DEAD-004,Home & Durable,10.00,19.00,300,0,1500,Global Foods Traders
+V12-PO-003,GT V12-PO-003,Groceries,5.00,10.00,0,0,10,Global Foods Traders
+V12-STOCKOUT-002,GT V12-STOCKOUT-002,Groceries,3.00,7.00,8,4,40,Global Foods Traders
+V12-OVERSTOCK-003,GT V12-OVERSTOCK-003,Bulk,12.00,22.00,800,0,4000,Global Foods Traders
+V12-FIL-000,Rice 5kg,Beverages,21.81,29.31,80,20,320,Riyadh Distributors
+V12-FIL-001,Cooking Oil 3L,Groceries,8.32,10.37,40,10,160,Riyadh Distributors
+V12-FIL-002,Sugar 2kg,Groceries,26.95,40.98,0,5,40,Al Baraka Supply
+V12-FIL-003,Flour 5kg,Groceries,36.47,53.18,0,20,40,Riyadh Distributors
+V12-FIL-004,Pasta 500g,Beverages,43.12,55.23,5,20,40,Riyadh Distributors
+V12-FIL-005,Mayo 750ml,Groceries,4.14,6.41,15,10,60,Global Foods Traders
+V12-FIL-006,Ketchup 1kg,Groceries,7.49,11.33,40,5,160,Global Foods Traders
+V12-FIL-007,Olive Oil 1L,Groceries,26.78,36.61,40,10,160,Al Baraka Supply
+V12-FIL-008,Tea 400g,Beverages,26.88,42.51,80,10,320,Global Foods Traders
+V12-FIL-009,Coffee 250g,Beverages,12.27,14.69,150,5,600,Riyadh Distributors
+V12-FIL-010,Milk 1L,Seasonal,12.73,15.33,15,20,60,Al Baraka Supply
+V12-FIL-011,Yogurt 500g,Seasonal,7.25,9.42,40,5,160,Riyadh Distributors
+V12-FIL-012,Cheddar 1kg,Bulk,10.87,14.93,2000,10,8000,Global Foods Traders
+V12-FIL-013,Butter 500g,Beverages,34.85,53.87,40,5,160,Al Baraka Supply
+V12-FIL-014,Eggs 30pk,Seasonal,32.21,46.90,5,20,40,Al Baraka Supply
+V12-FIL-015,Chicken 1kg,Seasonal,30.10,46.44,5,20,40,Al Baraka Supply
+V12-FIL-016,Beef 1kg,Home & Durable,33.49,53.56,282,5,1128,Riyadh Distributors
+V12-FIL-017,Fish 800g,Groceries,42.10,58.66,0,5,40,Riyadh Distributors
+V12-FIL-018,Cucumber 1kg,Groceries,13.01,19.82,600,5,2400,Global Foods Traders
+V12-FIL-019,Tomato 1kg,Home & Durable,3.66,5.71,136,20,544,Al Baraka Supply
+V12-FIL-020,Potato 5kg,Beverages,13.20,16.50,15,5,60,Al Baraka Supply
+V12-FIL-021,Onion 5kg,Groceries,17.56,23.96,0,20,40,Al Baraka Supply
+V12-FIL-022,Banana 1kg,Home & Durable,6.04,6.96,531,20,2124,Global Foods Traders
+V12-FIL-023,Apple 1kg,Seasonal,5.13,6.32,40,5,160,Riyadh Distributors
+V12-FIL-024,Orange 1kg,Bulk,44.16,60.31,2000,5,8000,Global Foods Traders
+V12-FIL-025,Cola 1.5L,Groceries,11.00,16.04,600,5,2400,Riyadh Distributors
+V12-FIL-026,Water 6pk,Beverages,24.27,31.55,15,20,60,Global Foods Traders
+V12-FIL-027,Juice 1L,Bulk,33.33,51.84,2000,5,8000,Al Baraka Supply
+V12-FIL-028,Chips 24pk,Home & Durable,44.25,63.10,384,5,1536,Global Foods Traders
+V12-FIL-029,Biscuits 400g,Bulk,39.68,60.22,2000,10,8000,Global Foods Traders
+V12-FIL-030,Chocolate 100g,Seasonal,12.61,20.09,80,20,320,Riyadh Distributors
+V12-FIL-031,Candy 500g,Groceries,3.24,5.12,0,10,40,Global Foods Traders
+V12-FIL-032,Detergent 3kg,Bulk,44.25,61.60,2000,20,8000,Riyadh Distributors
+V12-FIL-033,Soap 6pk,Seasonal,23.83,29.31,600,5,2400,Al Baraka Supply
+V12-FIL-034,Shampoo 400ml,Bulk,39.03,58.35,2000,20,8000,Al Baraka Supply
+V12-FIL-035,Toothpaste 3pk,Seasonal,39.53,55.25,80,10,320,Global Foods Traders
+V12-FIL-036,Tissue 6pk,Seasonal,13.90,19.20,5,10,40,Global Foods Traders
+V12-FIL-037,Wipes 80pk,Groceries,24.64,30.46,0,10,40,Riyadh Distributors
+V12-FIL-038,Diapers M40,Bulk,20.77,25.63,2000,5,8000,Riyadh Distributors
+V12-FIL-039,Formula 900g,Beverages,11.00,14.69,600,10,2400,Al Baraka Supply
+V12-FIL-040,Salt 1kg,Groceries,18.01,28.05,600,10,2400,Riyadh Distributors
+V12-FIL-041,Spices 100g,Groceries,11.92,17.65,0,20,40,Riyadh Distributors
+V12-FIL-042,Honey 500g,Home & Durable,37.11,46.14,287,10,1148,Global Foods Traders
+V12-FIL-043,Jam 400g,Seasonal,24.76,35.14,40,10,160,Riyadh Distributors
+V12-FIL-044,Cereal 500g,Groceries,40.16,54.26,600,20,2400,Global Foods Traders
+V12-FIL-045,Oats 1kg,Bulk,19.25,23.83,2000,10,8000,Global Foods Traders
+V12-FIL-046,Nuts 300g,Home & Durable,37.38,47.67,374,5,1496,Global Foods Traders
+V12-FIL-047,Dried Fruit 400g,Groceries,5.55,7.61,40,10,160,Riyadh Distributors
+V12-FIL-048,Canned Beans 400g,Groceries,22.66,28.98,5,10,40,Global Foods Traders
+V12-FIL-049,Tuna 180g,Groceries,43.15,58.71,80,20,320,Global Foods Traders
+V12-FIL-050,Instant Noodles 5pk,Groceries,24.32,28.16,0,20,40,Global Foods Traders
+V12-FIL-051,Frozen Veg 1kg,Beverages,30.98,38.85,15,20,60,Riyadh Distributors
+V12-FIL-052,Ice Cream 2L,Home & Durable,41.88,62.98,534,5,2136,Al Baraka Supply
+V12-FIL-053,Pizza Frozen,Groceries,24.07,34.67,5,20,40,Al Baraka Supply
+V12-FIL-054,Spring Onion,Home & Durable,37.91,49.59,390,20,1560,Riyadh Distributors
+V12-FIL-055,Lettuce,Groceries,21.09,29.72,150,10,600,Global Foods Traders
+V12-FIL-056,Zucchini,Groceries,23.42,35.42,80,5,320,Global Foods Traders
+V12-FIL-057,Eggplant,Groceries,29.77,35.67,40,5,160,Al Baraka Supply
+V12-FIL-058,Mango 1kg,Groceries,20.67,32.41,0,20,40,Global Foods Traders
+V12-FIL-059,Grapes 500g,Bulk,27.44,39.11,2000,10,8000,Al Baraka Supply
+V12-FIL-060,Dates 1kg,Bulk,15.13,22.53,2000,10,8000,Riyadh Distributors
+V12-FIL-061,Pomegranate,Bulk,7.55,11.80,2000,5,8000,Riyadh Distributors
+V12-FIL-062,Baby Carrots,Seasonal,2.78,3.77,80,10,320,Al Baraka Supply
+V12-FIL-063,Cashews 200g,Home & Durable,29.20,37.85,177,10,708,Riyadh Distributors
+V12-FIL-064,Almonds 200g,Seasonal,3.39,4.43,15,5,60,Riyadh Distributors
+V12-FIL-065,Pistachio 250g,Groceries,18.75,23.26,15,10,60,Al Baraka Supply
+V12-FIL-066,Hazelnut 250g,Groceries,26.06,38.15,15,5,60,Al Baraka Supply
+V12-FIL-067,Sesame Paste,Home & Durable,4.95,6.93,200,20,800,Al Baraka Supply
+V12-FIL-068,Vinegar 1L,Groceries,21.52,32.94,80,20,320,Riyadh Distributors
+V12-FIL-069,Soy Sauce 500ml,Beverages,44.20,68.59,150,5,600,Global Foods Traders
+V12-FIL-070,Stock Cubes 12pk,Groceries,15.20,19.59,5,20,40,Al Baraka Supply
+V12-FIL-071,Garlic 1kg,Groceries,4.57,5.66,15,20,60,Riyadh Distributors
+V12-FIL-072,Ginger 500g,Seasonal,15.31,21.29,5,5,40,Al Baraka Supply
+V12-FIL-073,Turmeric 200g,Groceries,10.83,15.83,5,10,40,Global Foods Traders
+V12-FIL-074,Paprika 100g,Seasonal,25.81,34.73,600,20,2400,Global Foods Traders
+V12-FIL-075,Lemons 1kg,Home & Durable,4.99,6.80,410,10,1640,Al Baraka Supply
+V12-FIL-076,Limes 500g,Bulk,27.03,42.04,2000,10,8000,Riyadh Distributors
+V12-FIL-077,Mint,Groceries,18.48,26.72,0,10,40,Al Baraka Supply
+V12-FIL-078,Parsley,Beverages,23.99,28.45,600,20,2400,Riyadh Distributors
+V12-FIL-079,Basil,Home & Durable,27.69,42.47,600,5,2400,Al Baraka Supply

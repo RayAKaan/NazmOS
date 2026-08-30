@@ -1,0 +1,2 @@
+item_name,item_sku,quantity,transaction_at,transaction_type,unit_price,total_amount
+Bad Type,ADV-004,5,2026-05-01,fraud_type,10,50

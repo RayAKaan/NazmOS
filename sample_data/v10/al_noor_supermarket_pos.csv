@@ -1,0 +1,17 @@
+PO Number,Date,Supplier,SKU,Product,Qty,Unit Cost SAR,Total Cost SAR,Status,Expected Delivery
+PO-al_noor_supermarket-C001,2026-08-21,Almarai Supply,DAI-MLK-01,Full Cream Milk 1L,80,3.2,256.0,confirmed,2026-08-24
+PO-al_noor_supermarket-C002,2026-08-23,Almarai Supply,DAI-YOG-02,Greek Yogurt 500g,36,2.8,100.8,confirmed,2026-08-26
+PO-al_noor_supermarket-C003,2026-08-22,Almarai Supply,DAI-CHS-03,Processed Cheese Slices,92,6.0,552.0,confirmed,2026-08-25
+PO-al_noor_supermarket-C004,2026-08-20,Almarai Supply,DAI-BTR-04,Butter Blocks 200g,27,4.5,121.5,confirmed,2026-08-23
+PO-al_noor_supermarket-C005,2026-08-21,Almarai Supply,DAI-EGG-05,Free-Range Eggs 30pc,63,14.0,882.0,confirmed,2026-08-24
+PO-al_noor_supermarket-C006,2026-08-23,Almarai Supply,DAI-MLK-46,Low-Fat Milk 1L,58,3.0,174.0,confirmed,2026-08-26
+PO-al_noor_supermarket-C007,2026-08-23,Almarai Supply,DAI-JRT-47,Yogurt Drink 330ml,96,2.2,211.2,confirmed,2026-08-26
+PO-al_noor_supermarket-C008,2026-08-21,Almarai Supply,DAI-CRM-69,Cooking Cream 200ml,51,3.5,178.5,confirmed,2026-08-24
+PO-al_noor_supermarket-C009,2026-08-22,Tamimi Supply,SNK-CRP-06,Caramel Popcorn 150g,48,4.0,192.0,confirmed,2026-08-25
+PO-al_noor_supermarket-C010,2026-08-20,Tamimi Supply,SNK-NUT-07,Mixed Nuts Premium 200g,86,12.0,1032.0,confirmed,2026-08-23
+PO-al_noor_supermarket-C011,2026-08-20,Snacks Direct,SNK-BSC-08,Digestive Biscuits 300g,72,2.5,180.0,confirmed,2026-08-23
+PO-al_noor_supermarket-C012,2026-08-19,Snacks Direct,SNK-CHP-09,Potato Chips Classic 170g,73,3.0,219.0,confirmed,2026-08-22
+PO-al_noor_supermarket-C013,2026-08-21,Tamimi Supply,SNK-CHC-10,Chocolate Protein Bar,67,5.0,335.0,confirmed,2026-08-24
+PO-al_noor_supermarket-C014,2026-08-23,Snacks Direct,SNK-WFR-48,Wafer Roll 100g,71,2.0,142.0,confirmed,2026-08-26
+PO-al_noor_supermarket-C015,2026-08-19,Tamimi Supply,SNK-PRC-49,Pretzel Sticks 150g,29,3.5,101.5,confirmed,2026-08-22
+PO-al_noor_supermarket-G001,2026-06-27,Tamimi Supply,SNK-CHC-10,Chocolate Protein Bar,200,5.0,1000.0,confirmed,2026-06-30

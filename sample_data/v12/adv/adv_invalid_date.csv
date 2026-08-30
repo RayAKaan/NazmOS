@@ -1,0 +1,2 @@
+item_name,item_sku,quantity,transaction_at,unit_price,total_amount
+Bad Date,ADV-003,5,not-a-date,10,50

@@ -1,0 +1,6 @@
+Product,SKU,Category,Brand,Pack Size,Current Stock,Cost Price SAR,Shelf Price SAR,Barcode,Storage Type,Expiry Date,Batch Number,Reorder Level,Supplier
+Room Heater,SEA-HTR-01,Appliances,Generic,unit,150,85.0,145.0,62800990000001,ambient,2027-02-22,B001,10,Tamimi Supply
+Family Umbrella,UMB-RAIN-02,Accessories,Generic,unit,65,18.0,34.0,62800990000002,ambient,2027-02-22,B002,10,Tamimi Supply
+School Backpack,SCL-FAN-03,Stationery,Generic,unit,190,34.0,59.0,62800990000003,ambient,2027-02-22,B003,10,Tamimi Supply
+Sliced Bread Large,STP-BRD-04,Bakery,Generic,unit,130,2.4,4.0,62800990000004,ambient,2027-02-22,B004,10,Tamimi Supply
+Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,Generic,unit,160,11.0,18.0,62800990000005,ambient,2027-02-22,B005,10,Tamimi Supply

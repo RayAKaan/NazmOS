@@ -1,0 +1,696 @@
+Date,Transaction ID,Branch,City,Product,SKU,Category,Qty,Unit Price SAR,Total SAR,Cost SAR,Payment Method
+2026-08-27,TX-B3_growing_supermarket-d07-000001,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000002,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000003,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000004,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000005,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000006,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000007,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000008,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000009,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000010,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000011,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000012,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000013,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000014,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000015,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000016,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000017,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000018,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000019,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000020,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000021,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000022,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000023,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000024,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000025,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000026,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000027,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000028,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000029,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000030,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000031,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000032,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000033,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000034,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000035,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000036,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000037,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000038,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000039,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000040,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000041,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000042,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000043,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000044,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000045,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000046,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000047,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000048,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000049,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000050,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000051,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000052,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000053,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000054,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000055,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000056,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000057,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000058,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000059,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000060,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000061,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000062,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000063,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000064,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000065,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000066,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000067,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000068,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000069,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000070,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000071,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000072,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000073,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000074,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000075,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000076,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000077,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000078,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000079,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000080,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000081,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000082,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000083,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000084,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000085,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000086,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000087,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000088,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000089,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000090,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000091,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000092,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000093,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000094,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000095,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000096,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000097,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000098,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000099,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000100,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000101,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000102,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000103,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000104,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000105,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000106,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000107,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000108,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000109,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000110,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000111,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000112,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000113,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000114,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000115,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000116,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000117,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000118,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000119,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000120,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000121,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000122,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000123,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000124,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000125,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000126,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000127,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000128,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000129,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000130,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000131,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000132,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000133,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000134,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000135,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000136,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000137,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000138,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000139,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000140,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000141,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000142,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000143,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000144,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000145,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000146,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000147,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000148,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000149,Jeddah - Corniche,Jeddah,Basmati Rice 5kg,GRW-RIC-01,Rice & Grains,1,49.0,49.0,32.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000150,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-27,TX-B3_growing_supermarket-d07-000151,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000152,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000153,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000154,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000155,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000156,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000157,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-27,TX-B3_growing_supermarket-d07-000158,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-27,TX-B3_growing_supermarket-d07-000159,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000160,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000161,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-27,TX-B3_growing_supermarket-d07-000162,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000163,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000164,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-27,TX-B3_growing_supermarket-d07-000165,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000166,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-27,TX-B3_growing_supermarket-d07-000167,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000168,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000169,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000170,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000171,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-27,TX-B3_growing_supermarket-d07-000172,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000173,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000174,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000175,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000176,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000177,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000178,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000179,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000180,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-27,TX-B3_growing_supermarket-d07-000181,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-28,TX-B3_growing_supermarket-d07-000182,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000183,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000184,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-28,TX-B3_growing_supermarket-d07-000185,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000186,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000187,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000188,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000189,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000190,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-28,TX-B3_growing_supermarket-d07-000191,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-28,TX-B3_growing_supermarket-d07-000192,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000193,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000194,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000195,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-29,TX-B3_growing_supermarket-d07-000196,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000197,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-29,TX-B3_growing_supermarket-d07-000198,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000199,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000200,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000201,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-29,TX-B3_growing_supermarket-d07-000202,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000203,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000204,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000205,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000206,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000207,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-29,TX-B3_growing_supermarket-d07-000208,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000209,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000210,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000211,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000212,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-29,TX-B3_growing_supermarket-d07-000213,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-29,TX-B3_growing_supermarket-d07-000214,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-29,TX-B3_growing_supermarket-d07-000215,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000216,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000217,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000218,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000219,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-29,TX-B3_growing_supermarket-d07-000220,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000221,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000222,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000223,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-29,TX-B3_growing_supermarket-d07-000224,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000225,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000226,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-29,TX-B3_growing_supermarket-d07-000227,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-29,TX-B3_growing_supermarket-d07-000228,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-29,TX-B3_growing_supermarket-d07-000229,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000230,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000231,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000232,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-30,TX-B3_growing_supermarket-d07-000233,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000234,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-30,TX-B3_growing_supermarket-d07-000235,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-30,TX-B3_growing_supermarket-d07-000236,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000237,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000238,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000239,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000240,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000241,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000242,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000243,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000244,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000245,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000246,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000247,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000248,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-30,TX-B3_growing_supermarket-d07-000249,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-30,TX-B3_growing_supermarket-d07-000250,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000251,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000252,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000253,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000254,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000255,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000256,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-30,TX-B3_growing_supermarket-d07-000257,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-30,TX-B3_growing_supermarket-d07-000258,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000259,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000260,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000261,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-30,TX-B3_growing_supermarket-d07-000262,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000263,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000264,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000265,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000266,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000267,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000268,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000269,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000270,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000271,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000272,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-31,TX-B3_growing_supermarket-d07-000273,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000274,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000275,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-31,TX-B3_growing_supermarket-d07-000276,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000277,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000278,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-31,TX-B3_growing_supermarket-d07-000279,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000280,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000281,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-31,TX-B3_growing_supermarket-d07-000282,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000283,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-31,TX-B3_growing_supermarket-d07-000284,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-31,TX-B3_growing_supermarket-d07-000285,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-31,TX-B3_growing_supermarket-d07-000286,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000287,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-31,TX-B3_growing_supermarket-d07-000288,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-31,TX-B3_growing_supermarket-d07-000289,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000290,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-08-31,TX-B3_growing_supermarket-d07-000291,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000292,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000293,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000294,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000295,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000296,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000297,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000298,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-09-01,TX-B3_growing_supermarket-d07-000299,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000300,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-09-01,TX-B3_growing_supermarket-d07-000301,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000302,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-09-01,TX-B3_growing_supermarket-d07-000303,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000304,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000305,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000306,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000307,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000308,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000309,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000310,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000311,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000312,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000313,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-09-01,TX-B3_growing_supermarket-d07-000314,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000315,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-09-01,TX-B3_growing_supermarket-d07-000316,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000317,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-09-02,TX-B3_growing_supermarket-d07-000318,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000319,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000320,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-09-02,TX-B3_growing_supermarket-d07-000321,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000322,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000323,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000324,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000325,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-09-02,TX-B3_growing_supermarket-d07-000326,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-09-02,TX-B3_growing_supermarket-d07-000327,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-09-02,TX-B3_growing_supermarket-d07-000328,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000329,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-09-02,TX-B3_growing_supermarket-d07-000330,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-09-02,TX-B3_growing_supermarket-d07-000331,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000332,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000333,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000334,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,card
+2026-09-02,TX-B3_growing_supermarket-d07-000335,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000336,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000337,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000338,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000339,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000340,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000341,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000342,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000343,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000344,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000345,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000346,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000347,Jeddah - Corniche,Jeddah,Pasta 500g,GRW-PAS-02,Pasta,1,5.75,5.75,3.1,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000348,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000349,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000350,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000351,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000352,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000353,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000354,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000355,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000356,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000357,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000358,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000359,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000360,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000361,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000362,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000363,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000364,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000365,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000366,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000367,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000368,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000369,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000370,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000371,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000372,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000373,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000374,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000375,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000376,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000377,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000378,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000379,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000380,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000381,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000382,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000383,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000384,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000385,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000386,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000387,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000388,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000389,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000390,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000391,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000392,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000393,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000394,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000395,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000396,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000397,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000398,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000399,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000400,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000401,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000402,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000403,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000404,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000405,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000406,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000407,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000408,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000409,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000410,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000411,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000412,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000413,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000414,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000415,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000416,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000417,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000418,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000419,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000420,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000421,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000422,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000423,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000424,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000425,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000426,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000427,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000428,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000429,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000430,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000431,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000432,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000433,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000434,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000435,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000436,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000437,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000438,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000439,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000440,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000441,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000442,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000443,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000444,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000445,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000446,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000447,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000448,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000449,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000450,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000451,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000452,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000453,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000454,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000455,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000456,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000457,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000458,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000459,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000460,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000461,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000462,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000463,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000464,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000465,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000466,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000467,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000468,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000469,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000470,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000471,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000472,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000473,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000474,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000475,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000476,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000477,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000478,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000479,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000480,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000481,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000482,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000483,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000484,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000485,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000486,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000487,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000488,Jeddah - Corniche,Jeddah,Sunflower Oil 1.5L,GRW-OIL-03,Oils,1,17.5,17.5,11.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000489,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000490,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000491,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000492,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000493,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000494,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000495,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000496,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000497,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000498,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000499,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000500,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000501,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000502,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000503,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000504,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000505,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000506,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000507,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000508,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000509,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000510,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000511,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000512,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000513,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000514,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000515,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000516,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000517,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000518,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000519,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000520,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000521,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000522,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000523,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000524,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000525,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000526,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000527,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000528,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000529,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000530,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000531,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000532,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000533,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000534,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000535,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000536,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000537,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000538,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000539,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000540,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000541,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000542,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000543,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000544,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000545,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000546,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000547,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000548,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000549,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000550,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000551,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000552,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000553,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000554,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000555,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000556,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000557,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000558,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000559,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000560,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000561,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000562,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000563,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000564,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000565,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000566,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000567,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000568,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000569,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000570,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000571,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000572,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000573,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000574,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000575,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000576,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000577,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000578,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000579,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000580,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000581,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000582,Jeddah - Corniche,Jeddah,Tomato Paste 800g,GRW-TOM-04,Canned Goods,1,7.25,7.25,4.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000583,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000584,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000585,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000586,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000587,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000588,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000589,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000590,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000591,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000592,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-08-27,TX-B3_growing_supermarket-d07-000593,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000594,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000595,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000596,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000597,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000598,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000599,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000600,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000601,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000602,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000603,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000604,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-08-28,TX-B3_growing_supermarket-d07-000605,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000606,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000607,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000608,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000609,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000610,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000611,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-08-29,TX-B3_growing_supermarket-d07-000612,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000613,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000614,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000615,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000616,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000617,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000618,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000619,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000620,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-08-30,TX-B3_growing_supermarket-d07-000621,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000622,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000623,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000624,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000625,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000626,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000627,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000628,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-08-31,TX-B3_growing_supermarket-d07-000629,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000630,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000631,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000632,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000633,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000634,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000635,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000636,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000637,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000638,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000639,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000640,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-09-01,TX-B3_growing_supermarket-d07-000641,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000642,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000643,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000644,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000645,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000646,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000647,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000648,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000649,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000650,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000651,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000652,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000653,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,card
+2026-09-02,TX-B3_growing_supermarket-d07-000654,Jeddah - Corniche,Jeddah,Eggs 30pc Tray,GRW-EGG-05,Dairy,1,21.0,21.0,14.0,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000655,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,card
+2026-08-27,TX-B3_growing_supermarket-d07-000656,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000657,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000658,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000659,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,cash
+2026-08-27,TX-B3_growing_supermarket-d07-000660,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-27,TX-B3_growing_supermarket-d07-000661,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000662,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,card
+2026-08-28,TX-B3_growing_supermarket-d07-000663,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000664,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-28,TX-B3_growing_supermarket-d07-000665,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000666,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,cash
+2026-08-28,TX-B3_growing_supermarket-d07-000667,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000668,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,cash
+2026-08-29,TX-B3_growing_supermarket-d07-000669,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000670,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,card
+2026-08-29,TX-B3_growing_supermarket-d07-000671,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-29,TX-B3_growing_supermarket-d07-000672,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000673,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000674,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,cash
+2026-08-30,TX-B3_growing_supermarket-d07-000675,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000676,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,card
+2026-08-30,TX-B3_growing_supermarket-d07-000677,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-30,TX-B3_growing_supermarket-d07-000678,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000679,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000680,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,card
+2026-08-31,TX-B3_growing_supermarket-d07-000681,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000682,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-08-31,TX-B3_growing_supermarket-d07-000683,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,cash
+2026-08-31,TX-B3_growing_supermarket-d07-000684,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,card
+2026-09-01,TX-B3_growing_supermarket-d07-000685,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000686,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000687,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-09-01,TX-B3_growing_supermarket-d07-000688,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,cash
+2026-09-01,TX-B3_growing_supermarket-d07-000689,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,cash
+2026-09-02,TX-B3_growing_supermarket-d07-000690,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada
+2026-09-02,TX-B3_growing_supermarket-d07-000691,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,card
+2026-09-02,TX-B3_growing_supermarket-d07-000692,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,card
+2026-09-02,TX-B3_growing_supermarket-d07-000693,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,card
+2026-09-02,TX-B3_growing_supermarket-d07-000694,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,card
+2026-09-02,TX-B3_growing_supermarket-d07-000695,Jeddah - Corniche,Jeddah,Black Tea 100 bags,CTL-TEA-06,Beverages,1,15.0,15.0,9.5,mada

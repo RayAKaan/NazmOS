@@ -1,0 +1,17 @@
+DELETE FROM money_audit_actions WHERE audit_id IN (SELECT id FROM money_audits WHERE business_id = 'dc430151-fe53-40d1-b1df-97f157673042');
+DELETE FROM money_audits WHERE business_id = 'dc430151-fe53-40d1-b1df-97f157673042';
+DELETE FROM executed_actions WHERE business_id = 'dc430151-fe53-40d1-b1df-97f157673042';
+DELETE FROM outcome_records WHERE business_id = 'dc430151-fe53-40d1-b1df-97f157673042';
+DELETE FROM inventory WHERE business_id = 'dc430151-fe53-40d1-b1df-97f157673042';
+DELETE FROM daily_summaries WHERE business_id = 'dc430151-fe53-40d1-b1df-97f157673042';
+DELETE FROM items WHERE business_id = 'dc430151-fe53-40d1-b1df-97f157673042';
+DELETE FROM purchase_orders WHERE business_id = 'dc430151-fe53-40d1-b1df-97f157673042';
+DELETE FROM uploaded_files WHERE business_id = 'dc430151-fe53-40d1-b1df-97f157673042';
+DELETE FROM subscriptions WHERE business_id = 'dc430151-fe53-40d1-b1df-97f157673042';
+DELETE FROM transactions WHERE business_id = 'dc430151-fe53-40d1-b1df-97f157673042';
+DELETE FROM decision_log WHERE business_id = 'dc430151-fe53-40d1-b1df-97f157673042';
+DELETE FROM events WHERE business_id = 'dc430151-fe53-40d1-b1df-97f157673042';
+DELETE FROM categories WHERE business_id = 'dc430151-fe53-40d1-b1df-97f157673042';
+DELETE FROM businesses WHERE id = 'dc430151-fe53-40d1-b1df-97f157673042';
+DELETE FROM users WHERE email = 'alnoor@example.com';
+SELECT 'done';

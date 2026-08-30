@@ -1,0 +1,464 @@
+Date,Transaction ID,Branch,City,Product,SKU,Category,Qty,Unit Price SAR,Total SAR,Cost SAR,Payment Method
+2026-10-11,TX-B4_seasonal_retailer-d60-000001,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-11,TX-B4_seasonal_retailer-d60-000002,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-11,TX-B4_seasonal_retailer-d60-000003,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-11,TX-B4_seasonal_retailer-d60-000004,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-11,TX-B4_seasonal_retailer-d60-000005,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-11,TX-B4_seasonal_retailer-d60-000006,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-11,TX-B4_seasonal_retailer-d60-000007,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-11,TX-B4_seasonal_retailer-d60-000008,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-11,TX-B4_seasonal_retailer-d60-000009,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-11,TX-B4_seasonal_retailer-d60-000010,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-11,TX-B4_seasonal_retailer-d60-000011,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-11,TX-B4_seasonal_retailer-d60-000012,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-11,TX-B4_seasonal_retailer-d60-000013,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-11,TX-B4_seasonal_retailer-d60-000014,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-11,TX-B4_seasonal_retailer-d60-000015,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-11,TX-B4_seasonal_retailer-d60-000016,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-11,TX-B4_seasonal_retailer-d60-000017,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-11,TX-B4_seasonal_retailer-d60-000018,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-11,TX-B4_seasonal_retailer-d60-000019,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-11,TX-B4_seasonal_retailer-d60-000020,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-11,TX-B4_seasonal_retailer-d60-000021,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-11,TX-B4_seasonal_retailer-d60-000022,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-11,TX-B4_seasonal_retailer-d60-000023,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-11,TX-B4_seasonal_retailer-d60-000024,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-11,TX-B4_seasonal_retailer-d60-000025,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-11,TX-B4_seasonal_retailer-d60-000026,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-12,TX-B4_seasonal_retailer-d60-000027,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-12,TX-B4_seasonal_retailer-d60-000028,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-12,TX-B4_seasonal_retailer-d60-000029,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-12,TX-B4_seasonal_retailer-d60-000030,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-12,TX-B4_seasonal_retailer-d60-000031,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-12,TX-B4_seasonal_retailer-d60-000032,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-12,TX-B4_seasonal_retailer-d60-000033,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-12,TX-B4_seasonal_retailer-d60-000034,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-12,TX-B4_seasonal_retailer-d60-000035,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-12,TX-B4_seasonal_retailer-d60-000036,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-12,TX-B4_seasonal_retailer-d60-000037,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-12,TX-B4_seasonal_retailer-d60-000038,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-12,TX-B4_seasonal_retailer-d60-000039,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-12,TX-B4_seasonal_retailer-d60-000040,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-12,TX-B4_seasonal_retailer-d60-000041,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-12,TX-B4_seasonal_retailer-d60-000042,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-12,TX-B4_seasonal_retailer-d60-000043,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-12,TX-B4_seasonal_retailer-d60-000044,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-12,TX-B4_seasonal_retailer-d60-000045,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-12,TX-B4_seasonal_retailer-d60-000046,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-12,TX-B4_seasonal_retailer-d60-000047,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-12,TX-B4_seasonal_retailer-d60-000048,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-12,TX-B4_seasonal_retailer-d60-000049,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-12,TX-B4_seasonal_retailer-d60-000050,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-13,TX-B4_seasonal_retailer-d60-000051,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-13,TX-B4_seasonal_retailer-d60-000052,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-13,TX-B4_seasonal_retailer-d60-000053,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-13,TX-B4_seasonal_retailer-d60-000054,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-13,TX-B4_seasonal_retailer-d60-000055,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-13,TX-B4_seasonal_retailer-d60-000056,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-13,TX-B4_seasonal_retailer-d60-000057,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-13,TX-B4_seasonal_retailer-d60-000058,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-13,TX-B4_seasonal_retailer-d60-000059,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-13,TX-B4_seasonal_retailer-d60-000060,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-13,TX-B4_seasonal_retailer-d60-000061,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-13,TX-B4_seasonal_retailer-d60-000062,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-13,TX-B4_seasonal_retailer-d60-000063,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-13,TX-B4_seasonal_retailer-d60-000064,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-13,TX-B4_seasonal_retailer-d60-000065,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-13,TX-B4_seasonal_retailer-d60-000066,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-13,TX-B4_seasonal_retailer-d60-000067,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-13,TX-B4_seasonal_retailer-d60-000068,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-13,TX-B4_seasonal_retailer-d60-000069,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-13,TX-B4_seasonal_retailer-d60-000070,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-13,TX-B4_seasonal_retailer-d60-000071,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-13,TX-B4_seasonal_retailer-d60-000072,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-13,TX-B4_seasonal_retailer-d60-000073,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-13,TX-B4_seasonal_retailer-d60-000074,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-14,TX-B4_seasonal_retailer-d60-000075,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-14,TX-B4_seasonal_retailer-d60-000076,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-14,TX-B4_seasonal_retailer-d60-000077,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-14,TX-B4_seasonal_retailer-d60-000078,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-14,TX-B4_seasonal_retailer-d60-000079,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-14,TX-B4_seasonal_retailer-d60-000080,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-14,TX-B4_seasonal_retailer-d60-000081,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-14,TX-B4_seasonal_retailer-d60-000082,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-14,TX-B4_seasonal_retailer-d60-000083,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-14,TX-B4_seasonal_retailer-d60-000084,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-14,TX-B4_seasonal_retailer-d60-000085,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-14,TX-B4_seasonal_retailer-d60-000086,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-14,TX-B4_seasonal_retailer-d60-000087,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-14,TX-B4_seasonal_retailer-d60-000088,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-14,TX-B4_seasonal_retailer-d60-000089,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-14,TX-B4_seasonal_retailer-d60-000090,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-14,TX-B4_seasonal_retailer-d60-000091,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-14,TX-B4_seasonal_retailer-d60-000092,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-14,TX-B4_seasonal_retailer-d60-000093,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-14,TX-B4_seasonal_retailer-d60-000094,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-14,TX-B4_seasonal_retailer-d60-000095,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-14,TX-B4_seasonal_retailer-d60-000096,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-14,TX-B4_seasonal_retailer-d60-000097,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-14,TX-B4_seasonal_retailer-d60-000098,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-14,TX-B4_seasonal_retailer-d60-000099,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-14,TX-B4_seasonal_retailer-d60-000100,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-14,TX-B4_seasonal_retailer-d60-000101,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-14,TX-B4_seasonal_retailer-d60-000102,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-15,TX-B4_seasonal_retailer-d60-000103,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-15,TX-B4_seasonal_retailer-d60-000104,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-15,TX-B4_seasonal_retailer-d60-000105,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-15,TX-B4_seasonal_retailer-d60-000106,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-15,TX-B4_seasonal_retailer-d60-000107,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-15,TX-B4_seasonal_retailer-d60-000108,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-15,TX-B4_seasonal_retailer-d60-000109,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-15,TX-B4_seasonal_retailer-d60-000110,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-15,TX-B4_seasonal_retailer-d60-000111,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-15,TX-B4_seasonal_retailer-d60-000112,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-15,TX-B4_seasonal_retailer-d60-000113,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-15,TX-B4_seasonal_retailer-d60-000114,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-15,TX-B4_seasonal_retailer-d60-000115,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-15,TX-B4_seasonal_retailer-d60-000116,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-15,TX-B4_seasonal_retailer-d60-000117,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-15,TX-B4_seasonal_retailer-d60-000118,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-15,TX-B4_seasonal_retailer-d60-000119,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-15,TX-B4_seasonal_retailer-d60-000120,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-15,TX-B4_seasonal_retailer-d60-000121,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-15,TX-B4_seasonal_retailer-d60-000122,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-16,TX-B4_seasonal_retailer-d60-000123,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-16,TX-B4_seasonal_retailer-d60-000124,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-16,TX-B4_seasonal_retailer-d60-000125,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-16,TX-B4_seasonal_retailer-d60-000126,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-16,TX-B4_seasonal_retailer-d60-000127,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-16,TX-B4_seasonal_retailer-d60-000128,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-16,TX-B4_seasonal_retailer-d60-000129,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-16,TX-B4_seasonal_retailer-d60-000130,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-16,TX-B4_seasonal_retailer-d60-000131,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-16,TX-B4_seasonal_retailer-d60-000132,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-16,TX-B4_seasonal_retailer-d60-000133,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-16,TX-B4_seasonal_retailer-d60-000134,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-16,TX-B4_seasonal_retailer-d60-000135,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-16,TX-B4_seasonal_retailer-d60-000136,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-16,TX-B4_seasonal_retailer-d60-000137,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-16,TX-B4_seasonal_retailer-d60-000138,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-16,TX-B4_seasonal_retailer-d60-000139,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-16,TX-B4_seasonal_retailer-d60-000140,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-16,TX-B4_seasonal_retailer-d60-000141,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000142,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000143,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000144,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-17,TX-B4_seasonal_retailer-d60-000145,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-17,TX-B4_seasonal_retailer-d60-000146,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-17,TX-B4_seasonal_retailer-d60-000147,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-17,TX-B4_seasonal_retailer-d60-000148,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000149,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-17,TX-B4_seasonal_retailer-d60-000150,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-17,TX-B4_seasonal_retailer-d60-000151,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000152,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-17,TX-B4_seasonal_retailer-d60-000153,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000154,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000155,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-17,TX-B4_seasonal_retailer-d60-000156,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000157,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-17,TX-B4_seasonal_retailer-d60-000158,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-17,TX-B4_seasonal_retailer-d60-000159,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000160,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-18,TX-B4_seasonal_retailer-d60-000161,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-18,TX-B4_seasonal_retailer-d60-000162,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-18,TX-B4_seasonal_retailer-d60-000163,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-18,TX-B4_seasonal_retailer-d60-000164,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-18,TX-B4_seasonal_retailer-d60-000165,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-18,TX-B4_seasonal_retailer-d60-000166,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-18,TX-B4_seasonal_retailer-d60-000167,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-19,TX-B4_seasonal_retailer-d60-000168,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-19,TX-B4_seasonal_retailer-d60-000169,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-19,TX-B4_seasonal_retailer-d60-000170,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-19,TX-B4_seasonal_retailer-d60-000171,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-19,TX-B4_seasonal_retailer-d60-000172,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-19,TX-B4_seasonal_retailer-d60-000173,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-19,TX-B4_seasonal_retailer-d60-000174,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-19,TX-B4_seasonal_retailer-d60-000175,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-19,TX-B4_seasonal_retailer-d60-000176,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-19,TX-B4_seasonal_retailer-d60-000177,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-19,TX-B4_seasonal_retailer-d60-000178,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-19,TX-B4_seasonal_retailer-d60-000179,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-19,TX-B4_seasonal_retailer-d60-000180,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-19,TX-B4_seasonal_retailer-d60-000181,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-19,TX-B4_seasonal_retailer-d60-000182,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-20,TX-B4_seasonal_retailer-d60-000183,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-20,TX-B4_seasonal_retailer-d60-000184,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-20,TX-B4_seasonal_retailer-d60-000185,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-20,TX-B4_seasonal_retailer-d60-000186,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-20,TX-B4_seasonal_retailer-d60-000187,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-20,TX-B4_seasonal_retailer-d60-000188,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-20,TX-B4_seasonal_retailer-d60-000189,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-20,TX-B4_seasonal_retailer-d60-000190,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-20,TX-B4_seasonal_retailer-d60-000191,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-20,TX-B4_seasonal_retailer-d60-000192,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-20,TX-B4_seasonal_retailer-d60-000193,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-20,TX-B4_seasonal_retailer-d60-000194,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-20,TX-B4_seasonal_retailer-d60-000195,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-20,TX-B4_seasonal_retailer-d60-000196,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-20,TX-B4_seasonal_retailer-d60-000197,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-20,TX-B4_seasonal_retailer-d60-000198,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000199,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000200,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-21,TX-B4_seasonal_retailer-d60-000201,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000202,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-21,TX-B4_seasonal_retailer-d60-000203,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000204,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000205,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-21,TX-B4_seasonal_retailer-d60-000206,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-21,TX-B4_seasonal_retailer-d60-000207,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-21,TX-B4_seasonal_retailer-d60-000208,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-21,TX-B4_seasonal_retailer-d60-000209,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000210,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-21,TX-B4_seasonal_retailer-d60-000211,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000212,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000213,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000214,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-21,TX-B4_seasonal_retailer-d60-000215,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-21,TX-B4_seasonal_retailer-d60-000216,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-21,TX-B4_seasonal_retailer-d60-000217,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000218,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-21,TX-B4_seasonal_retailer-d60-000219,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-21,TX-B4_seasonal_retailer-d60-000220,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000221,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-22,TX-B4_seasonal_retailer-d60-000222,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000223,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-22,TX-B4_seasonal_retailer-d60-000224,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-22,TX-B4_seasonal_retailer-d60-000225,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000226,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-22,TX-B4_seasonal_retailer-d60-000227,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-22,TX-B4_seasonal_retailer-d60-000228,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000229,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-22,TX-B4_seasonal_retailer-d60-000230,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000231,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000232,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-22,TX-B4_seasonal_retailer-d60-000233,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-22,TX-B4_seasonal_retailer-d60-000234,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-22,TX-B4_seasonal_retailer-d60-000235,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000236,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-22,TX-B4_seasonal_retailer-d60-000237,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000238,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-22,TX-B4_seasonal_retailer-d60-000239,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000240,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000241,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000242,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000243,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-22,TX-B4_seasonal_retailer-d60-000244,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-22,TX-B4_seasonal_retailer-d60-000245,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-22,TX-B4_seasonal_retailer-d60-000246,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-23,TX-B4_seasonal_retailer-d60-000247,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-23,TX-B4_seasonal_retailer-d60-000248,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-23,TX-B4_seasonal_retailer-d60-000249,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-23,TX-B4_seasonal_retailer-d60-000250,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-23,TX-B4_seasonal_retailer-d60-000251,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-23,TX-B4_seasonal_retailer-d60-000252,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-23,TX-B4_seasonal_retailer-d60-000253,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-23,TX-B4_seasonal_retailer-d60-000254,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-23,TX-B4_seasonal_retailer-d60-000255,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-23,TX-B4_seasonal_retailer-d60-000256,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-23,TX-B4_seasonal_retailer-d60-000257,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-23,TX-B4_seasonal_retailer-d60-000258,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-23,TX-B4_seasonal_retailer-d60-000259,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-23,TX-B4_seasonal_retailer-d60-000260,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-23,TX-B4_seasonal_retailer-d60-000261,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-23,TX-B4_seasonal_retailer-d60-000262,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-23,TX-B4_seasonal_retailer-d60-000263,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-23,TX-B4_seasonal_retailer-d60-000264,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-23,TX-B4_seasonal_retailer-d60-000265,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-23,TX-B4_seasonal_retailer-d60-000266,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-23,TX-B4_seasonal_retailer-d60-000267,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-23,TX-B4_seasonal_retailer-d60-000268,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-23,TX-B4_seasonal_retailer-d60-000269,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-23,TX-B4_seasonal_retailer-d60-000270,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-23,TX-B4_seasonal_retailer-d60-000271,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-24,TX-B4_seasonal_retailer-d60-000272,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-24,TX-B4_seasonal_retailer-d60-000273,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-24,TX-B4_seasonal_retailer-d60-000274,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-24,TX-B4_seasonal_retailer-d60-000275,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-24,TX-B4_seasonal_retailer-d60-000276,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-24,TX-B4_seasonal_retailer-d60-000277,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-24,TX-B4_seasonal_retailer-d60-000278,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-24,TX-B4_seasonal_retailer-d60-000279,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-24,TX-B4_seasonal_retailer-d60-000280,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-24,TX-B4_seasonal_retailer-d60-000281,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-24,TX-B4_seasonal_retailer-d60-000282,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-24,TX-B4_seasonal_retailer-d60-000283,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-24,TX-B4_seasonal_retailer-d60-000284,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-24,TX-B4_seasonal_retailer-d60-000285,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-24,TX-B4_seasonal_retailer-d60-000286,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-24,TX-B4_seasonal_retailer-d60-000287,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-24,TX-B4_seasonal_retailer-d60-000288,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-24,TX-B4_seasonal_retailer-d60-000289,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-24,TX-B4_seasonal_retailer-d60-000290,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-24,TX-B4_seasonal_retailer-d60-000291,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-24,TX-B4_seasonal_retailer-d60-000292,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-24,TX-B4_seasonal_retailer-d60-000293,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-24,TX-B4_seasonal_retailer-d60-000294,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-24,TX-B4_seasonal_retailer-d60-000295,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-25,TX-B4_seasonal_retailer-d60-000296,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-25,TX-B4_seasonal_retailer-d60-000297,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-25,TX-B4_seasonal_retailer-d60-000298,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-25,TX-B4_seasonal_retailer-d60-000299,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-25,TX-B4_seasonal_retailer-d60-000300,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-25,TX-B4_seasonal_retailer-d60-000301,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-25,TX-B4_seasonal_retailer-d60-000302,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-25,TX-B4_seasonal_retailer-d60-000303,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-25,TX-B4_seasonal_retailer-d60-000304,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-25,TX-B4_seasonal_retailer-d60-000305,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-25,TX-B4_seasonal_retailer-d60-000306,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-25,TX-B4_seasonal_retailer-d60-000307,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-25,TX-B4_seasonal_retailer-d60-000308,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-25,TX-B4_seasonal_retailer-d60-000309,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-25,TX-B4_seasonal_retailer-d60-000310,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-25,TX-B4_seasonal_retailer-d60-000311,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-25,TX-B4_seasonal_retailer-d60-000312,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-25,TX-B4_seasonal_retailer-d60-000313,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-25,TX-B4_seasonal_retailer-d60-000314,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-25,TX-B4_seasonal_retailer-d60-000315,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,cash
+2026-10-25,TX-B4_seasonal_retailer-d60-000316,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,card
+2026-10-25,TX-B4_seasonal_retailer-d60-000317,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-25,TX-B4_seasonal_retailer-d60-000318,Abha - Central,Abha,Sliced Bread Large,STP-BRD-04,Bakery,1,4.0,4.0,2.4,mada
+2026-10-11,TX-B4_seasonal_retailer-d60-000319,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-11,TX-B4_seasonal_retailer-d60-000320,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-11,TX-B4_seasonal_retailer-d60-000321,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-11,TX-B4_seasonal_retailer-d60-000322,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-11,TX-B4_seasonal_retailer-d60-000323,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-11,TX-B4_seasonal_retailer-d60-000324,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-11,TX-B4_seasonal_retailer-d60-000325,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-11,TX-B4_seasonal_retailer-d60-000326,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-12,TX-B4_seasonal_retailer-d60-000327,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-12,TX-B4_seasonal_retailer-d60-000328,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-12,TX-B4_seasonal_retailer-d60-000329,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-12,TX-B4_seasonal_retailer-d60-000330,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-12,TX-B4_seasonal_retailer-d60-000331,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-12,TX-B4_seasonal_retailer-d60-000332,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-12,TX-B4_seasonal_retailer-d60-000333,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-12,TX-B4_seasonal_retailer-d60-000334,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-12,TX-B4_seasonal_retailer-d60-000335,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-12,TX-B4_seasonal_retailer-d60-000336,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-13,TX-B4_seasonal_retailer-d60-000337,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-13,TX-B4_seasonal_retailer-d60-000338,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-13,TX-B4_seasonal_retailer-d60-000339,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-13,TX-B4_seasonal_retailer-d60-000340,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-13,TX-B4_seasonal_retailer-d60-000341,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-13,TX-B4_seasonal_retailer-d60-000342,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-13,TX-B4_seasonal_retailer-d60-000343,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-13,TX-B4_seasonal_retailer-d60-000344,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-13,TX-B4_seasonal_retailer-d60-000345,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-13,TX-B4_seasonal_retailer-d60-000346,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-14,TX-B4_seasonal_retailer-d60-000347,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-14,TX-B4_seasonal_retailer-d60-000348,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-14,TX-B4_seasonal_retailer-d60-000349,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-14,TX-B4_seasonal_retailer-d60-000350,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-14,TX-B4_seasonal_retailer-d60-000351,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-14,TX-B4_seasonal_retailer-d60-000352,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-14,TX-B4_seasonal_retailer-d60-000353,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-14,TX-B4_seasonal_retailer-d60-000354,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-15,TX-B4_seasonal_retailer-d60-000355,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-15,TX-B4_seasonal_retailer-d60-000356,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-15,TX-B4_seasonal_retailer-d60-000357,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-15,TX-B4_seasonal_retailer-d60-000358,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-15,TX-B4_seasonal_retailer-d60-000359,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-15,TX-B4_seasonal_retailer-d60-000360,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-15,TX-B4_seasonal_retailer-d60-000361,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-15,TX-B4_seasonal_retailer-d60-000362,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-15,TX-B4_seasonal_retailer-d60-000363,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-15,TX-B4_seasonal_retailer-d60-000364,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-15,TX-B4_seasonal_retailer-d60-000365,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-16,TX-B4_seasonal_retailer-d60-000366,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-16,TX-B4_seasonal_retailer-d60-000367,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-16,TX-B4_seasonal_retailer-d60-000368,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-16,TX-B4_seasonal_retailer-d60-000369,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-16,TX-B4_seasonal_retailer-d60-000370,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-16,TX-B4_seasonal_retailer-d60-000371,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-16,TX-B4_seasonal_retailer-d60-000372,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-16,TX-B4_seasonal_retailer-d60-000373,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-16,TX-B4_seasonal_retailer-d60-000374,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-16,TX-B4_seasonal_retailer-d60-000375,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-16,TX-B4_seasonal_retailer-d60-000376,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-16,TX-B4_seasonal_retailer-d60-000377,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-16,TX-B4_seasonal_retailer-d60-000378,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000379,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-17,TX-B4_seasonal_retailer-d60-000380,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-17,TX-B4_seasonal_retailer-d60-000381,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-17,TX-B4_seasonal_retailer-d60-000382,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000383,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-17,TX-B4_seasonal_retailer-d60-000384,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000385,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-17,TX-B4_seasonal_retailer-d60-000386,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000387,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000388,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-17,TX-B4_seasonal_retailer-d60-000389,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-17,TX-B4_seasonal_retailer-d60-000390,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-18,TX-B4_seasonal_retailer-d60-000391,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-18,TX-B4_seasonal_retailer-d60-000392,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-18,TX-B4_seasonal_retailer-d60-000393,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-18,TX-B4_seasonal_retailer-d60-000394,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-18,TX-B4_seasonal_retailer-d60-000395,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-18,TX-B4_seasonal_retailer-d60-000396,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-18,TX-B4_seasonal_retailer-d60-000397,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-18,TX-B4_seasonal_retailer-d60-000398,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-18,TX-B4_seasonal_retailer-d60-000399,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-19,TX-B4_seasonal_retailer-d60-000400,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-19,TX-B4_seasonal_retailer-d60-000401,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-19,TX-B4_seasonal_retailer-d60-000402,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-19,TX-B4_seasonal_retailer-d60-000403,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-19,TX-B4_seasonal_retailer-d60-000404,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-19,TX-B4_seasonal_retailer-d60-000405,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-19,TX-B4_seasonal_retailer-d60-000406,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-20,TX-B4_seasonal_retailer-d60-000407,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-20,TX-B4_seasonal_retailer-d60-000408,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-20,TX-B4_seasonal_retailer-d60-000409,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-20,TX-B4_seasonal_retailer-d60-000410,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-20,TX-B4_seasonal_retailer-d60-000411,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-20,TX-B4_seasonal_retailer-d60-000412,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-20,TX-B4_seasonal_retailer-d60-000413,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-20,TX-B4_seasonal_retailer-d60-000414,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-20,TX-B4_seasonal_retailer-d60-000415,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-21,TX-B4_seasonal_retailer-d60-000416,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-21,TX-B4_seasonal_retailer-d60-000417,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000418,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-21,TX-B4_seasonal_retailer-d60-000419,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000420,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-21,TX-B4_seasonal_retailer-d60-000421,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000422,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000423,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-21,TX-B4_seasonal_retailer-d60-000424,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-22,TX-B4_seasonal_retailer-d60-000425,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-22,TX-B4_seasonal_retailer-d60-000426,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000427,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000428,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000429,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000430,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-22,TX-B4_seasonal_retailer-d60-000431,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-22,TX-B4_seasonal_retailer-d60-000432,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-22,TX-B4_seasonal_retailer-d60-000433,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000434,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-22,TX-B4_seasonal_retailer-d60-000435,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-22,TX-B4_seasonal_retailer-d60-000436,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-23,TX-B4_seasonal_retailer-d60-000437,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-23,TX-B4_seasonal_retailer-d60-000438,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-23,TX-B4_seasonal_retailer-d60-000439,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-23,TX-B4_seasonal_retailer-d60-000440,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-23,TX-B4_seasonal_retailer-d60-000441,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-23,TX-B4_seasonal_retailer-d60-000442,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-23,TX-B4_seasonal_retailer-d60-000443,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-23,TX-B4_seasonal_retailer-d60-000444,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-23,TX-B4_seasonal_retailer-d60-000445,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-23,TX-B4_seasonal_retailer-d60-000446,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-24,TX-B4_seasonal_retailer-d60-000447,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-24,TX-B4_seasonal_retailer-d60-000448,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-24,TX-B4_seasonal_retailer-d60-000449,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-24,TX-B4_seasonal_retailer-d60-000450,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-24,TX-B4_seasonal_retailer-d60-000451,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-24,TX-B4_seasonal_retailer-d60-000452,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-24,TX-B4_seasonal_retailer-d60-000453,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-24,TX-B4_seasonal_retailer-d60-000454,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-25,TX-B4_seasonal_retailer-d60-000455,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-25,TX-B4_seasonal_retailer-d60-000456,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-25,TX-B4_seasonal_retailer-d60-000457,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card
+2026-10-25,TX-B4_seasonal_retailer-d60-000458,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-25,TX-B4_seasonal_retailer-d60-000459,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-25,TX-B4_seasonal_retailer-d60-000460,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-25,TX-B4_seasonal_retailer-d60-000461,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,mada
+2026-10-25,TX-B4_seasonal_retailer-d60-000462,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,cash
+2026-10-25,TX-B4_seasonal_retailer-d60-000463,Abha - Central,Abha,Egyptian Rice 2kg,STP-RIC-05,Rice & Grains,1,18.0,18.0,11.0,card

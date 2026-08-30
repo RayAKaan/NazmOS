@@ -1,0 +1,7 @@
+Product,SKU,Category,Brand,Pack Size,Current Stock,Cost Price SAR,Shelf Price SAR,Barcode,Storage Type,Expiry Date,Batch Number,Reorder Level,Supplier
+Saffron 10g Premium,STR-SAF-01,Ingredients,Generic,unit,12,180.0,0.0,62800990000001,ambient,2027-02-22,B001,10,Golden Spice Co.
+Extra Virgin Olive Oil 5L,STR-OLV-02,Ingredients,Generic,unit,20,95.0,0.0,62800990000002,ambient,2027-02-22,B002,10,Golden Spice Co.
+Tomato Puree Catering Pack,ING-TOM-03,Ingredients,Generic,unit,9,48.0,0.0,62800990000003,ambient,2027-02-22,B003,30,BulkFoods Ltd
+Calrose Rice 20kg,ING-RIC-04,Ingredients,Generic,unit,55,88.0,0.0,62800990000004,ambient,2027-02-22,B004,10,BulkFoods Ltd
+Mystery Bulk Item A,HOLE-NODATA-01,Ingredients,Generic,unit,26,,0.0,62800990000005,ambient,2027-02-22,B005,10,Tamimi Supply
+Mystery Bulk Item B,HOLE-NODATA-02,Ingredients,Generic,unit,15,,,62800990000006,ambient,2027-02-22,B006,10,Tamimi Supply

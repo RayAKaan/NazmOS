@@ -31,7 +31,7 @@ export function Sidebar() {
 
   const toolsNavItems = [
     ...(PHARMACY_ENABLED ? [{ href: "/inventory/expiry", label: t.sidebar.expiry, icon: CalendarClock, badge: null }] : []),
-    { href: "/suppliers", label: t.sidebar.suppliers, icon: Truck, badge: null },
+    { href: "/suppliers", label: t.sidebar.suppliers, icon: Truck, badge: "Preview" },
   ];
 
   const renderItem = (item: any) => {

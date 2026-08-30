@@ -1,37 +1,39 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Truck } from "lucide-react";
+import { Truck, RefreshCw } from "lucide-react";
 import { EmptyState } from "@/components/ui/EmptyState";
-
-type Supplier = {
-  id: string;
-  name_ar: string;
-  name_en: string;
-  city: string;
-  category: string;
-  phone?: string;
-  whatsapp_number?: string;
-  lead_time_days: number;
-  total_orders: number;
-  total_volume_sar: number;
-};
+import { useSuppliers } from "@/hooks/useSuppliers";
 
 export default function SuppliersPage() {
-  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-
-  useEffect(() => {
-    // TODO: GET /api/v1/suppliers
-    setSuppliers([
-      { id: "1", name_ar: "المراعي", name_en: "Almarai", city: "Riyadh", category: "dairy", phone: "+966 11 470 0005", whatsapp_number: "+966500000001", lead_time_days: 1, total_orders: 47, total_volume_sar: 84500 },
-      { id: "2", name_ar: "نادك", name_en: "Nadec", city: "Riyadh", category: "dairy", phone: "+966 11 202 7777", whatsapp_number: "+966500000002", lead_time_days: 2, total_orders: 22, total_volume_sar: 32100 },
-      { id: "3", name_ar: "الدواء", name_en: "Al-Dawaa Distributor", city: "Buraidah", category: "pharma", phone: "+966 16 385 1111", whatsapp_number: "+966500000003", lead_time_days: 2, total_orders: 31, total_volume_sar: 127400 },
-      { id: "4", name_ar: "النهدي للتوزيع", name_en: "Nahdi Distribution", city: "Jeddah", category: "pharma", phone: "+966 12 653 3333", whatsapp_number: "+966500000004", lead_time_days: 3, total_orders: 12, total_volume_sar: 58900 },
-      { id: "5", name_ar: "مؤسسة التموين الغذائي", name_en: "Food Supply Est.", city: "Riyadh", category: "food_wholesale", phone: "+966 11 405 6677", whatsapp_number: "+966500000005", lead_time_days: 1, total_orders: 56, total_volume_sar: 94300 },
-    ]);
-  }, []);
+  const { suppliers, isLoading, error, refetch } = useSuppliers();
 
   const totalVolume = suppliers.reduce((s, x) => s + x.total_volume_sar, 0);
+
+  if (isLoading) {
+    return (
+      <div className="p-6 md:p-8 max-w-5xl">
+        <div className="h-8 w-56 bg-surface-hover animate-pulse rounded mb-2" />
+        <div className="h-4 w-80 bg-surface-hover animate-pulse rounded mb-6" />
+        <div className="h-64 bg-surface border border-border rounded-2xl animate-pulse" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6 md:p-8 max-w-5xl">
+        <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-6 text-center">
+          <p className="font-medium text-destructive mb-4">{error}</p>
+          <button
+            onClick={refetch}
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-medium hover:bg-primary/90"
+          >
+            <RefreshCw className="w-4 h-4" /> Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 md:p-8 max-w-5xl">

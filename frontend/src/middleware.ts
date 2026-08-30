@@ -13,6 +13,12 @@ const PROTECTED_SEGMENTS = [
   "settings",
   "integrations",
   "chain",
+  "chat",
+  "forecast",
+  "inventory",
+  "suppliers",
+  "weekly-report",
+  "findings",
 ];
 
 // Auth pages: already-authenticated users are sent to their dashboard.
@@ -74,5 +80,11 @@ export const config = {
     "/settings/:path*",
     "/integrations/:path*",
     "/chain/:path*",
+    "/chat/:path*",
+    "/forecast/:path*",
+    "/inventory/:path*",
+    "/suppliers/:path*",
+    "/weekly-report/:path*",
+    "/findings/:path*",
   ],
 };

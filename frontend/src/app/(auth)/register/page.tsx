@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,8 +15,18 @@ import { useAuthStore } from "@/stores/authStore";
 import { AmbientBackground } from "@/components/ui/AmbientBackground";
 
 export default function RegisterPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterForm />
+    </Suspense>
+  );
+}
+
+function RegisterForm() {
   const router = useRouter();
   const { t } = useI18n();
+  const searchParams = useSearchParams();
+  const intent = searchParams.get("intent");
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -50,7 +60,7 @@ export default function RegisterPage() {
         data.fullName,
         data.phone
       );
-      router.push("/onboarding");
+      router.push(intent === "free-audit" ? "/onboarding?intent=free-audit" : "/onboarding");
     } catch (error: any) {
       setToast({
         message:
@@ -78,7 +88,11 @@ export default function RegisterPage() {
             <span className="text-primary-foreground font-bold text-3xl">N</span>
           </div>
           <h1 className="text-3xl font-bold text-text-primary">{t.auth.register.title}</h1>
-          <p className="text-text-muted mt-2">{t.auth.register.subtitle}</p>
+          <p className="text-text-muted mt-2">
+            {intent === "free-audit"
+              ? "Start your free Money Audit — send two files, get insights in 48 hours."
+              : t.auth.register.subtitle}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 import {
@@ -19,11 +19,29 @@ import { AmbientBackground } from "@/components/ui/AmbientBackground";
 type GoalKey = "stockouts" | "dead_stock" | "margins" | "compliance";
 
 export default function OnboardingPage() {
+  return (
+    <Suspense fallback={null}>
+      <OnboardingContent />
+    </Suspense>
+  );
+}
+
+function OnboardingContent() {
   const router = useRouter();
   const { t, locale } = useI18n();
   const isAr = locale === "ar";
+  const searchParams = useSearchParams();
+  const intent = searchParams.get("intent");
   const [step, setStep] = useState(1);
   const [goal, setGoal] = useState<GoalKey | null>(null);
+
+  useEffect(() => {
+    // "free-audit" visitors already chose their goal on the landing page —
+    // skip the quiz and go straight to connecting data sources.
+    if (intent === "free-audit") {
+      setStep((s) => Math.max(s, 2));
+    }
+  }, [intent]);
 
   const goals: { key: GoalKey; label: string; icon: React.ElementType; description: string }[] = [
     {
@@ -145,21 +163,21 @@ export default function OnboardingPage() {
             <div className="text-center">
               <h2 className="text-lg font-semibold">{t.onboarding.firstInsight}</h2>
               <p className="text-sm text-text-muted mt-1">
-                Nazm is analyzing your data. Here is a preview of what you will see.
+                Example preview — what an insight looks like once your files are analyzed. No data is processed at this step.
               </p>
             </div>
 
             <div className="rounded-xl border border-brand-teal/30 bg-brand-teal/5 p-5 space-y-3">
               <div className="flex items-center gap-2 text-brand-teal-light text-sm font-semibold">
                 <CheckCircle2 className="w-4 h-4" />
-                {goal === "stockouts" && "3 items are running low and need reorder this week."}
-                {goal === "dead_stock" && "SAR 12,400 is tied up in items that have not sold in 60 days."}
-                {goal === "margins" && "2 suppliers raised prices; 5 SKUs need shelf-price review."}
-                {goal === "compliance" && "Your VAT report is 98% complete — 2 invoices need categorization."}
-                {!goal && "Your first intelligence summary is ready."}
+                {goal === "stockouts" && "Reorder a few fast-movers before they run out this week — real numbers appear after your first audit."}
+                {goal === "dead_stock" && "Free up cash tied in slow-selling items — real SAR amounts appear after your first audit."}
+                {goal === "margins" && "Review SKUs where shelf price no longer covers cost — real deltas appear after your first audit."}
+                {goal === "compliance" && "Keep your VAT return clean — real gaps appear after your first audit."}
+                {!goal && "Insight previews appear here once your first audit is complete."}
               </div>
               <p className="text-sm text-text-secondary">
-                You can ask Nazm Copilot to explain any recommendation, approve actions, or generate a plan.
+                After your first real audit, ask Nazm Copilot to explain any recommendation, approve actions, or generate a plan.
               </p>
             </div>
 

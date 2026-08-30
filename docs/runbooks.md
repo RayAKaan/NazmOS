@@ -1,90 +1,98 @@
-# NazmOS Production Runbooks
+# NazmOS Operational Runbooks
 
-## 1. Health & Availability
+## 1. Incident Response
 
-### /health endpoint
-```bash
-curl https://<api>/health
-```
-Expected:
-```json
-{"status":"healthy","service":"nazmos-api","checks":{"database":"ok","redis":"ok"}}
-```
+### 1.1 Sev 1: API is down
+1. Check `/health` on the load balancer and individual API instances.
+2. Inspect Sentry for the latest uncaught exceptions.
+3. Check Postgres and Redis health in monitoring dashboards.
+4. If DB is saturated, scale `pool_size`/`max_overflow` via env vars and restart.
+5. Roll back to last known good image if deploy caused it.
 
-### /ready endpoint (Kubernetes readiness)
-```bash
-curl https://<api>/ready
-```
+### 1.2 Sev 2: High 5xx rate
+1. Look at `/metrics` or Grafana for error spikes by path.
+2. Trace a sample failing request via `X-Request-ID` in logs.
+3. Check Celery worker logs if failures correlate with background jobs.
+4. Enable feature flag kill switch if a new module is misbehaving.
 
-### /live endpoint (liveness)
-```bash
-curl https://<api>/live
-```
+## 2. Database Failover
 
-## 2. Metrics & Alerting
+1. Promote read replica to primary (cloud-specific).
+2. Update `DATABASE_URL` secret and restart API + workers.
+3. Verify `/health/ready` returns `ready`.
+4. Trigger a fresh backup from the new primary.
 
-Prometheus metrics are exposed at `/metrics` when `PROMETHEUS_ENABLED=true`.
+## 3. Celery Queue Backup
 
-Key metric names:
-- `nazmos_http_requests_total` — request counter by method/path/status
-- `nazmos_http_request_duration_seconds` — latency histogram
-- `process_*` / `python_*` — standard process metrics
+1. Check queue depths via Flower or Redis: `LLEN celery`.
+2. If workers are stuck, inspect logs and restart worker containers.
+3. For poison messages, move them to the `dead_letter` queue and fix the task.
+4. Replay dead-letter events after the bug fix.
 
-Recommended alerts:
-- Error rate > 1% for 5m: `rate(nazmos_http_requests_total{status_code=~"5.."}[5m]) / rate(nazmos_http_requests_total[5m]) > 0.01`
-- P95 latency > 2s for 5m
-- Database check != "ok"
+## 4. Rollback Procedure
 
-## 3. PII & Logging
+1. Identify last good Git tag or image digest.
+2. Redeploy: `git checkout <tag>` or `docker pull <image>:<tag>` and restart.
+3. Run `alembic downgrade` only if the new migration was backward-compatible.
+4. Verify E2E scripts pass.
 
-All logs are JSON and PII-redacted before emission. Redacted fields include:
-`password`, `password_hash`, `email`, `phone`, `token`, `api_key`, `secret`,
-`credit_card`, `iban`, `credentials_encrypted`, `cr_number`, `wasfaty_id`.
+## 5. Secret Rotation
 
-Never log raw request bodies without running them through `redact_pii()`.
+### 5.1 SECRET_KEY
+1. Generate new key: `python -c "import secrets; print(secrets.token_urlsafe(48))"`.
+2. Update secret store (Vault / AWS Secrets Manager / etc.).
+3. Rolling restart API and Celery workers.
 
-## 4. Row-Level Security (RLS)
+### 5.2 Database credentials
+1. Rotate password in Postgres and secret store.
+2. Update `DATABASE_URL` in secret store.
+3. Rolling restart API and Celery workers.
 
-In production set:
-```bash
-DATABASE_APP_ROLE=nazmos_app
-```
+### 5.3 Webhook secrets
+1. Generate new secrets in Foodics/Salla dashboards.
+2. Update `FOODICS_WEBHOOK_SECRET` / `SALLA_WEBHOOK_SECRET`.
+3. Restart API. Old signatures will 401 until providers update.
 
-The app connects as the table owner and issues:
-```sql
-SET LOCAL app.current_tenant_id = '<business_id>';
-SET LOCAL ROLE "nazmos_app";
-```
+## 6. GDPR / PDPL Deletion
 
-Verify RLS is active:
-```sql
-SELECT relname, relrowsecurity FROM pg_class WHERE relrowsecurity = true;
-```
+1. Merchant requests deletion via app or support.
+2. Endpoint `POST /api/v1/compliance/delete/{business_id}` schedules 30-day purge.
+3. Audit log entry is created automatically.
+4. After 30 days, run the purge worker or call `DELETE` with `immediate=true` for admin override.
+5. Verify no business-scoped data remains via `GET /api/v1/compliance/export/{business_id}`.
 
-## 5. Dependency CVEs
+## 7. Webhook Replay
 
-Run locally:
-```bash
-pip-audit --desc -r backend/requirements.txt
-```
+1. Find event id from `webhook_events` table or ops console.
+2. As admin/owner, call `POST /api/v1/pos/admin/webhooks/{event_id}/replay`.
+3. Check that `status` becomes `processed` and downstream data is updated.
 
-CI blocks high/critical CVEs. Starlette informational advisories without a
-severity rating do not fail the gate.
+## 8. PII / Personal Data Breach Response (PDPL)
 
-## 6. Rollback
+### 8.1 Detection
+1. Sentry or log alert flags exposure of email, phone, Saudi ID, or file contents.
+2. Verify scope via `request_id` and affected `business_id`.
 
-Database: Alembic downgrade one revision:
-```bash
-alembic downgrade -1
-```
+### 8.2 Containment (within 1 hour)
+1. Rotate any exposed credentials (`SECRET_KEY`, `CREDENTIAL_MASTER_KEY`, webhook secrets).
+2. Identify and patch the logging/code path that emitted PII.
+3. Confirm redaction filters in `app/utils/logger.py` cover the exposed field.
 
-Application: redeploy previous container image; config changes are env-var based.
+### 8.3 Notification (within 72 hours)
+1. Notify SDAIA per PDPL requirements.
+2. Notify affected merchants with: what happened, what data, what we did, what they should do.
+3. Record everything in the audit log.
 
-## 7. On-Call Escalation
+### 8.4 Post-incident
+1. Run a full PII scan across logs and Sentry payloads.
+2. Update runbooks and add regression tests for the exposed field.
+3. Review access controls and least-privilege policies.
 
-1. Check `/health` and `/metrics`.
-2. Inspect recent logs for `level=ERROR` and `exception` fields.
-3. If Sentry is configured (`SENTRY_DSN`), review unresolved issues.
-4. Verify Postgres and Redis connectivity from the running pod.
-5. For suspected RLS bypass, confirm `DATABASE_APP_ROLE` is set and the
-   `nazmos_app` role exists with table grants.
+## 9. Credential Master Key Rotation
+
+1. Generate a new key: `python -c "import secrets; print(secrets.token_urlsafe(48))"`.
+2. Decrypt all POS connection credentials with the old key.
+3. Re-encrypt with the new key and update `credentials_encrypted` in the database.
+4. Update `CREDENTIAL_MASTER_KEY` in the secret store.
+5. Rolling restart API and Celery workers.
+6. Leave the old key available read-only until all workers have restarted.

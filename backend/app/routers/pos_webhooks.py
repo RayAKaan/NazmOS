@@ -27,7 +27,6 @@ from app.services.event_engine import ingest_event
 from app.schemas.events import EventIngest
 from app.utils.problem_details import problem_response
 
-settings = get_settings()
 router = APIRouter(prefix="/api/v1/pos", tags=["POS Real-Time Webhooks"])
 
 
@@ -42,6 +41,11 @@ async def verify_pos_webhook_auth(
     Returns the verified provider name ("foodics" | "salla") and the raw
     request body. Raises 401 if verification fails.
     """
+    # Resolve settings per request: `get_settings()` is an lru_cached
+    # accessor, so a test that swaps env vars and clears the cache must be
+    # honoured here. A module-import-time copy would go stale and reject
+    # legitimately configured tokens with 401.
+    settings = get_settings()
     raw_body = await request.body()
 
     if x_foodics_signature:

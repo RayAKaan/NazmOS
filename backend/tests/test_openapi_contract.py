@@ -1,7 +1,9 @@
 """Contract test: ensure the OpenAPI schema does not drift unexpectedly.
 
-Run with ``pytest tests/test_openapi_contract.py --update-golden`` to refresh
-the committed golden file after intentional API changes.
+Run with ``UPDATE_GOLDEN=1 pytest tests/test_openapi_contract.py`` to refresh
+the committed golden file after intentional API changes. Install the exact
+dependency pins from ``backend/requirements.txt`` (fastapi is pinned) so the
+regenerated schema matches what CI produces.
 """
 from __future__ import annotations
 
@@ -33,6 +35,25 @@ def _save_golden(data: dict) -> None:
     GOLDEN_PATH.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def _strip_non_semantic(schema: object) -> None:
+    """Drop ``additionalProperties: true`` in place.
+
+    Pydantic version differences (2.9.2 vs 2.13) toggle whether an explicit
+    ``additionalProperties: true`` is emitted for dict-valued fields. JSON
+    Schema defaults to ``additionalProperties: true`` anyway, so the key is
+    semantically inert and must not gate the contract test on the installing
+    pydantic version. Real schema drift is still caught by exact comparison.
+    """
+    if isinstance(schema, dict):
+        if schema.get("additionalProperties") is True:
+            del schema["additionalProperties"]
+        for value in schema.values():
+            _strip_non_semantic(value)
+    elif isinstance(schema, list):
+        for item in schema:
+            _strip_non_semantic(item)
+
+
 def test_openapi_schema_matches_golden(client: TestClient):
     response = client.get("/openapi.json")
     assert response.status_code == 200, "OpenAPI schema endpoint should return 200"
@@ -44,6 +65,9 @@ def test_openapi_schema_matches_golden(client: TestClient):
 
     golden = _load_golden()
     assert golden, "Golden OpenAPI file is missing. Run UPDATE_GOLDEN=1 pytest ... to create it."
+
+    _strip_non_semantic(current)
+    _strip_non_semantic(golden)
 
     # Compare only the stable parts: paths and component schemas. Metadata/version
     # changes are intentional and should not break clients.

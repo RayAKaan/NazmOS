@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Boolean, DateTime, Numeric, ForeignKey, CheckConstraint, Index, UniqueConstraint, text, BigInteger, JSON, Enum, Time, LargeBinary, Date, Integer
 from app.database.types import UUID
-from sqlalchemy.orm import relationship, DeclarativeBase
+from sqlalchemy.orm import relationship, DeclarativeBase, validates
 from sqlalchemy.sql import func
 from enum import Enum as PyEnum
 from decimal import Decimal
@@ -207,6 +207,8 @@ class Business(Base):
     is_headquarters = Column(Boolean, default=False)
     
     operating_hours = Column(JSON, nullable=True)
+    # First-class owner/business constraints used before recommendation selection.
+    constraints_json = Column(JSON, nullable=True)
     contact_phone = Column(String(20), nullable=True)
     contact_email = Column(String(255), nullable=True)
     # KSA commercial registration fields
@@ -338,7 +340,7 @@ class Transaction(Base):
 
     __table_args__ = (
         CheckConstraint("quantity > 0", name="transaction_quantity_check"),
-        CheckConstraint("transaction_type IN ('sale', 'return', 'waste')", name="transaction_type_check"),
+        CheckConstraint("transaction_type IN ('sale', 'return', 'refund', 'waste', 'adjustment', 'transfer')", name="transaction_type_check"),
         Index("idx_transaction_business", "business_id"),
         Index("idx_transaction_item", "item_id"),
         Index("idx_transaction_business_date", "business_id", "transaction_at"),
@@ -394,6 +396,11 @@ class UploadedFile(Base):
     row_count_raw = Column(Numeric(10, 0), nullable=True)
     row_count_imported = Column(Numeric(10, 0), nullable=True)
     row_count_failed = Column(Numeric(10, 0), default=0)
+    row_count_received = Column(BigInteger, nullable=True)
+    row_count_rejected = Column(BigInteger, nullable=True)
+    rows_rejected = Column(JSON, nullable=True)
+    data_quality_score = Column(Numeric(5, 2), nullable=True)
+    data_quality_report = Column(JSON, nullable=True)
     detected_columns = Column(JSON, nullable=True)
     column_mapping = Column(JSON, nullable=True)
     sample_rows = Column(JSON, nullable=True)
@@ -525,7 +532,7 @@ class Organization(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String(255), nullable=False)
-    slug = Column(String(100), unique=True, nullable=False)
+    slug = Column(String(100), unique=True, nullable=True)
     owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="RESTRICT"), nullable=False)
     default_currency = Column(String(3), default="SAR")
     default_timezone = Column(String(50), default="Asia/Riyadh")
@@ -534,6 +541,15 @@ class Organization(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    @validates("slug")
+    def _validate_slug(self, key, value):
+        if not value:
+            base = getattr(self, "name", None) or "org"
+            import re
+            slug = re.sub(r"[^a-z0-9]+", "-", base.lower()).strip("-")
+            return slug[:100] or "org"
+        return value
 
 
 class Subscription(Base):
@@ -930,6 +946,28 @@ class ExecutedAction(Base):
     )
 
 
+class ConstraintBlock(Base):
+    """Persisted record of an execution attempt blocked by the final-execution
+    guard (Phase 1, P0-B). Provides machine-readable observability of every
+    owner-constraint / identity / permission refusal."""
+    __tablename__ = "constraint_blocks"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    action_id = Column(UUID(as_uuid=True), nullable=True)
+    action_type = Column(String(30), nullable=False)
+    reason_code = Column(String(64), nullable=False)
+    reason = Column(String, nullable=True)
+    payload = Column(JSON, nullable=True)
+    attempted_by = Column(UUID(as_uuid=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("idx_constraint_blocks_business", "business_id", "created_at"),
+        Index("idx_constraint_blocks_code", "reason_code"),
+    )
+
+
 class DeletionRequest(Base):
     """GDPR / PDPL erasure requests with a mandatory grace period."""
     __tablename__ = "deletion_requests"
@@ -1028,6 +1066,10 @@ class AgentAction(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False, index=True)
+    # Phase 6 §2–3: normalized finding → action linkage (one finding can produce many
+    # actions). The canonical direction is AgentAction.finding_id; Finding.agent_action_id
+    # is retained as a convenience pointer to the most recent action.
+    finding_id = Column(UUID(as_uuid=True), ForeignKey("findings.id", ondelete="SET NULL"), nullable=True, index=True)
     action_type = Column(String(30), nullable=False)
     status = Column(String(30), nullable=False, default="pending_approval")
     
@@ -1157,7 +1199,12 @@ class PurchaseOrder(Base):
     
     total_sar = Column(Numeric(12, 2), default=0)
     items_json = Column(JSON, nullable=False)  # [{item_id, qty, unit_cost}]
-    
+
+    # Partial-receipt tracking (Phase 1, A6): per-line received quantity keyed by
+    # item_id (mirrors items_json), so the canonical inbound service can count ONLY
+    # the remaining (`qty - received`) quantity as still-expected inbound.
+    received_items_json = Column(JSON, nullable=True)  # {item_id: received_qty}
+
     # WhatsApp
     whatsapp_message_id = Column(String(255), nullable=True)
     sent_at = Column(DateTime(timezone=True), nullable=True)
@@ -1292,7 +1339,19 @@ class MoneyAudit(Base):
     period_start = Column(Date, nullable=True)
     period_end = Column(Date, nullable=True)
 
+    # Legacy field retained for backward compatibility. New clients must use the
+    # distinct financial fields below; it is no longer a canonical headline.
     money_at_risk_sar = Column(Numeric(14, 2), nullable=False, default=0)
+    inventory_value_sar = Column(Numeric(14, 2), nullable=True)
+    capital_at_risk_sar = Column(Numeric(14, 2), nullable=True)
+    revenue_at_risk_sar = Column(Numeric(14, 2), nullable=True)
+    gross_profit_at_risk_sar = Column(Numeric(14, 2), nullable=True)
+    recoverable_value_low_sar = Column(Numeric(14, 2), nullable=True)
+    recoverable_value_high_sar = Column(Numeric(14, 2), nullable=True)
+    expected_recovery_sar = Column(Numeric(14, 2), nullable=True)
+    financial_model_version = Column(String(30), nullable=False, default="v2")
+    recovery_confidence = Column(String(24), nullable=False, default="INSUFFICIENT DATA")
+    evidence_summary = Column(JSON, nullable=True)
     dead_stock_value_sar = Column(Numeric(14, 2), nullable=False, default=0)
     stockout_risk_value_sar = Column(Numeric(14, 2), nullable=False, default=0)
     margin_leakage_sar = Column(Numeric(14, 2), nullable=False, default=0)
@@ -1312,6 +1371,19 @@ class MoneyAudit(Base):
         Index("idx_money_audits_business_created", "business_id", "created_at"),
         Index("idx_money_audits_status", "status"),
     )
+
+
+class PilotBaseline(Base):
+    """Frozen business baseline for a controlled real-customer pilot."""
+    __tablename__ = "pilot_baselines"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    snapshot = Column(JSON, nullable=False, default=dict)
+    is_active = Column(Boolean, nullable=False, server_default=text("true"), default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+    __table_args__ = (Index("idx_pilot_baseline_business", "business_id", "is_active"),)
 
 
 class FeatureFlag(Base):
@@ -1392,7 +1464,15 @@ class MoneyAuditAction(Base):
     priority = Column(Integer, default=3)
     title = Column(String(255), nullable=False)
     description = Column(String, nullable=True)
+    # Legacy expected_recovery_sar remains readable for older clients.
     expected_recovery_sar = Column(Numeric(14, 2), nullable=False, default=0)
+    recoverable_value_low_sar = Column(Numeric(14, 2), nullable=True)
+    recoverable_value_high_sar = Column(Numeric(14, 2), nullable=True)
+    expected_recovery_sar_v2 = Column(Numeric(14, 2), nullable=True)
+    recovery_confidence = Column(String(24), nullable=False, default="INSUFFICIENT DATA")
+    financial_model = Column(JSON, nullable=True)
+    measurement_window_days = Column(Integer, nullable=True)
+    prediction_error_pct = Column(Numeric(8, 2), nullable=True)
     quantity = Column(Numeric(12, 2), nullable=True)
     recommended_discount_pct = Column(Numeric(5, 2), nullable=True)
 
@@ -1734,6 +1814,9 @@ class OutcomeFeedback(Base):
     business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
     decision_id = Column(UUID(as_uuid=True), ForeignKey("intelligence_decisions.id", ondelete="SET NULL"), nullable=True)
     execution_job_id = Column(UUID(as_uuid=True), ForeignKey("execution_jobs.id", ondelete="SET NULL"), nullable=True)
+    # Phase 7 §5/§23: explicit lineage back to the agentic action that produced this
+    # outcome. Nullable so the pre-existing decision-based feedback is unaffected.
+    agent_action_id = Column(UUID(as_uuid=True), ForeignKey("agent_actions.id", ondelete="SET NULL"), nullable=True, index=True)
     decision_type = Column(String(50), nullable=True)
     predicted_outcome = Column(JSON, nullable=False, default=dict)
     actual_outcome = Column(JSON, nullable=False, default=dict)
@@ -1746,6 +1829,8 @@ class OutcomeFeedback(Base):
         Index("idx_outcome_feedback_business_type", "business_id", "decision_type"),
         Index("idx_outcome_feedback_decision", "decision_id"),
         Index("idx_outcome_feedback_recorded", "business_id", "recorded_at"),
+        # Phase 7 §8: one OutcomeFeedback per action (idempotency for the bridge).
+        UniqueConstraint("agent_action_id", name="uq_outcome_feedback_action"),
     )
 
 
@@ -2042,4 +2127,403 @@ class PartnerReferral(Base):
         CheckConstraint("status IN ('lead', 'converted', 'churned')", name="referral_status_check"),
         Index("idx_partner_referrals_partner", "partner_id", "created_at"),
         Index("idx_partner_referrals_status", "status"),
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PHASE 1 — AGENTIC FOUNDATION: Audit Runs + Canonical Findings
+# ---------------------------------------------------------------------------
+# The reusable Business Audit Engine (audit_engine.py) drives AuditRun; every
+# problem discovered by any domain (money audit, inventory, compliance, …) is
+# persisted as a canonical Finding. Findings are the umbrella over the existing
+# MoneyAuditAction and AgentAction models (linked via source + entity_id), so
+# no existing logic is duplicated.
+# ═══════════════════════════════════════════════════════════════════════════
+
+class AuditRunStatus(str, PyEnum):
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+class AuditTrigger(str, PyEnum):
+    MANUAL = "manual"
+    SCHEDULED = "scheduled"
+    EVENT = "event"
+    AGENT = "agent"
+
+
+class FindingStatus(str, PyEnum):
+    DETECTED = "detected"
+    ANALYZED = "analyzed"
+    RECOMMENDED = "recommended"
+    AWAITING_APPROVAL = "awaiting_approval"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+    EXECUTING = "executing"
+    COMPLETED = "completed"
+    VERIFIED = "verified"
+    FAILED = "failed"
+
+
+class FindingSeverity(str, PyEnum):
+    CRITICAL = "critical"
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+    INFO = "info"
+
+
+class AuditRun(Base):
+    """One execution of an audit domain for a business.
+
+    Lifecycle: pending → running → completed | failed (brief §4).
+    trigger distinguishes manual / scheduled / event / agent runs (brief §11).
+    """
+
+    __tablename__ = "audit_runs"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False, index=True)
+    domain = Column(String(50), nullable=False, index=True)  # money_audit, inventory, compliance, …
+    status = Column(String(20), nullable=False, default="pending", index=True)
+    trigger = Column(String(20), nullable=False, default="manual")
+    trigger_event_type = Column(String(80), nullable=True)  # e.g. sale.completed
+    started_at = Column(DateTime(timezone=True), nullable=True)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+    summary = Column(JSON, nullable=True)  # {"findings": n, "money_at_risk_sar": …}
+    error = Column(String, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("idx_audit_runs_business_domain", "business_id", "domain", "created_at"),
+        Index("idx_audit_runs_status", "status"),
+    )
+
+
+class Finding(Base):
+    """Canonical structured finding — every business problem NazmOS discovers.
+
+    Maps 1:1 to the brief §3 contract. Links to the executing AgentAction (when an
+    action was proposed/executed) and to its source audit run.
+    """
+
+    __tablename__ = "findings"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False, index=True)
+    audit_id = Column(UUID(as_uuid=True), ForeignKey("audit_runs.id", ondelete="SET NULL"), nullable=True, index=True)
+
+    domain = Column(String(50), nullable=False, index=True)      # money_audit, inventory, compliance, …
+    category = Column(String(80), nullable=False)                # dead_stock, stockout_risk, margin_leakage, …
+    severity = Column(String(20), nullable=False, default="medium")
+
+    title = Column(String(255), nullable=False)
+    explanation = Column(String, nullable=True)
+    evidence = Column(JSON, nullable=True)                       # {"item_id", "days_no_sale", "last_sold_at", …}
+    affected_entities = Column(JSON, nullable=True)              # [{"type": "item", "id": …, "name": …}]
+
+    estimated_financial_impact_sar = Column(Numeric(14, 2), nullable=True)
+    confidence = Column(Numeric(4, 2), nullable=True)            # 0.00–1.00
+    # Phase 9 §11–12: deterministic urgency (critical|high|medium|low) and data-quality
+    # (0–100) so the decision-quality score is grounded, not LLM-invented.
+    urgency = Column(String(10), nullable=True)
+    data_quality_score = Column(Numeric(5, 2), nullable=True)
+
+    recommended_action = Column(JSON, nullable=True)             # {"type", "payload", "why", "risk"}
+    action_risk = Column(String(20), nullable=True)              # low | medium | high
+
+    status = Column(String(30), nullable=False, default="detected", index=True)
+    verification_result = Column(JSON, nullable=True)            # {"verified": bool, "actual_impact_sar", "note"}
+
+    # Cross-links — no duplication, just pointers.
+    source = Column(String(30), nullable=False, default="audit_engine")  # audit_engine | money_audit | agent | manual
+    agent_action_id = Column(UUID(as_uuid=True), ForeignKey("agent_actions.id", ondelete="SET NULL"), nullable=True)
+
+    resolved_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        Index("idx_findings_business_status", "business_id", "status"),
+        Index("idx_findings_audit", "audit_id"),
+        Index("idx_findings_domain_severity", "domain", "severity"),
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PHASE 2 — Impact Ledger + Supplier Prices
+# ---------------------------------------------------------------------------
+# ImpactLedger is the canonical record of value NazmOS created for a business
+# (money recovered, revenue protected, costs reduced, margin recovered,
+# inventory released, hours saved). It is the source for Dashboard, Finding
+# detail, action history, the Weekly Money Report, and merchant ROI (§11).
+#
+# SupplierPrice is a real price observation (never a fabricated benchmark) with
+# source + validity, enabling honest supplier-price comparison (§16).
+# ═══════════════════════════════════════════════════════════════════════════
+
+class ImpactType(str, PyEnum):
+    MONEY_RECOVERED = "money_recovered"
+    REVENUE_PROTECTED = "revenue_protected"
+    COST_REDUCED = "cost_reduced"
+    MARGIN_RECOVERED = "margin_recovered"
+    INVENTORY_RELEASED = "inventory_released"
+    HOURS_SAVED = "hours_saved"
+
+
+class ImpactVerification(str, PyEnum):
+    PENDING = "pending"
+    ESTIMATED = "estimated"   # impact is estimated, NOT realized (never claim realized revenue)
+    OBSERVED = "observed"     # measured from actual business data
+
+
+class ImpactLedger(Base):
+    """One record of value created / protected / recovered for a business."""
+
+    __tablename__ = "impact_ledger"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False, index=True)
+    finding_id = Column(UUID(as_uuid=True), ForeignKey("findings.id", ondelete="SET NULL"), nullable=True, index=True)
+    agent_action_id = Column(UUID(as_uuid=True), ForeignKey("agent_actions.id", ondelete="SET NULL"), nullable=True)
+
+    impact_type = Column(String(30), nullable=False, index=True)
+    amount_sar = Column(Numeric(14, 2), nullable=False, default=0)
+
+    # Before/after for verification (§10): baseline, expected, actual.
+    baseline_sar = Column(Numeric(14, 2), nullable=True)
+    expected_sar = Column(Numeric(14, 2), nullable=True)
+    actual_sar = Column(Numeric(14, 2), nullable=True)
+
+    verification = Column(String(20), nullable=False, default="pending")  # pending | estimated | observed
+    verified = Column(Boolean, default=False)
+    # Phase 8 §2/§5: attribution quality — how precisely this impact is attributable to the
+    # linked finding/action. Never present a business-level delta as per-action impact.
+    attribution = Column(String(20), nullable=False, default="estimated")  # direct | partial | business_level | estimated | unattributable
+
+    evidence = Column(JSON, nullable=True)
+    note = Column(String, nullable=True)
+    source = Column(String(30), nullable=False, default="manual")  # agent | audit | verification | manual
+    occurred_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("idx_impact_ledger_business_type", "business_id", "impact_type"),
+        Index("idx_impact_ledger_finding", "finding_id"),
+    )
+
+
+class SupplierPrice(Base):
+    """A real supplier price observation for an item (SKU/barcode), with source + validity.
+
+    Never a fabricated benchmark — only observations that can be tied to a source.
+    """
+
+    __tablename__ = "supplier_prices"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    supplier_id = Column(UUID(as_uuid=True), ForeignKey("suppliers.id", ondelete="CASCADE"), nullable=False, index=True)
+    item_id = Column(UUID(as_uuid=True), ForeignKey("items.id", ondelete="CASCADE"), nullable=True, index=True)
+    sku = Column(String(100), nullable=True)       # when item_id is unknown, key by SKU/barcode
+    barcode = Column(String(100), nullable=True)
+
+    unit_price_sar = Column(Numeric(12, 2), nullable=False)
+    currency = Column(String(3), nullable=False, default="SAR")
+    min_quantity = Column(Numeric(12, 2), nullable=True)
+    effective_from = Column(Date, nullable=False)
+    effective_to = Column(Date, nullable=True)
+
+    source = Column(String(30), nullable=False, default="manual")  # manual | invoice | pos | agent
+    is_active = Column(Boolean, default=True)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=True, index=True)  # null = network-level
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("idx_supplier_prices_supplier_item", "supplier_id", "item_id"),
+        Index("idx_supplier_prices_sku", "sku"),
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PHASE 3 — Agent Run Observability + Cost Tracking
+# ---------------------------------------------------------------------------
+# Every agent execution is recorded so the platform can answer "why did NazmOS
+# do this?" (§24) and track inference cost per run (§25). Only aggregates are
+# stored — never sensitive model context or PII.
+# ═══════════════════════════════════════════════════════════════════════════
+
+class AgentRun(Base):
+    __tablename__ = "agent_runs"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False, index=True)
+    agent_type = Column(String(50), nullable=False, index=True)
+    trigger = Column(String(20), nullable=False, default="manual")  # manual | scheduled | event | orchestrator
+    trigger_event_type = Column(String(80), nullable=True)
+
+    model_provider = Column(String(20), nullable=True)  # groq | google | mock | deterministic
+    model_name = Column(String(80), nullable=True)
+
+    proposals = Column(Integer, default=0)
+    auto_executed = Column(Integer, default=0)
+    queued_for_approval = Column(Integer, default=0)
+    decisions = Column(JSON, nullable=True)          # [{action_type, risk, decision}]
+    tools_requested = Column(JSON, nullable=True)    # list of tool names (from agent.tools)
+    verification = Column(JSON, nullable=True)       # verify_outcome result summary
+
+    prompt_tokens = Column(Integer, nullable=True)
+    completion_tokens = Column(Integer, nullable=True)
+    estimated_cost_usd = Column(Numeric(10, 6), nullable=True)
+
+    latency_ms = Column(Integer, nullable=True)
+    status = Column(String(20), nullable=False, default="completed")  # completed | failed
+    error = Column(String, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("idx_agent_runs_business_created", "business_id", "created_at"),
+        Index("idx_agent_runs_agent", "agent_type", "created_at"),
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PHASE 4 — Structured Business Goals + Outcome Learning Memory
+# ---------------------------------------------------------------------------
+# BusinessGoal is a structured, measurable goal (coexists with the free-form
+# `goals` memory document — it does not replace it). GoalProgressService computes
+# deterministic progress from business data / the Impact Ledger, never vague LLM
+# output (§2–3).
+#
+# LearnedOutcome is the structured memory of an action's result (context → action
+# → approval → execution → outcome → impact → verification), with a provenance
+# kind (fact | inference | preference | hypothesis) so agents distinguish observed
+# truth from speculation (§5–8).
+# ═══════════════════════════════════════════════════════════════════════════
+
+class GoalDirection(str, PyEnum):
+    DECREASE = "decrease"
+    INCREASE = "increase"
+    MAINTAIN = "maintain"
+
+
+class GoalStatus(str, PyEnum):
+    ACTIVE = "active"
+    ON_TRACK = "on_track"
+    AT_RISK = "at_risk"
+    ACHIEVED = "achieved"
+    MISSED = "missed"
+    PAUSED = "paused"
+
+
+class BusinessGoal(Base):
+    """A structured, measurable business goal with baseline/target/current + deadline."""
+
+    __tablename__ = "business_goals"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False, index=True)
+
+    title = Column(String(255), nullable=False)
+    metric = Column(String(80), nullable=False)          # dead_stock_value, gross_margin, supplier_cost, …
+    direction = Column(String(20), nullable=False, default="decrease")  # decrease | increase | maintain
+
+    baseline = Column(Numeric(16, 2), nullable=True)     # starting value (measured)
+    target = Column(Numeric(16, 2), nullable=False)      # desired value
+    current_value = Column(Numeric(16, 2), nullable=True)  # latest measured value
+
+    deadline = Column(Date, nullable=True)
+    priority = Column(Integer, default=3)                # 1=highest
+    status = Column(String(20), nullable=False, default="active")
+
+    # Measurement source: which deterministic query/service computes current_value.
+    source = Column(String(30), nullable=False, default="impact_ledger")  # impact_ledger | inventory | margin | manual
+    source_key = Column(String(80), nullable=True)       # e.g. impact_type, or metric key
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        Index("idx_business_goals_business_status", "business_id", "status"),
+        Index("idx_business_goals_metric", "business_id", "metric"),
+    )
+
+
+class MemoryKind(str, PyEnum):
+    FACT = "fact"            # directly observed
+    INFERENCE = "inference"  # derived from data
+    PREFERENCE = "preference"  # specified by merchant
+    HYPOTHESIS = "hypothesis"  # agent-generated, not yet proven
+
+
+class LearnedOutcome(Base):
+    """Structured memory of an action's result, with provenance (§5–8).
+
+    Never stores raw LLM context. Each record links to its action/finding and
+    carries a provenance kind, confidence, evidence count, and expiry.
+    """
+
+    __tablename__ = "learned_outcomes"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False, index=True)
+    agent_action_id = Column(UUID(as_uuid=True), ForeignKey("agent_actions.id", ondelete="SET NULL"), nullable=True, index=True)
+    finding_id = Column(UUID(as_uuid=True), ForeignKey("findings.id", ondelete="SET NULL"), nullable=True)
+
+    action_type = Column(String(30), nullable=True)
+    kind = Column(String(20), nullable=False, default="inference")  # fact | inference | preference | hypothesis
+
+    # Outcome summary (no raw LLM context).
+    recommendation = Column(String, nullable=True)
+    approval = Column(String(20), nullable=True)          # approved | rejected | auto_executed
+    rejection_reason = Column(String, nullable=True)
+    execution_result = Column(JSON, nullable=True)        # outcome_json summary (executed bool, error)
+    verification_result = Column(JSON, nullable=True)
+    expected_impact_sar = Column(Numeric(14, 2), nullable=True)
+    actual_impact_sar = Column(Numeric(14, 2), nullable=True)
+
+    confidence = Column(Numeric(4, 3), nullable=False, default=0.5)
+    evidence_count = Column(Integer, nullable=False, default=1)
+    expires_at = Column(DateTime(timezone=True), nullable=True)
+    # Phase 6 §20: preserve data-quality context when a recommendation depended on
+    # incomplete data, so later re-audits can revisit the conclusion.
+    data_quality_note = Column(String, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("idx_learned_outcomes_business_type", "business_id", "action_type"),
+        Index("idx_learned_outcomes_kind", "business_id", "kind"),
+        # Phase 5 §3: one canonical learning record per action — idempotency enforced at
+        # the DB level so retries/replays/worker restarts can never duplicate.
+        UniqueConstraint("agent_action_id", name="uq_learned_outcome_action"),
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PHASE 5 — Goal Progress History (historical snapshots for trajectory analysis)
+# ---------------------------------------------------------------------------
+# GoalProgressHistory stores a deterministic measurement of a goal over time so
+# NazmOS can determine whether interventions are actually moving the business
+# toward the goal (§8–10). Never LLM-derived.
+# ═══════════════════════════════════════════════════════════════════════════
+
+class GoalProgressHistory(Base):
+    __tablename__ = "goal_progress_history"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    goal_id = Column(UUID(as_uuid=True), ForeignKey("business_goals.id", ondelete="CASCADE"), nullable=False, index=True)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False, index=True)
+
+    measured_value = Column(Numeric(16, 2), nullable=False)
+    progress_pct = Column(Numeric(5, 2), nullable=True)
+    trajectory = Column(String(20), nullable=True)  # on_track | at_risk | off_track | achieved | regressing
+    source = Column(String(30), nullable=False, default="scheduled")
+    data_quality_note = Column(String, nullable=True)
+    measured_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    __table_args__ = (
+        Index("idx_goal_history_goal_time", "goal_id", "measured_at"),
+        UniqueConstraint("goal_id", "measured_at", name="uq_goal_history_goal_time"),
     )

@@ -73,11 +73,33 @@ class Settings(BaseSettings):
     USE_MOCK_LLM: bool = True
     LLM_TEMPERATURE: float = 0.2
     LLM_MAX_TOKENS: int = 1000
+    # V9 experiment instrumentation: when set, every chat_completion attempt
+    # appends one JSONL record (provider, outcome, latency, token usage,
+    # prompt fingerprint) so AI cost and traceability can be audited.
+    AI_CALL_LEDGER_PATH: str = ""
     
     # File Upload
     UPLOAD_DIR: str = "uploads"
     MAX_UPLOAD_SIZE_MB: int = 15
     ALLOWED_UPLOAD_EXTENSIONS: str = ".csv,.xlsx,.xls"
+
+    # Audit / autonomy configuration (Phase 4 §13). These were hard-coded constants;
+    # now configurable WITH conservative safety floors enforced in policy_engine.
+    AUDIT_DEBOUNCE_MINUTES: int = 15          # min gap between event-triggered domain audits
+    RISK_ESCALATE_MEDIUM_SAR: float = 5000.0  # impact ≥ this escalates low→medium risk
+    RISK_ESCALATE_HIGH_SAR: float = 20000.0   # impact ≥ this escalates →high risk
+    AGENT_AUTO_MIN_CONFIDENCE: float = 0.90   # min confidence for auto-execution (safety floor)
+    # Phase 10 §11/§23: strategy recency + recommendation stability.
+    RECENCY_HALF_LIFE_DAYS: float = 90.0      # outcome half-life for recency weighting
+    RECOMMENDATION_MIN_DELTA: float = 0.03    # min score delta before a recommendation flips
+    # Phase 11 §Part 9: regime-change detection thresholds.
+    REGIME_RELATIVE_DEVIATION: float = 0.35   # ≥35% relative deviation → possible change
+    REGIME_MIN_RECENT_SAMPLES: int = 3
+    REGIME_MIN_HISTORICAL_SAMPLES: int = 6
+    # Phase 11 §Part 7: data-freshness thresholds (hours).
+    FRESH_INVENTORY_HOURS: float = 96
+    FRESH_SALES_HOURS: float = 48
+    FRESH_SUPPLIER_PRICE_HOURS: float = 720
     
     # Forecasting
     ENABLE_FORECASTING: bool = True
@@ -208,14 +230,10 @@ class Settings(BaseSettings):
     @field_validator("CORS_ORIGINS")
     @classmethod
     def validate_cors_origins(cls, v: str, info: ValidationInfo) -> str:
-        env = info.data.get("ENVIRONMENT", "development")
-        origins = [origin.strip() for origin in (v or "").split(",") if origin.strip()]
-        if env == "production":
-            for origin in origins:
-                if origin == "*":
-                    raise ValueError("CORS wildcard '*' is not allowed in production")
-                if not origin.startswith(("https://", "http://")):
-                    raise ValueError(f"CORS origin must include scheme: {origin}")
+        # NOTE: production enforcement lives in validate_production_cross_fields
+        # (mode="after") because CORS_ORIGINS is declared before ENVIRONMENT and
+        # field validators run in declaration order, so info.data lacks the
+        # environment here at production/missing-env construction time.
         return v
 
     @field_validator("DATABASE_APP_ROLE")
@@ -261,6 +279,19 @@ class Settings(BaseSettings):
         env = self.ENVIRONMENT
         if env != "production":
             return self
+        if self.DATABASE_URL.startswith("sqlite"):
+            raise ValueError(
+                "SQLite is not allowed in production: RLS policies and the "
+                "DATABASE_APP_ROLE SET ROLE model (aggressive tenant isolation) "
+                "have no meaning on a file-backed database"
+            )
+        origins = [origin.strip() for origin in (self.CORS_ORIGINS or "").split(",") if origin.strip()]
+        if origins:
+            for origin in origins:
+                if origin == "*":
+                    raise ValueError("CORS wildcard '*' is not allowed in production")
+                if not origin.startswith(("https://", "http://")):
+                    raise ValueError(f"CORS origin must include scheme: {origin}")
         if not self.GROQ_API_KEY and not self.GOOGLE_AI_API_KEY:
             raise ValueError(
                 "At least one of GROQ_API_KEY or GOOGLE_AI_API_KEY is required in "

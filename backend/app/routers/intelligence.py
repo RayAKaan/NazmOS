@@ -890,3 +890,53 @@ async def reason_view(
         plan=result["plan"],
         sources=result["sources"],
     )
+
+
+# ── Phase 2: Business Memory & Context ──────────────────────────────────────
+
+@router.get("/business-context")
+async def get_business_context(
+    business_id: UUID,
+    max_products: int = Query(100, ge=1, le=500),
+    max_suppliers: int = Query(50, ge=1, le=200),
+    max_actions: int = Query(20, ge=1, le=100),
+    max_outcomes: int = Query(20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Phase 2 §16: Retrieve structured business context for a business.
+
+    Returns a complete, deterministic, serializable context object containing:
+    business info, products, suppliers, branches, constraints, recent actions, outcomes.
+    """
+    await _verify_business_access(db, business_id, current_user)
+    from app.services.business_context_service import build_business_context
+    ctx = await build_business_context(
+        db, business_id,
+        max_products=max_products,
+        max_suppliers=max_suppliers,
+        max_actions=max_actions,
+        max_outcomes=max_outcomes,
+    )
+    return ctx.to_dict()
+
+
+@router.get("/products/{product_id}/context")
+async def get_product_context(
+    business_id: UUID,
+    product_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Phase 2 §17: Retrieve focused context for one product.
+
+    Answers: What is happening? Why? What happened before?
+    What constraints apply? What did we do previously? What happened?
+    """
+    await _verify_business_access(db, business_id, current_user)
+    from app.services.business_context_service import build_product_context
+    try:
+        ctx = await build_product_context(db, business_id, product_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    return ctx

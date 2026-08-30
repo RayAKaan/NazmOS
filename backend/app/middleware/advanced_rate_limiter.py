@@ -41,15 +41,23 @@ class RedisRateLimiter:
         self.redis = aioredis.from_url(redis_url, decode_responses=True)
         self.default_limit = default_limit
         self.window_seconds = window_seconds
-        
+
+        # Ceilings are env-tunable so batch workloads (e.g. the V9 reality
+        # experiment) can raise them explicitly; defaults preserve the
+        # production posture.
+        import os
+        login_limit = int(os.getenv("AUTH_LOGIN_LIMIT_PER_5MIN", "5"))
+        register_limit = int(os.getenv("AUTH_REGISTER_LIMIT_PER_5MIN", "3"))
+        upload_limit = int(os.getenv("UPLOAD_LIMIT_PER_5MIN", "10"))
+
         self.limits = {
-            "auth_login": {"limit": 5, "window": 300, "key_prefix": "rate:auth"},
-            "auth_register": {"limit": 3, "window": 300, "key_prefix": "rate:register"},
+            "auth_login": {"limit": login_limit, "window": 300, "key_prefix": "rate:auth"},
+            "auth_register": {"limit": register_limit, "window": 300, "key_prefix": "rate:register"},
             "chat": {"limit": 60, "window": 60, "key_prefix": "rate:chat"},
-            "upload": {"limit": 10, "window": 300, "key_prefix": "rate:upload"},
+            "upload": {"limit": int(__import__("os").getenv("UPLOAD_LIMIT_PER_5MIN", "10")), "window": 300, "key_prefix": "rate:upload"},
             "default": {"limit": default_limit, "window": window_seconds, "key_prefix": "rate"},
         }
-    
+
     def get_client_identifier(self, request: Request) -> str:
         """Get unique identifier for the client, scoped to business when available."""
         forwarded = request.headers.get("X-Forwarded-For")
@@ -189,13 +197,13 @@ class InMemoryRateLimiter:
         self.window_seconds = window_seconds
         
         self.limits = {
-            "auth_login": {"limit": 5, "window": 300, "key_prefix": "rate:auth"},
-            "auth_register": {"limit": 3, "window": 300, "key_prefix": "rate:register"},
+            "auth_login": {"limit": int(__import__("os").getenv("AUTH_LOGIN_LIMIT_PER_5MIN", "5")), "window": 300, "key_prefix": "rate:auth"},
+            "auth_register": {"limit": int(__import__("os").getenv("AUTH_REGISTER_LIMIT_PER_5MIN", "3")), "window": 300, "key_prefix": "rate:register"},
             "chat": {"limit": 60, "window": 60, "key_prefix": "rate:chat"},
-            "upload": {"limit": 10, "window": 300, "key_prefix": "rate:upload"},
+            "upload": {"limit": int(__import__("os").getenv("UPLOAD_LIMIT_PER_5MIN", "10")), "window": 300, "key_prefix": "rate:upload"},
             "default": {"limit": default_limit, "window": window_seconds, "key_prefix": "rate"},
         }
-    
+
     def get_client_identifier(self, request: Request) -> str:
         """Get unique identifier for the client; mirrors RedisRateLimiter."""
         forwarded = request.headers.get("X-Forwarded-For")

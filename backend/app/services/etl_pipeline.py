@@ -27,7 +27,8 @@ class ETLPipeline:
         # Production ingestion passes all four arguments.
         self.upload_id = upload_id
         self.business_id = business_id
-        self.df = normalize_dataframe(df, column_mapping or {}) if df is not None and business_id is not None else df
+        self.df = normalize_dataframe(df, column_mapping or {}, strict=True) if df is not None and business_id is not None else df
+        self.normalization_report = (self.df.attrs.get("data_quality_report", {}) if self.df is not None else {})
         self.redis = None
         self.progress_channel = f"etl_progress:{upload_id or 'legacy'}"
         self._stats = {
@@ -72,13 +73,14 @@ class ETLPipeline:
             "rows_failed": int(max(0, len(df) - len(normalized))),
         }
 
-    async def run(self) -> dict:
+    async def run(self, session_factory=None) -> dict:
         try:
             self.redis = aioredis.from_url(settings.REDIS_URL)
         except:
             self.redis = None
 
-        async with async_session_scope() as session:
+        _sf = session_factory or async_session_scope
+        async with _sf() as session:
             try:
                 await self._push_progress("Starting Money Audit import...", 0)
 
@@ -87,6 +89,21 @@ class ETLPipeline:
 
                 item_map = await self._upsert_items(session)
                 await self._push_progress(f"Synced {len(item_map)} products", 25)
+
+                # §4 (Phase 3): ingest supplier prices when the upload has a supplier column.
+                if self.df is not None and "supplier" in self.df.columns:
+                    try:
+                        from app.services.supplier_price_ingestion import ingest_from_etl_rows
+                        sp_stats = await ingest_from_etl_rows(
+                            session, self.business_id,
+                            [dict(r) for r in self.df.to_dict(orient="records")],
+                            supplier_col="supplier", price_col="cost_price", sku_col="item_sku",
+                            commit=False,
+                        )
+                        self._stats["supplier_prices_imported"] = sp_stats.get("imported", 0)
+                    except Exception as exc:
+                        import logging
+                        logging.getLogger("etl").warning("supplier-price ingestion skipped: %s", exc)
 
                 await self._ensure_inventory(session, item_map)
                 await self._push_progress("Inventory records ready", 35)
@@ -115,6 +132,36 @@ class ETLPipeline:
                 await self._invalidate_forecasts(session, item_map)
                 await self._push_progress("Money Audit import complete", 100)
 
+                # Persist an explicit reconciliation record. Financial rows that
+                # were rejected during normalization are never invisible to the merchant.
+                if self.upload_id:
+                    report = self.normalization_report or {}
+                    rejected = report.get("rejected", [])
+                    await session.execute(
+                        text("""
+                            UPDATE uploaded_files
+                            SET row_count_received = :received,
+                                row_count_rejected = :rejected_count,
+                                row_count_imported = :imported,
+                                row_count_failed = :failed,
+                                rows_rejected = CAST(:rows_rejected AS JSONB),
+                                data_quality_report = CAST(:dq AS JSONB),
+                                data_quality_score = :dq_score,
+                                status = 'completed',
+                                etl_completed_at = NOW()
+                            WHERE id = :upload_id
+                        """),
+                        {
+                            "received": int(report.get("rows_received", len(self.df) if self.df is not None else 0)),
+                            "rejected_count": int(len(rejected)),
+                            "imported": int(self._stats.get("imported", 0)),
+                            "failed": int(self._stats.get("failed", 0)),
+                            "rows_rejected": json.dumps(rejected, default=str),
+                            "dq": json.dumps({**report, "imported": int(self._stats.get("imported", 0)), "failed": int(self._stats.get("failed", 0)), "database_duplicates_skipped": int(self._stats.get("skipped", 0))}, default=str),
+                            "dq_score": max(0, round(100 * (1 - (len(rejected) + int(self._stats.get("failed", 0))) / max(1, int(report.get("rows_received", len(self.df))))), 2)),
+                            "upload_id": self.upload_id,
+                        },
+                    )
                 await session.commit()
                 return self._stats
 
@@ -381,6 +428,15 @@ class ETLPipeline:
             unit_price = float(row.get("unit_price", row.get("total_amount", 0)))
             cost_price = float(row.get("cost_price", 0))
             total_amount = float(row.get("total_amount", quantity * unit_price))
+            transaction_type = str(row.get("transaction_type", "sale") or "sale").strip().lower()
+            if transaction_type in {"refund", "credit_note"}:
+                transaction_type = "return"
+            if transaction_type not in {"sale", "return", "refund", "waste", "adjustment", "transfer"}:
+                failed += 1
+                continue
+            quantity = abs(quantity)
+            if transaction_type in {"return", "refund", "waste", "adjustment"}:
+                total_amount = -abs(total_amount)
 
             # Dedup hash over the row's identifying business facts. Deterministic
             # across re-uploads (no per-upload salt) so a re-import of the same
@@ -406,7 +462,7 @@ class ETLPipeline:
                 "total_amount": total_amount,
                 "profit": total_amount - (quantity * cost_price),
                 "transaction_at": transaction_at if transaction_at else None,
-                "transaction_type": "sale",
+                "transaction_type": transaction_type,
                 "row_hash": row_hash,
             })
             if row.get("transaction_at"):

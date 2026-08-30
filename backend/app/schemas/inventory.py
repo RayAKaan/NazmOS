@@ -61,6 +61,7 @@ class ReorderRecommendation(BaseModel):
     recommended_qty: float
     recommended_by_date: str | None
     reason: str | None
+    reorder_evidence: dict | None = None
 
 
 class ItemDetailResponse(BaseModel):

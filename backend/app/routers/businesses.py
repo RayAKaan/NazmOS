@@ -112,3 +112,56 @@ async def bootstrap_business(
     if created is None:
         raise HTTPException(500, "Failed to bootstrap business")
     return _business_row(created)
+
+class BusinessConstraintsRequest(BaseModel):
+    cash_budget: Optional[float] = Field(default=None, ge=0)
+    minimum_margin: Optional[float] = Field(default=None, ge=0, le=1)
+    max_discount: Optional[float] = Field(default=None, ge=0, le=100)
+    blocked_discount_products: list[str] = Field(default_factory=list)
+    blocked_transfer_routes: list[str] = Field(default_factory=list)
+    strategic_products: list[str] = Field(default_factory=list)
+    minimum_safety_stock: Optional[float] = Field(default=None, ge=0)
+    supplier_preferences: dict = Field(default_factory=dict)
+    supplier_restrictions: list[str] = Field(default_factory=list)
+    preferred_supplier: Optional[str] = None
+    maximum_purchase_amount: Optional[float] = Field(default=None, ge=0)
+    branch_priority: list[str] = Field(default_factory=list)
+
+@router.patch("/current/constraints")
+async def update_current_constraints(
+    payload: BusinessConstraintsRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    result = await db.execute(text("""
+        SELECT b.id FROM businesses b
+        WHERE b.is_active = true AND b.owner_id = :uid
+        ORDER BY b.created_at ASC LIMIT 1
+    """), {"uid": str(current_user.id)})
+    row = result.fetchone()
+    if not row:
+        raise HTTPException(404, "No business found for this user")
+    constraints = payload.model_dump(exclude_none=True)
+    await db.execute(text("UPDATE businesses SET constraints_json = CAST(:constraints AS JSONB), updated_at = NOW() WHERE id = :id"), {
+        "id": str(row.id), "constraints": __import__("json").dumps(constraints)
+    })
+    await db.commit()
+    return {"business_id": str(row.id), "constraints": constraints}
+
+
+@router.get("/current/constraints")
+async def current_constraints(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Return the active owner constraints for the current business."""
+    result = await db.execute(text("""
+        SELECT b.id, COALESCE(b.constraints_json, '{}'::jsonb) AS constraints
+        FROM businesses b
+        WHERE b.is_active = true AND b.owner_id = :uid
+        ORDER BY b.created_at ASC LIMIT 1
+    """), {"uid": str(current_user.id)})
+    row = result.mappings().first()
+    if not row:
+        raise HTTPException(404, "No business found for this user")
+    return {"business_id": str(row["id"]), "constraints": row["constraints"] or {}}

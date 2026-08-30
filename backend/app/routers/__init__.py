@@ -17,6 +17,7 @@ from app.routers.subscriptions import router as subscriptions_router
 from app.routers.adapters import router as adapters_router
 from app.routers.actions import router as actions_router
 from app.routers.guest_audit import router as guest_audit_router
+from app.routers.audits import router as audits_router
 from app.routers.partners import router as partners_router
 from app.routers.admin_backup import router as admin_backup_router
 from app.routers.oauth import router as oauth_router
@@ -72,6 +73,7 @@ __all__ = [
     "adapters_router",
     "actions_router",
     "guest_audit_router",
+    "audits_router",
     "partners_router",
     "admin_backup_router",
     "oauth_router",

@@ -67,8 +67,10 @@ def validate_production_secrets() -> None:
 
 async def run_startup_checks() -> None:
     """Run all fail-closed startup checks."""
+    import asyncio
+
     validate_production_secrets()
     if settings.USE_REDIS or settings.USE_CELERY:
         await validate_redis()
     if settings.USE_CELERY:
-        validate_celery_broker()
+        await asyncio.to_thread(validate_celery_broker)

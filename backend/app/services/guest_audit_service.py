@@ -11,6 +11,8 @@ from decimal import Decimal, ROUND_HALF_UP
 from typing import Any
 from uuid import uuid4
 
+from app.services.recovery_intelligence import classify_inventory, estimate_recovery, stockout_financials
+
 import pandas as pd
 
 TARGET_MARGIN_PCT = Decimal("0.22")
@@ -166,14 +168,17 @@ async def run_guest_audit(rows: list[dict[str, Any]]) -> dict[str, Any]:
     if not ledger:
         return _empty_audit("Could not recognize any products in the uploaded file.")
 
+    inventory_value = Decimal("0")
+    capital_at_risk = Decimal("0")
+    revenue_at_risk = Decimal("0")
+    gross_profit_at_risk = Decimal("0")
+    recoverable_low = Decimal("0")
+    recoverable_high = Decimal("0")
     dead_stock_value = Decimal("0")
-    stockout_value = Decimal("0")
-    margin_leakage = Decimal("0")
     overstock_value = Decimal("0")
     actions: list[dict[str, Any]] = []
 
     today = datetime.utcnow()
-
     for entry in ledger.values():
         stock = _money(entry["stock"])
         cost = _money(entry["cost"])
@@ -183,106 +188,95 @@ async def run_guest_audit(rows: list[dict[str, Any]]) -> dict[str, Any]:
         last_sold = entry["last_sold_at"]
         last_sold_days = (today - last_sold).days if last_sold else None
         stock_value = stock * cost
-        item_name = entry["name"]
+        inventory_value += stock_value
+        classification = classify_inventory(stock=stock, recent_qty_30=qty_30d, prior_qty_30=Decimal("0"), days_since_last_sale=last_sold_days, inventory_age_days=None)
 
-        if stock > 0 and cost > 0 and (qty_30d <= 0 or (last_sold_days is not None and last_sold_days >= DEAD_STOCK_DAYS)):
-            dead_stock_value += stock_value
-            expected = (stock_value * Decimal("0.35")).quantize(Decimal("0.01"))
-            days_label = f"{last_sold_days} days" if last_sold_days is not None else "30+ days"
+        recovery = estimate_recovery(classification=classification, stock=stock, cost=cost, sell=sell)
+        if classification in {"DEAD", "SLOW MOVING"}:
+            capital_at_risk += stock_value
+            if classification == "DEAD":
+                dead_stock_value += stock_value
+            recoverable_low += recovery.recoverable_low
+            recoverable_high += recovery.recoverable_high
             actions.append({
-                "action_type": "discount",
-                "priority": 1 if stock_value >= Decimal("5000") else 2,
-                "title": f"Recover cash from slow-moving {item_name}",
-                "description": f"{stock} units in stock with no meaningful sales for {days_label}. Start with a controlled 15–25% discount or bundle before writing it off.",
-                "expected_recovery_sar": float(expected),
-                "quantity": float(stock),
-                "recommended_discount_pct": 20,
+                "action_type": "discount", "priority": 2,
+                "title": f"Review {entry['name']} inventory",
+                "description": f"{stock} units are classified {classification.lower()}; recovery is not estimated without observed outcomes.",
+                "expected_recovery_sar": None,
+                "recoverable_value_low_sar": float(recovery.recoverable_low),
+                "recoverable_value_high_sar": float(recovery.recoverable_high),
+                "recovery_confidence": recovery.confidence, "quantity": float(stock),
             })
 
-        if stock > 0 and cost > 0 and daily_velocity > 0:
-            days_supply = stock / daily_velocity if daily_velocity > 0 else Decimal("999")
-            if days_supply > OVERSTOCK_DAYS:
-                surplus_qty = max(Decimal("0"), stock - (daily_velocity * Decimal("30")))
-                surplus_value = surplus_qty * cost
+        if daily_velocity > 0 and stock / daily_velocity > OVERSTOCK_DAYS and classification != "SEASONAL":
+            surplus_qty = max(Decimal("0"), stock - daily_velocity * Decimal("30"))
+            surplus_value = surplus_qty * cost
+            if surplus_value >= Decimal("500"):
+                capital_at_risk += surplus_value
                 overstock_value += surplus_value
-                if surplus_value >= Decimal("500"):
-                    actions.append({
-                        "action_type": "recovery_match",
-                        "priority": 3,
-                        "title": f"Review {item_name} for Recovery Match",
-                        "description": f"Estimated {surplus_qty.quantize(Decimal('0.01'))} surplus units. If expiry and category are safe, offer to nearby opted-in retailers after founder review.",
-                        "expected_recovery_sar": float((surplus_value * Decimal("0.30")).quantize(Decimal("0.01"))),
-                        "quantity": float(surplus_qty.quantize(Decimal("0.01"))),
-                        "recommended_discount_pct": 15,
-                    })
-
-        if daily_velocity > 0 and sell > 0:
-            days_left = stock / daily_velocity if stock > 0 else Decimal("0")
-            if days_left < STOCKOUT_DAYS:
-                protected_sales = (daily_velocity * Decimal("7") * sell).quantize(Decimal("0.01"))
-                stockout_value += protected_sales
-                reorder_qty = max(Decimal("1"), (daily_velocity * Decimal("14")) - stock).quantize(Decimal("1"))
+                recoverable_high += min(surplus_value, surplus_qty * sell)
                 actions.append({
-                    "action_type": "reorder",
-                    "priority": 1 if days_left < Decimal("2") else 2,
-                    "title": f"Prevent stockout on {item_name}",
-                    "description": f"Only {days_left.quantize(Decimal('0.1'))} days of supply left. Reorder about {reorder_qty} units before the next weekend rush.",
-                    "expected_recovery_sar": float(protected_sales),
-                    "quantity": float(reorder_qty),
+                    "action_type": "recovery_match", "priority": 3,
+                    "title": f"Review {entry['name']} for excess inventory",
+                    "description": f"{surplus_qty.quantize(Decimal('0.01'))} units exceed 30-day demand cover.",
+                    "expected_recovery_sar": None, "recoverable_value_low_sar": 0.0,
+                    "recoverable_value_high_sar": float(min(surplus_value, surplus_qty * sell)),
+                    "recovery_confidence": "LOW", "quantity": float(surplus_qty),
                 })
 
+        if daily_velocity > 0 and sell > 0 and stock / daily_velocity < STOCKOUT_DAYS:
+            stockout = stockout_financials(stock=stock, daily_velocity=daily_velocity, sell=sell, cost=cost, lead_time_days=None, safety_stock=None)
+            revenue_at_risk += stockout.revenue_at_risk
+            gross_profit_at_risk += stockout.gross_profit_at_risk
+            reorder_qty = max(Decimal("0"), daily_velocity * Decimal("7") - stock).quantize(Decimal("1"))
+            actions.append({
+                "action_type": "reorder", "priority": 2,
+                "title": f"Review stockout risk on {entry['name']}",
+                "description": f"Only {(stock / daily_velocity).quantize(Decimal('0.1'))} days of cover; supplier lead time is unavailable.",
+                "expected_recovery_sar": None, "recoverable_value_low_sar": 0.0, "recoverable_value_high_sar": 0.0,
+                "recovery_confidence": "LOW", "quantity": float(reorder_qty),
+            })
+
         if qty_30d > 0 and cost > 0 and sell > 0:
-            margin_pct = (sell - cost) / sell if sell > 0 else Decimal("0")
+            margin_pct = (sell - cost) / sell
             if margin_pct < TARGET_MARGIN_PCT:
                 target_price = (cost / (Decimal("1") - TARGET_MARGIN_PCT)).quantize(Decimal("0.01"))
-                leak_per_unit = max(Decimal("0"), target_price - sell)
-                leakage = (leak_per_unit * qty_30d).quantize(Decimal("0.01"))
+                leakage = max(Decimal("0"), target_price - sell) * qty_30d
                 if leakage > 0:
-                    margin_leakage += leakage
+                    gross_profit_at_risk += leakage
                     actions.append({
-                        "action_type": "margin_fix",
-                        "priority": 2,
-                        "title": f"Fix margin leakage on {item_name}",
-                        "description": f"Current gross margin is {(margin_pct * 100).quantize(Decimal('0.1'))}%. Review shelf price or supplier cost. Suggested target price: SAR {target_price}.",
-                        "expected_recovery_sar": float(leakage),
+                        "action_type": "margin_fix", "priority": 2,
+                        "title": f"Review margin on {entry['name']}",
+                        "description": "Theoretical gross-profit opportunity; not cash recovered.",
+                        "expected_recovery_sar": None, "recoverable_value_low_sar": 0.0,
+                        "recoverable_value_high_sar": float(leakage), "recovery_confidence": "LOW",
                         "quantity": float(qty_30d),
                     })
 
-    actions = sorted(actions, key=lambda a: (a["priority"], -a["expected_recovery_sar"]))[:MAX_GUEST_ACTIONS]
-    money_at_risk = (dead_stock_value + stockout_value + margin_leakage).quantize(Decimal("0.01"))
-
-    # Confidence is higher when we see both sales and stock/cost signals.
+    actions = sorted(actions, key=lambda a: (a["priority"], -(a.get("recoverable_value_high_sar") or 0)))[:MAX_GUEST_ACTIONS]
     has_sales = any(e["qty_30d"] > 0 for e in ledger.values())
     has_cost = any(e["cost"] > 0 for e in ledger.values())
     has_stock = any(e["stock"] > 0 for e in ledger.values())
-    confidence = Decimal("30")
-    if has_sales:
-        confidence += Decimal("30")
-    if has_cost:
-        confidence += Decimal("20")
-    if has_stock:
-        confidence += Decimal("20")
+    confidence = Decimal("30") + (Decimal("30") if has_sales else 0) + (Decimal("20") if has_cost else 0) + (Decimal("20") if has_stock else 0)
 
     summary = {
-        "money_at_risk_sar": float(money_at_risk),
-        "dead_stock_value_sar": float(dead_stock_value),
-        "stockout_risk_value_sar": float(stockout_value),
-        "margin_leakage_sar": float(margin_leakage),
-        "overstock_value_sar": float(overstock_value),
-        "action_count": len(actions),
-        "row_count": len(df),
-        "file_kind": file_kind,
+        "financial_model_version": "v2",
+        "money_at_risk_sar": float(capital_at_risk),
+        "inventory_value_sar": float(inventory_value),
+        "capital_at_risk_sar": float(capital_at_risk),
+        "revenue_at_risk_sar": float(revenue_at_risk),
+        "gross_profit_at_risk_sar": float(gross_profit_at_risk),
+        "recoverable_value_low_sar": float(recoverable_low),
+        "recoverable_value_high_sar": float(recoverable_high),
+        "expected_recovery_sar": None,
+        "recovery_confidence": "LOW" if actions else "INSUFFICIENT DATA",
+        "dead_stock_value_sar": float(dead_stock_value), "stockout_risk_value_sar": float(revenue_at_risk),
+        "margin_leakage_sar": float(gross_profit_at_risk), "overstock_value_sar": float(overstock_value),
+        "action_count": len(actions), "row_count": len(df), "file_kind": file_kind,
         "confidence_score": float(confidence.quantize(Decimal("0.01"))),
-        "detected_columns": {
-            "name": name_col,
-            "quantity": qty_col,
-            "price": price_col,
-            "cost": cost_col,
-            "stock": stock_col,
-            "date": date_col,
-        },
-        "generated_at": datetime.utcnow().isoformat(),
-        "guest_session_id": str(uuid4()),
+        "detected_columns": {"name": name_col, "quantity": qty_col, "price": price_col, "cost": cost_col, "stock": stock_col, "date": date_col},
+        "headline_note": "Revenue/profit at risk are not cash recovered. Expected recovery is withheld until observed outcomes exist.",
+        "generated_at": datetime.utcnow().isoformat(), "guest_session_id": str(uuid4()),
     }
 
     return {
@@ -313,7 +307,10 @@ def _empty_audit(message: str) -> dict[str, Any]:
                 "priority": 1,
                 "title": "Upload a clearer file",
                 "description": message,
-                "expected_recovery_sar": 0.0,
+                "expected_recovery_sar": None,
+                "recoverable_value_low_sar": 0.0,
+                "recoverable_value_high_sar": 0.0,
+                "recovery_confidence": "INSUFFICIENT DATA",
             }
         ],
         "missing_data": [{"code": "parse_issue", "message": message}],

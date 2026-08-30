@@ -6,6 +6,7 @@ WhatsApp, etc.) can consume intelligence without directly importing individual
 engine modules.
 """
 from __future__ import annotations
+from app.utils.clock import utcnow
 
 from datetime import datetime, timedelta, timezone
 from typing import Any
@@ -99,7 +100,7 @@ async def _load_recent_events(
     business_id: UUID,
     hours: int = 24,
 ) -> list[Event]:
-    since = datetime.now(timezone.utc) - timedelta(hours=hours)
+    since = utcnow() - timedelta(hours=hours)
     result = await session.execute(
         select(Event)
         .where(Event.business_id == business_id, Event.occurred_at >= since)

@@ -5,6 +5,7 @@ from app.database.models import (
     ChatMessage, ForecastCache, DecisionLog,
     RecoveryMatchSettings, StockRecoveryListing, StockRecoveryMatch, StockRecoveryEvent,
     MoneyAudit, MoneyAuditAction,
+    AuditRun, AuditRunStatus, AuditTrigger, Finding, FindingStatus, FindingSeverity,
 )
 
 __all__ = [
@@ -30,4 +31,10 @@ __all__ = [
     "StockRecoveryEvent",
     "MoneyAudit",
     "MoneyAuditAction",
+    "AuditRun",
+    "AuditRunStatus",
+    "AuditTrigger",
+    "Finding",
+    "FindingStatus",
+    "FindingSeverity",
 ]

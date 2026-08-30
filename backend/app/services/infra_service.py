@@ -35,16 +35,20 @@ def ping_celery() -> dict[str, Any]:
         from app.celery_app import celery_app
         with celery_app.connection() as conn:
             conn.ensure_connection(max_retries=2)
-        inspect = celery_app.control.inspect(timeout=5)
-        active = (inspect.active() or {}) if hasattr(inspect, "active") else {}
-        registered = (inspect.registered() or {}) if hasattr(inspect, "registered") else {}
+        # Single broadcast: stats() already identifies online workers.
+        # Multiple inspect calls each burn a full broadcast timeout and,
+        # when called synchronously inside async endpoints, block the
+        # event loop long enough to saturate the service.
+        inspect = celery_app.control.inspect(timeout=2)
         stats = (inspect.stats() or {}) if hasattr(inspect, "stats") else {}
         return {
             "enabled": True,
             "reachable": True,
             "workers_online": list(stats.keys()),
-            "active_task_count": sum(len(v) for v in active.values()),
-            "registered_task_count": sum(len(v) for v in registered.values()),
+            "registered_task_count": None,
+            "active_task_count": sum(
+                len(stats.get(name, {}).get("pool", []) or []) for name in stats
+            ) if stats else 0,
         }
     except Exception as exc:
         return {"enabled": True, "reachable": False, "reason": str(exc)}
@@ -56,13 +60,12 @@ def get_celery_queue_lengths() -> dict[str, Any]:
 
     try:
         from app.celery_app import celery_app
-        inspect = celery_app.control.inspect(timeout=5)
-        scheduled = inspect.scheduled() or {}
+        inspect = celery_app.control.inspect(timeout=2)
         reserved = inspect.reserved() or {}
         return {
             "enabled": True,
             "queues": {
-                worker: len(tasks) for worker, tasks in {**scheduled, **reserved}.items()
+                worker: len(tasks) for worker, tasks in reserved.items()
             },
         }
     except Exception as exc:
@@ -70,8 +73,10 @@ def get_celery_queue_lengths() -> dict[str, Any]:
 
 
 async def infra_status() -> dict[str, Any]:
+    import asyncio
+
     return {
         "redis": await ping_redis(),
-        "celery": ping_celery(),
-        "celery_queues": get_celery_queue_lengths(),
+        "celery": await asyncio.to_thread(ping_celery),
+        "celery_queues": await asyncio.to_thread(get_celery_queue_lengths),
     }

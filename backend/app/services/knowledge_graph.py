@@ -432,10 +432,234 @@ async def _project_employee_clock_in(session: AsyncSession, event: Event) -> Non
     )
 
 
+async def _project_price_updated(session: AsyncSession, event: Event) -> None:
+    """Project a supplier price change: supplier → product (SUPPLIES) + product → supplier
+    (SUPPLIED_BY), so margin/price changes are traceable in the graph."""
+    payload = event.payload or {}
+    supplier_id = payload.get("supplier_id")
+    item_id = payload.get("item_id") or payload.get("sku")
+    item_name = payload.get("item_name") or item_id
+    if not item_id:
+        return
+    product = await upsert_entity(session, event.business_id, "product", name=str(item_name),
+                                  external_id=str(item_id))
+    if supplier_id:
+        supplier = await upsert_entity(session, event.business_id, "supplier", name=str(supplier_id),
+                                       external_id=str(supplier_id))
+        await upsert_relationship(session, event.business_id, supplier.id, product.id, "SUPPLIES",
+                                  strength_delta=0.1, evidence_event_id=str(event.id))
+
+
+async def _project_inventory_changed(session: AsyncSession, event: Event) -> None:
+    """Project a stock change: branch → product (STOCKS) + product → category (BELONGS_TO,
+    §15 — only when the ledger has a real category for the item)."""
+    payload = event.payload or {}
+    item_id = payload.get("item_id") or payload.get("sku")
+    item_name = payload.get("item_name") or item_id
+    branch_id = payload.get("branch_id") or payload.get("business_id")
+    if not item_id:
+        return
+    product = await upsert_entity(session, event.business_id, "product", name=str(item_name),
+                                  external_id=str(item_id))
+    if branch_id:
+        branch = await upsert_entity(session, event.business_id, "branch", name=str(branch_id),
+                                     external_id=str(branch_id))
+        await upsert_relationship(session, event.business_id, branch.id, product.id, "STOCKS",
+                                  strength_delta=0.05, evidence_event_id=str(event.id))
+
+    # product → category (real evidence from the items/categories ledger).
+    from sqlalchemy import text
+    cat = await session.execute(text("""
+        SELECT c.id, c.name FROM categories c
+        JOIN items i ON i.category_id = c.id
+        WHERE i.id = :item AND i.business_id = :b
+        LIMIT 1
+    """), {"item": str(item_id), "b": str(event.business_id)})
+    crow = cat.fetchone()
+    if crow:
+        category = await upsert_entity(session, event.business_id, "category", name=crow.name,
+                                       external_id=str(crow.id))
+        await upsert_relationship(session, event.business_id, product.id, category.id, "BELONGS_TO",
+                                  strength_delta=0.1, evidence_event_id=str(event.id))
+
+
+async def _project_transfer_completed(session: AsyncSession, event: Event) -> None:
+    """Project an inter-branch transfer: from-branch → to-branch (NEAR) + both stock product."""
+    payload = event.payload or {}
+    from_branch = payload.get("from_business_id")
+    to_branch = payload.get("to_business_id")
+    item_id = payload.get("item_id")
+    item_name = payload.get("item_name") or item_id
+    if from_branch and to_branch:
+        f = await upsert_entity(session, event.business_id, "branch", name=str(from_branch),
+                                external_id=str(from_branch))
+        t = await upsert_entity(session, event.business_id, "branch", name=str(to_branch),
+                                external_id=str(to_branch))
+        # A completed transfer is concrete evidence the two branches trade stock.
+        await upsert_relationship(session, event.business_id, f.id, t.id, "TRADES_STOCK_WITH",
+                                  strength_delta=0.1, evidence_event_id=str(event.id))
+    if item_id:
+        product = await upsert_entity(session, event.business_id, "product", name=str(item_name),
+                                      external_id=str(item_id))
+        for branch_id in (from_branch, to_branch):
+            if branch_id:
+                branch = await upsert_entity(session, event.business_id, "branch", name=str(branch_id),
+                                             external_id=str(branch_id))
+                await upsert_relationship(session, event.business_id, branch.id, product.id, "STOCKS",
+                                          strength_delta=0.05, evidence_event_id=str(event.id))
+
+
+async def _project_finding_created(session: AsyncSession, event: Event) -> None:
+    """Project a finding: finding → product/branch (AFFECTS), from the finding's
+    affected_entities + category/domain."""
+    payload = event.payload or {}
+    finding_id = payload.get("finding_id")
+    if not finding_id:
+        return
+    finding = await upsert_entity(session, event.business_id, "finding", name=str(finding_id),
+                                  external_id=str(finding_id),
+                                  attributes={"title": payload.get("title"), "domain": payload.get("domain"),
+                                              "category": payload.get("category"),
+                                              "severity": payload.get("severity")})
+    for ent in payload.get("affected_entities") or []:
+        etype = ent.get("type")
+        eid = ent.get("id") or ent.get("name")
+        if not eid:
+            continue
+        target = await upsert_entity(session, event.business_id, etype if etype else "entity",
+                                     name=str(eid), external_id=str(eid))
+        await upsert_relationship(session, event.business_id, finding.id, target.id, "AFFECTS",
+                                  strength_delta=0.1, evidence_event_id=str(event.id))
+
+
+async def _project_action_completed(session: AsyncSession, event: Event) -> None:
+    """Project an executed action: finding → action (RECOMMENDS) and action → product
+    (TARGETS), forming the finding→action→outcome chain (§9)."""
+    payload = event.payload or {}
+    action_id = payload.get("action_id")
+    finding_id = payload.get("finding_id")
+    if not action_id:
+        return
+    action = await upsert_entity(session, event.business_id, "action", name=str(action_id),
+                                 external_id=str(action_id),
+                                 attributes={"action_type": payload.get("action_type"),
+                                             "status": payload.get("status", "completed")})
+    if finding_id:
+        finding = await upsert_entity(session, event.business_id, "finding", name=str(finding_id),
+                                      external_id=str(finding_id))
+        await upsert_relationship(session, event.business_id, finding.id, action.id, "RECOMMENDS",
+                                  strength_delta=0.1, evidence_event_id=str(event.id))
+    for ent in payload.get("targets") or []:
+        target = await upsert_entity(session, event.business_id, ent.get("type", "entity"),
+                                     name=str(ent.get("id") or ent.get("name")),
+                                     external_id=str(ent.get("id")))
+        await upsert_relationship(session, event.business_id, action.id, target.id, "TARGETS",
+                                  strength_delta=0.1, evidence_event_id=str(event.id))
+
+    # action → outcome (PRODUCES, §15): the outcome is a structured, evidence-backed result.
+    if payload.get("executed") is not None or payload.get("outcome"):
+        outcome = await upsert_entity(
+            session, event.business_id, "outcome",
+            name=f"outcome-{payload.get('action_id')}",
+            external_id=str(payload.get("action_id")),
+            attributes={"executed": payload.get("executed"), "outcome": payload.get("outcome")},
+        )
+        await upsert_relationship(session, event.business_id, action.id, outcome.id, "PRODUCES",
+                                  strength_delta=0.1, evidence_event_id=str(event.id))
+
+
+async def _project_supplier_price_changed(session: AsyncSession, event: Event) -> None:
+    """Project a supplier-price observation: supplier → price entity (HAS_PRICE)."""
+    payload = event.payload or {}
+    price_id = payload.get("price_id")
+    supplier_id = payload.get("supplier_id")
+    if not price_id or not supplier_id:
+        return
+    price = await upsert_entity(session, event.business_id, "price", name=str(price_id),
+                                external_id=str(price_id),
+                                attributes={"unit_price_sar": payload.get("unit_price_sar")})
+    supplier = await upsert_entity(session, event.business_id, "supplier", name=str(supplier_id),
+                                   external_id=str(supplier_id))
+    await upsert_relationship(session, event.business_id, supplier.id, price.id, "HAS_PRICE",
+                              strength_delta=0.1, evidence_event_id=str(event.id))
+
+
+async def project_finding_to_graph(
+    session: AsyncSession,
+    business_id: UUID | str,
+    finding_id: UUID | str,
+    *,
+    domain: str,
+    category: str,
+    severity: str,
+    title: str,
+    affected_entities: list[dict[str, Any]] | None = None,
+) -> None:
+    """Directly project a finding into the KG at creation time (§15). The finding is born
+    in the audit engine (not from an external event), so it is projected here rather than
+    through the event bus — the graph edges are identical to the `finding.created` projector."""
+    finding = await upsert_entity(
+        session, business_id, "finding", name=str(finding_id), external_id=str(finding_id),
+        attributes={"title": title, "domain": domain, "category": category, "severity": severity},
+    )
+    for ent in affected_entities or []:
+        etype = ent.get("type")
+        eid = ent.get("id") or ent.get("name")
+        if not eid:
+            continue
+        target = await upsert_entity(session, business_id, etype if etype else "entity",
+                                     name=str(eid), external_id=str(eid))
+        await upsert_relationship(session, business_id, finding.id, target.id, "AFFECTS",
+                                  strength_delta=0.1, evidence_event_id=f"finding:{finding_id}")
+
+
+async def project_action_to_graph(
+    session: AsyncSession,
+    business_id: UUID | str,
+    action_id: UUID | str,
+    *,
+    action_type: str,
+    status: str,
+    executed: bool | None = None,
+    outcome: dict[str, Any] | None = None,
+    finding_id: UUID | str | None = None,
+    targets: list[dict[str, Any]] | None = None,
+) -> None:
+    """Directly project an executed action into the KG (finding → action RECOMMENDS, action →
+    product TARGETS, action → outcome PRODUCES). Idempotent via upsert."""
+    action = await upsert_entity(session, business_id, "action", name=str(action_id),
+                                 external_id=str(action_id),
+                                 attributes={"action_type": action_type, "status": status})
+    if finding_id:
+        finding = await upsert_entity(session, business_id, "finding", name=str(finding_id),
+                                      external_id=str(finding_id))
+        await upsert_relationship(session, business_id, finding.id, action.id, "RECOMMENDS",
+                                  strength_delta=0.1, evidence_event_id=f"action:{action_id}")
+    for ent in targets or []:
+        target = await upsert_entity(session, business_id, ent.get("type", "entity"),
+                                     name=str(ent.get("id") or ent.get("name")),
+                                     external_id=str(ent.get("id")))
+        await upsert_relationship(session, business_id, action.id, target.id, "TARGETS",
+                                  strength_delta=0.1, evidence_event_id=f"action:{action_id}")
+    if executed is not None:
+        outcome_ent = await upsert_entity(
+            session, business_id, "outcome", name=f"outcome-{action_id}",
+            external_id=str(action_id), attributes={"executed": executed, "outcome": outcome},
+        )
+        await upsert_relationship(session, business_id, action.id, outcome_ent.id, "PRODUCES",
+                                  strength_delta=0.1, evidence_event_id=f"action:{action_id}")
+
+
 _GRAPH_PROJECTOR_MAP: dict[str, Any] = {
     "supplier.delivered": _project_supplier_delivered,
     "sale.completed": _project_sale_completed,
     "employee.clock_in": _project_employee_clock_in,
+    "price.updated": _project_price_updated,
+    "inventory.changed": _project_inventory_changed,
+    "transfer.completed": _project_transfer_completed,
+    "finding.created": _project_finding_created,
+    "action.completed": _project_action_completed,
+    "supplier_price.changed": _project_supplier_price_changed,
 }
 
 

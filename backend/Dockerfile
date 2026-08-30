@@ -18,3 +18,5 @@ COPY . .
 EXPOSE 8000
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+RUN chmod +x /app/scripts/runtime_worker_health.py /app/scripts/runtime_beat_health.py

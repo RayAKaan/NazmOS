@@ -18,6 +18,8 @@ from decimal import Decimal
 from typing import Any, Optional
 from uuid import UUID
 
+from app.utils.clock import utcnow as _clock_utcnow
+
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -47,10 +49,14 @@ class AutonomyMode:
 def _in_quiet_hours(quiet_start: time | None, quiet_end: time | None) -> bool:
     if quiet_start is None or quiet_end is None:
         return False
-    now = datetime.now().time()
+    # §12 Business Clock: use virtual clock for business-time-dependent logic.
+    # Quiet hours are in local (KSA) time, so convert UTC → KSA (+3).
+    now_utc = _clock_utcnow()
+    from datetime import timezone, timedelta
+    now_local = (now_utc + timedelta(hours=3)).time()
     if quiet_start < quiet_end:
-        return quiet_start <= now <= quiet_end
-    return now >= quiet_start or now <= quiet_end
+        return quiet_start <= now_local <= quiet_end
+    return now_local >= quiet_start or now_local <= quiet_end
 
 
 def _coerce_time(value: Any) -> time | None:
@@ -108,15 +114,17 @@ def evaluate_action(
     policy: dict[str, Any],
     confidence: float = 0.0,
 ) -> AutonomyMode:
+    from app.config import get_settings
+    min_conf = getattr(get_settings(), "AGENT_AUTO_MIN_CONFIDENCE", 0.90)
     dial = int(policy.get("dial", 0))
 
     if dial == 0:
         return AutonomyMode("inform", True, "dial set to inform-only", policy)
-    if dial < 95 or confidence < 0.9:
-        if dial >= 95 and confidence < 0.9:
+    if dial < 95 or confidence < min_conf:
+        if dial >= 95 and confidence < min_conf:
             return AutonomyMode(
                 "draft", True,
-                "auto-execution dial requires confidence >= 0.90; downgraded to draft",
+                f"auto-execution dial requires confidence >= {min_conf:.2f}; downgraded to draft",
                 policy, downgraded=True,
             )
         return AutonomyMode("draft", True, "approval required", policy)

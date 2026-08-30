@@ -42,6 +42,8 @@ FIELD_TARGETS = [
     "batch_number",
     "payment_method",
     "customer_id",
+    "supplier",
+    "transaction_type",
 ]
 
 NUMERIC_COLUMNS = {
@@ -121,6 +123,23 @@ def parse_number(value) -> float:
         return 0.0
 
 
+def _number_is_valid(value) -> bool:
+    if pd.isna(value):
+        return True
+    if isinstance(value, (int, float)):
+        return True
+    text = str(value).strip().replace(",", "")
+    text = re.sub(r"(SAR|S\.A\.R|ر\.س|ريال|﷼)", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"[^0-9.\-]", "", text)
+    return text not in {"", "-", ".", "-."} and bool(re.fullmatch(r"-?\d+(?:\.\d+)?", text))
+
+
+class DataQualityError(ValueError):
+    def __init__(self, message: str, report: dict):
+        self.report = report
+        super().__init__(message)
+
+
 def _coalesce_duplicate_columns(df: pd.DataFrame) -> pd.DataFrame:
     """When two source columns are mapped to one target, keep the first non-empty value."""
     if not df.columns.duplicated().any():
@@ -140,22 +159,35 @@ def _coalesce_duplicate_columns(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(out)
 
 
-def normalize_dataframe(df: pd.DataFrame, column_mapping: Dict[str, str]) -> pd.DataFrame:
+def normalize_dataframe(df: pd.DataFrame, column_mapping: Dict[str, str], *, strict: bool = False) -> pd.DataFrame:
+    """Normalize a merchant file.
+
+    ``strict=True`` is required by production ETL: malformed financial records are
+    surfaced for review instead of being silently coerced or discarded.  The default
+    remains backward compatible for legacy callers/tests.
+    """
     normalized = df.copy()
+    report = {"rows_received": int(len(df)), "rejected": [], "duplicate_rows": 0, "warnings": []}
 
     rename_map = {}
     for col, target in (column_mapping or {}).items():
         if target and target in FIELD_TARGETS and col in normalized.columns:
             rename_map[col] = target
-
     normalized = normalized.rename(columns=rename_map)
     normalized = _coalesce_duplicate_columns(normalized)
+
+    # Validate before coercion so invalid values cannot silently become zero.
+    for idx in normalized.index:
+        if "transaction_at" in normalized.columns and not pd.isna(normalized.at[idx, "transaction_at"]):
+            if parse_date(normalized.at[idx, "transaction_at"]) is None:
+                report["rejected"].append({"row": int(idx) + 2, "field": "transaction_at", "reason": "invalid_date"})
+        for col in NUMERIC_COLUMNS:
+            if col in normalized.columns and not _number_is_valid(normalized.at[idx, col]):
+                report["rejected"].append({"row": int(idx) + 2, "field": col, "reason": "invalid_number", "value": str(normalized.at[idx, col])[:120]})
 
     for col in list(normalized.columns):
         if col in DATE_COLUMNS:
             normalized[col] = normalized[col].apply(parse_date)
-            if col == "transaction_at":
-                normalized = normalized[normalized[col].notna()]
         elif col in NUMERIC_COLUMNS:
             normalized[col] = normalized[col].apply(parse_number)
         elif col in FIELD_TARGETS:
@@ -164,8 +196,9 @@ def normalize_dataframe(df: pd.DataFrame, column_mapping: Dict[str, str]) -> pd.
     if "item_name" not in normalized.columns:
         raise ValueError("Missing required column: item_name")
 
+    empty_names = normalized[normalized["item_name"].isna() | (normalized["item_name"].astype(str).str.strip() == "")].index.tolist()
+    report["rejected"].extend({"row": int(i) + 2, "field": "item_name", "reason": "missing_item_name"} for i in empty_names)
     normalized["item_name"] = normalized["item_name"].astype(str).str.strip()
-    normalized = normalized[normalized["item_name"] != ""]
 
     has_sales_history = "transaction_at" in normalized.columns
     has_inventory_snapshot = "current_stock" in normalized.columns
@@ -174,21 +207,64 @@ def normalize_dataframe(df: pd.DataFrame, column_mapping: Dict[str, str]) -> pd.
 
     if "quantity" not in normalized.columns and has_sales_history:
         normalized["quantity"] = 1.0
-
     if "unit_price" not in normalized.columns and "sell_price" in normalized.columns:
         normalized["unit_price"] = normalized["sell_price"]
-
     if "sell_price" not in normalized.columns and "unit_price" in normalized.columns:
         normalized["sell_price"] = normalized["unit_price"]
-
     if "unit_price" not in normalized.columns and "total_amount" in normalized.columns and "quantity" in normalized.columns:
         qty = normalized["quantity"].replace(0, 1)
         normalized["unit_price"] = normalized["total_amount"] / qty
         normalized["sell_price"] = normalized["unit_price"]
-
     if "total_amount" not in normalized.columns and "unit_price" in normalized.columns and "quantity" in normalized.columns:
         normalized["total_amount"] = normalized["unit_price"] * normalized["quantity"]
 
+    # Negative quantities are only valid when the source explicitly identifies a
+    # return/refund/adjustment.  Returns are stored as positive units with a negative
+    # financial amount because the DB transaction quantity is constrained > 0.
+    if has_sales_history and "quantity" in normalized.columns:
+        types = normalized.get("transaction_type", pd.Series(["sale"] * len(normalized), index=normalized.index)).astype(str).str.lower().str.strip()
+        normalized["transaction_type"] = types.replace({"refund": "return", "credit_note": "return", "stock_adjustment": "adjustment"})
+        allowed = {"sale", "return", "waste", "adjustment", "transfer"}
+        for idx in normalized.index:
+            q = normalized.at[idx, "quantity"]
+            t = normalized.at[idx, "transaction_type"]
+            if q < 0 and t not in {"return", "waste", "adjustment"}:
+                report["rejected"].append({"row": int(idx) + 2, "field": "quantity", "reason": "negative_quantity_requires_explicit_transaction_type"})
+            if t not in allowed:
+                report["rejected"].append({"row": int(idx) + 2, "field": "transaction_type", "reason": "unknown_transaction_type", "value": t})
+        return_rows = normalized[normalized["transaction_type"].isin({"return", "waste", "adjustment"})].index
+        normalized.loc[return_rows, "quantity"] = normalized.loc[return_rows, "quantity"].abs()
+        if "total_amount" in normalized.columns:
+            normalized.loc[return_rows, "total_amount"] = -normalized.loc[return_rows, "total_amount"].abs()
+
+    # Duplicate SKU identities are a financial integrity warning because merging
+    # them can distort stock and velocity.
+    if "item_sku" in normalized.columns and "item_name" in normalized.columns:
+        sku_work = normalized[["item_sku", "item_name"]].copy()
+        sku_work["item_sku"] = sku_work["item_sku"].astype(str).str.strip()
+        for sku, grp in sku_work[sku_work["item_sku"] != ""].groupby("item_sku"):
+            names = sorted(set(grp["item_name"].astype(str).str.strip()))
+            if len(names) > 1:
+                report["warnings"].append({"reason": "duplicate_sku_multiple_names", "sku": sku, "item_names": names})
+
+    # Exact duplicate source rows are surfaced. They are not silently dropped here.
+    if len(normalized.columns):
+        dup_mask = normalized.duplicated(keep="first")
+        report["duplicate_rows"] = int(dup_mask.sum())
+        for i in normalized.index[dup_mask].tolist():
+            report["rejected"].append({"row": int(i) + 2, "field": "row", "reason": "duplicate_row"})
+
+    report["rejected"] = list(report["rejected"])
+    if strict and report["rejected"]:
+        raise DataQualityError("Financial upload contains records requiring review.", report)
+
+    # Backward-compatible mode excludes invalid rows, but production strict mode
+    # never reaches this branch.
+    if report["rejected"]:
+        bad_rows = {r["row"] - 2 for r in report["rejected"] if "row" in r}
+        normalized = normalized.drop(index=[i for i in normalized.index if i in bad_rows], errors="ignore")
+    normalized = normalized[normalized["item_name"] != ""]
+    normalized.attrs["data_quality_report"] = report
     return normalized
 
 

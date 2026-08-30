@@ -59,6 +59,11 @@ async def process_event_sync(
         # Phase 2: project the event into the knowledge graph.
         await route_event_to_graph_projectors(session, event_record)
 
+        # Phase 2: debounced, event-triggered continuous auditing (§5). Full audits
+        # never run on every trivial event — a domain re-runs only if no audit of that
+        # domain has run for this business in the last DEBOUNCE window.
+        await _maybe_run_event_triggered_audits(session, event_record)
+
         event_record.processed = True
         event_record.processed_at = datetime.now(timezone.utc)
         await session.commit()
@@ -82,6 +87,46 @@ async def process_event_sync(
         raise
 
     return event_record
+
+
+from app.config import get_settings
+AUDIT_DEBOUNCE_MINUTES = max(5, int(get_settings().AUDIT_DEBOUNCE_MINUTES))  # configurable, floored at 5m
+
+
+async def _maybe_run_event_triggered_audits(session: AsyncSession, event_record: Event) -> None:
+    """Run debounced, domain-specific audits for an event (brief §5).
+
+    Best-effort: a failed audit must never fail event processing (which would roll
+    back the memory/graph projections). Debounce by checking the last audit run
+    per (business, domain) inside the window.
+    """
+    from datetime import datetime, timedelta, timezone
+    from sqlalchemy import text
+    from app.services.audit_triggers import audit_domains_for_event
+
+    domains = audit_domains_for_event(event_record.event_type)
+    if not domains:
+        return
+
+    # Dialect-safe cutoff (avoids NOW()/INTERVAL, which SQLite lacks).
+    cutoff = datetime.now(timezone.utc) - timedelta(minutes=AUDIT_DEBOUNCE_MINUTES)
+    for domain in domains:
+        try:
+            recent = await session.execute(text("""
+                SELECT 1 FROM audit_runs
+                WHERE business_id = :b AND domain = :d
+                  AND status = 'completed' AND completed_at > :cutoff
+                LIMIT 1
+            """), {"b": str(event_record.business_id), "d": domain, "cutoff": cutoff})
+            if recent.fetchone():
+                continue  # debounced — skip this domain this time
+
+            from app.services.audit_engine import run_audit
+            await run_audit(session, event_record.business_id, domain, trigger="event",
+                             trigger_event_type=event_record.event_type, commit=False)
+        except Exception as exc:
+            # Best-effort: a failed/unsupported audit must never fail event processing.
+            logger.warning("event-triggered audit %s skipped: %s", domain, exc)
 
 
 async def process_unprocessed_events(session: AsyncSession, limit: int = 1000) -> dict:

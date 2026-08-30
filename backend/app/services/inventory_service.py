@@ -1,3 +1,4 @@
+from app.utils.clock import utcnow
 from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
@@ -23,7 +24,7 @@ async def restock_item(db: AsyncSession, data: RestockRequest) -> RestockRespons
         raise NotFoundException("Inventory item not found")
     
     inventory.current_stock += Decimal(str(data.quantity))
-    inventory.last_restocked = datetime.utcnow()
+    inventory.last_restocked = utcnow()
     await db.flush()
     
     item_result = await db.execute(

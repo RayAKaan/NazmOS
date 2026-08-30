@@ -29,6 +29,8 @@ else:
             "app.tasks.event_tasks",
             "app.tasks.business_memory_tasks",
             "app.tasks.learning_tasks",
+            "app.tasks.audit_tasks",
+            "app.tasks.runtime_smoke_tasks",
         ],
     )
 
@@ -86,27 +88,42 @@ else:
                 "task": "app.tasks.learning_tasks.refresh_model_performance",
                 "schedule": crontab(hour=5, minute=0),  # daily at 05:00 Asia/Riyadh
             },
+            "daily-full-audit": {
+                "task": "app.tasks.audit_tasks.daily_full_audit",
+                "schedule": crontab(hour=6, minute=0),  # daily at 06:00 Asia/Riyadh
+            },
+            "goal-progress-snapshot": {
+                "task": "app.tasks.audit_tasks.goal_progress_snapshot",
+                "schedule": crontab(hour=7, minute=0),  # daily at 07:00 Asia/Riyadh
+            },
+            "learning-reconciliation": {
+                "task": "app.tasks.audit_tasks.learning_reconciliation",
+                "schedule": 3600.0,  # hourly — repairs any bridge drift
+            },
         },
     )
 
     # Register a dead-letter handler so failed tasks are not silently dropped.
-    @celery_app.task(bind=True, queue="dead_letter")
-    def dead_letter_handler(self, task_name: str, args: list, kwargs: dict, exception: str) -> None:
+    from celery.signals import task_failure as _task_failure_signal
+
+    def _dead_letter_log(task_name: str, task_id: str, args_list: list, kwargs_dict: dict, exception: str) -> None:
         from app.utils.logger import setup_logger
-        logger = setup_logger("celery.dead_letter")
-        logger.error(
+        _logger = setup_logger("celery.dead_letter")
+        _logger.error(
             "Task moved to dead letter queue",
             extra={
                 "task_name": task_name,
-                "task_id": self.request.id,
-                "args": args,
-                "kwargs": kwargs,
+                "task_id": task_id,
+                "args": [str(a)[:200] for a in args_list],
+                "kwargs": {k: str(v)[:200] for k, v in kwargs_dict.items()},
                 "exception": exception,
             },
         )
 
-    # Register signal to capture final failures and route to DLQ.
-    @celery_app.task_failure.connect
+    @_task_failure_signal.connect
     def on_task_failure(sender=None, task_id=None, exception=None, args=None, kwargs=None, **kw):
         if sender and task_id:
-            dead_letter_handler.delay(sender.name, list(args or []), dict(kwargs or {}), str(exception))
+            try:
+                _dead_letter_log(sender.name, str(task_id), list(args or []), dict(kwargs or {}), str(exception))
+            except Exception:
+                pass

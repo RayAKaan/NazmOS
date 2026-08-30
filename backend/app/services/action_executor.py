@@ -39,6 +39,43 @@ class ActionExecutor:
         user_id: Optional[UUID] = None,
         source: str = "manual",
     ) -> ActionResult:
+        # Phase 1 (P0-B): enforce owner constraints at the FINAL execution
+        # boundary. If the guard refuses, record the block for observability and
+        # return failure WITHOUT mutating any business state.
+        from app.services.execution_guard import validate_action_for_execution, record_constraint_block
+        verdict = await validate_action_for_execution(
+            self.db,
+            business_id=business_id,
+            action_type=action_type,
+            payload={"item_id": str(entity_id)},
+            previous_state=previous_state,
+            new_state=new_state,
+            actor_business_id=business_id,
+        )
+        if verdict.blocked:
+            await record_constraint_block(
+                self.db,
+                business_id=business_id,
+                action_type=action_type,
+                reason_code=verdict.reason_code,
+                reason=verdict.reason,
+                payload=new_state,
+                attempted_by=user_id,
+            )
+            logger.info(
+                "action_blocked",
+                business_id=str(business_id),
+                action_type=action_type,
+                entity_id=str(entity_id),
+                reason_code=verdict.reason_code,
+            )
+            return ActionResult(
+                success=False,
+                action_id=None,
+                message=verdict.reason,
+                error=verdict.reason,
+            )
+
         executed_action = ExecutedAction(
             business_id=business_id,
             decision_id=decision_id,

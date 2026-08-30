@@ -328,6 +328,192 @@ class LLMOrchestrator:
             f"LLM rate limited on {provider}, skipping: {exc}"
         )
 
+    async def chat_completion(self, system_prompt: str, user_prompt: str) -> str | None:
+        """Single-shot completion with explicit system/user prompts.
+
+        Returns the assistant message text, or None if every provider fails
+        (or mock mode is enabled — callers fall back to deterministic logic).
+        Used by the AI reasoning layer (ab-compare / evidence reasoning).
+
+        Every attempt is appended to the AI-call ledger when
+        AI_CALL_LEDGER_PATH is configured (V9 experiment instrumentation).
+        """
+        import asyncio
+        import time
+
+        ledger_path = getattr(settings, "AI_CALL_LEDGER_PATH", "")
+
+        def _ledger(**fields) -> None:
+            if not ledger_path:
+                return
+            try:
+                import json as _json
+                from pathlib import Path as _Path
+                p = _Path(ledger_path)
+                p.parent.mkdir(parents=True, exist_ok=True)
+                rec = {"ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
+                       "model": fields.pop("model", settings.GROQ_MODEL or settings.GOOGLE_AI_MODEL),
+                       **fields}
+                with p.open("a", encoding="utf-8") as fh:
+                    fh.write(_json.dumps(rec, default=str) + "\n")
+            except Exception:
+                pass
+
+        def _prompt_fingerprint(text: str) -> str:
+            import hashlib
+            return hashlib.sha256((text or "")[:4000].encode()).hexdigest()[:16]
+
+        if self.use_mock:
+            _ledger(provider="mock", outcome="mock", latency_ms=0,
+                    prompt_sha=_prompt_fingerprint(user_prompt))
+            return json.dumps({
+                "decision": "MANUAL_REVIEW",
+                "confidence": 0.3,
+                "reasoning": "Mock LLM enabled — no real reasoning performed.",
+                "evidence_ids": [],
+                "risk_flags": ["MOCK_LLM"],
+                "recommended_action": None,
+            })
+
+        self.total_requests += 1
+        now_ts = time.time()
+        if self.circuit_open:
+            if self._circuit_opened_at and now_ts - self._circuit_opened_at >= self.recovery_timeout:
+                self.circuit_half_open = True
+                self.circuit_open = False
+            else:
+                _ledger(provider="none", outcome="circuit_open", latency_ms=0,
+                        prompt_sha=_prompt_fingerprint(user_prompt))
+                return None
+
+        payload = {
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": sanitize_user_input(user_prompt)},
+            ],
+            "temperature": settings.LLM_TEMPERATURE,
+            "max_tokens": settings.LLM_MAX_TOKENS,
+        }
+        prompt_sha = _prompt_fingerprint(system_prompt + "|" + user_prompt)
+
+        for provider in self._real_providers():
+            if not self._has_key(provider):
+                continue
+            try:
+                await llm_rate_limiter.consume(
+                    provider,
+                    prompt_tokens=estimate_tokens(system_prompt + user_prompt),
+                    output_tokens=settings.LLM_MAX_TOKENS,
+                )
+            except LLMRateLimitExceeded as exc:
+                self._log_rate_limit(provider, exc)
+                continue
+            t0 = time.time()
+            try:
+                request_coro = (
+                    self._groq_chat(payload) if provider == "groq"
+                    else self._google_ai_chat(payload)
+                )
+                result = await asyncio.wait_for(request_coro, timeout=getattr(self, "timeout", 30))
+            except Exception as exc:
+                # Rate-limit: wait for the provider's rolling window and retry
+                # this provider rather than giving up (respects 20 RPM free tier).
+                if "rate_limited" in str(exc).lower():
+                    retry_after = getattr(self, "backoff_until", None)
+                    wait = 30
+                    if retry_after:
+                        try:
+                            from datetime import datetime
+                            delta = (retry_after - datetime.utcnow()).total_seconds()
+                            wait = max(5, min(90, delta))
+                        except Exception:
+                            wait = 30
+                    logger.warning(
+                        "chat_completion provider %s rate limited; retrying in %.0fs", provider, wait
+                    )
+                    await asyncio.sleep(wait)
+                    # Reset backoff flag so we don't double-skip, then retry once
+                    try:
+                        self.backoff_until = None
+                    except Exception:
+                        pass
+                    try:
+                        request_coro = (
+                            self._groq_chat(payload) if provider == "groq"
+                            else self._google_ai_chat(payload)
+                        )
+                        result = await asyncio.wait_for(request_coro, timeout=getattr(self, "timeout", 30))
+                    except Exception as exc2:
+                        if "rate_limited" in str(exc2).lower():
+                            await asyncio.sleep(30)
+                            try:
+                                request_coro = (
+                                    self._groq_chat(payload) if provider == "groq"
+                                    else self._google_ai_chat(payload)
+                                )
+                                result = await asyncio.wait_for(request_coro, timeout=getattr(self, "timeout", 30))
+                            except Exception as exc3:
+                                logger.warning(
+                                    "chat_completion provider %s failed after retries: %s", provider, exc3
+                                )
+                                _ledger(provider=provider, outcome=f"error:{exc3}",
+                                        latency_ms=round((time.time() - t0) * 1000),
+                                        prompt_sha=prompt_sha)
+                                continue
+                        else:
+                            logger.warning(
+                                "chat_completion provider %s failed: %s", provider, exc2
+                            )
+                            _ledger(provider=provider, outcome=f"error:{exc2}",
+                                    latency_ms=round((time.time() - t0) * 1000),
+                                    prompt_sha=prompt_sha)
+                            continue
+                else:
+                    logger.warning(
+                        "chat_completion provider %s failed: %s", provider, exc
+                    )
+                    _ledger(provider=provider, outcome=f"error:{exc}",
+                            latency_ms=round((time.time() - t0) * 1000),
+                            prompt_sha=prompt_sha)
+                    continue
+            latency_ms = round((time.time() - t0) * 1000)
+            self.fallback_mode = False
+            self.success_count += 1
+            self.failure_count = 0
+            if self.circuit_half_open and self.success_count >= self.success_threshold:
+                self.circuit_half_open = False
+                self.circuit_open = False
+            content = None
+            usage = {}
+            try:
+                choices = result.get("choices") or []
+                if choices:
+                    content = choices[0].get("message", {}).get("content")
+                usage = result.get("usage") or {}
+            except (AttributeError, IndexError, KeyError):
+                pass
+            _ledger(provider=provider,
+                    outcome="ok" if content else "empty_content",
+                    latency_ms=latency_ms,
+                    prompt_tokens=usage.get("prompt_tokens"),
+                    completion_tokens=usage.get("completion_tokens"),
+                    total_tokens=usage.get("total_tokens"),
+                    prompt_sha=prompt_sha)
+            if content:
+                return content
+            return None
+
+        self.fallback_mode = True
+        self.failed_requests += 1
+        self.failure_count += 1
+        _ledger(provider="none", outcome="all_providers_failed", latency_ms=0,
+                prompt_sha=prompt_sha)
+        if self.failure_count >= getattr(self, "failure_threshold", 3):
+            self.circuit_open = True
+            self.circuit_half_open = True
+            self._circuit_opened_at = time.time()
+        return None
+
     # --- streaming (production chat path) ----------------------------------
 
     async def stream_response(

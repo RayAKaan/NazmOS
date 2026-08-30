@@ -1,3 +1,4 @@
+from app.utils.clock import utcnow
 from datetime import datetime, timedelta, date
 from decimal import Decimal
 from uuid import UUID, uuid4
@@ -22,7 +23,7 @@ async def get_dashboard_summary(db: AsyncSession, business_id: UUID) -> Dashboar
     from app.database.connection import enforce_tenant_filter
     enforce_tenant_filter(business_id)
 
-    today = datetime.utcnow().date()
+    today = utcnow().date()
     today_start = datetime.combine(today, datetime.min.time())
     today_end = datetime.combine(today, datetime.max.time())
     
@@ -152,7 +153,7 @@ async def calculate_health_score(db: AsyncSession, business_id: UUID) -> int:
         .where(
             and_(
                 Transaction.business_id == business_id,
-                Transaction.transaction_at >= datetime.utcnow() - timedelta(days=30),
+                Transaction.transaction_at >= utcnow() - timedelta(days=30),
             )
         )
         .group_by(Transaction.item_id)
@@ -204,7 +205,7 @@ async def calculate_health_score(db: AsyncSession, business_id: UUID) -> int:
 
 
 async def get_item_daily_avg(db: AsyncSession, business_id: UUID, item_id: UUID, days: int = 30) -> float:
-    start_date = datetime.utcnow() - timedelta(days=days)
+    start_date = utcnow() - timedelta(days=days)
     
     result = await db.execute(
         select(func.coalesce(func.sum(Transaction.quantity), 0))
@@ -221,36 +222,42 @@ async def get_item_daily_avg(db: AsyncSession, business_id: UUID, item_id: UUID,
 
 
 async def calculate_dead_stock_value(db: AsyncSession, business_id: UUID) -> Decimal:
-    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
-    
-    item_ids_result = await db.execute(
-        select(Transaction.item_id)
+    """Total dead-stock SAR for the business (canonical scan, WS5).
+
+    Canonical rule (shared with ``get_dead_stock_summary`` and the dashboard
+    ``get_dead_stock``): an item is dead when it has fewer than one unit of
+    sales in the last 30 days and still holds stock; stuck value is
+    ``current_stock * cost_price``.  Items with NO sales at all count as dead
+    (LEFT JOIN from inventory, not an inner sweep of transactions).
+    """
+    thirty_days_ago = utcnow() - timedelta(days=30)
+
+    recent_sales = (
+        select(
+            Transaction.item_id.label("item_id"),
+            func.sum(Transaction.quantity).label("qty_30d"),
+        )
         .where(
-            and_(
-                Transaction.business_id == business_id,
-                Transaction.transaction_at >= thirty_days_ago,
-            )
+            Transaction.business_id == business_id,
+            Transaction.transaction_at >= thirty_days_ago,
         )
         .group_by(Transaction.item_id)
-        .having(func.sum(Transaction.quantity) < 1)
+        .subquery()
     )
-    
-    dead_item_ids = [row[0] for row in item_ids_result]
-    
-    if not dead_item_ids:
-        return Decimal("0")
-    
+
     result = await db.execute(
         select(func.sum(Inventory.current_stock * Item.cost_price))
-        .join(Item, Inventory.item_id == Item.id)
+        .join(Item, Item.id == Inventory.item_id)
+        .outerjoin(recent_sales, recent_sales.c.item_id == Inventory.item_id)
         .where(
             and_(
                 Inventory.business_id == business_id,
-                Inventory.item_id.in_(dead_item_ids),
+                Inventory.current_stock > 0,
+                func.coalesce(recent_sales.c.qty_30d, 0) < 1,
             )
         )
     )
-    
+
     return result.scalar() or Decimal("0")
 
 
@@ -258,7 +265,7 @@ async def get_sales_trend(db: AsyncSession, business_id: UUID, period: int = 30)
     from app.database.connection import enforce_tenant_filter
     enforce_tenant_filter(business_id)
 
-    end_date = datetime.utcnow().date()
+    end_date = utcnow().date()
     start_date = end_date - timedelta(days=period)
     
     result = await db.execute(
@@ -325,7 +332,7 @@ async def get_top_products(db: AsyncSession, business_id: UUID, period: int = 7,
     from app.database.connection import enforce_tenant_filter
     enforce_tenant_filter(business_id)
 
-    end_date = datetime.utcnow()
+    end_date = utcnow()
     start_date = end_date - timedelta(days=period)
     
     result = await db.execute(
@@ -419,7 +426,7 @@ async def get_top_products(db: AsyncSession, business_id: UUID, period: int = 7,
 
 
 async def get_dead_stock(db: AsyncSession, business_id: UUID) -> DeadStockResponse:
-    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+    thirty_days_ago = utcnow() - timedelta(days=30)
     
     result = await db.execute(
         select(
@@ -462,7 +469,7 @@ async def get_dead_stock(db: AsyncSession, business_id: UUID) -> DeadStockRespon
             days_since = 0
             last_sold = row.last_sold
         
-        days_since_last_sale = (datetime.utcnow().date() - last_sold.date()).days if last_sold else days_since
+        days_since_last_sale = (utcnow().date() - last_sold.date()).days if last_sold else days_since
         
         if days_since_last_sale >= 30:
             stock_value = row.current_stock * (row.cost_price or Decimal("0"))
@@ -494,7 +501,7 @@ async def get_dead_stock(db: AsyncSession, business_id: UUID) -> DeadStockRespon
 
 
 async def get_hourly_pattern(db: AsyncSession, business_id: UUID, period: int = 30) -> HourlyPatternResponse:
-    end_date = datetime.utcnow()
+    end_date = utcnow()
     start_date = end_date - timedelta(days=period)
     
     result = await db.execute(
@@ -566,7 +573,7 @@ async def get_category_breakdown(db: AsyncSession, business_id: UUID, period: in
     from app.database.connection import enforce_tenant_filter
     enforce_tenant_filter(business_id)
 
-    end_date = datetime.utcnow()
+    end_date = utcnow()
     start_date = end_date - timedelta(days=period)
     
     result = await db.execute(
@@ -687,9 +694,9 @@ async def get_inventory_list(
     result = await db.execute(query)
     rows = result.all()
     
-    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
-    fourteen_days_ago = datetime.utcnow() - timedelta(days=14)
-    seven_days_ago = datetime.utcnow() - timedelta(days=7)
+    thirty_days_ago = utcnow() - timedelta(days=30)
+    fourteen_days_ago = utcnow() - timedelta(days=14)
+    seven_days_ago = utcnow() - timedelta(days=7)
     
     # Batch aggregate transactions for all page items to eliminate N+1 query hell
     item_ids = [row[0].id for row in rows]
@@ -868,9 +875,9 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
     
     item, inventory, category_name = row
     
-    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
-    seven_days_ago = datetime.utcnow() - timedelta(days=7)
-    fourteen_days_ago = datetime.utcnow() - timedelta(days=14)
+    thirty_days_ago = utcnow() - timedelta(days=30)
+    seven_days_ago = utcnow() - timedelta(days=7)
+    fourteen_days_ago = utcnow() - timedelta(days=14)
     
     sales_30d_result = await db.execute(
         select(
@@ -907,7 +914,7 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
         forecast_7d = []
         avg_daily_sales = sum(h.quantity for h in sales_history) / max(1, len(sales_history))
         for i in range(1, 8):
-            forecast_date = datetime.utcnow().date() + timedelta(days=i)
+            forecast_date = utcnow().date() + timedelta(days=i)
             # Apply Saudi Friday weekend uplift
             day_mult = 1.35 if forecast_date.weekday() in [3, 4] else 1.0
             forecast_7d.append(ForecastItem(
@@ -929,21 +936,44 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
     daily_avg = sales_30d / 30
     
     days_until_stockout = float(inventory.current_stock) / daily_avg if daily_avg > 0 else None
-    
-    if daily_avg < 0.1 or (days_until_stockout and days_until_stockout < 3):
+
+    # Phase 1 (P0-A): PO-aware reorder decision. Only confirmed inbound that
+    # arrives strictly BEFORE the projected stockout (%usable%) covers the gap;
+    # a far-future / late PO must not suppress a needed reorder.
+    from app.services.po_service import get_confirmed_inbound_map, usable_confirmed_inbound, projected_stockout_date
+    from decimal import Decimal as _Dec
+    inbound_map = await get_confirmed_inbound_map(db, business_id=business_id, as_of=utcnow().date())
+    _so = projected_stockout_date(
+        as_of=utcnow().date(),
+        current_stock=_Dec(str(float(inventory.current_stock))),
+        daily_demand=_Dec(str(daily_avg)) if daily_avg > 0 else _Dec("1"),
+    )
+    _timing = usable_confirmed_inbound(inbound_map.get(str(item.id)), stockout_date=_so)
+    usable_inbound = float(_timing.usable_qty) if _timing else 0.0
+    total_inbound = float(_timing.total_qty) if _timing else 0.0
+    late_inbound = float(_timing.late_qty) if _timing else 0.0
+    effective_days = (float(inventory.current_stock) + usable_inbound) / daily_avg if daily_avg > 0 else None
+
+    if daily_avg < 0.1 or (effective_days and effective_days < 3):
         should_reorder = True
         recommended_qty = float(inventory.max_stock)
         reason = "Stock critically low or dead stock"
-    elif days_until_stockout and days_until_stockout < 7:
+    elif effective_days and effective_days < 7:
         should_reorder = True
-        recommended_qty = float(inventory.max_stock) - float(inventory.current_stock)
-        reason = f"Stock will run out in {round(days_until_stockout, 1)} days"
+        recommended_qty = float(inventory.max_stock) - float(inventory.current_stock) - usable_inbound
+        reason = f"Stock will run out in {round(effective_days, 1)} days"
     else:
         should_reorder = False
         recommended_qty = 0
         reason = None
-    
-    days_until_stockout_display = round(days_until_stockout, 1) if days_until_stockout else None
+
+    days_until_stockout_display = round(effective_days, 1) if effective_days else None
+    reorder_evidence = {
+        "confirmed_inbound_qty": total_inbound,
+        "usable_inbound_qty": usable_inbound,
+        "late_inbound_qty": late_inbound,
+        "projected_stockout_date": _so.isoformat() if _so else None,
+    }
     
     if daily_avg < 0.1:
         computed_status = "dead"
@@ -1009,8 +1039,9 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
         reorder_recommendation=ReorderRecommendation(
             should_reorder=should_reorder,
             recommended_qty=round(recommended_qty, 2),
-            recommended_by_date=(datetime.utcnow() + timedelta(days=3)).strftime("%Y-%m-%d") if should_reorder else None,
+            recommended_by_date=(utcnow() + timedelta(days=3)).strftime("%Y-%m-%d") if should_reorder else None,
             reason=reason,
+            reorder_evidence=reorder_evidence,
         ),
     )
 
@@ -1058,7 +1089,7 @@ async def get_dashboard_alerts(db: AsyncSession, business_id: UUID) -> AlertsRes
     )
     inventory_rows = inventory_result.all()
 
-    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+    thirty_days_ago = utcnow() - timedelta(days=30)
     item_ids = [row[0].id for row in inventory_rows]
     sales_map = {}
     if item_ids:
@@ -1096,7 +1127,7 @@ async def get_dashboard_alerts(db: AsyncSession, business_id: UUID) -> AlertsRes
                 action_type="reorder",
                 item_id=item.id,
                 priority=1,
-                created_at=datetime.utcnow(),
+                created_at=utcnow(),
             ))
         elif days_until_stockout < 5 and daily_avg > 0:
             alerts.append(AlertResponse(
@@ -1110,7 +1141,7 @@ async def get_dashboard_alerts(db: AsyncSession, business_id: UUID) -> AlertsRes
                 action_type="restock",
                 item_id=item.id,
                 priority=2,
-                created_at=datetime.utcnow(),
+                created_at=utcnow(),
             ))
         
         if daily_avg < 0.1 and float(inventory.current_stock) > 0:
@@ -1125,10 +1156,10 @@ async def get_dashboard_alerts(db: AsyncSession, business_id: UUID) -> AlertsRes
                 action_type="dead_stock",
                 item_id=item.id,
                 priority=3,
-                created_at=datetime.utcnow(),
+                created_at=utcnow(),
             ))
     
-    today = datetime.utcnow().date()
+    today = utcnow().date()
     day_of_week = today.weekday()
     
     if day_of_week == 4:
@@ -1143,7 +1174,7 @@ async def get_dashboard_alerts(db: AsyncSession, business_id: UUID) -> AlertsRes
             action_type="stock_check",
             item_id=None,
             priority=5,
-            created_at=datetime.utcnow(),
+            created_at=utcnow(),
         ))
     elif day_of_week == 6:
         alerts.append(AlertResponse(
@@ -1157,7 +1188,7 @@ async def get_dashboard_alerts(db: AsyncSession, business_id: UUID) -> AlertsRes
             action_type=None,
             item_id=None,
             priority=5,
-            created_at=datetime.utcnow(),
+            created_at=utcnow(),
         ))
     
     alerts.sort(key=lambda x: x.priority)

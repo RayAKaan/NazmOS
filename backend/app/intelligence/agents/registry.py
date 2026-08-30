@@ -12,6 +12,9 @@ from app.intelligence.agents.finance_agent import FinanceAgent
 from app.intelligence.agents.inventory_agent import InventoryAgent
 from app.intelligence.agents.pricing_agent import PricingAgent
 from app.intelligence.agents.supplier_agent import SupplierAgent
+from app.intelligence.agents.recovery_agent import RecoveryAgent
+from app.intelligence.agents.procurement_agent import ProcurementAgent
+from app.intelligence.agents.margin_agent import MarginAgent
 
 
 AGENT_REGISTRY: dict[str, type[BaseAgent]] = {
@@ -20,6 +23,9 @@ AGENT_REGISTRY: dict[str, type[BaseAgent]] = {
     "supplier": SupplierAgent,
     "finance": FinanceAgent,
     "compliance": ComplianceAgent,
+    "recovery": RecoveryAgent,
+    "procurement": ProcurementAgent,
+    "margin": MarginAgent,
 }
 
 

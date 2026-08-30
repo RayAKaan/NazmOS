@@ -1,5 +1,7 @@
 from datetime import datetime
 
+import asyncio
+
 from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,6 +24,7 @@ async def _dependency_checks(db: AsyncSession | None = None) -> tuple[str, dict]
         "uploads_dir": settings.UPLOAD_DIR,
     }
     status = "healthy"
+    strict_runtime = settings.ENVIRONMENT in {"runtime_test", "production", "staging"} or settings.USE_CELERY or settings.USE_REDIS
 
     try:
         if db is None:
@@ -43,9 +46,18 @@ async def _dependency_checks(db: AsyncSession | None = None) -> tuple[str, dict]
         checks["redis"] = "ok"
     except Exception as exc:
         checks["redis"] = f"error: {exc}"
-        # Redis is optional in zero-cost mode; do not flip to unhealthy, only degraded.
-        if status == "healthy":
+        if strict_runtime:
+            status = "unhealthy"
+        elif status == "healthy":
             status = "degraded"
+
+    if strict_runtime:
+        # Celery inspect broadcasts are blocking Kombu calls; run them on a
+        # worker thread so the event loop is never blocked by health probes.
+        celery_probe = await asyncio.to_thread(ping_celery)
+        checks["celery"] = "ok" if celery_probe.get("reachable") and celery_probe.get("workers_online") else f"error: {celery_probe}"
+        if checks["celery"] != "ok":
+            status = "unhealthy"
 
     required_env = ["SECRET_KEY", "DATABASE_URL", "REDIS_URL"]
     missing = [name for name in required_env if not getattr(settings, name, None)]
@@ -96,9 +108,13 @@ async def redis_health():
 
 @router.get("/health/celery")
 async def celery_health():
+    probe, queues = await asyncio.gather(
+        asyncio.to_thread(ping_celery),
+        asyncio.to_thread(get_celery_queue_lengths),
+    )
     return {
         "service": "celery",
         "timestamp": datetime.utcnow().isoformat(),
-        **ping_celery(),
-        "queues": get_celery_queue_lengths().get("queues", {}),
+        **probe,
+        "queues": queues.get("queues", {}),
     }

@@ -3,8 +3,8 @@
 Limits are ORG-WIDE (global) per provider, independent of business_id, so a
 multi-tenant deployment shares one budget exactly as the free tiers bill it:
 
-    groq   : 30 RPM / 6,000 TPM / 14,400 RPD  (resets midnight UTC)
-    google : 15 RPM / 1,000 RPD               (resets midnight US/Pacific)
+    groq   : 30 RPM / 6,000 TPM / 1,000 RPD  (resets midnight UTC)
+    google : 20 RPM / 1,000 RPD               (resets midnight US/Pacific)
 
 RPM/TPM use a sliding 60s window (Redis zset); RPD uses a date-keyed counter
 that resets at midnight in the provider's own timezone.
@@ -33,11 +33,11 @@ PROVIDER_LIMITS: dict[str, dict[str, Any]] = {
     "groq": {
         "rpm": 30,
         "tpm": 6000,
-        "rpd": 14400,
+        "rpd": 1000,
         "rpd_tz": "UTC",
     },
     "google": {
-        "rpm": 15,
+        "rpm": 20,
         "tpm": None,
         "rpd": 1000,
         "rpd_tz": "US/Pacific",

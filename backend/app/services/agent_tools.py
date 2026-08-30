@@ -82,12 +82,16 @@ async def execute_agent_tool(tool_name: str, tool_args: Dict[str, Any], business
         return {"items": rows, "count": len(rows)}
 
     if tool_name == "get_dead_stock_summary":
+        # Dialect-safe (Phase 12): Python cutoff instead of NOW() - interval, so SQLite
+        # development/integration and Postgres both work.
+        from datetime import datetime, timedelta, timezone
         days = int(tool_args.get("days_no_sale", 30) or 30)
+        cutoff = datetime.now(timezone.utc) - timedelta(days=days)
         res = await db.execute(text("""
             WITH recent_sales AS (
                 SELECT item_id, MAX(transaction_at) AS last_sold_at, COALESCE(SUM(quantity), 0) AS qty_30d
                 FROM transactions
-                WHERE business_id = :b AND transaction_at >= NOW() - (:days || ' days')::interval
+                WHERE business_id = :b AND transaction_at >= :cutoff
                 GROUP BY item_id
             )
             SELECT i.name, inv.current_stock, i.cost_price,
@@ -102,7 +106,7 @@ async def execute_agent_tool(tool_name: str, tool_args: Dict[str, Any], business
               AND COALESCE(rs.qty_30d, 0) < 1
             ORDER BY stuck_sar DESC NULLS LAST
             LIMIT 10
-        """), {"b": str(business_id), "days": days})
+        """), {"b": str(business_id), "cutoff": cutoff})
         rows = [dict(r._mapping) for r in res.fetchall()]
         total_stuck = sum(float(r.get("stuck_sar") or 0) for r in rows)
         return {"dead_stock_items": rows, "total_stuck_sar": round(total_stuck, 2), "days_no_sale": days}

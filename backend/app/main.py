@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from app.config import get_settings
 from app.database import engine, Base, AsyncSessionLocal
+from app.routers.pilot import router as pilot_router
 from app.routers import (
     auth_router, businesses_router, dashboard_router, inventory_router, health_router,
     upload_router, chat_router, forecast_router, decisions_router, money_audit_router, ops_router,
@@ -12,7 +13,7 @@ from app.routers import (
     agent_router, suppliers_router, pharmacy_router, whatsapp_router, partners_router,
     admin_backup_router, oauth_router,
     pos_webhooks_router, orchestrator_router, recovery_match_router, compliance_router, events_router,
-    intelligence_router, guest_audit_router,
+    intelligence_router, guest_audit_router, audits_router,
 )
 from app.middleware.advanced_rate_limiter import RedisRateLimiter, InMemoryRateLimiter, AdvancedRateLimitMiddleware, get_rate_limiter
 from app.middleware.logging_middleware import LoggingMiddleware
@@ -191,6 +192,7 @@ app.include_router(dashboard_router, prefix="/api/v1", responses=COMMON_ERROR_RE
 app.include_router(inventory_router, prefix="/api/v1", responses=COMMON_ERROR_RESPONSES)
 app.include_router(upload_router, responses=COMMON_ERROR_RESPONSES)
 app.include_router(guest_audit_router, responses=COMMON_ERROR_RESPONSES)
+app.include_router(audits_router, responses=COMMON_ERROR_RESPONSES)
 app.include_router(forecast_router, responses=COMMON_ERROR_RESPONSES)
 app.include_router(decisions_router, responses=COMMON_ERROR_RESPONSES)
 app.include_router(money_audit_router, responses=COMMON_ERROR_RESPONSES)
@@ -198,6 +200,7 @@ app.include_router(ops_router, responses=COMMON_ERROR_RESPONSES)
 app.include_router(compliance_router, responses=COMMON_ERROR_RESPONSES)
 app.include_router(events_router, responses=COMMON_ERROR_RESPONSES)
 app.include_router(intelligence_router, responses=COMMON_ERROR_RESPONSES)
+app.include_router(pilot_router, responses=COMMON_ERROR_RESPONSES)
 
 # Retail Recovery routers only.
 app.include_router(pos_webhooks_router, responses=COMMON_ERROR_RESPONSES)

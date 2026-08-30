@@ -26,6 +26,12 @@ BUILTIN_EVENT_TYPES = [
     ("execution.failed", "Execution Failed", "An approved action failed during execution."),
     ("outcome.feedback.recorded", "Outcome Feedback Recorded", "A predicted-vs-actual outcome feedback record was stored."),
     ("learning.refreshed", "Learning Refreshed", "Model performance aggregates were refreshed by the Learning Engine."),
+    # Phase 3 — agentic foundation events
+    ("transfer.completed", "Transfer Completed", "An inter-branch stock transfer was executed."),
+    ("finding.created", "Finding Created", "The audit engine produced a canonical finding."),
+    ("supplier_price.changed", "Supplier Price Changed", "A supplier price observation was ingested."),
+    ("action.completed", "Action Completed", "An agent action completed execution."),
+    ("action.verified", "Action Verified", "An agent action's outcome was verified against business data."),
 ]
 
 

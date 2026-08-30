@@ -195,7 +195,15 @@ class NazmPlanner:
             LEFT JOIN forecast_cache fc ON fc.item_id = i.id AND fc.expires_at > NOW()
             WHERE i.business_id = :b AND inv.current_stock >= 0
         """), {"b": str(business_id)})
-        
+
+        # Phase 1 (P0-A): make the restock agent PO-aware. Only confirmed inbound
+        # that arrives strictly BEFORE the projected stockout may count toward
+        # coverage; a far-future / late PO must not suppress a needed reorder.
+        from app.services.po_service import get_confirmed_inbound_map, usable_confirmed_inbound, projected_stockout_date
+        from app.utils.clock import utcnow
+        from decimal import Decimal as _Dec
+        inbound_map = await get_confirmed_inbound_map(self.db, business_id=business_id, as_of=utcnow().date())
+
         created = 0
         for r in rows.fetchall():
             try:
@@ -203,27 +211,44 @@ class NazmPlanner:
                 if daily_demand < 0.1:
                     daily_demand = 1.0
                 stock_days = float(r.current_stock) / daily_demand if daily_demand > 0 else 999
-                
-                if stock_days < 3.0 and float(r.current_stock) < float(r.reorder_level or 10) * 1.5:
-                    # Calculate reorder qty – 14 days cover
-                    reorder_qty = max(int(daily_demand * 14), 20)
+
+                # Time-aware confirmed inbound for this item (usable-before-stockout only).
+                so = projected_stockout_date(
+                    as_of=utcnow().date(),
+                    current_stock=_Dec(str(float(r.current_stock))),
+                    daily_demand=_Dec(str(daily_demand)),
+                )
+                timing = usable_confirmed_inbound(
+                    inbound_map.get(str(r.id)),
+                    stockout_date=so,
+                )
+                usable_inbound = float(timing.usable_qty) if timing else 0.0
+                # Effective cover includes useful committed stock.
+                effective_stock_days = (float(r.current_stock) + usable_inbound) / daily_demand if daily_demand > 0 else 999
+
+                if effective_stock_days < 3.0 and float(r.current_stock) < float(r.reorder_level or 10) * 1.5:
+                    # Calculate reorder qty – 14 days cover, minus useful inbound.
+                    reorder_qty = max(int(daily_demand * 14 - usable_inbound), 20)
                     cost_sar = reorder_qty * float(r.sell_price or 0) * 0.7  # estimate cost = 70% of sell
                     
-                    confidence = 0.92 if stock_days < 1.5 else 0.85
+                    confidence = 0.92 if effective_stock_days < 1.5 else 0.85
                     
                     ok = await self._create_action(
                         business_id, "restock",
                         title=f"Restock {r.name}",
                         title_ar=f"إعادة طلب {r.name}",
-                        summary=f"Stock runs out in {stock_days:.1f} days. Order {reorder_qty} units – ~{cost_sar:.0f} SAR. Supplier: TBD",
-                        summary_ar=f"المخزون ينتهي خلال {stock_days:.1f} يوم – اطلب {reorder_qty} – ~{cost_sar:.0f} ر.س",
+                        summary=f"Stock runs out in {effective_stock_days:.1f} days (incl. {usable_inbound:.0f} usable confirmed inbound). Order {reorder_qty} units – ~{cost_sar:.0f} SAR. Supplier: TBD",
+                        summary_ar=f"المخزون ينتهي خلال {effective_stock_days:.1f} يوم – اطلب {reorder_qty} – ~{cost_sar:.0f} ر.س",
                         payload={
                             "item_id": str(r.id),
                             "item_name": r.name,
                             "current_stock": float(r.current_stock),
-                            "days_left": round(stock_days, 1),
+                            "days_left": round(effective_stock_days, 1),
                             "recommended_qty": reorder_qty,
                             "estimated_cost_sar": round(cost_sar, 2),
+                            "confirmed_inbound_qty": float(timing.total_qty) if timing else 0.0,
+                            "usable_inbound_qty": usable_inbound,
+                            "late_inbound_qty": float(timing.late_qty) if timing else 0.0,
                         },
                         confidence=confidence,
                         estimated_value_sar=cost_sar,

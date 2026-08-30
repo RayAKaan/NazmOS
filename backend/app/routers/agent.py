@@ -112,6 +112,7 @@ async def approve_action(
         action_id,
         note=note or "Approved via NazmOS web dashboard",
         decided_by=current_user.id,
+        business_id=business_id,
     )
     return {"ok": result.get("ok", False), "action_id": str(action_id), "status": "approved", "outcome": result.get("outcome")}
 
@@ -133,7 +134,8 @@ async def reject_action(
 
     await require_feature_enabled(db, "agent_enabled", business_id=business_id)
 
-    result = await reject_agent_action(db, action_id, note=reason or "Rejected via NazmOS web dashboard")
+    result = await reject_agent_action(db, action_id, note=reason or "Rejected via NazmOS web dashboard",
+                                        business_id=business_id)
     return {"ok": result.get("ok", False), "status": "rejected"}
 
 
@@ -332,3 +334,67 @@ async def action_dry_run(
 
     await require_feature_enabled(db, "agent_enabled", business_id=business_id)
     return await dry_run_action(db, action_id)
+
+
+# ── Phase 5 §18–19: autonomy explanation + immutable safety floors ────────
+
+@router.get("/autonomy/explanation")
+async def autonomy_explanation(
+    business_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Explain, per action type, what NazmOS can do automatically vs what needs approval
+    vs what is always human-controlled — plus the immutable backend safety floors."""
+    await assert_business_access(db, business_id, current_user)
+    from app.services.policy_engine import BASE_RISK, IMPACT_ESCALATE_MEDIUM, IMPACT_ESCALATE_HIGH
+    from app.services.autonomy_service import DEFAULTS
+    from app.config import get_settings
+
+    settings = get_settings()
+
+    labels = {
+        "restock": ("Restocking", "Owner approval required — spends money."),
+        "transfer_inventory": ("Inventory transfer", "Automatic under low-risk conditions within your dial."),
+        "pricing_increase": ("Price increase", "Owner approval required."),
+        "pricing_decrease": ("Price decrease", "Owner approval required."),
+        "discount": ("Discount", "Owner approval required."),
+        "margin_fix": ("Margin fix", "Owner approval required."),
+        "cash_alert": ("Cash flow", "Always human-controlled — inform only."),
+        "expiry_alert": ("Expiry alert", "Inform only; no automatic action."),
+    }
+
+    items = []
+    for action_type, risk in BASE_RISK.items():
+        default = DEFAULTS.get(action_type, {"dial": 0})
+        dial = int(default.get("dial", 0))
+        if risk == "low" and dial >= 95:
+            mode = "automatic"
+        elif risk == "high":
+            mode = "human"
+        elif risk == "low":
+            mode = "automatic-conditional"
+        else:
+            mode = "approval"
+        label, explain = labels.get(action_type, (action_type, ""))
+        items.append({
+            "action_type": action_type,
+            "label": label,
+            "mode": mode,
+            "explanation": explain,
+            "default_dial": dial,
+            "base_risk": risk,
+        })
+
+    return {
+        "actions": items,
+        "safety_floors": {
+            "min_confidence": settings.AGENT_AUTO_MIN_CONFIDENCE,
+            "risk_escalate_medium_sar": float(IMPACT_ESCALATE_MEDIUM),
+            "risk_escalate_high_sar": float(IMPACT_ESCALATE_HIGH),
+            "note": (
+                "These floors are enforced by the backend and cannot be weakened from the "
+                "frontend. Financial movements always require human control."
+            ),
+        },
+    }

@@ -5,6 +5,8 @@ from enum import Enum
 import uuid
 import json
 
+from app.utils.clock import utcnow
+
 
 class ActionType(str, Enum):
     RESTOCK = "RESTOCK"
@@ -81,14 +83,39 @@ class DecisionEngine:
             confidence = (confidence + float(context.get("historical_accuracy"))) / 2
         return max(0.0, min(1.0, confidence))
 
-    def generate_from_inventory(self, inventory_items: list) -> List[Decision]:
+    def generate_from_inventory(
+        self,
+        inventory_items: list,
+        confirmed_inbound: Optional[dict] = None,
+        as_of: Optional[date] = None,
+        usable_inbound: Optional[dict] = None,
+    ) -> List[Decision]:
+        """Generate RECOMMENDATIONS (not executable actions) from inventory.
+
+        ``confirmed_inbound`` is a map of item_id -> total confirmed inbound qty
+        (paper stock on the way). ``usable_inbound`` is a map of item_id -> qty
+        that actually arrives BEFORE the projected stockout date (time-aware).
+        When ``usable_inbound`` is supplied it takes precedence for suppression,
+        so a far-future PO cannot mask an immediate stockout (Section 4 / A7).
+        """
         decisions = []
-        today = date.today()
+        today = as_of or utcnow().date()
+        confirmed_inbound = confirmed_inbound or {}
+        usable_inbound = usable_inbound or {}
 
         for item in inventory_items:
             stock = item.get("current_stock", 0)
             daily_avg = item.get("daily_avg_sale", 0)
-            days_left = stock / daily_avg if daily_avg > 0.1 else 999
+            item_key = str(item.get("item_id"))
+            # Prefer time-aware usable inbound for suppression; fall back to the
+            # total confirmed inbound for backward compatibility.
+            if item_key in usable_inbound:
+                inbound = float(usable_inbound.get(item_key, 0) or 0)
+            else:
+                inbound = float(confirmed_inbound.get(item_key, 0) or 0)
+            available = stock + inbound
+            days_used = available if available > 0 else stock
+            days_left = days_used / daily_avg if daily_avg > 0.1 else 999
             reorder_level = item.get("reorder_level", 10)
             cost_price = item.get("cost_price", 0)
             sell_price = item.get("sell_price", 0)
@@ -96,7 +123,8 @@ class DecisionEngine:
             trend = item.get("trend_7d", "stable")
 
             if days_left < 2:
-                reorder_qty = max(daily_avg * 7, reorder_level * 2)
+                reorder_qty = max(daily_avg * 7 - inbound, reorder_level * 2 - inbound)
+                reorder_qty = max(reorder_qty, 0)
                 decisions.append(Decision(
                     action=ActionType.RESTOCK,
                     item_id=item.get("item_id"),
@@ -104,14 +132,15 @@ class DecisionEngine:
                     quantity=round(reorder_qty),
                     unit=item.get("unit", "units"),
                     by_when=today,
-                    reason=f"Only {days_left:.1f} days of stock remaining. Will stock out today or tomorrow.",
+                    reason=f"Only {days_left:.1f} days of stock remaining (incl. {inbound:.0f} confirmed inbound). Will stock out today or tomorrow.",
                     estimated_value=round(reorder_qty * cost_price),
                     confidence=0.95,
                     priority=1,
                 ))
 
             elif days_left < 5:
-                reorder_qty = max(daily_avg * 10, reorder_level)
+                reorder_qty = max(daily_avg * 10 - inbound, reorder_level - inbound)
+                reorder_qty = max(reorder_qty, 0)
                 decisions.append(Decision(
                     action=ActionType.RESTOCK,
                     item_id=item.get("item_id"),
@@ -119,7 +148,7 @@ class DecisionEngine:
                     quantity=round(reorder_qty),
                     unit=item.get("unit", "units"),
                     by_when=today + timedelta(days=2),
-                    reason=f"{days_left:.1f} days of stock remaining.",
+                    reason=f"{days_left:.1f} days of stock remaining (incl. {inbound:.0f} confirmed inbound).",
                     estimated_value=round(reorder_qty * cost_price),
                     confidence=0.90,
                     priority=2,
@@ -228,7 +257,7 @@ async def _load_recent_events(
     business_id: UUID,
     hours: int = 24,
 ) -> list[Event]:
-    since = datetime.now(timezone.utc) - timedelta(hours=hours)
+    since = utcnow() - timedelta(hours=hours)
     result = await session.execute(
         select(Event)
         .where(Event.business_id == business_id, Event.occurred_at >= since)

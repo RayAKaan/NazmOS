@@ -51,8 +51,35 @@ def run_process_upload(upload_id: str, business_id: str, column_mapping: dict):
                 clean_mapping = detection["detected_columns"]
 
             pipeline = ETLPipeline(upload_id, business_id, df, clean_mapping)
+
+            from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+            from contextlib import asynccontextmanager
+            _fresh_engine = create_async_engine(
+                settings.DATABASE_URL, pool_pre_ping=True, pool_size=5,
+            )
+            _fresh_sf = async_sessionmaker(
+                _fresh_engine, class_=AsyncSession, expire_on_commit=False,
+                autocommit=False, autoflush=False,
+            )
+
+            @asynccontextmanager
+            async def _fresh_session_scope():
+                async with _fresh_sf() as session:
+                    from app.database.connection import _set_rls_context
+                    if not settings.DATABASE_URL.startswith("sqlite"):
+                        await _set_rls_context(session)
+                    try:
+                        yield session
+                        await session.commit()
+                    except Exception:
+                        await session.rollback()
+                        raise
+                    finally:
+                        await session.close()
+
             import asyncio
-            stats = asyncio.run(pipeline.run())
+            stats = asyncio.run(pipeline.run(session_factory=_fresh_session_scope))
+            asyncio.run(_fresh_engine.dispose())
 
             session.execute(
                 text("""
@@ -85,9 +112,10 @@ def run_process_upload(upload_id: str, business_id: str, column_mapping: dict):
             }
 
         except Exception as e:
+            status = 'needs_review' if e.__class__.__name__ == 'DataQualityError' else 'failed'
             session.execute(
-                text("UPDATE uploaded_files SET status = 'failed', error_summary = :error WHERE id = :id"),
-                {"id": upload_id, "error": str(e)}
+                text("UPDATE uploaded_files SET status = :status, error_summary = :error WHERE id = :id"),
+                {"id": upload_id, "status": status, "error": str(e)}
             )
             session.commit()
             return {"status": "failed", "error": str(e)}
@@ -139,9 +167,33 @@ if settings.USE_CELERY:
 
     @celery_app.task(name="app.tasks.ingestion_tasks.nightly_recovery_match_scan")
     def nightly_recovery_match_scan():
-        from app.database.connection import get_sync_session
         from app.services.recovery_match_matcher import run_nightly_recovery_match_scan
+        from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+        from contextlib import asynccontextmanager
         import asyncio
 
-        with get_sync_session() as session:
-            return asyncio.run(run_nightly_recovery_match_scan(session))
+        _engine = create_async_engine(settings.DATABASE_URL, pool_pre_ping=True, pool_size=5)
+        _sf = async_sessionmaker(_engine, class_=AsyncSession, expire_on_commit=False)
+
+        @asynccontextmanager
+        async def _scope():
+            async with _sf() as session:
+                from app.database.connection import _set_rls_context
+                if not settings.DATABASE_URL.startswith("sqlite"):
+                    await _set_rls_context(session)
+                try:
+                    yield session
+                    await session.commit()
+                except Exception:
+                    await session.rollback()
+                    raise
+                finally:
+                    await session.close()
+
+        async def _run():
+            async with _scope() as session:
+                return await run_nightly_recovery_match_scan(session)
+
+        result = asyncio.run(_run())
+        asyncio.run(_engine.dispose())
+        return result

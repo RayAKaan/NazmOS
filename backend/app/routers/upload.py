@@ -109,7 +109,7 @@ async def upload_file(
             len(content)
         )
 
-        df = UploadService.parse_file(
+        df, parse_report = UploadService.parse_file_with_report(
             local_parse_path,
             validation["detected_extension"],
             validation["encoding"],
@@ -120,11 +120,13 @@ async def upload_file(
             text("""
                 INSERT INTO uploaded_files
                     (id, business_id, uploaded_by, stored_filename, original_filename, file_type,
-                     file_size_bytes, mime_type, sha256_hash, status, row_count_raw,
+                     file_size_bytes, mime_type, sha256_hash, status, row_count_raw, row_count_received, row_count_rejected,
+                     rows_rejected, data_quality_report, data_quality_score,
                      detected_columns, sample_rows, scan_completed_at)
                 VALUES
                     (:id, :business_id, :uploaded_by, :stored_filename, :original_filename, :file_type,
-                     :file_size_bytes, :mime_type, :sha256_hash, 'mapping_required', :row_count_raw,
+                     :file_size_bytes, :mime_type, :sha256_hash, 'mapping_required', :row_count_raw, :row_count_received, :row_count_rejected,
+                     CAST(:rows_rejected AS JSONB), CAST(:data_quality_report AS JSONB), :data_quality_score,
                      :detected_columns, :sample_rows, NOW())
                 RETURNING id
             """),
@@ -139,6 +141,11 @@ async def upload_file(
                 "mime_type": validation["mime_type"],
                 "sha256_hash": validation["sha256_hash"],
                 "row_count_raw": len(df),
+                "row_count_received": int(parse_report.get("rows_received", len(df))),
+                "row_count_rejected": int(parse_report.get("row_count_rejected", 0)),
+                "rows_rejected": json.dumps(parse_report.get("rows_rejected", [])),
+                "data_quality_report": json.dumps(parse_report),
+                "data_quality_score": 100.0 if not parse_report.get("rows_rejected") else max(0.0, 100.0 - (100.0 * len(parse_report.get("rows_rejected", [])) / max(1, parse_report.get("rows_received", len(df))))),
                 "detected_columns": json.dumps(detection["detected_columns"]),
                 "sample_rows": json.dumps(detection["sample_rows"]),
             }
@@ -158,10 +165,11 @@ async def upload_file(
             "suggested_file_kind": detection.get("suggested_file_kind"),
             "schema_valid": bool(detection["detected_columns"]),
             "status": "mapping_required",
+            "data_quality_report": parse_report,
         }
 
     except FileValidationError as e:
-        raise HTTPException(422, detail={"code": e.code, "message": e.message})
+        raise HTTPException(422, detail={"code": e.code, "message": e.message, "details": e.details})
     except Exception as e:
         raise HTTPException(500, detail=str(e))
     finally:
@@ -636,9 +644,10 @@ async def ingest_json(
         }
 
     except Exception as e:
+        status = 'needs_review' if e.__class__.__name__ == 'DataQualityError' else 'failed'
         await db.execute(
-            text("UPDATE uploaded_files SET status = 'failed', error_summary = :error WHERE id = :id"),
-            {"id": upload_id, "error": str(e)}
+            text("UPDATE uploaded_files SET status = :status, error_summary = :error WHERE id = :id"),
+            {"id": upload_id, "status": status, "error": str(e)}
         )
         await db.commit()
         raise HTTPException(500, detail=str(e))

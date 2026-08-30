@@ -134,7 +134,7 @@ function scanFileForTargets(file) {
   collect(/<Link\b[^>]*?\shref=(["'`])([^"'`]+)\1/g, 2);
 
   // <Link href={ '...' }> / <Link href={`...`}>
-  collect(/<Link\b[^>]*?\shref=\{\s*(["'`])([^"'`]+)\2\s*\}/g, 2);
+  collect(/<Link\b[^>]*?\shref=\{\s*(["'`])([^"'`]+)\1\s*\}/g, 2);
 
   // Object-literal href: "/..." in nav/config arrays (e.g. Sidebar baseNavItems).
   collect(/\bhref:\s*(["'`])(\/[^"'`]+)\1/g, 2);
@@ -273,6 +273,7 @@ const JUSTIFIED_ORPHANS = new Map([
   ["/team", "Team management; reached only by typed URL pending role-gating UX"],
   ["/mobile", "Standalone mobile PWA shell; reached from device home screen"],
   ["/partners", "External partner signup form; linked only from partner emails"],
+  ["/ui-kit", "Internal design-system reference page; intentionally not linked in production navigation"],
 ]);
 
 const broken = [];
@@ -297,14 +298,37 @@ for (const t of normalizedTargets) {
 // already provided by next.config redirects, e.g. /signin -> /login is fine
 // because /login is linked from other places anyway). Only references from
 // REACHABLE code count, so dead components cannot mask an orphan.
+// Dynamic hrefs (e.g. `/findings/${f.id}`) are normalised to their canonical
+// route (`/findings/[id]`) so a template-literal link counts as a link.
+function canonicalRoute(href) {
+  if (routes.has(href)) return href;
+  const hrefParts = href.split("/").filter(Boolean);
+  for (const route of routes) {
+    const routeParts = route.split("/").filter(Boolean);
+    if (routeParts.length !== hrefParts.length) continue;
+    let ok = true;
+    for (let i = 0; i < routeParts.length; i++) {
+      const rp = routeParts[i];
+      const hp = hrefParts[i];
+      if (rp.startsWith("[") && rp.endsWith("]")) continue;
+      if (rp !== hp) {
+        ok = false;
+        break;
+      }
+    }
+    if (ok) return route;
+  }
+  return null;
+}
+
 const linkedRoutes = new Set(
   normalizedTargets
     .filter((t) => {
       const fileAbs = join(SRC_DIR, t.file);
       return reachable.has(fileAbs);
     })
-    .map((t) => t.href)
-    .filter((h) => routes.has(h) || routeMatches(h))
+    .map((t) => canonicalRoute(t.href))
+    .filter((h) => h !== null)
 );
 const orphanRoutes = [...routes]
   .filter((r) => !linkedRoutes.has(r) && !knownAliases.has(r))

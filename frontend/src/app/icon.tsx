@@ -3,8 +3,12 @@ import { ImageResponse } from "next/og";
 export const size = { width: 512, height: 512 };
 export const contentType = "image/png";
 
-const BG_FROM = "#0a0a0f";
-const ACCENT = "#14B8A6";
+// NOTE (§10 flag): next/og's Satori renderer has no access to CSS variables or Tailwind,
+// so these MUST be literal hex. They mirror tokens.json seeds by hand:
+//   BRAND_NIGHT #0A0E0C  (--brand-night)  ·  BRAND_GOLD #F2CF69 (--brand-gold)
+// Keep in sync with design-tokens/tokens.json.
+const BRAND_NIGHT = "#0A0E0C";
+const BRAND_GOLD = "#F2CF69";
 
 export default function Icon() {
   return new ImageResponse(
@@ -16,7 +20,7 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: BG_FROM,
+          background: BRAND_NIGHT,
         }}
       >
         <div
@@ -24,7 +28,7 @@ export default function Icon() {
             fontSize: 280,
             fontWeight: 800,
             fontFamily: "ui-sans-serif, system-ui, sans-serif",
-            color: ACCENT,
+            color: BRAND_GOLD,
             lineHeight: 1,
           }}
         >

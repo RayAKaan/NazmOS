@@ -96,9 +96,15 @@ for (const [k, v] of Object.entries(tokens.radius as Record<string, string>)) {
 }
 
 const fontFamily = tokens.typography.fontFamily as Record<string, string[]>;
+// §2.2 modular type scale (1.25 ratio, base 16px) — drives Tailwind fontSize + --text-* vars.
+const fontSize = (tokens.typography.fontSize || {}) as Record<string, [string, { lineHeight?: string }]>;
+// §3 WeaveTile accent + field opacity (light = 40% of dark, see §2.5 reconciliation).
+const weave = tokens.weave as Record<string, { light: string; dark: string }>;
+// §2.4 motion tokens.
+const motion = tokens.motion as Record<string, string>;
 
 const shadowMap: Record<string, string> = {};
-for (const k of ["card", "glow-gold", "glow-teal"]) {
+for (const k of ["card", "glow-gold", "glow-teal", "elevation-1", "elevation-2", "elevation-3"]) {
   shadowMap[kebab(k)] = (tokens.shadows as Record<string, string>)[k];
 }
 
@@ -116,6 +122,7 @@ const config = {
       colors,
       borderRadius: radius,
       fontFamily,
+      fontSize,
       boxShadow: shadowMap,
       keyframes: {
         "accordion-down": { from: { height: "0" }, to: { height: "var(--radix-accordion-content-height)" } },
@@ -127,6 +134,9 @@ const config = {
         "slide-in-right": { "0%": { opacity: "0", transform: "translateX(20px)" }, "100%": { opacity: "1", transform: "translateX(0)" } },
         "scale-in": { "0%": { opacity: "0", transform: "scale(0.95)" }, "100%": { opacity: "1", transform: "scale(1)" } },
         float: { "0%, 100%": { transform: "translateY(0px)" }, "50%": { transform: "translateY(-10px)" } },
+        // §2.4 motion — CSS-driven only (perf guardrail §6), durations from --duration-* vars.
+        "weave-in": { "0%": { opacity: "0" }, "100%": { opacity: "1" } },
+        "seam-reveal": { "0%": { opacity: "0", "stroke-dashoffset": "1" }, "100%": { opacity: "1", "stroke-dashoffset": "0" } },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -138,6 +148,8 @@ const config = {
         "slide-in-right": "slideInRight 0.5s ease-out forwards",
         "scale-in": "scaleIn 0.3s ease-out forwards",
         float: "float 6s ease-in-out infinite",
+        "weave-in": "weave-in var(--duration-weave) linear",
+        "seam-reveal": "seam-reveal var(--duration-seam) ease-out forwards",
       },
     },
   },
@@ -170,6 +182,30 @@ function cssVarsFromLegacy(): string {
   return lines.join("\n");
 }
 
+// §2.4 motion tokens (theme-independent).
+function cssMotionVars(): string {
+  return Object.entries(motion)
+    .map(([k, v]) => `  --${kebab(k)}: ${v};`)
+    .join("\n");
+}
+
+// §2.2 --text-* size vars (theme-independent).
+function cssTextSizeVars(): string {
+  return Object.entries(fontSize)
+    .map(([k, [size]]) => `  --text-${k}: ${size};`)
+    .join("\n");
+}
+
+// §3 WeaveTile accent + field opacity. Light mode is the lower-investment surface:
+// gold-on-cream has far less contrast headroom than gold-on-night, so the weave motif
+// and gold-seam effects render at ~40% of dark-mode intensity (opacity-bg.light ≈ 0.016).
+// DO NOT "fix" light mode back to dark parity — this asymmetry is intentional (see §2.5).
+function cssWeaveVars(mode: "light" | "dark"): string {
+  return Object.entries(weave)
+    .map(([k, v]) => `  --weave-${kebab(k)}: ${v[mode]};`)
+    .join("\n");
+}
+
 const staticCss = `@tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -179,6 +215,13 @@ const staticCss = `@tailwind base;
     color-scheme: light;
 ${cssVarsFromCanonical("light").replace(/^/gm, "    ")}
     --radius: ${tokens.radius.DEFAULT};
+
+    /* §2.2 modular type scale + §2.4 motion (theme-independent). */
+${cssTextSizeVars().replace(/^/gm, "    ")}
+${cssMotionVars().replace(/^/gm, "    ")}
+
+    /* §3 WeaveTile tokens (light = 40% intensity of dark, see §2.5). */
+${cssWeaveVars("light").replace(/^/gm, "    ")}
 
     /* Local/system font stack: avoids build-time Google Font fetch failures. */
     --font-serif: Georgia, Cambria, "Times New Roman", serif;
@@ -190,6 +233,9 @@ ${cssVarsFromCanonical("light").replace(/^/gm, "    ")}
   .dark {
     color-scheme: dark;
 ${cssVarsFromCanonical("dark").replace(/^/gm, "    ")}
+
+    /* §3 WeaveTile tokens — full intensity (gold-on-night has the contrast headroom). */
+${cssWeaveVars("dark").replace(/^/gm, "    ")}
   }
 
   /* Legacy literal aliases (versioned in tokens.json) - resolve in both modes. */
@@ -233,23 +279,23 @@ ${cssVarsFromLegacy().replace(/^/gm, "    ")}
   }
 
   .shadow-subtle {
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.02);
+    box-shadow: 0 1px 2px 0 oklch(0% 0 0 / 0.3), 0 0 0 1px oklch(100% 0 0 / 0.02);
   }
 
   .shadow-glow {
-    box-shadow: 0 0 20px rgba(212, 165, 116, 0.15);
+    box-shadow: 0 0 20px oklch(var(--primary) / 0.15);
   }
 
   .shadow-glow-lg {
-    box-shadow: 0 0 40px rgba(212, 165, 116, 0.2);
+    box-shadow: 0 0 40px oklch(var(--primary) / 0.2);
   }
 
   .shadow-glow-teal {
-    box-shadow: 0 0 24px rgba(20, 184, 166, 0.15);
+    box-shadow: 0 0 24px oklch(var(--secondary) / 0.15);
   }
 
   .shadow-glow-teal-lg {
-    box-shadow: 0 0 40px rgba(20, 184, 166, 0.22);
+    box-shadow: 0 0 40px oklch(var(--secondary) / 0.22);
   }
 
   .border-brand-teal {
@@ -283,6 +329,15 @@ ${cssVarsFromLegacy().replace(/^/gm, "    ")}
   .focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary;
   }
+}
+
+/* §5: standardize the Lucide icon set at strokeWidth 1.75 (Swiss precision reads sharper
+   than the default 2). Deliberately OUTSIDE any @layer — Tailwind purges custom @layer
+   class rules whose selector never appears in scanned source (lucide's class is only added
+   at runtime by lucide-react), whereas plain top-level rules always pass through. The
+   WeaveTile motif is not a .lucide element, so its §3 2px stroke is unaffected. */
+.lucide {
+  stroke-width: 1.75;
 }
 `;
 

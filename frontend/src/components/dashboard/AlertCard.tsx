@@ -34,7 +34,7 @@ export function AlertCard({ alert, onAction }: AlertCardProps) {
   return (
     <div
       className={cn(
-        "p-4 rounded-xl border border-l-4 bg-surface transition-colors hover:bg-surface-hover cursor-pointer",
+        "p-4 rounded-lg border border-l-4 bg-surface shadow-elevation-1 transition-colors hover:bg-surface-hover cursor-pointer",
         borderColors[alert.type]
       )}
       onClick={onAction}

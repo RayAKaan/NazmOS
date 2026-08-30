@@ -3,6 +3,7 @@ import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { StructuredData } from "@/components/structured-data";
 import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
+import { WeaveSprite } from "@/components/ui/WeaveSprite";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.nazm.ai";
 
@@ -36,9 +37,8 @@ export const metadata: Metadata = {
     "max-image-preview": "large",
   },
   icons: {
-    icon: "/icon.png",
-    shortcut: "/favicon.ico",
-    apple: "/icon.png",
+    icon: "/icon",
+    apple: "/icon",
   },
   alternates: {
     canonical: "/",
@@ -69,6 +69,8 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-bg-primary text-text-primary font-sans antialiased">
+        {/* §6: single shared WeaveTile sprite — referenced via <use> everywhere, never duplicated. */}
+        <WeaveSprite />
         <Providers>
           {children}
           <ServiceWorkerRegister />

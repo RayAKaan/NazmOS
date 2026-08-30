@@ -1,6 +1,7 @@
-import { TrendingUp, TrendingDown, DollarSign, Activity } from "lucide-react";
-import { KPICard } from "./KPICard";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { BentoGrid } from "@/components/ui/BentoGrid";
+import { Card } from "@/components/ui/Card";
+import { FigureHeadline } from "@/components/ui/FigureHeadline";
 import { DashboardSummary } from "@/types/dashboard";
 
 interface KPIGridProps {
@@ -8,50 +9,59 @@ interface KPIGridProps {
   isLoading: boolean;
 }
 
+/**
+ * KPI section on the shared BentoGrid + FigureHeadline primitives (v2 §5 + v3 §A/B).
+ * Each KPI card is level-2 elevation (Card trim="weave") with a count-up headline.
+ */
 export function KPIGrid({ summary, isLoading }: KPIGridProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <BentoGrid cols={{ base: 1, md: 2, lg: 4 }} gap={6}>
         {[...Array(4)].map((_, i) => (
-          <Skeleton key={i} className="h-32" />
+          <Skeleton key={i} className="h-36" />
         ))}
-      </div>
+      </BentoGrid>
     );
   }
 
   if (!summary) return null;
 
+  const salesChange = summary.comparison.sales_change_percent;
+  const profitChange = summary.comparison.profit_change_percent;
+
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <KPICard
-        title="Today's Sales"
-        value={summary.today.sales}
-        change={summary.comparison.sales_change_percent}
-        changeLabel="vs yesterday"
-        accentColor="blue"
-        icon={<TrendingUp className="w-5 h-5" />}
-      />
-      <KPICard
-        title="This Month"
-        value={summary.this_month.sales}
-        prefix="﷼ "
-        accentColor="green"
-        icon={<DollarSign className="w-5 h-5" />}
-      />
-      <KPICard
-        title="Profit"
-        value={summary.this_month.profit}
-        prefix="﷼ "
-        change={summary.comparison.profit_change_percent}
-        accentColor="yellow"
-        icon={<TrendingDown className="w-5 h-5" />}
-      />
-      <KPICard
-        title="Health Score"
-        value={`${summary.health_score}/100`}
-        accentColor={summary.health_score >= 70 ? "green" : summary.health_score >= 50 ? "yellow" : "purple"}
-        icon={<Activity className="w-5 h-5" />}
-      />
-    </div>
+    <BentoGrid cols={{ base: 1, md: 2, lg: 4 }} gap={6}>
+      <Card density="editorial" trim="weave">
+        <FigureHeadline
+          value={summary.today.sales}
+          currency="SAR"
+          label="Today's Sales"
+          trend={{
+            direction: salesChange >= 0 ? "up" : "down",
+            percent: Math.abs(salesChange),
+          }}
+        />
+      </Card>
+
+      <Card density="editorial" trim="weave">
+        <FigureHeadline value={summary.this_month.sales} currency="SAR" label="This Month" />
+      </Card>
+
+      <Card density="editorial" trim="weave">
+        <FigureHeadline
+          value={summary.this_month.profit}
+          currency="SAR"
+          label="Profit"
+          trend={{
+            direction: profitChange >= 0 ? "up" : "down",
+            percent: Math.abs(profitChange),
+          }}
+        />
+      </Card>
+
+      <Card density="editorial" trim="weave">
+        <FigureHeadline value={summary.health_score} currency="/100" label="Health Score" />
+      </Card>
+    </BentoGrid>
   );
 }

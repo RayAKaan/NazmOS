@@ -82,7 +82,7 @@ export default function OpsPage() {
       <section className="grid gap-4 md:grid-cols-4">
         <Kpi icon={FileSpreadsheet} label="Completed uploads" value={String(completedUploads)} />
         <Kpi icon={AlertTriangle} label="Failed uploads" value={String(failedUploads)} danger={failedUploads > 0} />
-        <Kpi icon={WalletCards} label="Money at Risk" value={money(data.latest_audit?.money_at_risk_sar)} />
+        <Kpi icon={WalletCards} label="Capital at Risk" value={money(data.latest_audit?.capital_at_risk_sar ?? data.latest_audit?.money_at_risk_sar)} />
         <Kpi icon={ClipboardList} label="Pending actions" value={String(pendingActions)} />
       </section>
 
@@ -131,7 +131,7 @@ export default function OpsPage() {
                     <p className="font-bold text-brand-cream">{action.title}</p>
                     <p className="mt-1 text-xs text-text-muted">{action.action_type} · priority {action.priority}</p>
                   </div>
-                  <p className="shrink-0 font-bold text-brand-green">{money(action.expected_recovery_sar)}</p>
+                  <p className="shrink-0 font-bold text-brand-green">{action.expected_recovery_sar != null ? money(action.expected_recovery_sar) : "Not estimated"}</p>
                 </div>
               </div>
             ))}

@@ -9,6 +9,14 @@ import api from "@/lib/api";
 
 interface GuestAuditSummary {
   money_at_risk_sar: number;
+  inventory_value_sar: number;
+  capital_at_risk_sar: number;
+  revenue_at_risk_sar: number;
+  gross_profit_at_risk_sar: number;
+  recoverable_value_low_sar: number;
+  recoverable_value_high_sar: number;
+  expected_recovery_sar?: number | null;
+  recovery_confidence: string;
   dead_stock_value_sar: number;
   stockout_risk_value_sar: number;
   margin_leakage_sar: number;
@@ -23,7 +31,10 @@ interface GuestAuditAction {
   action_type: string;
   title: string;
   description: string;
-  expected_recovery_sar: number;
+  expected_recovery_sar?: number | null;
+  recoverable_value_low_sar?: number | null;
+  recoverable_value_high_sar?: number | null;
+  recovery_confidence?: string;
   priority: number;
 }
 
@@ -197,7 +208,7 @@ export function GuestAuditUploader() {
                 <div>
                   <p className="font-mono text-xs uppercase tracking-[0.24em] text-whatsapp-light">Free preview result</p>
                   <h3 className="mt-2 font-serif text-3xl font-black md:text-4xl">
-                    {money(result.summary.money_at_risk_sar)} is at risk
+                    {money(result.summary.capital_at_risk_sar)} of inventory capital is at risk
                   </h3>
                   <p className="mt-2 text-sm text-brand-cream/60">
                     Based on {result.summary.row_count.toLocaleString()} rows · confidence{" "}
@@ -210,9 +221,9 @@ export function GuestAuditUploader() {
               </div>
 
               <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                <Kpi label="Dead stock" value={money(result.summary.dead_stock_value_sar)} tone="red" />
-                <Kpi label="Stockout risk" value={money(result.summary.stockout_risk_value_sar)} tone="gold" />
-                <Kpi label="Margin leakage" value={money(result.summary.margin_leakage_sar)} tone="green" />
+                <Kpi label="Inventory value" value={money(result.summary.inventory_value_sar)} tone="gold" />
+                <Kpi label="Revenue at risk" value={money(result.summary.revenue_at_risk_sar)} tone="gold" />
+                <Kpi label="Potentially recoverable" value={`${money(result.summary.recoverable_value_low_sar)}–${money(result.summary.recoverable_value_high_sar)}`} tone="green" />
               </div>
             </div>
 
@@ -229,7 +240,8 @@ export function GuestAuditUploader() {
                       <p className="mt-1 text-sm leading-5 text-brand-cream/55">{action.description}</p>
                     </div>
                     <div className="shrink-0 text-left md:text-right">
-                      <p className="text-lg font-black text-brand-green">{money(action.expected_recovery_sar)}</p>
+                      <p className="text-lg font-black text-brand-green">{action.expected_recovery_sar != null ? money(action.expected_recovery_sar) : "Not estimated"}</p>
+                      <p className="text-xs text-brand-cream/45">{action.recovery_confidence || "INSUFFICIENT DATA"}</p>
                     </div>
                   </div>
                 ))}

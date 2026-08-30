@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Card } from "@/components/ui/Card";
 import { SalesTrend } from "@/types/dashboard";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
@@ -34,7 +35,7 @@ export function SalesChart({ data, isLoading }: SalesChartProps) {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
+        <Card density="data" className="shadow-elevation-2">
           <p className="text-xs text-muted-foreground mb-2">{formatDate(label)}</p>
           <p className="text-sm font-medium text-chart-3">
             Sales: {formatCurrency(payload[0].value)}
@@ -45,7 +46,7 @@ export function SalesChart({ data, isLoading }: SalesChartProps) {
           <p className="text-xs text-muted-foreground mt-1">
             {payload[2]?.value || 0} transactions
           </p>
-        </div>
+        </Card>
       );
     }
     return null;

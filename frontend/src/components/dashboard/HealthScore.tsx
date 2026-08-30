@@ -29,7 +29,7 @@ export function HealthScore({ score, isLoading }: HealthScoreProps) {
   const offset = circumference - (score / 100) * circumference;
 
   return (
-    <div className="bg-surface rounded-xl border border-border p-6">
+    <div className="bg-surface rounded-lg border border-border p-6 shadow-elevation-1">
       <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider mb-4">
         Store Health
       </h3>

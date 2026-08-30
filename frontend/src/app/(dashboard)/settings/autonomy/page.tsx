@@ -15,6 +15,22 @@ type Policy = {
   description_en: string;
 };
 
+type AutonomyExplanation = {
+  action_type: string;
+  label: string;
+  mode: "automatic" | "automatic-conditional" | "approval" | "human";
+  explanation: string;
+  default_dial: number;
+  base_risk: string;
+};
+
+type SafetyFloors = {
+  min_confidence: number;
+  risk_escalate_medium_sar: number;
+  risk_escalate_high_sar: number;
+  note: string;
+};
+
 export default function AutonomyPage() {
   const [policies, setPolicies] = useState<Policy[]>([
     { action_type: "restock", label: "إعادة الطلب", label_en: "Restocking", dial: 50, ceiling_sar: 2000, description_ar: "0 = أخبرني فقط / 50 = جهز وانتظر موافقتي / 100 = نفذ تلقائيا", description_en: "0 = inform / 50 = draft+approve / 100 = auto" },
@@ -25,6 +41,8 @@ export default function AutonomyPage() {
     { action_type: "expiry_alert", label: "تنبيهات انتهاء الصلاحية", label_en: "Expiry Alerts", dial: 50, description_ar: "0 = أخبرني فقط / 50 = جهز وانتظر موافقتي / 100 = نفذ تلقائيا", description_en: "0 = inform / 50 = draft+approve / 100 = auto" },
   ]);
   const [saving, setSaving] = useState(false);
+  const [explanation, setExplanation] = useState<AutonomyExplanation[]>([]);
+  const [floors, setFloors] = useState<SafetyFloors | null>(null);
   const { businessId } = useAppStore();
 
   useEffect(() => {
@@ -32,6 +50,11 @@ export default function AutonomyPage() {
       try {
         const res = await api.get("/agent/autonomy", { params: { business_id: businessId } });
         if (res.data.policies?.length) setPolicies(res.data.policies);
+      } catch {}
+      try {
+        const res = await api.get("/agent/autonomy/explanation", { params: { business_id: businessId } });
+        if (res.data.actions) setExplanation(res.data.actions);
+        if (res.data.safety_floors) setFloors(res.data.safety_floors);
       } catch {}
     })();
   }, [businessId]);
@@ -112,6 +135,39 @@ export default function AutonomyPage() {
       >
         {saving ? "Saving…" : "Save – حفظ"}
       </button>
+
+      {/* Phase 5 §18–19: what can happen automatically vs needs approval vs always human */}
+      {explanation.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-text-muted mb-2">What Nazm can do</h2>
+          <div className="space-y-2">
+            {explanation.map((e) => (
+              <div key={e.action_type} className="flex items-start justify-between gap-3 rounded-lg border border-border bg-surface p-3 text-sm">
+                <div>
+                  <div className="font-medium">{e.label}</div>
+                  <div className="text-xs text-text-muted">{e.explanation}</div>
+                </div>
+                <span className={
+                  e.mode === "automatic" ? "shrink-0 rounded-full bg-success/10 px-2 py-0.5 text-xs font-bold text-success" :
+                  e.mode === "automatic-conditional" ? "shrink-0 rounded-full bg-secondary/10 px-2 py-0.5 text-xs font-bold text-secondary" :
+                  e.mode === "human" ? "shrink-0 rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-bold text-destructive" :
+                  "shrink-0 rounded-full bg-warning/10 px-2 py-0.5 text-xs font-bold text-warning"
+                }>
+                  {e.mode === "automatic" ? "Automatic" : e.mode === "automatic-conditional" ? "Auto (low-risk)" : e.mode === "human" ? "Human only" : "Approval"}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {floors && (
+        <div className="mt-4 text-xs text-text-muted bg-surface border border-border rounded-xl p-4">
+          <b>Safety floors (cannot be changed here):</b><br/>
+          Min auto confidence: {floors.min_confidence} · Medium-risk escalation: ﷼ {floors.risk_escalate_medium_sar} SAR · High-risk escalation: ﷼ {floors.risk_escalate_high_sar} SAR
+          <div className="mt-1 text-text-muted">{floors.note}</div>
+        </div>
+      )}
 
       <div className="mt-6 text-xs text-text-muted bg-surface border border-border rounded-xl p-4">
         <b>Recommended for Saudi pharmacies (starting):</b><br/>

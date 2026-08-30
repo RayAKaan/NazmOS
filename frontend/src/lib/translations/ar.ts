@@ -202,6 +202,24 @@ export const ar = {
     watching247: "نظم يراقب مخزونك ٢٤/٧",
   },
 
+  ops: {
+    status: "حالة نظم",
+    healthy: "يعمل بشكل طبيعي",
+    degraded: "بعض البيانات قديمة",
+    reconcile: "يحتاج إلى انتباه",
+    rootCause: "لماذا يحدث هذا",
+    rootCauseUncertain: "السبب الجذري غير مؤكد — لا توجد بيانات كافية بعد.",
+    evidence: "الأدلة",
+    confidence: "الثقة",
+    supported: "مدعوم",
+    plausible: "محتمل",
+    insufficient: "أدلة غير كافية",
+    recommendation: "التوصية",
+    dataFreshness: "حداثة البيانات",
+    dataQuality: "جودة البيانات",
+    staleData: "لم يتم تحديث بعض البيانات مؤخراً. قد تكون التوصيات أقل دقة.",
+  },
+
   intelligence: {
     title: "ذكاء نظم",
     summaryTitle: "تركيز اليوم",

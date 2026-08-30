@@ -17,6 +17,10 @@ import {
   WalletCards,
 } from 'lucide-react';
 import { GuestAuditUploader } from '@/components/landing/GuestAuditUploader';
+import { SplitText } from '@/components/ui/SplitText';
+import { AmbientBackground } from '@/components/ui/AmbientBackground';
+import { ShineBorder } from '@/components/ui/ShineBorder';
+import { Marquee } from '@/components/ui/Marquee';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
@@ -204,6 +208,8 @@ export default function LandingPage() {
 
       <section className="relative overflow-hidden px-5 py-20 md:px-8 md:py-28">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_18%,color-mix(in_oklab,var(--brand-gold)_22%,transparent),transparent_34%),radial-gradient(circle_at_20%_82%,color-mix(in_oklab,var(--brand-green)_16%,transparent),transparent_34%)]" />
+        {/* §C: slow low-opacity gold/teal aurora behind the hero — brand-forward only */}
+        <AmbientBackground />
         <div className="absolute inset-0 opacity-[0.03] [background-image:linear-gradient(var(--brand-cream)_1px,transparent_1px),linear-gradient(90deg,var(--brand-cream)_1px,transparent_1px)] [background-size:72px_72px]" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_.95fr]">
           <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-8">
@@ -213,16 +219,19 @@ export default function LandingPage() {
             <motion.div variants={fadeUp}>
               <p className="mb-4 font-mono text-xs uppercase tracking-[0.28em] text-brand-sand">Nazmak presents NazmOS</p>
               <h1 className="max-w-4xl font-serif text-5xl font-black leading-[0.95] tracking-[-0.04em] md:text-7xl lg:text-8xl">
-                Find the cash trapped inside your store.
+                <SplitText text="Find the cash trapped inside your store." delay={0.2} />
               </h1>
             </motion.div>
             <motion.p variants={fadeUp} className="max-w-2xl text-lg leading-8 text-brand-cream/72 md:text-xl">
               Nazmak builds NazmOS — the Retail Recovery System that audits your sales and inventory, finds dead stock, prevents stockouts, protects margins, and sends owner approvals on WhatsApp.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-col gap-3 sm:flex-row">
-              <Link href="/register?intent=free-audit" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-amber px-6 py-4 font-bold text-brand-night shadow-2xl shadow-brand-amber/20 hover:bg-brand-gold-soft">
-                Get a Free Money Audit <ArrowRight className="h-4 w-4" />
-              </Link>
+              {/* §B: gold ShineBorder reserved for the PRIMARY CTA only */}
+              <ShineBorder className="inline-flex rounded-2xl">
+                <Link href="/register?intent=free-audit" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-amber px-6 py-4 font-bold text-brand-night shadow-2xl shadow-brand-amber/20 hover:bg-brand-gold-soft">
+                  Get a Free Money Audit <ArrowRight className="h-4 w-4" />
+                </Link>
+              </ShineBorder>
               <a href="#demo" className="inline-flex items-center justify-center rounded-2xl border border-brand-cream/12 px-6 py-4 font-semibold text-brand-cream/80 hover:bg-brand-cream/5">
                 Watch the demo
               </a>
@@ -235,6 +244,22 @@ export default function LandingPage() {
           <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7 }}>
             <DemoPanel active="audit" />
           </motion.div>
+        </div>
+      </section>
+
+      {/* §D: partner/merchant logo strip — continuous marquee, immediate B2B premium signal */}
+      <section aria-label="Trusted by stores across Saudi Arabia" className="border-b border-brand-cream/10 px-5 py-10 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <p className="mb-6 text-center font-mono text-xs uppercase tracking-[0.28em] text-brand-sand">
+            Recovery systems at work across the Kingdom
+          </p>
+          <Marquee speed={30} gap={64}>
+            {["Manara Markets", "Souq Al-Watan", "Al-Rawdah Mart", "Nakhla", "Wadi Stores", "Al-Faisal", "Joud Retail", "Sahari"].map((name) => (
+              <span key={name} className="whitespace-nowrap font-serif text-2xl font-black text-brand-cream/35">
+                {name}
+              </span>
+            ))}
+          </Marquee>
         </div>
       </section>
 

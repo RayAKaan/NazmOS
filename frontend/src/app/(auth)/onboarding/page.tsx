@@ -14,6 +14,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AmbientBackground } from "@/components/ui/AmbientBackground";
 
 type GoalKey = "stockouts" | "dead_stock" | "margins" | "compliance";
 
@@ -62,8 +63,10 @@ export default function OnboardingPage() {
   const prev = () => setStep((s) => Math.max(s - 1, 1));
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 md:p-6">
-      <div className="w-full max-w-2xl bg-surface border border-border rounded-2xl p-6 md:p-10">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 md:p-6 relative grain">
+      {/* §C: brand-forward screen — slow low-opacity aurora behind the card */}
+      <AmbientBackground />
+      <div className="relative z-10 w-full max-w-2xl bg-surface border border-border rounded-lg shadow-elevation-3 p-6 md:p-10">
         <div className="text-center mb-8">
           <div className="w-14 h-14 rounded-xl bg-brand-teal mx-auto flex items-center justify-center text-brand-night font-bold text-2xl mb-3">
             ن

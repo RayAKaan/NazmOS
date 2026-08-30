@@ -12,6 +12,7 @@ import { Toast } from "@/components/ui/Toast";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { useAuthStore } from "@/stores/authStore";
+import { AmbientBackground } from "@/components/ui/AmbientBackground";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -61,12 +62,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg-primary p-4 relative">
+    <div className="min-h-screen flex items-center justify-center bg-bg-primary p-4 relative grain">
+      {/* §C: slow low-opacity gold/teal aurora — brand-forward screens only */}
+      <AmbientBackground />
       <div className="absolute top-4 right-4 z-10">
         <LanguageSwitcher />
       </div>
 
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-4">
             <span className="text-primary-foreground font-bold text-3xl">N</span>

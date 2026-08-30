@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "test": "jest",
     "analyze": "ANALYZE=true next build --webpack",
-    "build:tokens": "node scripts/build_design_tokens.ts",
+    "build:tokens": "tsx scripts/build_design_tokens.ts",
     "baseline:tokens": "node scripts/gen_eslint_baseline.mjs"
   },
   "dependencies": {
@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "16.3.0",
+    "@playwright/test": "^1.62.1",
     "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.3",
@@ -54,6 +55,7 @@
     "postcss": "8.5.26",
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.4.12",
+    "tsx": "^4.23.12",
     "typescript": "^5.3.3"
   },
   "overrides": {

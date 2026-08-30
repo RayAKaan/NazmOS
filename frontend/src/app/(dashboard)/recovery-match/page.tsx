@@ -18,6 +18,8 @@ import {
 import api from "@/lib/api";
 import { useAppStore } from "@/stores/appStore";
 import { FeatureGate } from "@/components/ui/FeatureGate";
+import { SeamBorder, type SeamState } from "@/components/ui/SeamBorder";
+import { FigureHeadline } from "@/components/ui/FigureHeadline";
 import { cn } from "@/lib/utils";
 
 type TabKey = "preview" | "listings" | "matches" | "completed" | "settings";
@@ -516,6 +518,14 @@ export default function RecoveryMatchPage() {
         <section className="rounded-3xl border border-border bg-card p-6">
           <h2 className="text-2xl font-bold">Completed Recovery</h2>
           <p className="mt-1 text-sm text-muted-foreground">Recovered value from completed manual-confirm matches.</p>
+          <div className="mt-4">
+            <FigureHeadline
+              value={completed.reduce((sum, m) => sum + Number(m.recovered_value_sar || 0), 0)}
+              currency="SAR"
+              label="Total recovered value"
+              tone="success"
+            />
+          </div>
           <div className="mt-5 grid gap-4">
             {completed.length === 0 && <Empty text="No completed matches yet." />}
             {completed.map((match) => (
@@ -627,8 +637,12 @@ function MatchCard({
   const canReveal = ["mutual_match"].includes(match.status);
   const canComplete = ["contact_revealed"].includes(match.status);
 
+  // §1 kintsugi: match cards draw the gold seam once on recovery. Rejected = dead (idle).
+  const seamState: SeamState =
+    match.status === "completed" ? "recovered" : match.status.includes("rejected") ? "idle" : "resolving";
+
   return (
-    <div className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-5">
+    <SeamBorder state={seamState} className="p-5">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <h3 className="text-lg font-bold text-brand-cream">{match.item_name || "Recovery Match"}</h3>
@@ -649,6 +663,6 @@ function MatchCard({
         {!match.status.includes("rejected") && match.status !== "completed" && <button onClick={onReject} className="rounded-xl border border-brand-cream/10 px-4 py-2 text-sm font-bold text-brand-cream/70">Reject</button>}
         <button onClick={onReport} className="rounded-xl border border-brand-red/30 px-4 py-2 text-sm font-bold text-brand-red-light">Report Issue</button>
       </div>
-    </div>
+    </SeamBorder>
   );
 }

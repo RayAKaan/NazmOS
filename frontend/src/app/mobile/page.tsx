@@ -17,6 +17,7 @@ import api from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
 import { useAppStore } from "@/stores/appStore";
 import { usePwaInstall } from "@/hooks/usePwaInstall";
+import { MobileActionCenter } from "@/components/dashboard/MobileActionCenter";
 import { cn } from "@/lib/utils";
 
 interface FeedItem {
@@ -165,6 +166,8 @@ export default function MobilePage() {
             <Metric label="Health" value={`${summary?.health_score ?? 0}/100`} />
           </div>
         </section>
+
+        <MobileActionCenter />
 
         {topAction && (
           <section className="rounded-2xl border border-brand-amber/30 bg-brand-amber/10 p-4">

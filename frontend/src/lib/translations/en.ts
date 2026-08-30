@@ -202,6 +202,24 @@ export const en = {
     watching247: "Nazm is watching your inventory 24/7",
   },
 
+  ops: {
+    status: "NazmOS status",
+    healthy: "Operating normally",
+    degraded: "Some data is stale",
+    reconcile: "Attention required",
+    rootCause: "Why it is happening",
+    rootCauseUncertain: "Root cause uncertain — not enough data yet.",
+    evidence: "Evidence",
+    confidence: "Confidence",
+    supported: "supported",
+    plausible: "plausible",
+    insufficient: "insufficient evidence",
+    recommendation: "Recommendation",
+    dataFreshness: "Data freshness",
+    dataQuality: "Data quality",
+    staleData: "Some data hasn't been updated recently. Recommendations may be less accurate.",
+  },
+
   intelligence: {
     title: "Nazm Intelligence",
     summaryTitle: "Today's Focus",

@@ -157,13 +157,13 @@ const config: Config = {
       },
       "borderRadius": {
         "none": "0px",
-        "sm": "0.375rem",
-        "default": "0.625rem",
-        "md": "0.625rem",
-        "lg": "0.875rem",
-        "xl": "1.25rem",
-        "2xl": "1.75rem",
-        "3xl": "2rem"
+        "sm": "0.25rem",
+        "default": "0.375rem",
+        "md": "0.375rem",
+        "lg": "0.5rem",
+        "xl": "0.5rem",
+        "2xl": "0.5rem",
+        "3xl": "0.5rem"
       },
       "fontFamily": {
         "sans": [
@@ -189,10 +189,93 @@ const config: Config = {
           "sans-serif"
         ]
       },
+      "fontSize": {
+        "xs": [
+          "0.75rem",
+          {
+            "lineHeight": "1.5"
+          }
+        ],
+        "sm": [
+          "0.875rem",
+          {
+            "lineHeight": "1.5"
+          }
+        ],
+        "base": [
+          "1rem",
+          {
+            "lineHeight": "1.6"
+          }
+        ],
+        "lg": [
+          "1.25rem",
+          {
+            "lineHeight": "1.5"
+          }
+        ],
+        "xl": [
+          "1.5625rem",
+          {
+            "lineHeight": "1.4"
+          }
+        ],
+        "2xl": [
+          "1.9375rem",
+          {
+            "lineHeight": "1.3"
+          }
+        ],
+        "3xl": [
+          "2.4375rem",
+          {
+            "lineHeight": "1.2"
+          }
+        ],
+        "4xl": [
+          "3.0625rem",
+          {
+            "lineHeight": "1.15"
+          }
+        ],
+        "5xl": [
+          "3.8125rem",
+          {
+            "lineHeight": "1.1"
+          }
+        ],
+        "6xl": [
+          "4.75rem",
+          {
+            "lineHeight": "1.05"
+          }
+        ],
+        "7xl": [
+          "5.9375rem",
+          {
+            "lineHeight": "1.0"
+          }
+        ],
+        "8xl": [
+          "7.4375rem",
+          {
+            "lineHeight": "1.0"
+          }
+        ],
+        "9xl": [
+          "9.3125rem",
+          {
+            "lineHeight": "1.0"
+          }
+        ]
+      },
       "boxShadow": {
         "card": "0 10px 40px oklch(0% 0 0 / 0.2)",
         "glow-gold": "0 0 24px 0 oklch(75.41% 0.085 67.1 / 0.25)",
-        "glow-teal": "0 0 24px 0 oklch(70.38% 0.123 182.5 / 0.25)"
+        "glow-teal": "0 0 24px 0 oklch(70.38% 0.123 182.5 / 0.25)",
+        "elevation-1": "0 1px 2px oklch(0% 0 0 / 0.3)",
+        "elevation-2": "0 1px 2px oklch(0% 0 0 / 0.3), 0 8px 24px -8px oklch(0% 0 0 / 0.45)",
+        "elevation-3": "0 1px 2px oklch(0% 0 0 / 0.3), 0 8px 24px -8px oklch(0% 0 0 / 0.45), 0 24px 48px -12px oklch(0% 0 0 / 0.6), inset 0 1px 0 oklch(100% 0 0 / 0.04)"
       },
       "keyframes": {
         "accordion-down": {
@@ -276,6 +359,24 @@ const config: Config = {
           "50%": {
             "transform": "translateY(-10px)"
           }
+        },
+        "weave-in": {
+          "0%": {
+            "opacity": "0"
+          },
+          "100%": {
+            "opacity": "1"
+          }
+        },
+        "seam-reveal": {
+          "0%": {
+            "opacity": "0",
+            "stroke-dashoffset": "1"
+          },
+          "100%": {
+            "opacity": "1",
+            "stroke-dashoffset": "0"
+          }
         }
       },
       "animation": {
@@ -287,7 +388,9 @@ const config: Config = {
         "slide-in-left": "slideInLeft 0.5s ease-out forwards",
         "slide-in-right": "slideInRight 0.5s ease-out forwards",
         "scale-in": "scaleIn 0.3s ease-out forwards",
-        "float": "float 6s ease-in-out infinite"
+        "float": "float 6s ease-in-out infinite",
+        "weave-in": "weave-in var(--duration-weave) linear",
+        "seam-reveal": "seam-reveal var(--duration-seam) ease-out forwards"
       }
     }
   },

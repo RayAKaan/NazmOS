@@ -14,6 +14,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { getGreeting } from "@/lib/utils";
 import { FreeAuditChecklist } from "@/components/free/FreeAuditChecklist";
 import { MoneyAuditEmptyState } from "@/components/free/MoneyAuditEmptyState";
+import { ActionCenter } from "@/components/dashboard/ActionCenter";
+import { RunAuditButton } from "@/components/dashboard/RunAuditButton";
+import { Card } from "@/components/ui/Card";
 import { Sparkles } from "lucide-react";
 import Link from "next/link";
 
@@ -86,7 +89,11 @@ export default function DashboardPage() {
           </h1>
           <p className="text-text-muted">Here&apos;s your store overview</p>
         </div>
+        <RunAuditButton />
       </div>
+
+      {/* §3: the Action Center is the new home screen — health, risk, approvals, impact. */}
+      <ActionCenter />
 
       {!intelligenceLoading && intelligenceSummary && (
         <IntelligenceCard
@@ -125,27 +132,27 @@ export default function DashboardPage() {
 
       <AlertSection alerts={alerts} isLoading={isLoading} />
 
-      <div className="p-5 rounded-xl bg-surface border border-border">
+      <Card density="data">
         <SalesChart data={salesTrend} isLoading={isLoading} />
-      </div>
+      </Card>
 
       <div className="grid md:grid-cols-2 gap-6">
-        <div className="p-5 rounded-xl bg-surface border border-border">
+        <Card density="data">
           <TopProducts data={topProducts} isLoading={isLoading} />
-        </div>
-        <div className="p-5 rounded-xl bg-surface border border-border">
+        </Card>
+        <Card density="data">
           <DeadStock data={deadStock} isLoading={isLoading} />
-        </div>
+        </Card>
       </div>
 
-      <div className="p-5 rounded-xl bg-surface border border-border">
+      <Card density="data">
         <QuickActions />
-      </div>
+      </Card>
 
       {summary && (
         <div className="grid md:grid-cols-2 gap-6">
           <HealthScore score={summary.health_score} isLoading={isLoading} />
-          <div className="p-5 rounded-xl bg-surface border border-border">
+          <Card density="data">
             <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider mb-4">
               Today&apos;s Stats
             </h3>
@@ -163,7 +170,7 @@ export default function DashboardPage() {
                 <span className="font-semibold text-success">﷼ {summary.today.profit.toLocaleString()}</span>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>

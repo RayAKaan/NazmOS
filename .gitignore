@@ -77,6 +77,16 @@ dist/
 # Testing
 coverage/
 
+# Playwright auth state & reports (contain live session tokens)
+test-results/
+playwright-report/
+blob-report/
+frontend/test-results/
+frontend/e2e/.auth/
+
+# Derived reality-test outputs: contain captured live session tokens
+reality_test_output/
+
 # Misc
 .DS_Store
 *.pem

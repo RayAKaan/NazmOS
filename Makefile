@@ -23,3 +23,19 @@ local-up:
 
 local-down:
 	docker compose -f docker-compose.local.yml down
+
+runtime-up:
+	docker compose --env-file .env.runtime-test -f docker-compose.local.yml up --build -d
+	python scripts/wait_runtime.py
+
+runtime-down:
+	docker compose --env-file .env.runtime-test -f docker-compose.local.yml down
+
+runtime-logs:
+	docker compose --env-file .env.runtime-test -f docker-compose.local.yml logs --tail=200
+
+runtime-readiness:
+	python scripts/runtime_smoke.py
+
+reality-test-v5:
+	python scripts/runtime_v5_guard.py

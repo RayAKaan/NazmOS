@@ -1,114 +1,114 @@
-# NazmOS local runtime test stack
-# Purpose: run real Postgres + Redis + backend + Celery + frontend for pilot validation.
-# Usage:
-#   docker compose -f docker-compose.local.yml up --build
-# Then in another terminal:
-#   cd backend && alembic upgrade head
-#   python scripts/runtime_e2e_upload_money_audit.py
-
 services:
   postgres:
-    image: postgres:15-alpine
-    restart: unless-stopped
+    image: postgres:17-alpine
     environment:
       POSTGRES_USER: nazmos
-      POSTGRES_PASSWORD: nazmos_dev
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-nazmos_v5_dev}
       POSTGRES_DB: nazmos
-    ports:
-      - "5432:5432"
-    volumes:
-      - nazmos_pgdata_local:/var/lib/postgresql/data
+    ports: ["5432:5432"]
+    volumes: [nazmos_pgdata_local:/var/lib/postgresql/data]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U nazmos -d nazmos"]
-      interval: 5s
+      interval: 3s
       timeout: 5s
-      retries: 10
-
+      retries: 30
   redis:
     image: redis:7-alpine
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    command: redis-server --appendonly yes
-    volumes:
-      - nazmos_redisdata_local:/data
+    ports: ["6379:6379"]
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: [nazmos_redisdata_local:/data]
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
+      test: ["CMD", "redis-cli", "PING"]
+      interval: 3s
       timeout: 3s
-      retries: 10
-
+      retries: 30
+  migrate:
+    build: {context: ./backend, dockerfile: Dockerfile}
+    environment: &runtime_env
+      ENVIRONMENT: runtime_test
+      DATABASE_URL: postgresql+asyncpg://nazmos:${DB_PASSWORD:-nazmos_v5_dev}@postgres:5432/nazmos
+      REDIS_URL: redis://redis:6379/0
+      USE_CELERY: "true"
+      USE_REDIS: "true"
+      SECRET_KEY: ${SECRET_KEY:-nazmos-v5-runtime-secret-change-before-production-32chars}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      DATABASE_APP_ROLE: ${DATABASE_APP_ROLE:-}
+      CREDENTIAL_MASTER_KEY: ${CREDENTIAL_MASTER_KEY:-}
+      UPLOAD_DIR: /app/uploads
+      USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
+      GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY:-}
+      GOOGLE_AI_MODEL: ${GOOGLE_AI_MODEL:-gemini-2.5-flash-lite}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_MODEL: ${GROQ_MODEL:-openai/gpt-oss-120b}
+      LLM_PROVIDER_ORDER: ${LLM_PROVIDER_ORDER:-google,mock}
+      AI_CALL_LEDGER_PATH: /app/tmp/v12_ai_calls.jsonl
+      WHATSAPP_ENABLED: ${WHATSAPP_ENABLED:-mock}
+      AUTH_LOGIN_LIMIT_PER_5MIN: ${AUTH_LOGIN_LIMIT_PER_5MIN:-200}
+      UPLOAD_LIMIT_PER_5MIN: ${UPLOAD_LIMIT_PER_5MIN:-200}
+      AUTH_REGISTER_LIMIT_PER_5MIN: ${AUTH_REGISTER_LIMIT_PER_5MIN:-200}
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    command: ["alembic", "upgrade", "head"]
   backend:
-    build: ./backend
-    restart: unless-stopped
-    ports:
-      - "8000:8000"
-    environment:
-      ENVIRONMENT: development
-      DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@postgres:5432/nazmos
-      REDIS_URL: redis://redis:6379/0
-      SECRET_KEY: dev-secret-key-change-in-production-minimum-32-chars
-      CORS_ORIGINS: http://localhost:3000
-      UPLOAD_DIR: /app/uploads
-      CHAT_ENABLED: "true"
-      BILLING_ENABLED: "true"
-      AGENT_ENABLED: "true"
-      USE_MOCK_LLM: "false"
-      LLM_PROVIDER_ORDER: groq,google,mock
-      LLM_TEMPERATURE: 0.2
-      LLM_MAX_TOKENS: 1000
-      ALLOW_DEMO_SEED: "false"
+    build: {context: ./backend, dockerfile: Dockerfile}
+    ports: ["8000:8000"]
+    environment: *runtime_env
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      migrate: {condition: service_completed_successfully}
     volumes:
-      - ./backend:/app
       - nazmos_uploads_local:/app/uploads
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-
+      - ./backend/tmp:/app/tmp
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/api/v1/ready"]
+      interval: 5s
+      timeout: 30s
+      retries: 30
+      start_period: 30s
   celery_worker:
-    build: ./backend
-    restart: unless-stopped
-    environment:
-      ENVIRONMENT: development
-      DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@postgres:5432/nazmos
-      REDIS_URL: redis://redis:6379/0
-      SECRET_KEY: dev-secret-key-change-in-production-minimum-32-chars
-      UPLOAD_DIR: /app/uploads
-      USE_MOCK_LLM: "true"
-      LLM_PROVIDER_ORDER: groq,google,mock
-      LLM_TEMPERATURE: 0.2
-      LLM_MAX_TOKENS: 1000
+    build: {context: ./backend, dockerfile: Dockerfile}
+    environment: *runtime_env
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    volumes:
-      - ./backend:/app
-      - nazmos_uploads_local:/app/uploads
-    command: celery -A app.celery_app worker --loglevel=info --concurrency=2 --queues=ingestion,forecasting,analytics,default
-
+      migrate: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+    volumes: [nazmos_uploads_local:/app/uploads]
+    command: ["celery", "-A", "app.celery_app", "worker", "--loglevel=info", "--concurrency=2", "--queues=celery,ingestion,forecasting,analytics,dead_letter"]
+  celery_beat:
+    build: {context: ./backend, dockerfile: Dockerfile}
+    environment: *runtime_env
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+    command: ["celery", "-A", "app.celery_app", "beat", "--loglevel=info"]
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
       args:
         NEXT_PUBLIC_API_URL: http://localhost:8000
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
+        API_URL: http://backend:8000
+        NEXT_PUBLIC_CHAT_ENABLED: "true"
+        NEXT_PUBLIC_APP_NAME: NazmOS
+        NEXT_PUBLIC_CURRENCY: SAR
+        NEXT_PUBLIC_LOCALE: en
+    ports: ["3000:3000"]
     environment:
       NODE_ENV: production
       NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_CHAT_ENABLED: "true"
       NEXT_PUBLIC_APP_NAME: NazmOS
       NEXT_PUBLIC_CURRENCY: SAR
       NEXT_PUBLIC_LOCALE: en
     depends_on:
-      - backend
-
+      backend: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
 volumes:
   nazmos_pgdata_local:
   nazmos_redisdata_local:

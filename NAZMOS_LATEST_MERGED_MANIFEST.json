@@ -1,0 +1,10 @@
+{
+  "source": "NAZMOS (2)(2).zip",
+  "merged_updates": [
+    "Phase 3-4 implementation patch",
+    "Phase 5 implementation patch",
+    "Phase 6 implementation patch"
+  ],
+  "security": "Sensitive .env files, .git, virtualenvs, node_modules, .next and __pycache__ removed.",
+  "note": "No GitHub changes were made by this build."
+}

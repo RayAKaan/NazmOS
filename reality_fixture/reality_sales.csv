@@ -1,0 +1,1496 @@
+Date,Transaction ID,Branch,City,Product,SKU,Category,Qty,Unit Price SAR,Total SAR,Cost SAR,Payment Method
+2026-05-16,TX-RT-000001,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-16,TX-RT-000002,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-16,TX-RT-000003,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-05-16,TX-RT-000004,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-05-16,TX-RT-000005,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-05-16,TX-RT-000006,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-16,TX-RT-000007,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-16,TX-RT-000008,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-05-16,TX-RT-000009,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-05-16,TX-RT-000010,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-05-16,TX-RT-000011,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-16,TX-RT-000012,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-16,TX-RT-000013,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-16,TX-RT-000014,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-05-16,TX-RT-000015,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-05-16,TX-RT-000016,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-17,TX-RT-000017,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-17,TX-RT-000018,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-17,TX-RT-000019,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-05-17,TX-RT-000020,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-05-17,TX-RT-000021,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-05-17,TX-RT-000022,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-17,TX-RT-000023,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-17,TX-RT-000024,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-05-17,TX-RT-000025,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-05-17,TX-RT-000026,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-05-17,TX-RT-000027,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-17,TX-RT-000028,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-17,TX-RT-000029,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-17,TX-RT-000030,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-05-17,TX-RT-000031,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-05-17,TX-RT-000032,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-18,TX-RT-000033,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-18,TX-RT-000034,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-18,TX-RT-000035,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-05-18,TX-RT-000036,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-05-18,TX-RT-000037,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-05-18,TX-RT-000038,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-18,TX-RT-000039,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-18,TX-RT-000040,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-05-18,TX-RT-000041,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-18,TX-RT-000042,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-18,TX-RT-000043,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-18,TX-RT-000044,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-05-18,TX-RT-000045,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-05-18,TX-RT-000046,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-19,TX-RT-000047,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-19,TX-RT-000048,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-19,TX-RT-000049,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-05-19,TX-RT-000050,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-05-19,TX-RT-000051,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-05-19,TX-RT-000052,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-19,TX-RT-000053,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-19,TX-RT-000054,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-05-19,TX-RT-000055,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-19,TX-RT-000056,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-19,TX-RT-000057,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-19,TX-RT-000058,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-05-19,TX-RT-000059,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-05-19,TX-RT-000060,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-20,TX-RT-000061,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-20,TX-RT-000062,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-20,TX-RT-000063,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-05-20,TX-RT-000064,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-05-20,TX-RT-000065,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-05-20,TX-RT-000066,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-20,TX-RT-000067,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-20,TX-RT-000068,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-05-20,TX-RT-000069,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-20,TX-RT-000070,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-20,TX-RT-000071,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-20,TX-RT-000072,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-05-20,TX-RT-000073,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-05-20,TX-RT-000074,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-21,TX-RT-000075,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-21,TX-RT-000076,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-21,TX-RT-000077,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-05-21,TX-RT-000078,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-05-21,TX-RT-000079,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-05-21,TX-RT-000080,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-21,TX-RT-000081,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-21,TX-RT-000082,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-05-21,TX-RT-000083,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-21,TX-RT-000084,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-21,TX-RT-000085,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-21,TX-RT-000086,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-05-21,TX-RT-000087,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-05-21,TX-RT-000088,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-22,TX-RT-000089,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-22,TX-RT-000090,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-22,TX-RT-000091,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-05-22,TX-RT-000092,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-05-22,TX-RT-000093,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-05-22,TX-RT-000094,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-22,TX-RT-000095,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-22,TX-RT-000096,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-05-22,TX-RT-000097,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-22,TX-RT-000098,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-22,TX-RT-000099,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-22,TX-RT-000100,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-05-22,TX-RT-000101,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-05-22,TX-RT-000102,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-23,TX-RT-000103,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-23,TX-RT-000104,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-23,TX-RT-000105,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-05-23,TX-RT-000106,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-05-23,TX-RT-000107,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-05-23,TX-RT-000108,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-23,TX-RT-000109,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-23,TX-RT-000110,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-05-23,TX-RT-000111,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-05-23,TX-RT-000112,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-05-23,TX-RT-000113,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-23,TX-RT-000114,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-23,TX-RT-000115,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-23,TX-RT-000116,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-05-23,TX-RT-000117,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-05-23,TX-RT-000118,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-24,TX-RT-000119,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-24,TX-RT-000120,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-24,TX-RT-000121,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-05-24,TX-RT-000122,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-05-24,TX-RT-000123,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-05-24,TX-RT-000124,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-24,TX-RT-000125,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-24,TX-RT-000126,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-05-24,TX-RT-000127,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-05-24,TX-RT-000128,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-05-24,TX-RT-000129,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-24,TX-RT-000130,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-24,TX-RT-000131,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-24,TX-RT-000132,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-05-24,TX-RT-000133,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-05-24,TX-RT-000134,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-25,TX-RT-000135,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-25,TX-RT-000136,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-25,TX-RT-000137,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-05-25,TX-RT-000138,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-05-25,TX-RT-000139,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-05-25,TX-RT-000140,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-25,TX-RT-000141,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-25,TX-RT-000142,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-05-25,TX-RT-000143,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-25,TX-RT-000144,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-25,TX-RT-000145,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-25,TX-RT-000146,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-05-25,TX-RT-000147,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-05-25,TX-RT-000148,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-26,TX-RT-000149,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-26,TX-RT-000150,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-26,TX-RT-000151,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-05-26,TX-RT-000152,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-05-26,TX-RT-000153,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-05-26,TX-RT-000154,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-26,TX-RT-000155,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-26,TX-RT-000156,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-05-26,TX-RT-000157,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-26,TX-RT-000158,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-26,TX-RT-000159,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-26,TX-RT-000160,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-05-26,TX-RT-000161,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-05-26,TX-RT-000162,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-27,TX-RT-000163,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-27,TX-RT-000164,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-27,TX-RT-000165,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-05-27,TX-RT-000166,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-05-27,TX-RT-000167,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-05-27,TX-RT-000168,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-27,TX-RT-000169,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-27,TX-RT-000170,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-05-27,TX-RT-000171,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-27,TX-RT-000172,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-27,TX-RT-000173,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-27,TX-RT-000174,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-05-27,TX-RT-000175,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-05-27,TX-RT-000176,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-28,TX-RT-000177,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-28,TX-RT-000178,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-28,TX-RT-000179,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-05-28,TX-RT-000180,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-05-28,TX-RT-000181,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-05-28,TX-RT-000182,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-28,TX-RT-000183,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-28,TX-RT-000184,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-05-28,TX-RT-000185,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-28,TX-RT-000186,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-28,TX-RT-000187,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-28,TX-RT-000188,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-05-28,TX-RT-000189,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-05-28,TX-RT-000190,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-29,TX-RT-000191,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-29,TX-RT-000192,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-29,TX-RT-000193,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-05-29,TX-RT-000194,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-05-29,TX-RT-000195,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-05-29,TX-RT-000196,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-29,TX-RT-000197,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-29,TX-RT-000198,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-05-29,TX-RT-000199,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-29,TX-RT-000200,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-29,TX-RT-000201,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-29,TX-RT-000202,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-05-29,TX-RT-000203,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-05-29,TX-RT-000204,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-30,TX-RT-000205,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-30,TX-RT-000206,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-30,TX-RT-000207,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-05-30,TX-RT-000208,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-05-30,TX-RT-000209,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-05-30,TX-RT-000210,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-30,TX-RT-000211,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-30,TX-RT-000212,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-05-30,TX-RT-000213,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-05-30,TX-RT-000214,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-05-30,TX-RT-000215,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-30,TX-RT-000216,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-30,TX-RT-000217,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-30,TX-RT-000218,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-05-30,TX-RT-000219,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-05-30,TX-RT-000220,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-05-31,TX-RT-000221,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-05-31,TX-RT-000222,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-05-31,TX-RT-000223,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-05-31,TX-RT-000224,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-05-31,TX-RT-000225,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-05-31,TX-RT-000226,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-05-31,TX-RT-000227,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-05-31,TX-RT-000228,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-05-31,TX-RT-000229,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-05-31,TX-RT-000230,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-05-31,TX-RT-000231,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-05-31,TX-RT-000232,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-05-31,TX-RT-000233,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-05-31,TX-RT-000234,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-05-31,TX-RT-000235,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-05-31,TX-RT-000236,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-01,TX-RT-000237,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-01,TX-RT-000238,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-01,TX-RT-000239,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-01,TX-RT-000240,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-01,TX-RT-000241,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-01,TX-RT-000242,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-01,TX-RT-000243,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-01,TX-RT-000244,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-01,TX-RT-000245,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-01,TX-RT-000246,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-01,TX-RT-000247,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-01,TX-RT-000248,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-01,TX-RT-000249,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-01,TX-RT-000250,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-02,TX-RT-000251,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-02,TX-RT-000252,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-02,TX-RT-000253,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-02,TX-RT-000254,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-02,TX-RT-000255,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-02,TX-RT-000256,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-02,TX-RT-000257,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-02,TX-RT-000258,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-02,TX-RT-000259,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-02,TX-RT-000260,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-02,TX-RT-000261,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-02,TX-RT-000262,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-02,TX-RT-000263,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-02,TX-RT-000264,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-03,TX-RT-000265,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-03,TX-RT-000266,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-03,TX-RT-000267,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-03,TX-RT-000268,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-03,TX-RT-000269,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-03,TX-RT-000270,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-03,TX-RT-000271,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-03,TX-RT-000272,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-03,TX-RT-000273,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-03,TX-RT-000274,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-03,TX-RT-000275,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-03,TX-RT-000276,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-03,TX-RT-000277,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-03,TX-RT-000278,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-04,TX-RT-000279,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-04,TX-RT-000280,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-04,TX-RT-000281,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-04,TX-RT-000282,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-04,TX-RT-000283,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-04,TX-RT-000284,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-04,TX-RT-000285,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-04,TX-RT-000286,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-04,TX-RT-000287,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-04,TX-RT-000288,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-04,TX-RT-000289,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-04,TX-RT-000290,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-04,TX-RT-000291,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-04,TX-RT-000292,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-05,TX-RT-000293,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-05,TX-RT-000294,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-05,TX-RT-000295,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-05,TX-RT-000296,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-05,TX-RT-000297,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-05,TX-RT-000298,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-05,TX-RT-000299,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-05,TX-RT-000300,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-05,TX-RT-000301,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-05,TX-RT-000302,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-05,TX-RT-000303,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-05,TX-RT-000304,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-05,TX-RT-000305,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-05,TX-RT-000306,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-06,TX-RT-000307,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-06,TX-RT-000308,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-06,TX-RT-000309,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-06-06,TX-RT-000310,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-06-06,TX-RT-000311,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-06-06,TX-RT-000312,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-06,TX-RT-000313,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-06,TX-RT-000314,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-06-06,TX-RT-000315,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-06-06,TX-RT-000316,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-06-06,TX-RT-000317,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-06,TX-RT-000318,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-06,TX-RT-000319,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-06,TX-RT-000320,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-06-06,TX-RT-000321,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-06-06,TX-RT-000322,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-07,TX-RT-000323,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-07,TX-RT-000324,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-07,TX-RT-000325,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-06-07,TX-RT-000326,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-06-07,TX-RT-000327,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-06-07,TX-RT-000328,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-07,TX-RT-000329,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-07,TX-RT-000330,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-06-07,TX-RT-000331,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-06-07,TX-RT-000332,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-06-07,TX-RT-000333,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-07,TX-RT-000334,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-07,TX-RT-000335,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-07,TX-RT-000336,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-06-07,TX-RT-000337,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-06-07,TX-RT-000338,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-08,TX-RT-000339,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-08,TX-RT-000340,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-08,TX-RT-000341,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-08,TX-RT-000342,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-08,TX-RT-000343,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-08,TX-RT-000344,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-08,TX-RT-000345,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-08,TX-RT-000346,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-08,TX-RT-000347,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-08,TX-RT-000348,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-08,TX-RT-000349,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-08,TX-RT-000350,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-08,TX-RT-000351,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-08,TX-RT-000352,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-09,TX-RT-000353,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-09,TX-RT-000354,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-09,TX-RT-000355,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-09,TX-RT-000356,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-09,TX-RT-000357,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-09,TX-RT-000358,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-09,TX-RT-000359,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-09,TX-RT-000360,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-09,TX-RT-000361,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-09,TX-RT-000362,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-09,TX-RT-000363,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-09,TX-RT-000364,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-09,TX-RT-000365,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-09,TX-RT-000366,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-10,TX-RT-000367,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-10,TX-RT-000368,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-10,TX-RT-000369,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-10,TX-RT-000370,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-10,TX-RT-000371,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-10,TX-RT-000372,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-10,TX-RT-000373,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-10,TX-RT-000374,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-10,TX-RT-000375,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-10,TX-RT-000376,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-10,TX-RT-000377,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-10,TX-RT-000378,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-10,TX-RT-000379,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-10,TX-RT-000380,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-11,TX-RT-000381,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-11,TX-RT-000382,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-11,TX-RT-000383,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-11,TX-RT-000384,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-11,TX-RT-000385,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-11,TX-RT-000386,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-11,TX-RT-000387,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-11,TX-RT-000388,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-11,TX-RT-000389,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-11,TX-RT-000390,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-11,TX-RT-000391,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-11,TX-RT-000392,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-11,TX-RT-000393,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-11,TX-RT-000394,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-12,TX-RT-000395,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-12,TX-RT-000396,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-12,TX-RT-000397,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-12,TX-RT-000398,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-12,TX-RT-000399,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-12,TX-RT-000400,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-12,TX-RT-000401,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-12,TX-RT-000402,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-12,TX-RT-000403,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-12,TX-RT-000404,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-12,TX-RT-000405,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-12,TX-RT-000406,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-12,TX-RT-000407,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-12,TX-RT-000408,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-13,TX-RT-000409,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-13,TX-RT-000410,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-13,TX-RT-000411,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-06-13,TX-RT-000412,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-06-13,TX-RT-000413,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-06-13,TX-RT-000414,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-13,TX-RT-000415,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-13,TX-RT-000416,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-06-13,TX-RT-000417,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-06-13,TX-RT-000418,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-06-13,TX-RT-000419,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-13,TX-RT-000420,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-13,TX-RT-000421,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-13,TX-RT-000422,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-06-13,TX-RT-000423,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-06-13,TX-RT-000424,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-14,TX-RT-000425,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-14,TX-RT-000426,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-14,TX-RT-000427,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-06-14,TX-RT-000428,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-06-14,TX-RT-000429,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-06-14,TX-RT-000430,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-14,TX-RT-000431,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-14,TX-RT-000432,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-06-14,TX-RT-000433,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-06-14,TX-RT-000434,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-06-14,TX-RT-000435,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-14,TX-RT-000436,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-14,TX-RT-000437,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-14,TX-RT-000438,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-06-14,TX-RT-000439,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-06-14,TX-RT-000440,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-15,TX-RT-000441,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-15,TX-RT-000442,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-15,TX-RT-000443,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-15,TX-RT-000444,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-15,TX-RT-000445,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-15,TX-RT-000446,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-15,TX-RT-000447,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-15,TX-RT-000448,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-15,TX-RT-000449,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-15,TX-RT-000450,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-15,TX-RT-000451,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-15,TX-RT-000452,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-15,TX-RT-000453,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-15,TX-RT-000454,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-16,TX-RT-000455,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-16,TX-RT-000456,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-16,TX-RT-000457,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-16,TX-RT-000458,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-16,TX-RT-000459,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-16,TX-RT-000460,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-16,TX-RT-000461,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-16,TX-RT-000462,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-16,TX-RT-000463,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-16,TX-RT-000464,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-16,TX-RT-000465,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-16,TX-RT-000466,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-16,TX-RT-000467,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-16,TX-RT-000468,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-17,TX-RT-000469,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-17,TX-RT-000470,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-17,TX-RT-000471,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-17,TX-RT-000472,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-17,TX-RT-000473,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-17,TX-RT-000474,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-17,TX-RT-000475,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-17,TX-RT-000476,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-17,TX-RT-000477,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-17,TX-RT-000478,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-17,TX-RT-000479,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-17,TX-RT-000480,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-17,TX-RT-000481,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-17,TX-RT-000482,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-18,TX-RT-000483,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-18,TX-RT-000484,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-18,TX-RT-000485,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-18,TX-RT-000486,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-18,TX-RT-000487,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-18,TX-RT-000488,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-18,TX-RT-000489,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-18,TX-RT-000490,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-18,TX-RT-000491,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-18,TX-RT-000492,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-18,TX-RT-000493,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-18,TX-RT-000494,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-18,TX-RT-000495,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-18,TX-RT-000496,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-19,TX-RT-000497,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-19,TX-RT-000498,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-19,TX-RT-000499,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-19,TX-RT-000500,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-19,TX-RT-000501,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-19,TX-RT-000502,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-19,TX-RT-000503,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-19,TX-RT-000504,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-19,TX-RT-000505,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-19,TX-RT-000506,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-19,TX-RT-000507,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-19,TX-RT-000508,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-19,TX-RT-000509,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-19,TX-RT-000510,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-20,TX-RT-000511,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-20,TX-RT-000512,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-20,TX-RT-000513,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-06-20,TX-RT-000514,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-06-20,TX-RT-000515,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-06-20,TX-RT-000516,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-20,TX-RT-000517,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-20,TX-RT-000518,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-06-20,TX-RT-000519,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-06-20,TX-RT-000520,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-06-20,TX-RT-000521,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-20,TX-RT-000522,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-20,TX-RT-000523,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-20,TX-RT-000524,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-06-20,TX-RT-000525,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-06-20,TX-RT-000526,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-21,TX-RT-000527,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-21,TX-RT-000528,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-21,TX-RT-000529,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-06-21,TX-RT-000530,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-06-21,TX-RT-000531,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-06-21,TX-RT-000532,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-21,TX-RT-000533,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-21,TX-RT-000534,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-06-21,TX-RT-000535,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-06-21,TX-RT-000536,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-06-21,TX-RT-000537,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-21,TX-RT-000538,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-21,TX-RT-000539,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-21,TX-RT-000540,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-06-21,TX-RT-000541,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-06-21,TX-RT-000542,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-22,TX-RT-000543,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-22,TX-RT-000544,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-22,TX-RT-000545,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-22,TX-RT-000546,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-22,TX-RT-000547,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-22,TX-RT-000548,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-22,TX-RT-000549,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-22,TX-RT-000550,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-22,TX-RT-000551,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-22,TX-RT-000552,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-22,TX-RT-000553,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-22,TX-RT-000554,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-22,TX-RT-000555,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-22,TX-RT-000556,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-23,TX-RT-000557,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-23,TX-RT-000558,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-23,TX-RT-000559,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-23,TX-RT-000560,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-23,TX-RT-000561,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-23,TX-RT-000562,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-23,TX-RT-000563,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-23,TX-RT-000564,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-23,TX-RT-000565,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-23,TX-RT-000566,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-23,TX-RT-000567,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-23,TX-RT-000568,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-23,TX-RT-000569,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-23,TX-RT-000570,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-24,TX-RT-000571,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-24,TX-RT-000572,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-24,TX-RT-000573,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-24,TX-RT-000574,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-24,TX-RT-000575,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-24,TX-RT-000576,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-24,TX-RT-000577,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-24,TX-RT-000578,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-24,TX-RT-000579,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-24,TX-RT-000580,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-24,TX-RT-000581,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-24,TX-RT-000582,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-24,TX-RT-000583,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-24,TX-RT-000584,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-25,TX-RT-000585,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-25,TX-RT-000586,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-25,TX-RT-000587,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-25,TX-RT-000588,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-25,TX-RT-000589,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-25,TX-RT-000590,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-25,TX-RT-000591,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-25,TX-RT-000592,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-25,TX-RT-000593,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-25,TX-RT-000594,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-25,TX-RT-000595,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-25,TX-RT-000596,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-25,TX-RT-000597,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-25,TX-RT-000598,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-26,TX-RT-000599,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-26,TX-RT-000600,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-26,TX-RT-000601,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-26,TX-RT-000602,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-26,TX-RT-000603,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-26,TX-RT-000604,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-26,TX-RT-000605,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-26,TX-RT-000606,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-26,TX-RT-000607,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-26,TX-RT-000608,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-26,TX-RT-000609,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-26,TX-RT-000610,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-26,TX-RT-000611,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-26,TX-RT-000612,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-27,TX-RT-000613,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-27,TX-RT-000614,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-27,TX-RT-000615,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-06-27,TX-RT-000616,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-06-27,TX-RT-000617,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-06-27,TX-RT-000618,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-27,TX-RT-000619,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-27,TX-RT-000620,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-06-27,TX-RT-000621,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-06-27,TX-RT-000622,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-06-27,TX-RT-000623,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-27,TX-RT-000624,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-27,TX-RT-000625,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-27,TX-RT-000626,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-06-27,TX-RT-000627,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-06-27,TX-RT-000628,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-28,TX-RT-000629,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-28,TX-RT-000630,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-28,TX-RT-000631,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-06-28,TX-RT-000632,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-06-28,TX-RT-000633,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-06-28,TX-RT-000634,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-28,TX-RT-000635,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-28,TX-RT-000636,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-06-28,TX-RT-000637,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-06-28,TX-RT-000638,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-06-28,TX-RT-000639,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-28,TX-RT-000640,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-28,TX-RT-000641,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-28,TX-RT-000642,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-06-28,TX-RT-000643,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-06-28,TX-RT-000644,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-29,TX-RT-000645,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-29,TX-RT-000646,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-29,TX-RT-000647,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-29,TX-RT-000648,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-29,TX-RT-000649,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-29,TX-RT-000650,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-29,TX-RT-000651,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-29,TX-RT-000652,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-29,TX-RT-000653,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-29,TX-RT-000654,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-29,TX-RT-000655,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-29,TX-RT-000656,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-29,TX-RT-000657,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-29,TX-RT-000658,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-06-30,TX-RT-000659,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-06-30,TX-RT-000660,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-06-30,TX-RT-000661,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-06-30,TX-RT-000662,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-06-30,TX-RT-000663,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-06-30,TX-RT-000664,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-06-30,TX-RT-000665,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-06-30,TX-RT-000666,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-06-30,TX-RT-000667,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-06-30,TX-RT-000668,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-06-30,TX-RT-000669,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-06-30,TX-RT-000670,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-06-30,TX-RT-000671,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-06-30,TX-RT-000672,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-01,TX-RT-000673,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-01,TX-RT-000674,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-01,TX-RT-000675,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-01,TX-RT-000676,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-01,TX-RT-000677,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-01,TX-RT-000678,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-01,TX-RT-000679,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-01,TX-RT-000680,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-01,TX-RT-000681,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-01,TX-RT-000682,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-01,TX-RT-000683,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-01,TX-RT-000684,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-01,TX-RT-000685,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-01,TX-RT-000686,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-02,TX-RT-000687,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-02,TX-RT-000688,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-02,TX-RT-000689,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-02,TX-RT-000690,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-02,TX-RT-000691,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-02,TX-RT-000692,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-02,TX-RT-000693,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-02,TX-RT-000694,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-02,TX-RT-000695,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-02,TX-RT-000696,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-02,TX-RT-000697,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-02,TX-RT-000698,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-02,TX-RT-000699,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-02,TX-RT-000700,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-03,TX-RT-000701,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-03,TX-RT-000702,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-03,TX-RT-000703,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-03,TX-RT-000704,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-03,TX-RT-000705,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-03,TX-RT-000706,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-03,TX-RT-000707,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-03,TX-RT-000708,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-03,TX-RT-000709,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-03,TX-RT-000710,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-03,TX-RT-000711,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-03,TX-RT-000712,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-03,TX-RT-000713,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-03,TX-RT-000714,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-04,TX-RT-000715,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-04,TX-RT-000716,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-04,TX-RT-000717,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-07-04,TX-RT-000718,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-07-04,TX-RT-000719,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-07-04,TX-RT-000720,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-04,TX-RT-000721,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-04,TX-RT-000722,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-07-04,TX-RT-000723,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-07-04,TX-RT-000724,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-07-04,TX-RT-000725,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,2,20.48,40.96,32.00,mada
+2026-07-04,TX-RT-000726,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-04,TX-RT-000727,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-04,TX-RT-000728,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-07-04,TX-RT-000729,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-07-04,TX-RT-000730,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-05,TX-RT-000731,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-05,TX-RT-000732,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-05,TX-RT-000733,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-07-05,TX-RT-000734,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-07-05,TX-RT-000735,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-07-05,TX-RT-000736,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-05,TX-RT-000737,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-05,TX-RT-000738,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-07-05,TX-RT-000739,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-07-05,TX-RT-000740,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-07-05,TX-RT-000741,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,2,20.48,40.96,32.00,mada
+2026-07-05,TX-RT-000742,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-05,TX-RT-000743,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-05,TX-RT-000744,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-07-05,TX-RT-000745,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-07-05,TX-RT-000746,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-06,TX-RT-000747,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-06,TX-RT-000748,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-06,TX-RT-000749,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-06,TX-RT-000750,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-06,TX-RT-000751,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-06,TX-RT-000752,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-06,TX-RT-000753,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-06,TX-RT-000754,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-06,TX-RT-000755,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-06,TX-RT-000756,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-06,TX-RT-000757,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-06,TX-RT-000758,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-06,TX-RT-000759,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-06,TX-RT-000760,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-07,TX-RT-000761,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-07,TX-RT-000762,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-07,TX-RT-000763,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-07,TX-RT-000764,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-07,TX-RT-000765,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-07,TX-RT-000766,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-07,TX-RT-000767,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-07,TX-RT-000768,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-07,TX-RT-000769,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-07,TX-RT-000770,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-07,TX-RT-000771,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-07,TX-RT-000772,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-07,TX-RT-000773,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-07,TX-RT-000774,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-08,TX-RT-000775,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-08,TX-RT-000776,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-08,TX-RT-000777,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-08,TX-RT-000778,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-08,TX-RT-000779,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-08,TX-RT-000780,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-08,TX-RT-000781,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-08,TX-RT-000782,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-08,TX-RT-000783,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-08,TX-RT-000784,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-08,TX-RT-000785,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-08,TX-RT-000786,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-08,TX-RT-000787,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-08,TX-RT-000788,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-09,TX-RT-000789,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-09,TX-RT-000790,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-09,TX-RT-000791,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-09,TX-RT-000792,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-09,TX-RT-000793,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-09,TX-RT-000794,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-09,TX-RT-000795,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-09,TX-RT-000796,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-09,TX-RT-000797,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-09,TX-RT-000798,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-09,TX-RT-000799,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-09,TX-RT-000800,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-09,TX-RT-000801,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-09,TX-RT-000802,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-10,TX-RT-000803,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-10,TX-RT-000804,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-10,TX-RT-000805,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-10,TX-RT-000806,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-10,TX-RT-000807,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-10,TX-RT-000808,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-10,TX-RT-000809,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-10,TX-RT-000810,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-10,TX-RT-000811,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-10,TX-RT-000812,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-10,TX-RT-000813,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-10,TX-RT-000814,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-10,TX-RT-000815,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-10,TX-RT-000816,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-11,TX-RT-000817,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-11,TX-RT-000818,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-11,TX-RT-000819,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-07-11,TX-RT-000820,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-07-11,TX-RT-000821,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-07-11,TX-RT-000822,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-11,TX-RT-000823,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-11,TX-RT-000824,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-07-11,TX-RT-000825,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-07-11,TX-RT-000826,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-07-11,TX-RT-000827,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,2,20.48,40.96,32.00,mada
+2026-07-11,TX-RT-000828,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-11,TX-RT-000829,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-11,TX-RT-000830,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-07-11,TX-RT-000831,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-07-11,TX-RT-000832,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-12,TX-RT-000833,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-12,TX-RT-000834,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-12,TX-RT-000835,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-07-12,TX-RT-000836,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-07-12,TX-RT-000837,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-07-12,TX-RT-000838,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-12,TX-RT-000839,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-12,TX-RT-000840,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-07-12,TX-RT-000841,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-07-12,TX-RT-000842,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-07-12,TX-RT-000843,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,2,20.48,40.96,32.00,mada
+2026-07-12,TX-RT-000844,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-12,TX-RT-000845,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-12,TX-RT-000846,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-07-12,TX-RT-000847,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-07-12,TX-RT-000848,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-13,TX-RT-000849,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-13,TX-RT-000850,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-13,TX-RT-000851,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-13,TX-RT-000852,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-13,TX-RT-000853,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-13,TX-RT-000854,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-13,TX-RT-000855,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-13,TX-RT-000856,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-13,TX-RT-000857,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-13,TX-RT-000858,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-13,TX-RT-000859,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-13,TX-RT-000860,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-13,TX-RT-000861,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-13,TX-RT-000862,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-14,TX-RT-000863,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-14,TX-RT-000864,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-14,TX-RT-000865,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-14,TX-RT-000866,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-14,TX-RT-000867,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-14,TX-RT-000868,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-14,TX-RT-000869,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-14,TX-RT-000870,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-14,TX-RT-000871,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-14,TX-RT-000872,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-14,TX-RT-000873,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-14,TX-RT-000874,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-14,TX-RT-000875,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-14,TX-RT-000876,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-15,TX-RT-000877,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-15,TX-RT-000878,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-15,TX-RT-000879,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-15,TX-RT-000880,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-15,TX-RT-000881,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-15,TX-RT-000882,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-15,TX-RT-000883,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-15,TX-RT-000884,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-15,TX-RT-000885,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-15,TX-RT-000886,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-15,TX-RT-000887,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-15,TX-RT-000888,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-15,TX-RT-000889,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-15,TX-RT-000890,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-16,TX-RT-000891,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-16,TX-RT-000892,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-16,TX-RT-000893,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-16,TX-RT-000894,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-16,TX-RT-000895,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-16,TX-RT-000896,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-16,TX-RT-000897,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-16,TX-RT-000898,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-16,TX-RT-000899,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-16,TX-RT-000900,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-16,TX-RT-000901,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-16,TX-RT-000902,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-16,TX-RT-000903,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-16,TX-RT-000904,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-17,TX-RT-000905,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-17,TX-RT-000906,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-17,TX-RT-000907,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-17,TX-RT-000908,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-17,TX-RT-000909,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-17,TX-RT-000910,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-17,TX-RT-000911,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-17,TX-RT-000912,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-17,TX-RT-000913,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-17,TX-RT-000914,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-17,TX-RT-000915,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-17,TX-RT-000916,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-17,TX-RT-000917,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-17,TX-RT-000918,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-18,TX-RT-000919,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-18,TX-RT-000920,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-18,TX-RT-000921,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-07-18,TX-RT-000922,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-07-18,TX-RT-000923,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-07-18,TX-RT-000924,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-18,TX-RT-000925,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-18,TX-RT-000926,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-07-18,TX-RT-000927,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-07-18,TX-RT-000928,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-07-18,TX-RT-000929,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,2,20.48,40.96,32.00,mada
+2026-07-18,TX-RT-000930,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-18,TX-RT-000931,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-18,TX-RT-000932,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-07-18,TX-RT-000933,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-07-18,TX-RT-000934,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-19,TX-RT-000935,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-19,TX-RT-000936,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-19,TX-RT-000937,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-07-19,TX-RT-000938,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-07-19,TX-RT-000939,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-07-19,TX-RT-000940,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-19,TX-RT-000941,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-19,TX-RT-000942,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-07-19,TX-RT-000943,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-07-19,TX-RT-000944,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-07-19,TX-RT-000945,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,2,20.48,40.96,32.00,mada
+2026-07-19,TX-RT-000946,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-19,TX-RT-000947,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-19,TX-RT-000948,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-07-19,TX-RT-000949,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-07-19,TX-RT-000950,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-20,TX-RT-000951,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-20,TX-RT-000952,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-20,TX-RT-000953,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-20,TX-RT-000954,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-20,TX-RT-000955,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-20,TX-RT-000956,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-20,TX-RT-000957,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-20,TX-RT-000958,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-20,TX-RT-000959,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-20,TX-RT-000960,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-20,TX-RT-000961,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-20,TX-RT-000962,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-20,TX-RT-000963,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-20,TX-RT-000964,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-21,TX-RT-000965,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-21,TX-RT-000966,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-21,TX-RT-000967,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-21,TX-RT-000968,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-21,TX-RT-000969,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-21,TX-RT-000970,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-21,TX-RT-000971,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-21,TX-RT-000972,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-21,TX-RT-000973,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-21,TX-RT-000974,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-21,TX-RT-000975,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-21,TX-RT-000976,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-21,TX-RT-000977,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-21,TX-RT-000978,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-22,TX-RT-000979,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-22,TX-RT-000980,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-22,TX-RT-000981,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-22,TX-RT-000982,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-22,TX-RT-000983,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-22,TX-RT-000984,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-22,TX-RT-000985,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-22,TX-RT-000986,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-22,TX-RT-000987,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-22,TX-RT-000988,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-22,TX-RT-000989,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-22,TX-RT-000990,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-22,TX-RT-000991,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-22,TX-RT-000992,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-23,TX-RT-000993,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-23,TX-RT-000994,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-23,TX-RT-000995,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-23,TX-RT-000996,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-23,TX-RT-000997,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-23,TX-RT-000998,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-23,TX-RT-000999,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-23,TX-RT-001000,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-23,TX-RT-001001,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-23,TX-RT-001002,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-23,TX-RT-001003,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-23,TX-RT-001004,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-23,TX-RT-001005,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-23,TX-RT-001006,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-24,TX-RT-001007,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-24,TX-RT-001008,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-24,TX-RT-001009,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-24,TX-RT-001010,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-24,TX-RT-001011,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-24,TX-RT-001012,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-24,TX-RT-001013,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-24,TX-RT-001014,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-24,TX-RT-001015,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-24,TX-RT-001016,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-24,TX-RT-001017,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-24,TX-RT-001018,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-24,TX-RT-001019,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-24,TX-RT-001020,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-25,TX-RT-001021,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-25,TX-RT-001022,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-25,TX-RT-001023,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-07-25,TX-RT-001024,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-07-25,TX-RT-001025,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-07-25,TX-RT-001026,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-25,TX-RT-001027,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-25,TX-RT-001028,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-07-25,TX-RT-001029,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-07-25,TX-RT-001030,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-07-25,TX-RT-001031,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,2,20.48,40.96,32.00,mada
+2026-07-25,TX-RT-001032,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-25,TX-RT-001033,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-25,TX-RT-001034,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-07-25,TX-RT-001035,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-07-25,TX-RT-001036,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-26,TX-RT-001037,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-26,TX-RT-001038,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-26,TX-RT-001039,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,4,28.16,112.64,88.00,mada
+2026-07-26,TX-RT-001040,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-07-26,TX-RT-001041,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-07-26,TX-RT-001042,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-26,TX-RT-001043,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-26,TX-RT-001044,Riyadh - Tahlia,Riyadh,Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,1,44.80,44.80,35.00,mada
+2026-07-26,TX-RT-001045,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-07-26,TX-RT-001046,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-07-26,TX-RT-001047,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,2,20.48,40.96,32.00,mada
+2026-07-26,TX-RT-001048,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-26,TX-RT-001049,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-26,TX-RT-001050,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-07-26,TX-RT-001051,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-07-26,TX-RT-001052,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-27,TX-RT-001053,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-27,TX-RT-001054,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-27,TX-RT-001055,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-27,TX-RT-001056,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-27,TX-RT-001057,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-27,TX-RT-001058,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-27,TX-RT-001059,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-27,TX-RT-001060,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-27,TX-RT-001061,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-27,TX-RT-001062,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-27,TX-RT-001063,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-27,TX-RT-001064,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-27,TX-RT-001065,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-27,TX-RT-001066,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-28,TX-RT-001067,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-28,TX-RT-001068,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-28,TX-RT-001069,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-28,TX-RT-001070,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-28,TX-RT-001071,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-28,TX-RT-001072,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-28,TX-RT-001073,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-28,TX-RT-001074,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-28,TX-RT-001075,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-28,TX-RT-001076,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-28,TX-RT-001077,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-28,TX-RT-001078,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-28,TX-RT-001079,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-28,TX-RT-001080,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-29,TX-RT-001081,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-29,TX-RT-001082,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-29,TX-RT-001083,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-29,TX-RT-001084,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-29,TX-RT-001085,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-29,TX-RT-001086,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-29,TX-RT-001087,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-29,TX-RT-001088,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-29,TX-RT-001089,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-29,TX-RT-001090,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-29,TX-RT-001091,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-29,TX-RT-001092,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-29,TX-RT-001093,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-29,TX-RT-001094,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-30,TX-RT-001095,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-30,TX-RT-001096,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-07-30,TX-RT-001097,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,3,28.16,84.48,66.00,mada
+2026-07-30,TX-RT-001098,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-30,TX-RT-001099,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-30,TX-RT-001100,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-30,TX-RT-001101,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,1,6.40,6.40,5.00,mada
+2026-07-30,TX-RT-001102,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-30,TX-RT-001103,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-07-30,TX-RT-001104,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-30,TX-RT-001105,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-30,TX-RT-001106,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-30,TX-RT-001107,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-30,TX-RT-001108,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-07-31,TX-RT-001109,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-07-31,TX-RT-001110,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-07-31,TX-RT-001111,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-07-31,TX-RT-001112,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-07-31,TX-RT-001113,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-07-31,TX-RT-001114,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,5,6.40,32.00,25.00,mada
+2026-07-31,TX-RT-001115,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-07-31,TX-RT-001116,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-07-31,TX-RT-001117,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-07-31,TX-RT-001118,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-07-31,TX-RT-001119,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-07-31,TX-RT-001120,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-01,TX-RT-001121,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-01,TX-RT-001122,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-08-01,TX-RT-001123,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-01,TX-RT-001124,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-08-01,TX-RT-001125,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-08-01,TX-RT-001126,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,2,43.52,87.04,68.00,mada
+2026-08-01,TX-RT-001127,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,6,6.40,38.40,30.00,mada
+2026-08-01,TX-RT-001128,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-08-01,TX-RT-001129,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-08-01,TX-RT-001130,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-08-01,TX-RT-001131,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-01,TX-RT-001132,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-01,TX-RT-001133,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-08-01,TX-RT-001134,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-08-01,TX-RT-001135,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-02,TX-RT-001136,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-02,TX-RT-001137,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-08-02,TX-RT-001138,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-02,TX-RT-001139,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-08-02,TX-RT-001140,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-08-02,TX-RT-001141,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,2,43.52,87.04,68.00,mada
+2026-08-02,TX-RT-001142,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,6,6.40,38.40,30.00,mada
+2026-08-02,TX-RT-001143,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-08-02,TX-RT-001144,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-08-02,TX-RT-001145,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-08-02,TX-RT-001146,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-02,TX-RT-001147,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-02,TX-RT-001148,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-08-02,TX-RT-001149,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-08-02,TX-RT-001150,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-03,TX-RT-001151,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-03,TX-RT-001152,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-03,TX-RT-001153,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-03,TX-RT-001154,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-03,TX-RT-001155,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-03,TX-RT-001156,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,5,6.40,32.00,25.00,mada
+2026-08-03,TX-RT-001157,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-03,TX-RT-001158,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-03,TX-RT-001159,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-03,TX-RT-001160,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-03,TX-RT-001161,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-03,TX-RT-001162,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-04,TX-RT-001163,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-04,TX-RT-001164,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-04,TX-RT-001165,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-04,TX-RT-001166,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-04,TX-RT-001167,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-04,TX-RT-001168,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,5,6.40,32.00,25.00,mada
+2026-08-04,TX-RT-001169,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-04,TX-RT-001170,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-04,TX-RT-001171,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-04,TX-RT-001172,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-04,TX-RT-001173,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-04,TX-RT-001174,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-05,TX-RT-001175,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-05,TX-RT-001176,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-05,TX-RT-001177,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-05,TX-RT-001178,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-05,TX-RT-001179,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-05,TX-RT-001180,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,5,6.40,32.00,25.00,mada
+2026-08-05,TX-RT-001181,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-05,TX-RT-001182,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-05,TX-RT-001183,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-05,TX-RT-001184,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-05,TX-RT-001185,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-05,TX-RT-001186,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-06,TX-RT-001187,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-06,TX-RT-001188,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-06,TX-RT-001189,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-06,TX-RT-001190,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-06,TX-RT-001191,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-06,TX-RT-001192,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,5,6.40,32.00,25.00,mada
+2026-08-06,TX-RT-001193,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-06,TX-RT-001194,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-06,TX-RT-001195,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-06,TX-RT-001196,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-06,TX-RT-001197,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-06,TX-RT-001198,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-07,TX-RT-001199,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-07,TX-RT-001200,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-07,TX-RT-001201,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-07,TX-RT-001202,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-07,TX-RT-001203,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-07,TX-RT-001204,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,5,6.40,32.00,25.00,mada
+2026-08-07,TX-RT-001205,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-07,TX-RT-001206,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-07,TX-RT-001207,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-07,TX-RT-001208,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-07,TX-RT-001209,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-07,TX-RT-001210,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-08,TX-RT-001211,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-08,TX-RT-001212,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-08-08,TX-RT-001213,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-08,TX-RT-001214,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-08-08,TX-RT-001215,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-08-08,TX-RT-001216,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,2,43.52,87.04,68.00,mada
+2026-08-08,TX-RT-001217,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,6,6.40,38.40,30.00,mada
+2026-08-08,TX-RT-001218,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-08-08,TX-RT-001219,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-08-08,TX-RT-001220,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-08-08,TX-RT-001221,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-08,TX-RT-001222,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-08,TX-RT-001223,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-08-08,TX-RT-001224,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-08-08,TX-RT-001225,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-09,TX-RT-001226,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-09,TX-RT-001227,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-08-09,TX-RT-001228,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-09,TX-RT-001229,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-08-09,TX-RT-001230,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-08-09,TX-RT-001231,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,2,43.52,87.04,68.00,mada
+2026-08-09,TX-RT-001232,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,6,6.40,38.40,30.00,mada
+2026-08-09,TX-RT-001233,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-08-09,TX-RT-001234,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-08-09,TX-RT-001235,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-08-09,TX-RT-001236,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-09,TX-RT-001237,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-09,TX-RT-001238,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-08-09,TX-RT-001239,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-08-09,TX-RT-001240,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-10,TX-RT-001241,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-10,TX-RT-001242,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-10,TX-RT-001243,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-10,TX-RT-001244,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-10,TX-RT-001245,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-10,TX-RT-001246,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,5,6.40,32.00,25.00,mada
+2026-08-10,TX-RT-001247,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-10,TX-RT-001248,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-10,TX-RT-001249,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-10,TX-RT-001250,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-10,TX-RT-001251,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-10,TX-RT-001252,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-11,TX-RT-001253,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-11,TX-RT-001254,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-11,TX-RT-001255,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-11,TX-RT-001256,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-11,TX-RT-001257,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-11,TX-RT-001258,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,5,6.40,32.00,25.00,mada
+2026-08-11,TX-RT-001259,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-11,TX-RT-001260,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-11,TX-RT-001261,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-11,TX-RT-001262,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-11,TX-RT-001263,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-11,TX-RT-001264,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-12,TX-RT-001265,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-12,TX-RT-001266,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-12,TX-RT-001267,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-12,TX-RT-001268,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-12,TX-RT-001269,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-12,TX-RT-001270,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,5,6.40,32.00,25.00,mada
+2026-08-12,TX-RT-001271,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-12,TX-RT-001272,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-12,TX-RT-001273,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-12,TX-RT-001274,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-12,TX-RT-001275,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-12,TX-RT-001276,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-13,TX-RT-001277,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-13,TX-RT-001278,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-13,TX-RT-001279,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-13,TX-RT-001280,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-13,TX-RT-001281,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-13,TX-RT-001282,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,5,6.40,32.00,25.00,mada
+2026-08-13,TX-RT-001283,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-13,TX-RT-001284,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-13,TX-RT-001285,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-13,TX-RT-001286,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-13,TX-RT-001287,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-13,TX-RT-001288,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-14,TX-RT-001289,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-14,TX-RT-001290,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-14,TX-RT-001291,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-14,TX-RT-001292,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-14,TX-RT-001293,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-14,TX-RT-001294,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,5,6.40,32.00,25.00,mada
+2026-08-14,TX-RT-001295,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-14,TX-RT-001296,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-14,TX-RT-001297,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-14,TX-RT-001298,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-14,TX-RT-001299,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-14,TX-RT-001300,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-15,TX-RT-001301,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-15,TX-RT-001302,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-08-15,TX-RT-001303,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-15,TX-RT-001304,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-08-15,TX-RT-001305,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-08-15,TX-RT-001306,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,2,43.52,87.04,68.00,mada
+2026-08-15,TX-RT-001307,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,6,6.40,38.40,30.00,mada
+2026-08-15,TX-RT-001308,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-08-15,TX-RT-001309,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-08-15,TX-RT-001310,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-08-15,TX-RT-001311,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-15,TX-RT-001312,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-15,TX-RT-001313,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-08-15,TX-RT-001314,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-08-15,TX-RT-001315,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-16,TX-RT-001316,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-16,TX-RT-001317,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-08-16,TX-RT-001318,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-16,TX-RT-001319,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-08-16,TX-RT-001320,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-08-16,TX-RT-001321,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,2,43.52,87.04,68.00,mada
+2026-08-16,TX-RT-001322,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,9,6.40,57.60,45.00,mada
+2026-08-16,TX-RT-001323,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-08-16,TX-RT-001324,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-08-16,TX-RT-001325,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-08-16,TX-RT-001326,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-16,TX-RT-001327,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-16,TX-RT-001328,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-08-16,TX-RT-001329,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-08-16,TX-RT-001330,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-17,TX-RT-001331,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-17,TX-RT-001332,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-17,TX-RT-001333,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-17,TX-RT-001334,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-17,TX-RT-001335,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-17,TX-RT-001336,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,6,6.40,38.40,30.00,mada
+2026-08-17,TX-RT-001337,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-17,TX-RT-001338,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-17,TX-RT-001339,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-17,TX-RT-001340,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-17,TX-RT-001341,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-17,TX-RT-001342,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-18,TX-RT-001343,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-18,TX-RT-001344,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-18,TX-RT-001345,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-18,TX-RT-001346,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-18,TX-RT-001347,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-18,TX-RT-001348,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,8,6.40,51.20,40.00,mada
+2026-08-18,TX-RT-001349,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-18,TX-RT-001350,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-18,TX-RT-001351,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-18,TX-RT-001352,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-18,TX-RT-001353,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-18,TX-RT-001354,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-19,TX-RT-001355,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-19,TX-RT-001356,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-19,TX-RT-001357,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-19,TX-RT-001358,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-19,TX-RT-001359,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-19,TX-RT-001360,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,7,6.40,44.80,35.00,mada
+2026-08-19,TX-RT-001361,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-19,TX-RT-001362,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-19,TX-RT-001363,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-19,TX-RT-001364,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-19,TX-RT-001365,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-19,TX-RT-001366,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-20,TX-RT-001367,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-20,TX-RT-001368,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-20,TX-RT-001369,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-20,TX-RT-001370,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-20,TX-RT-001371,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-20,TX-RT-001372,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,5,6.40,32.00,25.00,mada
+2026-08-20,TX-RT-001373,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-20,TX-RT-001374,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-20,TX-RT-001375,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-20,TX-RT-001376,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-20,TX-RT-001377,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-20,TX-RT-001378,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-21,TX-RT-001379,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-21,TX-RT-001380,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-21,TX-RT-001381,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-21,TX-RT-001382,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-21,TX-RT-001383,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-21,TX-RT-001384,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,8,6.40,51.20,40.00,mada
+2026-08-21,TX-RT-001385,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-21,TX-RT-001386,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-21,TX-RT-001387,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-21,TX-RT-001388,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-21,TX-RT-001389,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-21,TX-RT-001390,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-22,TX-RT-001391,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-22,TX-RT-001392,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-08-22,TX-RT-001393,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-22,TX-RT-001394,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-08-22,TX-RT-001395,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-08-22,TX-RT-001396,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,2,43.52,87.04,68.00,mada
+2026-08-22,TX-RT-001397,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,7,6.40,44.80,35.00,mada
+2026-08-22,TX-RT-001398,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-08-22,TX-RT-001399,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-08-22,TX-RT-001400,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-08-22,TX-RT-001401,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-22,TX-RT-001402,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-22,TX-RT-001403,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-08-22,TX-RT-001404,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-08-22,TX-RT-001405,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-23,TX-RT-001406,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-23,TX-RT-001407,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-08-23,TX-RT-001408,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-23,TX-RT-001409,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-08-23,TX-RT-001410,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-08-23,TX-RT-001411,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,2,43.52,87.04,68.00,mada
+2026-08-23,TX-RT-001412,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,9,6.40,57.60,45.00,mada
+2026-08-23,TX-RT-001413,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-08-23,TX-RT-001414,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-08-23,TX-RT-001415,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-08-23,TX-RT-001416,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-23,TX-RT-001417,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-23,TX-RT-001418,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-08-23,TX-RT-001419,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-08-23,TX-RT-001420,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-24,TX-RT-001421,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-24,TX-RT-001422,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-24,TX-RT-001423,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-24,TX-RT-001424,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-24,TX-RT-001425,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-24,TX-RT-001426,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,5,6.40,32.00,25.00,mada
+2026-08-24,TX-RT-001427,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-24,TX-RT-001428,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-24,TX-RT-001429,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-24,TX-RT-001430,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-24,TX-RT-001431,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-24,TX-RT-001432,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-25,TX-RT-001433,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-25,TX-RT-001434,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-25,TX-RT-001435,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-25,TX-RT-001436,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-25,TX-RT-001437,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-25,TX-RT-001438,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,8,6.40,51.20,40.00,mada
+2026-08-25,TX-RT-001439,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-25,TX-RT-001440,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-25,TX-RT-001441,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-25,TX-RT-001442,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-25,TX-RT-001443,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-25,TX-RT-001444,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-26,TX-RT-001445,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-26,TX-RT-001446,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-26,TX-RT-001447,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-26,TX-RT-001448,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-26,TX-RT-001449,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-26,TX-RT-001450,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,7,6.40,44.80,35.00,mada
+2026-08-26,TX-RT-001451,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-26,TX-RT-001452,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-26,TX-RT-001453,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-26,TX-RT-001454,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-26,TX-RT-001455,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-26,TX-RT-001456,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-27,TX-RT-001457,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-27,TX-RT-001458,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-27,TX-RT-001459,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-27,TX-RT-001460,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-27,TX-RT-001461,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-27,TX-RT-001462,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,5,6.40,32.00,25.00,mada
+2026-08-27,TX-RT-001463,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-27,TX-RT-001464,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-27,TX-RT-001465,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-27,TX-RT-001466,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-27,TX-RT-001467,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-27,TX-RT-001468,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-28,TX-RT-001469,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-28,TX-RT-001470,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-28,TX-RT-001471,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,6,8.96,53.76,42.00,mada
+2026-08-28,TX-RT-001472,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,8,7.04,56.32,44.00,mada
+2026-08-28,TX-RT-001473,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,1,43.52,43.52,34.00,mada
+2026-08-28,TX-RT-001474,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,6,6.40,38.40,30.00,mada
+2026-08-28,TX-RT-001475,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,4,15.36,61.44,48.00,mada
+2026-08-28,TX-RT-001476,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-28,TX-RT-001477,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-28,TX-RT-001478,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,3,23.04,69.12,54.00,mada
+2026-08-28,TX-RT-001479,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,2,24.32,48.64,38.00,mada
+2026-08-28,TX-RT-001480,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada
+2026-08-29,TX-RT-001481,Riyadh - Tahlia,Riyadh,Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,2,40.96,81.92,64.00,mada
+2026-08-29,TX-RT-001482,Riyadh - Tahlia,Riyadh,Toothpaste 100ml,PER-PST-22,Personal Care,1,8.96,8.96,7.00,mada
+2026-08-29,TX-RT-001483,Riyadh - Tahlia,Riyadh,Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,1,28.16,28.16,22.00,mada
+2026-08-29,TX-RT-001484,Riyadh - Tahlia,Riyadh,Bottled Water 12x330ml,BEV-WTR-09,Beverages,8,8.96,71.68,56.00,mada
+2026-08-29,TX-RT-001485,Riyadh - Tahlia,Riyadh,Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,10,7.04,70.40,55.00,mada
+2026-08-29,TX-RT-001486,Riyadh - Tahlia,Riyadh,Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,2,43.52,87.04,68.00,mada
+2026-08-29,TX-RT-001487,Riyadh - Tahlia,Riyadh,Chocolate Bar 100g,SNK-CHO-13,Snacks,9,6.40,57.60,45.00,mada
+2026-08-29,TX-RT-001488,Riyadh - Tahlia,Riyadh,Oats 1kg,RIC-OAT-25,Rice & Grains,5,15.36,76.80,60.00,mada
+2026-08-29,TX-RT-001489,Riyadh - Tahlia,Riyadh,Laundry Powder 2.5kg,HOU-LND-19,Household,1,35.84,35.84,28.00,mada
+2026-08-29,TX-RT-001490,Riyadh - Tahlia,Riyadh,Arabic Coffee 250g,BEV-COF-08,Beverages,1,20.48,20.48,16.00,mada
+2026-08-29,TX-RT-001491,Riyadh - Tahlia,Riyadh,Green Tea 100 bags,BEV-TEA-12,Beverages,1,17.92,17.92,14.00,mada
+2026-08-29,TX-RT-001492,Riyadh - Tahlia,Riyadh,Shampoo 400ml,PER-SHM-21,Personal Care,1,23.04,23.04,18.00,mada
+2026-08-29,TX-RT-001493,Riyadh - Tahlia,Riyadh,Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,4,23.04,92.16,72.00,mada
+2026-08-29,TX-RT-001494,Riyadh - Tahlia,Riyadh,Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,3,24.32,72.96,57.00,mada
+2026-08-29,TX-RT-001495,Riyadh - Tahlia,Riyadh,Biscuits 300g,SNK-BIS-15,Snacks,1,7.68,7.68,6.00,mada

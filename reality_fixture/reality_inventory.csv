@@ -1,0 +1,18 @@
+Product,SKU,Category,Brand,Pack Size,Current Stock,Cost Price SAR,Shelf Price SAR,Barcode,Storage Type,Expiry Date,Batch Number,Reorder Level,Supplier
+Basmati Rice 5kg,RIC-BAS-24,Rice & Grains,Test,1,8,32.00,49.00,6RICBAS24,ambient,2027-02-25,B-RIC,15,India Gate Supply
+Trash Bags 30pcs,HOU-TRB-20,Household,Test,1,150,10.00,16.00,6HOUTRB20,ambient,2027-02-25,B-HOU,5,Glad Dist
+Toothpaste 100ml,PER-PST-22,Personal Care,Test,1,2,7.00,11.50,6PERPST22,ambient,2027-02-25,B-PER,6,Colgate KSA
+Sukari Dates 1kg,DAT-SUK-01,Dates & Nuts,Test,1,200,22.00,38.00,6DATSUK01,ambient,2027-02-25,B-DAT,20,Qassim Farms
+Bottled Water 12x330ml,BEV-WTR-09,Beverages,Test,1,900,7.00,11.50,6BEVWTR09,ambient,2027-02-25,B-BEV,60,Nova Bottlers
+Fresh Milk 1L,DAI-MLK-04,Dairy & Eggs,Test,1,6,5.50,8.75,6DAIMLK04,ambient,2027-02-25,B-DAI,40,Nadec Dairy
+Butter Ghee 800g,OIL-GHE-27,Oils & Ghee,Test,1,30,34.00,52.00,6OILGHE27,ambient,2027-02-25,B-OIL,12,Unreliable Grocers Co
+Chocolate Bar 100g,SNK-CHO-13,Snacks,Test,1,120,5.00,8.50,6SNKCHO13,ambient,2027-02-25,B-SNK,50,Galaxy ME
+Ajwa Dates 500g,DAT-AJW-02,Dates & Nuts,Test,1,80,35.00,62.00,6DATAJW02,ambient,2027-02-25,B-DAT,10,Madinah Premium
+Oats 1kg,RIC-OAT-25,Rice & Grains,Test,1,3,12.00,19.50,6RICOAT25,ambient,2027-02-25,B-RIC,25,Quaker KSA
+Laundry Powder 2.5kg,HOU-LND-19,Household,Test,1,160,28.00,44.00,6HOULND19,ambient,2027-02-25,B-HOU,6,Tide GCC
+Arabic Coffee 250g,BEV-COF-08,Beverages,Test,1,45,16.00,27.00,6BEVCOF08,ambient,2027-02-25,B-BEV,20,Nazmak Coffee
+Green Tea 100 bags,BEV-TEA-12,Beverages,Test,1,40,14.00,22.00,6BEVTEA12,ambient,2027-02-25,B-BEV,15,Lipton KSA
+Shampoo 400ml,PER-SHM-21,Personal Care,Test,1,20,18.00,29.00,6PERSHM21,ambient,2027-02-25,B-PER,15,H&S KSA
+Eggs Large 30pcs,DAI-EGG-06,Dairy & Eggs,Test,1,25,18.00,26.50,6DAIEGG06,ambient,2027-02-25,B-DAI,30,Balady Farm
+Frozen Chicken 900g,FRZ-CHI-28,Frozen Foods,Test,1,40,19.00,29.00,6FRZCHI28,ambient,2027-02-25,B-FRZ,25,Almarai Frozen
+Biscuits 300g,SNK-BIS-15,Snacks,Test,1,18,6.00,9.50,6SNKBIS15,ambient,2027-02-25,B-SNK,12,Digestive KSA

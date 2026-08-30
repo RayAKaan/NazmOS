@@ -1,0 +1,435 @@
+{
+ "checkpoint": "d14",
+ "business": "B4_seasonal_retailer",
+ "ingested": true,
+ "audit_id": "bd090fa2-ee09-4d1e-a5d0-194050adf5e7",
+ "money_at_risk_sar": 13920.0,
+ "ab_attempts": [
+  {
+   "attempt": 1,
+   "elapsed_s": 23.5,
+   "effective_ai": 1,
+   "error": null,
+   "ai_calls": 5
+  }
+ ],
+ "ab_comparison": {
+  "mode_a_decisions": {
+   "DISCOUNT": 2,
+   "MANUAL_REVIEW": 1,
+   "DO_NOTHING": 2
+  },
+  "mode_b_decisions": {
+   "DISCOUNT": 2,
+   "MANUAL_REVIEW": 1,
+   "DO_NOTHING": 2
+  },
+  "mode_c_decisions": {
+   "DISCOUNT": 2,
+   "MANUAL_REVIEW": 1,
+   "DO_NOTHING": 3
+  },
+  "ai_overrides": 1,
+  "ai_agreements": 0,
+  "ai_manual_reviews": 0,
+  "ai_low_confidence": 0,
+  "constraint_rejections": 0,
+  "ai_total_calls": 5,
+  "ai_total_latency_ms": 3483.3,
+  "items_evaluated": 5,
+  "items_triaged_to_ai": 5,
+  "ai_effective_participation": 1
+ },
+ "mode_a_raw": [
+  {
+   "sku": "SEA-HTR-01",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "STP-BRD-04",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "UMB-RAIN-02",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "STP-RIC-05",
+   "final_decision": "DO_NOTHING"
+  },
+  {
+   "sku": "SCL-FAN-03",
+   "final_decision": "DO_NOTHING"
+  }
+ ],
+ "mode_b_raw": [
+  {
+   "mode": "MODE_B",
+   "sku": "SEA-HTR-01",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "DISCOUNT",
+   "final_decision": "DISCOUNT",
+   "decision_source": "AI_AGREES",
+   "ai_confidence": 0.8,
+   "ai_reasoning": "The item is classified as DEAD with zero daily and 30\u2011day velocity, indicating no demand (Evidence: Classification, Daily velocity, Recent 30\u2011day velocity, Prior 30\u2011day velocity). Capital at risk is SAR 12,750 and the recoverable range (SAR 0\u201112,750) suggests value can be reclaimed by selling the stock, most feasibly through a discount since no evidence of alternative branches or buyers is provided (Evidence: Capital at risk, Recoverable range).",
+   "validation": {
+    "is_valid": true,
+    "decision": "DISCOUNT",
+    "reason": "AI response validated",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 1976.4108029921772,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "STP-BRD-04",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 475.42893899662886,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "UMB-RAIN-02",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 674.505055998452,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "STP-RIC-05",
+   "deterministic_decision": "DO_NOTHING",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "DO_NOTHING",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 353.8273619924439,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "SCL-FAN-03",
+   "deterministic_decision": "DO_NOTHING",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "DO_NOTHING",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 3.0796060018474236,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  }
+ ],
+ "mode_c_raw": [
+  {
+   "sku": "SEA-HTR-01",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "STP-BRD-04",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "UMB-RAIN-02",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "STP-RIC-05",
+   "final_decision": "DO_NOTHING",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "SCL-FAN-03",
+   "final_decision": "DO_NOTHING",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "SCL-FAN-03",
+   "final_decision": "DO_NOTHING",
+   "decision_source": "DETERMINISTIC_NO_AI"
+  }
+ ],
+ "eval_mode_a": {
+  "per_sku": {
+   "SEA-HTR-01": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "STP-BRD-04": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "UMB-RAIN-02": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   },
+   "STP-RIC-05": {
+    "decision": "DO_NOTHING",
+    "verdict": "correct"
+   },
+   "SCL-FAN-03": {
+    "decision": "DO_NOTHING",
+    "verdict": "correct"
+   }
+  },
+  "counts": {
+   "correct": 3,
+   "bad_action": 1,
+   "unnecessary_action": 0,
+   "acceptable_manual": 1,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 5,
+  "correct_decision_rate": 0.6,
+  "bad_action_rate": 0.2,
+  "unnecessary_action_rate": 0.0
+ },
+ "eval_mode_b": {
+  "per_sku": {
+   "SEA-HTR-01": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "STP-BRD-04": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "UMB-RAIN-02": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   },
+   "STP-RIC-05": {
+    "decision": "DO_NOTHING",
+    "verdict": "correct"
+   },
+   "SCL-FAN-03": {
+    "decision": "DO_NOTHING",
+    "verdict": "correct"
+   }
+  },
+  "counts": {
+   "correct": 3,
+   "bad_action": 1,
+   "unnecessary_action": 0,
+   "acceptable_manual": 1,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 5,
+  "correct_decision_rate": 0.6,
+  "bad_action_rate": 0.2,
+  "unnecessary_action_rate": 0.0
+ },
+ "eval_mode_c": {
+  "per_sku": {
+   "SEA-HTR-01": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "STP-BRD-04": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "UMB-RAIN-02": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   },
+   "STP-RIC-05": {
+    "decision": "DO_NOTHING",
+    "verdict": "correct"
+   },
+   "SCL-FAN-03": {
+    "decision": "DO_NOTHING",
+    "verdict": "correct"
+   }
+  },
+  "counts": {
+   "correct": 4,
+   "bad_action": 1,
+   "unnecessary_action": 0,
+   "acceptable_manual": 1,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 6,
+  "correct_decision_rate": 0.6667,
+  "bad_action_rate": 0.1667,
+  "unnecessary_action_rate": 0.0
+ },
+ "overrides_b_vs_a": [
+  {
+   "sku": "SEA-HTR-01",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "AI_AGREES",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.8,
+   "reasoning_excerpt": "The item is classified as DEAD with zero daily and 30\u2011day velocity, indicating no demand (Evidence: Classification, Daily velocity, Recent 30\u2011day velocity, Prior 30\u2011day velocity). Capital at risk is SAR 12,750 and the recoverable range (SAR",
+   "validation_reason": "AI response validated"
+  },
+  {
+   "sku": "STP-BRD-04",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "UMB-RAIN-02",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "STP-RIC-05",
+   "deterministic": "DO_NOTHING",
+   "mode_b_final": "DO_NOTHING",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "SCL-FAN-03",
+   "deterministic": "DO_NOTHING",
+   "mode_b_final": "DO_NOTHING",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  }
+ ],
+ "adopted_source_counts": {
+  "C": 5,
+  "B": 0,
+  "A": 0
+ },
+ "chain": [
+  {
+   "action_id": "16ba347c-3097-4cde-907b-d653cbbb9a8c",
+   "sku": "SEA-HTR-01",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 6170.77,
+   "expected_sar": 7140.0,
+   "verdict": "correct"
+  },
+  {
+   "action_id": "8bd60612-e959-45ef-935d-78de627616e1",
+   "sku": "STP-BRD-04",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "1d9a204d-9f2c-49f2-baf9-bc7bd5f2e309",
+   "sku": "UMB-RAIN-02",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 171.52,
+   "expected_sar": 655.2,
+   "verdict": "bad_action"
+  },
+  {
+   "action_id": "e4f19bcc-1bd2-44cb-b355-e6c3c5d437d5",
+   "sku": "STP-BRD-04",
+   "audit_action_type": "discount",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "bd4d8ace-2f01-4ee5-b999-2d9ee34c1506",
+   "sku": "STP-RIC-05",
+   "audit_action_type": "reorder",
+   "owner_decision": "DO_NOTHING",
+   "decided_by": "C",
+   "rejected_as_do_nothing": true
+  },
+  {
+   "action_id": "9bc61dc2-c97d-45c4-8710-4895d25fc76b",
+   "sku": "SCL-FAN-03",
+   "audit_action_type": "reorder",
+   "owner_decision": "DO_NOTHING",
+   "decided_by": "C",
+   "rejected_as_do_nothing": true
+  }
+ ]
+}

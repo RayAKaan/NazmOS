@@ -1,0 +1,616 @@
+{
+ "checkpoint": "d45",
+ "business": "B2_poor_baqala",
+ "ingested": true,
+ "audit_id": "bc2f3cd4-9f19-425f-8e94-903e9d0d69cf",
+ "money_at_risk_sar": 1605.0,
+ "ab_attempts": [
+  {
+   "attempt": 1,
+   "elapsed_s": 29.2,
+   "effective_ai": 0,
+   "error": null,
+   "ai_calls": 6
+  },
+  {
+   "attempt": 2,
+   "elapsed_s": 29.2,
+   "effective_ai": 0,
+   "error": null,
+   "ai_calls": 6
+  }
+ ],
+ "ab_comparison": {
+  "mode_a_decisions": {
+   "MANUAL_REVIEW": 2,
+   "DISCOUNT": 5,
+   "DO_NOTHING": 1
+  },
+  "mode_b_decisions": {
+   "MANUAL_REVIEW": 2,
+   "DISCOUNT": 5,
+   "DO_NOTHING": 1
+  },
+  "mode_c_decisions": {
+   "MANUAL_REVIEW": 1,
+   "DISCOUNT": 5,
+   "DO_NOTHING": 1
+  },
+  "ai_overrides": 0,
+  "ai_agreements": 0,
+  "ai_manual_reviews": 0,
+  "ai_low_confidence": 0,
+  "constraint_rejections": 0,
+  "ai_total_calls": 6,
+  "ai_total_latency_ms": 1137.1,
+  "items_evaluated": 8,
+  "items_triaged_to_ai": 6,
+  "ai_effective_participation": 0
+ },
+ "mode_a_raw": [
+  {
+   "sku": "FST-WTR-07",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "PRM-CHC-06",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "DED-PLS-01",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "INJ-SAR-02",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "DED-BIS-02",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "DED-JUC-03",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "CHW-WFR-05",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "SLW-CAN-04",
+   "final_decision": "DO_NOTHING"
+  }
+ ],
+ "mode_b_raw": [
+  {
+   "mode": "MODE_B",
+   "sku": "FST-WTR-07",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 521.1228559928713,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "PRM-CHC-06",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": null,
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_NO_AI",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "",
+   "validation": null,
+   "ai_latency_ms": 0,
+   "ai_calls": 0,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "DED-PLS-01",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 295.97541100520175,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "INJ-SAR-02",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 293.11904999485705,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "DED-BIS-02",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 15.81450700177811,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "DED-JUC-03",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 6.9715199933853,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "CHW-WFR-05",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 4.088952002348378,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "SLW-CAN-04",
+   "deterministic_decision": "DO_NOTHING",
+   "ai_decision": null,
+   "final_decision": "DO_NOTHING",
+   "decision_source": "DETERMINISTIC_NO_AI",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "",
+   "validation": null,
+   "ai_latency_ms": 0,
+   "ai_calls": 0,
+   "constraint_rejected": false
+  }
+ ],
+ "mode_c_raw": [
+  {
+   "sku": "FST-WTR-07",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "DED-PLS-01",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "INJ-SAR-02",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "DED-BIS-02",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "DED-JUC-03",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "CHW-WFR-05",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "SLW-CAN-04",
+   "final_decision": "DO_NOTHING",
+   "decision_source": "DETERMINISTIC_NO_AI"
+  }
+ ],
+ "eval_mode_a": {
+  "per_sku": {
+   "FST-WTR-07": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "PRM-CHC-06": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "DED-PLS-01": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   },
+   "INJ-SAR-02": {
+    "decision": "DISCOUNT",
+    "verdict": "unknown_sku"
+   },
+   "DED-BIS-02": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "DED-JUC-03": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "CHW-WFR-05": {
+    "decision": "DISCOUNT",
+    "verdict": "unnecessary_action"
+   },
+   "SLW-CAN-04": {
+    "decision": "DO_NOTHING",
+    "verdict": "correct"
+   }
+  },
+  "counts": {
+   "correct": 4,
+   "bad_action": 1,
+   "unnecessary_action": 1,
+   "acceptable_manual": 1,
+   "neutral": 0,
+   "unknown_sku": 1,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 7,
+  "correct_decision_rate": 0.5714,
+  "bad_action_rate": 0.1429,
+  "unnecessary_action_rate": 0.1429
+ },
+ "eval_mode_b": {
+  "per_sku": {
+   "FST-WTR-07": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "PRM-CHC-06": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "DED-PLS-01": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   },
+   "INJ-SAR-02": {
+    "decision": "DISCOUNT",
+    "verdict": "unknown_sku"
+   },
+   "DED-BIS-02": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "DED-JUC-03": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "CHW-WFR-05": {
+    "decision": "DISCOUNT",
+    "verdict": "unnecessary_action"
+   },
+   "SLW-CAN-04": {
+    "decision": "DO_NOTHING",
+    "verdict": "correct"
+   }
+  },
+  "counts": {
+   "correct": 4,
+   "bad_action": 1,
+   "unnecessary_action": 1,
+   "acceptable_manual": 1,
+   "neutral": 0,
+   "unknown_sku": 1,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 7,
+  "correct_decision_rate": 0.5714,
+  "bad_action_rate": 0.1429,
+  "unnecessary_action_rate": 0.1429
+ },
+ "eval_mode_c": {
+  "per_sku": {
+   "FST-WTR-07": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "DED-PLS-01": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   },
+   "INJ-SAR-02": {
+    "decision": "DISCOUNT",
+    "verdict": "unknown_sku"
+   },
+   "DED-BIS-02": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "DED-JUC-03": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "CHW-WFR-05": {
+    "decision": "DISCOUNT",
+    "verdict": "unnecessary_action"
+   },
+   "SLW-CAN-04": {
+    "decision": "DO_NOTHING",
+    "verdict": "correct"
+   }
+  },
+  "counts": {
+   "correct": 4,
+   "bad_action": 1,
+   "unnecessary_action": 1,
+   "acceptable_manual": 0,
+   "neutral": 0,
+   "unknown_sku": 1,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 6,
+  "correct_decision_rate": 0.6667,
+  "bad_action_rate": 0.1667,
+  "unnecessary_action_rate": 0.1667
+ },
+ "overrides_b_vs_a": [
+  {
+   "sku": "FST-WTR-07",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "PRM-CHC-06",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC_NO_AI",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "",
+   "validation_reason": ""
+  },
+  {
+   "sku": "DED-PLS-01",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "INJ-SAR-02",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "DED-BIS-02",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "DED-JUC-03",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "CHW-WFR-05",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "SLW-CAN-04",
+   "deterministic": "DO_NOTHING",
+   "mode_b_final": "DO_NOTHING",
+   "source": "DETERMINISTIC_NO_AI",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "",
+   "validation_reason": ""
+  }
+ ],
+ "adopted_source_counts": {
+  "C": 7,
+  "B": 1,
+  "A": 0
+ },
+ "chain": [
+  {
+   "action_id": "80b3aeef-5088-4bc0-884a-0a2d0b1f7243",
+   "sku": "FST-WTR-07",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "ff4dc74a-6b63-4468-89f5-9e77a958dd58",
+   "sku": "PRM-CHC-06",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "B"
+  },
+  {
+   "action_id": "6e6b0991-5fc2-4a2c-8ae9-6106eb791df0",
+   "sku": "DED-PLS-01",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 67.6,
+   "expected_sar": 276.64,
+   "verdict": "bad_action"
+  },
+  {
+   "action_id": "f43d2891-e09a-43c1-9607-8ac74b881839",
+   "sku": "INJ-SAR-02",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 92.88,
+   "expected_sar": 188.76,
+   "verdict": "unknown_sku"
+  },
+  {
+   "action_id": "733bf8a8-2cdb-42a0-9de2-4b3a8a5061f8",
+   "sku": "DED-BIS-02",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 149.18,
+   "expected_sar": 183.04,
+   "verdict": "correct"
+  },
+  {
+   "action_id": "6a0fde3c-7325-42a0-8d0d-6f4f54c9c545",
+   "sku": "DED-JUC-03",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 87.48,
+   "expected_sar": 108.16,
+   "verdict": "correct"
+  },
+  {
+   "action_id": "3d13f94a-73a2-4b87-b7b2-1a48aa377724",
+   "sku": "CHW-WFR-05",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 40.67,
+   "expected_sar": 78.0,
+   "verdict": "unnecessary_action"
+  },
+  {
+   "action_id": "9ab12754-5584-4fa0-a633-275b28a373bb",
+   "sku": "FST-WTR-07",
+   "audit_action_type": "discount",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "da26c4f7-7787-49ea-8ec7-52cf00309876",
+   "sku": "PRM-CHC-06",
+   "audit_action_type": "discount",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "B"
+  },
+  {
+   "action_id": "fd9aa73f-cf9e-4839-8f22-b122d00d88d1",
+   "sku": "SLW-CAN-04",
+   "audit_action_type": "reorder",
+   "owner_decision": "DO_NOTHING",
+   "decided_by": "C",
+   "rejected_as_do_nothing": true
+  }
+ ]
+}

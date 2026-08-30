@@ -1,0 +1,499 @@
+{
+  "summary": {
+    "generated_at": "2026-08-26T07:49:13",
+    "llm_provider": "google/gemini-2.5-flash-lite (USE_MOCK_LLM=false)",
+    "businesses": 5,
+    "total_actions_executed": 10,
+    "total_ai_overrides": 0,
+    "ai_value_add_sar_ESTIMATE_total": 0.0,
+    "ai_harm_sar_ESTIMATE_total": 0.0,
+    "note": "All recovery figures are SIMULATION/ESTIMATE until measured against a live retailer. Value-add scoring formulas are deterministic estimates defined in score_decision()."
+  },
+  "businesses": [
+    {
+      "business": {
+        "type": "baqala",
+        "name": "V2 Al-Olaya Baqala",
+        "city": "Riyadh"
+      },
+      "email": "v2-owner-1787709355@example.com",
+      "business_id": "1251b10a-b17d-4039-9ef4-96315d399214",
+      "ingest_completed": true,
+      "audit_id": "a5f0554c-5db8-45d6-a643-f025536d521b",
+      "action_count": 12,
+      "money_at_risk_sar": 32304.0,
+      "ab_compare_attempts": [
+        {
+          "attempt": 1,
+          "elapsed_s": 114.6,
+          "effective_ai": 0,
+          "error": null
+        },
+        {
+          "attempt": 2,
+          "elapsed_s": 116.5,
+          "effective_ai": 0,
+          "error": null
+        }
+      ],
+      "ab_compare": {
+        "http_ok": true,
+        "error": null,
+        "elapsed_s": 116.5,
+        "comparison": {
+          "mode_a_decisions": {
+            "MANUAL_REVIEW": 12
+          },
+          "mode_b_decisions": {
+            "MANUAL_REVIEW": 12
+          },
+          "mode_c_decisions": {
+            "MANUAL_REVIEW": 5
+          },
+          "ai_overrides": 0,
+          "ai_agreements": 0,
+          "ai_manual_reviews": 0,
+          "ai_low_confidence": 0,
+          "constraint_rejections": 0,
+          "ai_total_calls": 4,
+          "ai_total_latency_ms": 15189.2,
+          "items_evaluated": 12,
+          "items_triaged_to_ai": 4,
+          "ai_effective_participation": 0
+        },
+        "ai_total_calls": 4,
+        "items_evaluated": 12
+      },
+      "ai_overrides_detail": [],
+      "ai_value_add_sar_ESTIMATE": 0.0,
+      "ai_harm_sar_ESTIMATE": 0.0,
+      "chain": [
+        {
+          "action_id": "c5049ba0-8289-497a-9e90-73ddd845ba8f",
+          "type": "reorder",
+          "predicted_expected_sar": null,
+          "recoverable_high_sar": 0.0,
+          "item_id": "e47d6a57-6add-4c9d-b490-c367966f85e8",
+          "approved": true,
+          "executed_http_ok": true,
+          "state_change": {
+            "pre_stock": 0.0,
+            "post_stock": 10.0,
+            "mutated": true
+          },
+          "completed": true,
+          "reported_actual_sar": 50.0,
+          "prediction_error": 201.3,
+          "prediction_error_pct": 4.026
+        },
+        {
+          "action_id": "888ea748-b140-4334-9f56-72b2dee10494",
+          "type": "reorder",
+          "predicted_expected_sar": null,
+          "recoverable_high_sar": 0.0,
+          "item_id": "31d8b433-47d8-4346-9531-1a2a8f6955cf",
+          "approved": true,
+          "executed_http_ok": true,
+          "state_change": {
+            "pre_stock": 0.0,
+            "post_stock": 10.0,
+            "mutated": true
+          },
+          "completed": true,
+          "reported_actual_sar": 50.0,
+          "prediction_error": 201.3,
+          "prediction_error_pct": 4.026
+        }
+      ],
+      "executed_count": 2
+    },
+    {
+      "business": {
+        "type": "supermart",
+        "name": "V2 Corniche Supermarket",
+        "city": "Jeddah"
+      },
+      "email": "v2-owner-1787709355@example.com",
+      "business_id": "1251b10a-b17d-4039-9ef4-96315d399214",
+      "ingest_completed": true,
+      "audit_id": "e5d4ebd0-fb2c-48be-b2aa-0b8f9f2cda6d",
+      "action_count": 12,
+      "money_at_risk_sar": 32304.0,
+      "ab_compare_attempts": [
+        {
+          "attempt": 1,
+          "elapsed_s": 116.3,
+          "effective_ai": 0,
+          "error": null
+        },
+        {
+          "attempt": 2,
+          "elapsed_s": 111.6,
+          "effective_ai": 1,
+          "error": null
+        }
+      ],
+      "ab_compare": {
+        "http_ok": true,
+        "error": null,
+        "elapsed_s": 111.6,
+        "comparison": {
+          "mode_a_decisions": {
+            "MANUAL_REVIEW": 12
+          },
+          "mode_b_decisions": {
+            "MANUAL_REVIEW": 12
+          },
+          "mode_c_decisions": {
+            "MANUAL_REVIEW": 5
+          },
+          "ai_overrides": 0,
+          "ai_agreements": 0,
+          "ai_manual_reviews": 1,
+          "ai_low_confidence": 0,
+          "constraint_rejections": 0,
+          "ai_total_calls": 4,
+          "ai_total_latency_ms": 13991.7,
+          "items_evaluated": 12,
+          "items_triaged_to_ai": 4,
+          "ai_effective_participation": 1
+        },
+        "ai_total_calls": 4,
+        "items_evaluated": 12
+      },
+      "ai_overrides_detail": [],
+      "ai_value_add_sar_ESTIMATE": 0.0,
+      "ai_harm_sar_ESTIMATE": 0.0,
+      "chain": [
+        {
+          "action_id": "9e7bb859-28eb-4bda-8cc6-546422c356c6",
+          "type": "reorder",
+          "predicted_expected_sar": null,
+          "recoverable_high_sar": 0.0,
+          "item_id": "31d8b433-47d8-4346-9531-1a2a8f6955cf",
+          "approved": true,
+          "executed_http_ok": true,
+          "state_change": {
+            "pre_stock": 0.0,
+            "post_stock": 10.0,
+            "mutated": true
+          },
+          "completed": true,
+          "reported_actual_sar": 50.0,
+          "prediction_error": 201.3,
+          "prediction_error_pct": 4.026
+        },
+        {
+          "action_id": "f8b86732-c6ab-47e2-9e02-e4f0d0f66d70",
+          "type": "reorder",
+          "predicted_expected_sar": null,
+          "recoverable_high_sar": 0.0,
+          "item_id": "e47d6a57-6add-4c9d-b490-c367966f85e8",
+          "approved": true,
+          "executed_http_ok": true,
+          "state_change": {
+            "pre_stock": 0.0,
+            "post_stock": 10.0,
+            "mutated": true
+          },
+          "completed": true,
+          "reported_actual_sar": 50.0,
+          "prediction_error": 201.3,
+          "prediction_error_pct": 4.026
+        }
+      ],
+      "executed_count": 2
+    },
+    {
+      "business": {
+        "type": "cafe",
+        "name": "V2 Dhahran Cafe",
+        "city": "Dhahran"
+      },
+      "email": "v2-owner-1787709355@example.com",
+      "business_id": "1251b10a-b17d-4039-9ef4-96315d399214",
+      "ingest_completed": true,
+      "audit_id": "a7bed130-31db-4b9e-93b2-6a10bd7412c9",
+      "action_count": 12,
+      "money_at_risk_sar": 32304.0,
+      "ab_compare_attempts": [
+        {
+          "attempt": 1,
+          "elapsed_s": 104.6,
+          "effective_ai": 0,
+          "error": null
+        },
+        {
+          "attempt": 2,
+          "elapsed_s": 97.6,
+          "effective_ai": 0,
+          "error": null
+        }
+      ],
+      "ab_compare": {
+        "http_ok": true,
+        "error": null,
+        "elapsed_s": 97.6,
+        "comparison": {
+          "mode_a_decisions": {
+            "MANUAL_REVIEW": 12
+          },
+          "mode_b_decisions": {
+            "MANUAL_REVIEW": 12
+          },
+          "mode_c_decisions": {
+            "MANUAL_REVIEW": 5
+          },
+          "ai_overrides": 0,
+          "ai_agreements": 0,
+          "ai_manual_reviews": 0,
+          "ai_low_confidence": 0,
+          "constraint_rejections": 0,
+          "ai_total_calls": 4,
+          "ai_total_latency_ms": 1152.0,
+          "items_evaluated": 12,
+          "items_triaged_to_ai": 4,
+          "ai_effective_participation": 0
+        },
+        "ai_total_calls": 4,
+        "items_evaluated": 12
+      },
+      "ai_overrides_detail": [],
+      "ai_value_add_sar_ESTIMATE": 0.0,
+      "ai_harm_sar_ESTIMATE": 0.0,
+      "chain": [
+        {
+          "action_id": "f6c4800c-d712-4b4d-a98a-ab0984970e9e",
+          "type": "reorder",
+          "predicted_expected_sar": null,
+          "recoverable_high_sar": 0.0,
+          "item_id": "31d8b433-47d8-4346-9531-1a2a8f6955cf",
+          "approved": true,
+          "executed_http_ok": true,
+          "state_change": {
+            "pre_stock": 0.0,
+            "post_stock": 10.0,
+            "mutated": true
+          },
+          "completed": true,
+          "reported_actual_sar": 50.0,
+          "prediction_error": 201.3,
+          "prediction_error_pct": 4.026
+        },
+        {
+          "action_id": "2b58848d-192d-44bc-a944-d793bb0b3522",
+          "type": "reorder",
+          "predicted_expected_sar": null,
+          "recoverable_high_sar": 0.0,
+          "item_id": "e47d6a57-6add-4c9d-b490-c367966f85e8",
+          "approved": true,
+          "executed_http_ok": true,
+          "state_change": {
+            "pre_stock": 0.0,
+            "post_stock": 10.0,
+            "mutated": true
+          },
+          "completed": true,
+          "reported_actual_sar": 50.0,
+          "prediction_error": 201.3,
+          "prediction_error_pct": 4.026
+        }
+      ],
+      "executed_count": 2
+    },
+    {
+      "business": {
+        "type": "restaurant",
+        "name": "V2 Taif Restaurant",
+        "city": "Taif"
+      },
+      "email": "v2-owner-1787709355@example.com",
+      "business_id": "1251b10a-b17d-4039-9ef4-96315d399214",
+      "ingest_completed": true,
+      "audit_id": "d5e43150-b93c-4d82-97e6-c3b8ef60055d",
+      "action_count": 12,
+      "money_at_risk_sar": 32304.0,
+      "ab_compare_attempts": [
+        {
+          "attempt": 1,
+          "elapsed_s": 97.2,
+          "effective_ai": 0,
+          "error": null
+        },
+        {
+          "attempt": 2,
+          "elapsed_s": 97.4,
+          "effective_ai": 0,
+          "error": null
+        }
+      ],
+      "ab_compare": {
+        "http_ok": true,
+        "error": null,
+        "elapsed_s": 97.4,
+        "comparison": {
+          "mode_a_decisions": {
+            "MANUAL_REVIEW": 12
+          },
+          "mode_b_decisions": {
+            "MANUAL_REVIEW": 12
+          },
+          "mode_c_decisions": {
+            "MANUAL_REVIEW": 5
+          },
+          "ai_overrides": 0,
+          "ai_agreements": 0,
+          "ai_manual_reviews": 0,
+          "ai_low_confidence": 0,
+          "constraint_rejections": 0,
+          "ai_total_calls": 4,
+          "ai_total_latency_ms": 1160.2,
+          "items_evaluated": 12,
+          "items_triaged_to_ai": 4,
+          "ai_effective_participation": 0
+        },
+        "ai_total_calls": 4,
+        "items_evaluated": 12
+      },
+      "ai_overrides_detail": [],
+      "ai_value_add_sar_ESTIMATE": 0.0,
+      "ai_harm_sar_ESTIMATE": 0.0,
+      "chain": [
+        {
+          "action_id": "4cfe7296-dc10-4dac-a3b4-0dc360daf523",
+          "type": "reorder",
+          "predicted_expected_sar": null,
+          "recoverable_high_sar": 0.0,
+          "item_id": "31d8b433-47d8-4346-9531-1a2a8f6955cf",
+          "approved": true,
+          "executed_http_ok": true,
+          "state_change": {
+            "pre_stock": 0.0,
+            "post_stock": 10.0,
+            "mutated": true
+          },
+          "completed": true,
+          "reported_actual_sar": 50.0,
+          "prediction_error": 201.3,
+          "prediction_error_pct": 4.026
+        },
+        {
+          "action_id": "33d22bf7-3a23-4ecf-9f51-7b4437723444",
+          "type": "reorder",
+          "predicted_expected_sar": null,
+          "recoverable_high_sar": 0.0,
+          "item_id": "e47d6a57-6add-4c9d-b490-c367966f85e8",
+          "approved": true,
+          "executed_http_ok": true,
+          "state_change": {
+            "pre_stock": 0.0,
+            "post_stock": 10.0,
+            "mutated": true
+          },
+          "completed": true,
+          "reported_actual_sar": 50.0,
+          "prediction_error": 201.3,
+          "prediction_error_pct": 4.026
+        }
+      ],
+      "executed_count": 2
+    },
+    {
+      "business": {
+        "type": "retail",
+        "name": "V2 Khobar General Retail",
+        "city": "Khobar"
+      },
+      "email": "v2-owner-1787709355@example.com",
+      "business_id": "1251b10a-b17d-4039-9ef4-96315d399214",
+      "ingest_completed": true,
+      "audit_id": "7013f457-daad-4600-9b79-5ecf7ec1649a",
+      "action_count": 12,
+      "money_at_risk_sar": 32304.0,
+      "ab_compare_attempts": [
+        {
+          "attempt": 1,
+          "elapsed_s": 97.3,
+          "effective_ai": 0,
+          "error": null
+        },
+        {
+          "attempt": 2,
+          "elapsed_s": 97.6,
+          "effective_ai": 0,
+          "error": null
+        }
+      ],
+      "ab_compare": {
+        "http_ok": true,
+        "error": null,
+        "elapsed_s": 97.6,
+        "comparison": {
+          "mode_a_decisions": {
+            "MANUAL_REVIEW": 12
+          },
+          "mode_b_decisions": {
+            "MANUAL_REVIEW": 12
+          },
+          "mode_c_decisions": {
+            "MANUAL_REVIEW": 5
+          },
+          "ai_overrides": 0,
+          "ai_agreements": 0,
+          "ai_manual_reviews": 0,
+          "ai_low_confidence": 0,
+          "constraint_rejections": 0,
+          "ai_total_calls": 4,
+          "ai_total_latency_ms": 1320.5,
+          "items_evaluated": 12,
+          "items_triaged_to_ai": 4,
+          "ai_effective_participation": 0
+        },
+        "ai_total_calls": 4,
+        "items_evaluated": 12
+      },
+      "ai_overrides_detail": [],
+      "ai_value_add_sar_ESTIMATE": 0.0,
+      "ai_harm_sar_ESTIMATE": 0.0,
+      "chain": [
+        {
+          "action_id": "3fbd0f32-fde0-4394-a706-01f477dbbbb5",
+          "type": "reorder",
+          "predicted_expected_sar": null,
+          "recoverable_high_sar": 0.0,
+          "item_id": "31d8b433-47d8-4346-9531-1a2a8f6955cf",
+          "approved": true,
+          "executed_http_ok": true,
+          "state_change": {
+            "pre_stock": 0.0,
+            "post_stock": 10.0,
+            "mutated": true
+          },
+          "completed": true,
+          "reported_actual_sar": 50.0,
+          "prediction_error": 201.3,
+          "prediction_error_pct": 4.026
+        },
+        {
+          "action_id": "3cbf24a4-864f-4af4-b390-44505f2fa249",
+          "type": "reorder",
+          "predicted_expected_sar": null,
+          "recoverable_high_sar": 0.0,
+          "item_id": "e47d6a57-6add-4c9d-b490-c367966f85e8",
+          "approved": true,
+          "executed_http_ok": true,
+          "state_change": {
+            "pre_stock": 0.0,
+            "post_stock": 10.0,
+            "mutated": true
+          },
+          "completed": true,
+          "reported_actual_sar": 50.0,
+          "prediction_error": 201.3,
+          "prediction_error_pct": 4.026
+        }
+      ],
+      "executed_count": 2
+    }
+  ]
+}

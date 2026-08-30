@@ -1,0 +1,803 @@
+{
+ "checkpoint": "d07",
+ "business": "al_noor_supermarket",
+ "ingested": true,
+ "audit_id": "99e01d9e-9ad1-4db1-b5bd-f2dffc056b4e",
+ "money_at_risk_sar": 3684.0,
+ "ab_attempts": [
+  {
+   "attempt": 1,
+   "elapsed_s": 53.7,
+   "effective_ai": 4,
+   "error": null,
+   "ai_calls": 10
+  }
+ ],
+ "ab_comparison": {
+  "mode_a_decisions": {
+   "MANUAL_REVIEW": 11,
+   "DISCOUNT": 1
+  },
+  "mode_b_decisions": {
+   "MANUAL_REVIEW": 11,
+   "DISCOUNT": 1
+  },
+  "mode_c_decisions": {
+   "MANUAL_REVIEW": 9,
+   "DISCOUNT": 2
+  },
+  "ai_overrides": 0,
+  "ai_agreements": 0,
+  "ai_manual_reviews": 4,
+  "ai_low_confidence": 0,
+  "constraint_rejections": 0,
+  "ai_total_calls": 10,
+  "ai_total_latency_ms": 9352.7,
+  "items_evaluated": 12,
+  "items_triaged_to_ai": 10,
+  "ai_effective_participation": 4
+ },
+ "mode_a_raw": [
+  {
+   "sku": "DRK-WTR-11",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "BBQ-GLV-79",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "IMP-SPC-68",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "DRK-JUC-13",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "IMP-TEA-44",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "ELC-PWR-32",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "DAI-EGG-05",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "DRK-CSD-12",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "IMP-COF-45",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "PCL-RZT-60",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "ZST-020-A",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "RMD-DTS-42",
+   "final_decision": "DISCOUNT"
+  }
+ ],
+ "mode_b_raw": [
+  {
+   "mode": "MODE_B",
+   "sku": "DRK-WTR-11",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_AI_MANUAL_REVIEW",
+   "ai_confidence": 0.1,
+   "ai_reasoning": "The item has zero current stock, zero daily velocity, and zero recent/prior 30-day velocity. The classification is UNKNOWN. Without any stock or sales data, it is impossible to determine if this item is seasonal, dead, or if there is any demand. Further investigation is required to understand its historical performance and potential future demand before any action can be recommended.",
+   "validation": {
+    "is_valid": true,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response validated",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 1334.545399993658,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "BBQ-GLV-79",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_AI_MANUAL_REVIEW",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "The item has zero velocity over the last 60 days, indicating no sales. The classification is UNKNOWN, and there is no information about seasonality or potential future demand. The capital at risk is SAR 24.0. Without further information on why the item is not selling or if there is any expected future demand, a manual review is necessary to determine the appropriate action.",
+   "validation": {
+    "is_valid": true,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response validated",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 1689.7464689973276,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "IMP-SPC-68",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_AI_MANUAL_REVIEW",
+   "ai_confidence": 0.1,
+   "ai_reasoning": "The item has zero velocity over the last 30 days and prior 30 days, indicating no sales. However, the classification is UNKNOWN, and there is no information about seasonality or potential future demand. The capital at risk is SAR 70.0. Without further information on why the item is not selling or if there's any expected demand, a definitive action cannot be taken.",
+   "validation": {
+    "is_valid": true,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response validated",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 1821.9020539982012,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "DRK-JUC-13",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_AI_MANUAL_REVIEW",
+   "ai_confidence": 0.1,
+   "ai_reasoning": "The item has zero current stock and zero velocity over the last 30 days and prior 30 days. The classification is UNKNOWN. Without any stock or sales data, it is impossible to determine if this is a dead item, a seasonal item with no current demand, or an item that needs to be reordered. Further investigation is required.",
+   "validation": {
+    "is_valid": true,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response validated",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 1658.7221629888518,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "IMP-TEA-44",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 263.31154399667867,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "ELC-PWR-32",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 272.0346839923877,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "DAI-EGG-05",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 1788.5341780056478,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "DRK-CSD-12",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 367.0814210054232,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "IMP-COF-45",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 154.18298200529534,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "PCL-RZT-60",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": null,
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_NO_AI",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "",
+   "validation": null,
+   "ai_latency_ms": 0,
+   "ai_calls": 0,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "ZST-020-A",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": null,
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_NO_AI",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "",
+   "validation": null,
+   "ai_latency_ms": 0,
+   "ai_calls": 0,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "RMD-DTS-42",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 2.6316179864807054,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  }
+ ],
+ "mode_c_raw": [
+  {
+   "sku": "DRK-WTR-11",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "BBQ-GLV-79",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "IMP-SPC-68",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "DRK-JUC-13",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "IMP-TEA-44",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "ELC-PWR-32",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "DAI-EGG-05",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "DRK-CSD-12",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "IMP-COF-45",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "RMD-DTS-42",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "RMD-DTS-42",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC_NO_AI"
+  }
+ ],
+ "eval_mode_a": {
+  "per_sku": {
+   "DRK-WTR-11": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "BBQ-GLV-79": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "IMP-SPC-68": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "DRK-JUC-13": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "IMP-TEA-44": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "ELC-PWR-32": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "DAI-EGG-05": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "DRK-CSD-12": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "IMP-COF-45": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "PCL-RZT-60": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "ZST-020-A": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "RMD-DTS-42": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   }
+  },
+  "counts": {
+   "correct": 3,
+   "bad_action": 1,
+   "unnecessary_action": 0,
+   "acceptable_manual": 8,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 12,
+  "correct_decision_rate": 0.25,
+  "bad_action_rate": 0.0833,
+  "unnecessary_action_rate": 0.0
+ },
+ "eval_mode_b": {
+  "per_sku": {
+   "DRK-WTR-11": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "BBQ-GLV-79": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "IMP-SPC-68": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "DRK-JUC-13": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "IMP-TEA-44": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "ELC-PWR-32": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "DAI-EGG-05": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "DRK-CSD-12": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "IMP-COF-45": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "PCL-RZT-60": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "ZST-020-A": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "RMD-DTS-42": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   }
+  },
+  "counts": {
+   "correct": 3,
+   "bad_action": 1,
+   "unnecessary_action": 0,
+   "acceptable_manual": 8,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 12,
+  "correct_decision_rate": 0.25,
+  "bad_action_rate": 0.0833,
+  "unnecessary_action_rate": 0.0
+ },
+ "eval_mode_c": {
+  "per_sku": {
+   "DRK-WTR-11": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "BBQ-GLV-79": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "IMP-SPC-68": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "DRK-JUC-13": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "IMP-TEA-44": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "ELC-PWR-32": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "DAI-EGG-05": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "DRK-CSD-12": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "IMP-COF-45": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "RMD-DTS-42": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   }
+  },
+  "counts": {
+   "correct": 2,
+   "bad_action": 2,
+   "unnecessary_action": 0,
+   "acceptable_manual": 7,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 11,
+  "correct_decision_rate": 0.1818,
+  "bad_action_rate": 0.1818,
+  "unnecessary_action_rate": 0.0
+ },
+ "overrides_b_vs_a": [
+  {
+   "sku": "DRK-WTR-11",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC_AI_MANUAL_REVIEW",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.1,
+   "reasoning_excerpt": "The item has zero current stock, zero daily velocity, and zero recent/prior 30-day velocity. The classification is UNKNOWN. Without any stock or sales data, it is impossible to determine if this item is seasonal, dead, or if there is any de",
+   "validation_reason": "AI response validated"
+  },
+  {
+   "sku": "BBQ-GLV-79",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC_AI_MANUAL_REVIEW",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "The item has zero velocity over the last 60 days, indicating no sales. The classification is UNKNOWN, and there is no information about seasonality or potential future demand. The capital at risk is SAR 24.0. Without further information on ",
+   "validation_reason": "AI response validated"
+  },
+  {
+   "sku": "IMP-SPC-68",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC_AI_MANUAL_REVIEW",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.1,
+   "reasoning_excerpt": "The item has zero velocity over the last 30 days and prior 30 days, indicating no sales. However, the classification is UNKNOWN, and there is no information about seasonality or potential future demand. The capital at risk is SAR 70.0. With",
+   "validation_reason": "AI response validated"
+  },
+  {
+   "sku": "DRK-JUC-13",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC_AI_MANUAL_REVIEW",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.1,
+   "reasoning_excerpt": "The item has zero current stock and zero velocity over the last 30 days and prior 30 days. The classification is UNKNOWN. Without any stock or sales data, it is impossible to determine if this is a dead item, a seasonal item with no current",
+   "validation_reason": "AI response validated"
+  },
+  {
+   "sku": "IMP-TEA-44",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "ELC-PWR-32",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "DAI-EGG-05",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "DRK-CSD-12",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "IMP-COF-45",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "PCL-RZT-60",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC_NO_AI",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "",
+   "validation_reason": ""
+  },
+  {
+   "sku": "ZST-020-A",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC_NO_AI",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "",
+   "validation_reason": ""
+  },
+  {
+   "sku": "RMD-DTS-42",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  }
+ ],
+ "adopted_source_counts": {
+  "C": 10,
+  "B": 2,
+  "A": 0
+ },
+ "chain": [
+  {
+   "action_id": "b0aedcd8-60f9-4425-9c01-f792fa8193f6",
+   "sku": "IMP-SPC-68",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "3204b6ef-af19-4cb4-9186-bbaa790a12ce",
+   "sku": "DRK-JUC-13",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "60de7fac-d997-4509-ba8c-325fb5d46de7",
+   "sku": "DRK-WTR-11",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "e6cd5e2d-28c4-4a87-a8ae-98658f4bba66",
+   "sku": "DRK-CSD-12",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "cc517e50-49bb-4883-966f-3f8c4f8d019f",
+   "sku": "DAI-EGG-05",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "e81be689-d954-44a2-a3e9-a24d27a17e55",
+   "sku": "BBQ-GLV-79",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "5f6ce8f6-aeab-49eb-b4ac-3cc3bde641e9",
+   "sku": "ZST-020-A",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "B"
+  },
+  {
+   "action_id": "9a22a2e7-b084-433d-918e-cd385e3ad48f",
+   "sku": "IMP-TEA-44",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "34d995b6-478c-4c55-910d-46966eb796d9",
+   "sku": "ELC-PWR-32",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "6017e72c-d9a4-4e65-b83b-228439ab8e4c",
+   "sku": "IMP-COF-45",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "fd9fbb37-6c7d-472a-8f3a-d9d0a55c3f98",
+   "sku": "PCL-RZT-60",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "B"
+  },
+  {
+   "action_id": "09a47d95-e21f-4422-a3fd-13f79729aabd",
+   "sku": "RMD-DTS-42",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 151.59,
+   "expected_sar": 604.8,
+   "verdict": "bad_action"
+  }
+ ]
+}

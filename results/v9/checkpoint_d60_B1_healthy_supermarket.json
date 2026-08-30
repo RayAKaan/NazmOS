@@ -1,0 +1,563 @@
+{
+ "checkpoint": "d60",
+ "business": "B1_healthy_supermarket",
+ "ingested": true,
+ "audit_id": "def1ca43-c37d-48f3-a8cf-6ca66d167c6d",
+ "money_at_risk_sar": 5730.0,
+ "ab_attempts": [
+  {
+   "attempt": 1,
+   "elapsed_s": 27.4,
+   "effective_ai": 0,
+   "error": null,
+   "ai_calls": 6
+  },
+  {
+   "attempt": 2,
+   "elapsed_s": 27.2,
+   "effective_ai": 0,
+   "error": null,
+   "ai_calls": 6
+  }
+ ],
+ "ab_comparison": {
+  "mode_a_decisions": {
+   "DO_NOTHING": 2,
+   "MANUAL_REVIEW": 5
+  },
+  "mode_b_decisions": {
+   "DO_NOTHING": 2,
+   "MANUAL_REVIEW": 5
+  },
+  "mode_c_decisions": {
+   "DO_NOTHING": 2,
+   "MANUAL_REVIEW": 5
+  },
+  "ai_overrides": 0,
+  "ai_agreements": 0,
+  "ai_manual_reviews": 0,
+  "ai_low_confidence": 0,
+  "constraint_rejections": 0,
+  "ai_total_calls": 6,
+  "ai_total_latency_ms": 1174.7,
+  "items_evaluated": 7,
+  "items_triaged_to_ai": 6,
+  "ai_effective_participation": 0
+ },
+ "mode_a_raw": [
+  {
+   "sku": "OVE-RIC-06",
+   "final_decision": "DO_NOTHING"
+  },
+  {
+   "sku": "DAI-YOG-02",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "NEW-SNK-07",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "DAI-MILK-01",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "DAI-CHS-03",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "BBQ-CHR-04",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "INJ-DISCOUNT-01",
+   "final_decision": "DO_NOTHING"
+  }
+ ],
+ "mode_b_raw": [
+  {
+   "mode": "MODE_B",
+   "sku": "OVE-RIC-06",
+   "deterministic_decision": "DO_NOTHING",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "DO_NOTHING",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 547.0079639926553,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "DAI-YOG-02",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 315.9311010094825,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "NEW-SNK-07",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 301.093084999593,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "DAI-MILK-01",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 2.9594469961011782,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "DAI-CHS-03",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 3.9216979930642992,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "BBQ-CHR-04",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 3.8363019993994385,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "INJ-DISCOUNT-01",
+   "deterministic_decision": "DO_NOTHING",
+   "ai_decision": null,
+   "final_decision": "DO_NOTHING",
+   "decision_source": "DETERMINISTIC_NO_AI",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "",
+   "validation": null,
+   "ai_latency_ms": 0,
+   "ai_calls": 0,
+   "constraint_rejected": false
+  }
+ ],
+ "mode_c_raw": [
+  {
+   "sku": "OVE-RIC-06",
+   "final_decision": "DO_NOTHING",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "DAI-YOG-02",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "NEW-SNK-07",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "DAI-MILK-01",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "DAI-CHS-03",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "BBQ-CHR-04",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "INJ-DISCOUNT-01",
+   "final_decision": "DO_NOTHING",
+   "decision_source": "DETERMINISTIC_NO_AI"
+  }
+ ],
+ "eval_mode_a": {
+  "per_sku": {
+   "OVE-RIC-06": {
+    "decision": "DO_NOTHING",
+    "verdict": "correct"
+   },
+   "DAI-YOG-02": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "NEW-SNK-07": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "DAI-MILK-01": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "DAI-CHS-03": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "BBQ-CHR-04": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "INJ-DISCOUNT-01": {
+    "decision": "DO_NOTHING",
+    "verdict": "unknown_sku"
+   }
+  },
+  "counts": {
+   "correct": 2,
+   "bad_action": 0,
+   "unnecessary_action": 0,
+   "acceptable_manual": 4,
+   "neutral": 0,
+   "unknown_sku": 1,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 6,
+  "correct_decision_rate": 0.3333,
+  "bad_action_rate": 0.0,
+  "unnecessary_action_rate": 0.0
+ },
+ "eval_mode_b": {
+  "per_sku": {
+   "OVE-RIC-06": {
+    "decision": "DO_NOTHING",
+    "verdict": "correct"
+   },
+   "DAI-YOG-02": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "NEW-SNK-07": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "DAI-MILK-01": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "DAI-CHS-03": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "BBQ-CHR-04": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "INJ-DISCOUNT-01": {
+    "decision": "DO_NOTHING",
+    "verdict": "unknown_sku"
+   }
+  },
+  "counts": {
+   "correct": 2,
+   "bad_action": 0,
+   "unnecessary_action": 0,
+   "acceptable_manual": 4,
+   "neutral": 0,
+   "unknown_sku": 1,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 6,
+  "correct_decision_rate": 0.3333,
+  "bad_action_rate": 0.0,
+  "unnecessary_action_rate": 0.0
+ },
+ "eval_mode_c": {
+  "per_sku": {
+   "OVE-RIC-06": {
+    "decision": "DO_NOTHING",
+    "verdict": "correct"
+   },
+   "DAI-YOG-02": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "NEW-SNK-07": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "DAI-MILK-01": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "DAI-CHS-03": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "BBQ-CHR-04": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "INJ-DISCOUNT-01": {
+    "decision": "DO_NOTHING",
+    "verdict": "unknown_sku"
+   }
+  },
+  "counts": {
+   "correct": 2,
+   "bad_action": 0,
+   "unnecessary_action": 0,
+   "acceptable_manual": 4,
+   "neutral": 0,
+   "unknown_sku": 1,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 6,
+  "correct_decision_rate": 0.3333,
+  "bad_action_rate": 0.0,
+  "unnecessary_action_rate": 0.0
+ },
+ "overrides_b_vs_a": [
+  {
+   "sku": "OVE-RIC-06",
+   "deterministic": "DO_NOTHING",
+   "mode_b_final": "DO_NOTHING",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "DAI-YOG-02",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "NEW-SNK-07",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "DAI-MILK-01",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "DAI-CHS-03",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "BBQ-CHR-04",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "INJ-DISCOUNT-01",
+   "deterministic": "DO_NOTHING",
+   "mode_b_final": "DO_NOTHING",
+   "source": "DETERMINISTIC_NO_AI",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "",
+   "validation_reason": ""
+  }
+ ],
+ "adopted_source_counts": {
+  "C": 7,
+  "B": 0,
+  "A": 0
+ },
+ "chain": [
+  {
+   "action_id": "4b3d41a2-6971-4e9d-a39f-2ec8f1df090f",
+   "sku": "DAI-CHS-03",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "50b2f082-e2f1-4542-b6ec-2445725e989b",
+   "sku": "DAI-YOG-02",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "0e761e83-3c96-4b82-8a0b-c9ae7b77541b",
+   "sku": "NEW-SNK-07",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "cfad8ec3-1d40-4265-9e41-51a067ca3af3",
+   "sku": "DAI-MILK-01",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "e83af16b-522d-4c3b-86e3-ce0b24622b1b",
+   "sku": "DAI-CHS-03",
+   "audit_action_type": "discount",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "291bf6f2-3178-476c-8b60-b00bc99a8309",
+   "sku": "DAI-MILK-01",
+   "audit_action_type": "discount",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "47a2e158-1d02-450f-b40e-73abb86e01c4",
+   "sku": "DAI-YOG-02",
+   "audit_action_type": "discount",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "e9daa404-dfef-40b9-93b1-d288a77d3b4f",
+   "sku": "NEW-SNK-07",
+   "audit_action_type": "discount",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "62b2511d-e4bb-4fca-a612-f995dfd56415",
+   "sku": "OVE-RIC-06",
+   "audit_action_type": "recovery_match",
+   "owner_decision": "DO_NOTHING",
+   "decided_by": "C",
+   "rejected_as_do_nothing": true
+  },
+  {
+   "action_id": "65dfdc04-26d1-4b56-afe4-65e6795deeac",
+   "sku": "OVE-RIC-06",
+   "audit_action_type": "reorder",
+   "owner_decision": "DO_NOTHING",
+   "decided_by": "C",
+   "rejected_as_do_nothing": true
+  },
+  {
+   "action_id": "3e2d81c3-75d0-4822-a6d6-f88054539dc9",
+   "sku": "BBQ-CHR-04",
+   "audit_action_type": "recovery_match",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "1ff22d0b-a20a-4867-9c0d-f37804ef63cc",
+   "sku": "INJ-DISCOUNT-01",
+   "audit_action_type": "reorder",
+   "owner_decision": "DO_NOTHING",
+   "decided_by": "C",
+   "rejected_as_do_nothing": true
+  }
+ ]
+}

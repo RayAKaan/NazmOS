@@ -1,0 +1,26 @@
+{
+ "generated_for": "V10 SINGLE-BUSINESS AI VALUE REALITY TEST",
+ "business": "al_noor_supermarket",
+ "owner_email": "alnoor@example.com",
+ "virtual_clock_note": "Checkpoint windows d07..d60 contain transactions dated AFTER the real current date by design: they represent the virtual business future and must ONLY be uploaded at their matching checkpoint. No audit before that checkpoint ever reads them.",
+ "checkpoints": [
+  "d00",
+  "d07",
+  "d14",
+  "d30",
+  "d45",
+  "d60"
+ ],
+ "files": [
+  "al_noor_supermarket/d00",
+  "al_noor_supermarket/d07",
+  "al_noor_supermarket/d14",
+  "al_noor_supermarket/d30",
+  "al_noor_supermarket/d45",
+  "al_noor_supermarket/d60",
+  "al_noor_supermarket/inventory",
+  "al_noor_supermarket/pos",
+  "al_noor_supermarket/suppliers"
+ ],
+ "sku_count": 88
+}

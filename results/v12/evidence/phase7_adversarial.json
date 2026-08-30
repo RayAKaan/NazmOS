@@ -1,0 +1,37 @@
+{
+  "adv_bad_ext.txt": {
+    "http": 422,
+    "code": null,
+    "msg": "Invalid file type .txt. Allowed: .csv, .xlsx, .xls"
+  },
+  "adv_dangerous.csv": {
+    "http": 200,
+    "code": null,
+    "msg": ""
+  },
+  "adv_invalid_date.csv": {
+    "http": 200,
+    "code": null,
+    "msg": ""
+  },
+  "adv_invalid_number.csv": {
+    "http": 200,
+    "code": null,
+    "msg": ""
+  },
+  "adv_missing_name.csv": {
+    "http": 200,
+    "code": null,
+    "msg": ""
+  },
+  "adv_no_window.csv": {
+    "http": 200,
+    "code": null,
+    "msg": ""
+  },
+  "adv_unknown_type.csv": {
+    "http": 200,
+    "code": null,
+    "msg": ""
+  }
+}

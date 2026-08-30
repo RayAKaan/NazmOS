@@ -1,0 +1,807 @@
+{
+ "checkpoint": "d00",
+ "business": "al_noor_supermarket",
+ "ingested": true,
+ "audit_id": "6b5adf24-c775-4012-93ea-5f8c3a939761",
+ "money_at_risk_sar": 10496.0,
+ "ab_attempts": [
+  {
+   "attempt": 1,
+   "elapsed_s": 67.0,
+   "effective_ai": 8,
+   "error": null,
+   "ai_calls": 10
+  }
+ ],
+ "ab_comparison": {
+  "mode_a_decisions": {
+   "MANUAL_REVIEW": 4,
+   "DISCOUNT": 7
+  },
+  "mode_b_decisions": {
+   "MANUAL_REVIEW": 4,
+   "DISCOUNT": 7
+  },
+  "mode_c_decisions": {
+   "MANUAL_REVIEW": 4,
+   "DISCOUNT": 7
+  },
+  "ai_overrides": 5,
+  "ai_agreements": 0,
+  "ai_manual_reviews": 3,
+  "ai_low_confidence": 0,
+  "constraint_rejections": 0,
+  "ai_total_calls": 10,
+  "ai_total_latency_ms": 16154.4,
+  "items_evaluated": 11,
+  "items_triaged_to_ai": 10,
+  "ai_effective_participation": 8
+ },
+ "mode_a_raw": [
+  {
+   "sku": "HSH-TRH-23",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "ELC-PWR-32",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "ZST-020-A",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "RMD-DTS-42",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "SLS-HTR-36",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "SLS-FNR-35",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "SNK-NUT-07",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "SLS-LMP-34",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "SNK-CRP-06",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "PCL-DRD-27",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "RCE-BSM-28",
+   "final_decision": "MANUAL_REVIEW"
+  }
+ ],
+ "mode_b_raw": [
+  {
+   "mode": "MODE_B",
+   "sku": "HSH-TRH-23",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_AI_MANUAL_REVIEW",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "The item has zero velocity over the last 30 days and prior 30 days, indicating no sales. The classification is UNKNOWN, and there is no information regarding seasonality or potential future demand. The capital at risk is SAR 1200.0, and the gross profit at risk is SAR -1200.0. Without further information to determine if this is dead stock or if there's a reason for the lack of sales (e.g., seasonality, recent promotion ending), a manual review is necessary.",
+   "validation": {
+    "is_valid": true,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response validated",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 1911.296318998211,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "ELC-PWR-32",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_AI_MANUAL_REVIEW",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "The item has a classification of UNKNOWN and has had zero velocity for the past 30 days and prior 30 days. While the current margin is above the target, the lack of sales velocity and unknown classification prevents a definitive action. Further investigation is needed to determine if this is dead stock or if there is a reason for the lack of sales.",
+   "validation": {
+    "is_valid": true,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response validated",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 1430.9226680052234,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "ZST-020-A",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_AI_MANUAL_REVIEW",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "The item has zero current stock, zero daily velocity, and zero recent/prior 30-day velocity. The classification is UNKNOWN. Without any stock or sales data, it is impossible to determine if this item is seasonal, dead, or if there is any demand. Further investigation is required to understand its historical performance and potential future demand before any action can be recommended.",
+   "validation": {
+    "is_valid": true,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response validated",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 1263.0766429938376,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "RMD-DTS-42",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "DISCOUNT",
+   "final_decision": "DISCOUNT",
+   "decision_source": "AI_AGREES",
+   "ai_confidence": 0.9,
+   "ai_reasoning": "The item is classified as DEAD with zero daily and recent 30-day velocity, indicating no demand. The current stock of 40 units represents a significant capital at risk of SAR 720.0 and a gross profit at risk of SAR -720.0. Given the lack of demand, a discount is the most appropriate action to recover some of the capital, within the allowed maximum discount of 25%.",
+   "validation": {
+    "is_valid": true,
+    "decision": "DISCOUNT",
+    "reason": "AI response validated",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 1664.0400960022816,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "SLS-HTR-36",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "DISCOUNT",
+   "final_decision": "DISCOUNT",
+   "decision_source": "AI_AGREES",
+   "ai_confidence": 0.9,
+   "ai_reasoning": "The item is classified as DEAD with zero daily and recent 30-day velocity, indicating no demand. The current stock has a significant capital at risk (SAR 660.0) and a negative gross profit at risk (SAR -660.0). While the current margin is above the target, the lack of sales suggests a need to liquidate the inventory. A discount action is appropriate to recover some of the capital at risk, within the allowed maximum discount of 25%.",
+   "validation": {
+    "is_valid": true,
+    "decision": "DISCOUNT",
+    "reason": "AI response validated",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 1849.3756239913637,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "SLS-FNR-35",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "DISCOUNT",
+   "final_decision": "DISCOUNT",
+   "decision_source": "AI_AGREES",
+   "ai_confidence": 0.8,
+   "ai_reasoning": "The item is classified as DEAD with zero velocity over the last 30 days and prior 30 days, indicating no demand. The current stock of 18 units represents a capital at risk of SAR 450.0 and a gross profit at risk of SAR -450.0. Given the lack of demand, a discount is the most appropriate action to recover some of the capital at risk. The maximum allowed discount is 25%.",
+   "validation": {
+    "is_valid": true,
+    "decision": "DISCOUNT",
+    "reason": "AI response validated",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 1853.8479949929751,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "SNK-NUT-07",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 981.962013989687,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "SLS-LMP-34",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "DISCOUNT",
+   "final_decision": "DISCOUNT",
+   "decision_source": "AI_AGREES",
+   "ai_confidence": 0.8,
+   "ai_reasoning": "The item is classified as DEAD with zero velocity over the last 30 days and prior 30 days, indicating no demand. The current stock of 25.0 units represents a capital at risk of SAR 300.0 and a gross profit at risk of SAR -300.0. The recoverable range is SAR 0.0 - SAR 300.0. Given the lack of demand and the need to recover capital, a discount is the most appropriate action to attempt to sell the inventory. The current margin of 45.5% is above the target of 30%, allowing room for a discount.",
+   "validation": {
+    "is_valid": true,
+    "decision": "DISCOUNT",
+    "reason": "AI response validated",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 2205.5988450010773,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "SNK-CRP-06",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "DISCOUNT",
+   "final_decision": "DISCOUNT",
+   "decision_source": "AI_AGREES",
+   "ai_confidence": 0.8,
+   "ai_reasoning": "The item is classified as DEAD with zero daily and recent 30-day velocity, indicating no demand. The current margin is significantly above the target, and there is a substantial capital at risk. A discount action is appropriate to recover some of the capital at risk, as indicated by the recoverable range. The max discount allowed is 25%.",
+   "validation": {
+    "is_valid": true,
+    "decision": "DISCOUNT",
+    "reason": "AI response validated",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 1864.7053730092011,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "PCL-DRD-27",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 1129.5447580050677,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "RCE-BSM-28",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": null,
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_NO_AI",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "",
+   "validation": null,
+   "ai_latency_ms": 0,
+   "ai_calls": 0,
+   "constraint_rejected": false
+  }
+ ],
+ "mode_c_raw": [
+  {
+   "sku": "HSH-TRH-23",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_AI_MANUAL_REVIEW"
+  },
+  {
+   "sku": "ELC-PWR-32",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_AI_MANUAL_REVIEW"
+  },
+  {
+   "sku": "ZST-020-A",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_AI_MANUAL_REVIEW"
+  },
+  {
+   "sku": "RMD-DTS-42",
+   "final_decision": "DISCOUNT",
+   "decision_source": "AI_AGREES"
+  },
+  {
+   "sku": "SLS-HTR-36",
+   "final_decision": "DISCOUNT",
+   "decision_source": "AI_AGREES"
+  },
+  {
+   "sku": "SLS-FNR-35",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "SNK-NUT-07",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "SLS-LMP-34",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "SNK-CRP-06",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "PCL-DRD-27",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "RCE-BSM-28",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC_NO_AI"
+  }
+ ],
+ "eval_mode_a": {
+  "per_sku": {
+   "HSH-TRH-23": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "ELC-PWR-32": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "ZST-020-A": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "RMD-DTS-42": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   },
+   "SLS-HTR-36": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "SLS-FNR-35": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "SNK-NUT-07": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "SLS-LMP-34": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   },
+   "SNK-CRP-06": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "PCL-DRD-27": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "RCE-BSM-28": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   }
+  },
+  "counts": {
+   "correct": 6,
+   "bad_action": 2,
+   "unnecessary_action": 0,
+   "acceptable_manual": 3,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 11,
+  "correct_decision_rate": 0.5455,
+  "bad_action_rate": 0.1818,
+  "unnecessary_action_rate": 0.0
+ },
+ "eval_mode_b": {
+  "per_sku": {
+   "HSH-TRH-23": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "ELC-PWR-32": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "ZST-020-A": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "RMD-DTS-42": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   },
+   "SLS-HTR-36": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "SLS-FNR-35": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "SNK-NUT-07": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "SLS-LMP-34": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   },
+   "SNK-CRP-06": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "PCL-DRD-27": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "RCE-BSM-28": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   }
+  },
+  "counts": {
+   "correct": 6,
+   "bad_action": 2,
+   "unnecessary_action": 0,
+   "acceptable_manual": 3,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 11,
+  "correct_decision_rate": 0.5455,
+  "bad_action_rate": 0.1818,
+  "unnecessary_action_rate": 0.0
+ },
+ "eval_mode_c": {
+  "per_sku": {
+   "HSH-TRH-23": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "ELC-PWR-32": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "correct"
+   },
+   "ZST-020-A": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "RMD-DTS-42": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   },
+   "SLS-HTR-36": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "SLS-FNR-35": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "SNK-NUT-07": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "SLS-LMP-34": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   },
+   "SNK-CRP-06": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "PCL-DRD-27": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "RCE-BSM-28": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   }
+  },
+  "counts": {
+   "correct": 6,
+   "bad_action": 2,
+   "unnecessary_action": 0,
+   "acceptable_manual": 3,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 11,
+  "correct_decision_rate": 0.5455,
+  "bad_action_rate": 0.1818,
+  "unnecessary_action_rate": 0.0
+ },
+ "overrides_b_vs_a": [
+  {
+   "sku": "HSH-TRH-23",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC_AI_MANUAL_REVIEW",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "The item has zero velocity over the last 30 days and prior 30 days, indicating no sales. The classification is UNKNOWN, and there is no information regarding seasonality or potential future demand. The capital at risk is SAR 1200.0, and the",
+   "validation_reason": "AI response validated"
+  },
+  {
+   "sku": "ELC-PWR-32",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC_AI_MANUAL_REVIEW",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "The item has a classification of UNKNOWN and has had zero velocity for the past 30 days and prior 30 days. While the current margin is above the target, the lack of sales velocity and unknown classification prevents a definitive action. Fur",
+   "validation_reason": "AI response validated"
+  },
+  {
+   "sku": "ZST-020-A",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC_AI_MANUAL_REVIEW",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "The item has zero current stock, zero daily velocity, and zero recent/prior 30-day velocity. The classification is UNKNOWN. Without any stock or sales data, it is impossible to determine if this item is seasonal, dead, or if there is any de",
+   "validation_reason": "AI response validated"
+  },
+  {
+   "sku": "RMD-DTS-42",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "AI_AGREES",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.9,
+   "reasoning_excerpt": "The item is classified as DEAD with zero daily and recent 30-day velocity, indicating no demand. The current stock of 40 units represents a significant capital at risk of SAR 720.0 and a gross profit at risk of SAR -720.0. Given the lack of",
+   "validation_reason": "AI response validated"
+  },
+  {
+   "sku": "SLS-HTR-36",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "AI_AGREES",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.9,
+   "reasoning_excerpt": "The item is classified as DEAD with zero daily and recent 30-day velocity, indicating no demand. The current stock has a significant capital at risk (SAR 660.0) and a negative gross profit at risk (SAR -660.0). While the current margin is a",
+   "validation_reason": "AI response validated"
+  },
+  {
+   "sku": "SLS-FNR-35",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "AI_AGREES",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.8,
+   "reasoning_excerpt": "The item is classified as DEAD with zero velocity over the last 30 days and prior 30 days, indicating no demand. The current stock of 18 units represents a capital at risk of SAR 450.0 and a gross profit at risk of SAR -450.0. Given the lac",
+   "validation_reason": "AI response validated"
+  },
+  {
+   "sku": "SNK-NUT-07",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "SLS-LMP-34",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "AI_AGREES",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.8,
+   "reasoning_excerpt": "The item is classified as DEAD with zero velocity over the last 30 days and prior 30 days, indicating no demand. The current stock of 25.0 units represents a capital at risk of SAR 300.0 and a gross profit at risk of SAR -300.0. The recover",
+   "validation_reason": "AI response validated"
+  },
+  {
+   "sku": "SNK-CRP-06",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "AI_AGREES",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.8,
+   "reasoning_excerpt": "The item is classified as DEAD with zero daily and recent 30-day velocity, indicating no demand. The current margin is significantly above the target, and there is a substantial capital at risk. A discount action is appropriate to recover s",
+   "validation_reason": "AI response validated"
+  },
+  {
+   "sku": "PCL-DRD-27",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "RCE-BSM-28",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC_NO_AI",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "",
+   "validation_reason": ""
+  }
+ ],
+ "adopted_source_counts": {
+  "C": 11,
+  "B": 0,
+  "A": 0
+ },
+ "chain": [
+  {
+   "action_id": "9a049227-c1c8-4b37-b7f4-080cf174c231",
+   "sku": "ZST-020-A",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "9ba115a6-4c5d-4b04-b9c1-ce930f3fab77",
+   "sku": "ELC-PWR-32",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "0c9471a5-5045-4fd1-b3a8-5728840c913f",
+   "sku": "RMD-DTS-42",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 146.39,
+   "expected_sar": 597.6,
+   "verdict": "bad_action"
+  },
+  {
+   "action_id": "ee9f3c95-eddc-4d98-a3f3-909a35dcac68",
+   "sku": "SLS-HTR-36",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 463.54,
+   "expected_sar": 547.8,
+   "verdict": "correct"
+  },
+  {
+   "action_id": "20252215-6b34-4ccd-99c5-b623d314ad05",
+   "sku": "SLS-FNR-35",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 323.62,
+   "expected_sar": 373.5,
+   "verdict": "correct"
+  },
+  {
+   "action_id": "5e1ebbd1-b254-4719-8b64-7f789595eb8a",
+   "sku": "SNK-NUT-07",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 293.81,
+   "expected_sar": 348.6,
+   "verdict": "correct"
+  },
+  {
+   "action_id": "ea39e03b-ef51-4926-a9e6-ee316b6401d9",
+   "sku": "SLS-LMP-34",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 60.56,
+   "expected_sar": 249.0,
+   "verdict": "bad_action"
+  },
+  {
+   "action_id": "006babfb-096a-4940-9133-169ddf6bc886",
+   "sku": "SNK-CRP-06",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 176.18,
+   "expected_sar": 199.2,
+   "verdict": "correct"
+  },
+  {
+   "action_id": "c42cea77-d0f5-4e7e-90f8-1080b711e38b",
+   "sku": "PCL-DRD-27",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 60.96,
+   "expected_sar": 74.7,
+   "verdict": "correct"
+  },
+  {
+   "action_id": "9fce8b44-61fa-4070-8378-695f813f3c10",
+   "sku": "ZST-020-A",
+   "audit_action_type": "discount",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "9f2b02fb-1ba3-496d-9380-bd6f407dc4c5",
+   "sku": "RCE-BSM-28",
+   "audit_action_type": "recovery_match",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "b0daf984-4a1b-4511-ac0c-a71be79737a1",
+   "sku": "HSH-TRH-23",
+   "audit_action_type": "recovery_match",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  }
+ ]
+}

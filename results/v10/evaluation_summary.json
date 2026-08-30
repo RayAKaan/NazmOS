@@ -1,0 +1,20 @@
+{
+ "checkpoints": 6,
+ "mode_a": {
+  "total_correct": 9,
+  "total_skus": 71,
+  "accuracy": 0.1268
+ },
+ "mode_b": {
+  "total_correct": 9,
+  "total_skus": 71,
+  "accuracy": 0.1268
+ },
+ "overrides": {
+  "good": 0,
+  "bad": 0,
+  "neutral": 71,
+  "unresolved": 0,
+  "net_value": 0
+ }
+}

@@ -1,0 +1,284 @@
+{
+  "baqala": {
+    "name": "baqala",
+    "errors": [],
+    "biz_id": "77e123e5-5a3c-4f66-9319-e266c98a1970",
+    "audit_status": "generated",
+    "audit_quality": 84.0,
+    "audit_actions_count": 8,
+    "classifications": {
+      "DEAD": 1,
+      "FAST": 2,
+      "SEASONAL": 1,
+      "SLOW MOVING": 1
+    },
+    "truth_comparison": {
+      "correct": 5,
+      "incorrect": 3,
+      "missed": 0,
+      "details": {
+        "B005": {
+          "predicted": "slow",
+          "truth": "slow",
+          "match": true,
+          "action_type": "discount",
+          "title": "Review Phone Cable inventory"
+        },
+        "B003": {
+          "predicted": "dead",
+          "truth": "dead",
+          "match": true,
+          "action_type": "discount",
+          "title": "Review Imported Biscuit inventory"
+        },
+        "B001": {
+          "predicted": "fast",
+          "truth": "fast",
+          "match": true,
+          "action_type": "reorder",
+          "title": "High velocity: Milk 1L"
+        },
+        "B002": {
+          "predicted": "fast",
+          "truth": "fast",
+          "match": true,
+          "action_type": "reorder",
+          "title": "High velocity: Water 1.5L"
+        },
+        "B004": {
+          "predicted": "seasonal",
+          "truth": "seasonal",
+          "match": true,
+          "action_type": "reorder",
+          "title": "Seasonal item: Seasonal Ice Cream"
+        }
+      }
+    },
+    "classification_accuracy": 1.0
+  },
+  "supermarket": {
+    "name": "supermarket",
+    "errors": [],
+    "biz_id": "49705045-96f2-4a4a-94be-e70673291925",
+    "audit_status": "generated",
+    "audit_quality": 84.0,
+    "audit_actions_count": 10,
+    "classifications": {
+      "DEAD": 1,
+      "FAST": 3,
+      "SLOW MOVING": 1
+    },
+    "truth_comparison": {
+      "correct": 4,
+      "incorrect": 6,
+      "missed": 0,
+      "details": {
+        "S001": {
+          "predicted": "fast",
+          "truth": "fast",
+          "match": true,
+          "action_type": "reorder",
+          "title": "High velocity: Rice 5kg"
+        },
+        "S005": {
+          "predicted": "slow",
+          "truth": "slow",
+          "match": true,
+          "action_type": "discount",
+          "title": "Review Olive Oil inventory"
+        },
+        "S003": {
+          "predicted": "dead",
+          "truth": "dead",
+          "match": true,
+          "action_type": "discount",
+          "title": "Review Organic Cereal inventory"
+        },
+        "S002": {
+          "predicted": "fast",
+          "truth": "fast",
+          "match": true,
+          "action_type": "reorder",
+          "title": "High velocity: Chicken 1kg"
+        },
+        "S004": {
+          "predicted": "fast",
+          "truth": "seasonal",
+          "match": false,
+          "action_type": "reorder",
+          "title": "High velocity: BBQ Charcoal"
+        }
+      }
+    },
+    "classification_accuracy": 0.8
+  },
+  "cafe": {
+    "name": "cafe",
+    "errors": [],
+    "biz_id": "f3d575b8-b99f-4d42-82fa-6bb0f2c41e7b",
+    "audit_status": "generated",
+    "audit_quality": 84.0,
+    "audit_actions_count": 8,
+    "classifications": {
+      "DEAD": 1,
+      "FAST": 2,
+      "SEASONAL": 1,
+      "SLOW MOVING": 1
+    },
+    "truth_comparison": {
+      "correct": 5,
+      "incorrect": 3,
+      "missed": 0,
+      "details": {
+        "C005": {
+          "predicted": "slow",
+          "truth": "slow",
+          "match": true,
+          "action_type": "discount",
+          "title": "Review Matcha Latte inventory"
+        },
+        "C003": {
+          "predicted": "dead",
+          "truth": "dead",
+          "match": true,
+          "action_type": "discount",
+          "title": "Review Imported Syrup inventory"
+        },
+        "C001": {
+          "predicted": "fast",
+          "truth": "fast",
+          "match": true,
+          "action_type": "reorder",
+          "title": "High velocity: Americano"
+        },
+        "C002": {
+          "predicted": "fast",
+          "truth": "fast",
+          "match": true,
+          "action_type": "reorder",
+          "title": "High velocity: Latte"
+        },
+        "C004": {
+          "predicted": "seasonal",
+          "truth": "seasonal",
+          "match": true,
+          "action_type": "reorder",
+          "title": "Seasonal item: Berry Tart"
+        }
+      }
+    },
+    "classification_accuracy": 1.0
+  },
+  "restaurant": {
+    "name": "restaurant",
+    "errors": [],
+    "biz_id": "2d598faf-2767-41e6-978a-5c466f0548fe",
+    "audit_status": "generated",
+    "audit_quality": 84.0,
+    "audit_actions_count": 8,
+    "classifications": {
+      "DEAD": 1,
+      "FAST": 2,
+      "SEASONAL": 1,
+      "SLOW MOVING": 1
+    },
+    "truth_comparison": {
+      "correct": 5,
+      "incorrect": 3,
+      "missed": 0,
+      "details": {
+        "R005": {
+          "predicted": "slow",
+          "truth": "slow",
+          "match": true,
+          "action_type": "discount",
+          "title": "Review Premium Steak inventory"
+        },
+        "R002": {
+          "predicted": "fast",
+          "truth": "fast",
+          "match": true,
+          "action_type": "reorder",
+          "title": "High velocity: Mixed Grill"
+        },
+        "R003": {
+          "predicted": "dead",
+          "truth": "dead",
+          "match": true,
+          "action_type": "discount",
+          "title": "Review Imported Dessert inventory"
+        },
+        "R001": {
+          "predicted": "fast",
+          "truth": "fast",
+          "match": true,
+          "action_type": "reorder",
+          "title": "High velocity: Chicken Plate"
+        },
+        "R004": {
+          "predicted": "seasonal",
+          "truth": "seasonal",
+          "match": true,
+          "action_type": "reorder",
+          "title": "Seasonal item: Iftar Box"
+        }
+      }
+    },
+    "classification_accuracy": 1.0
+  },
+  "general_retail": {
+    "name": "general_retail",
+    "errors": [],
+    "biz_id": "8f15e830-1942-4a95-b476-d2c965641b95",
+    "audit_status": "generated",
+    "audit_quality": 84.0,
+    "audit_actions_count": 7,
+    "classifications": {
+      "FAST": 2,
+      "HEALTHY": 1,
+      "UNKNOWN": 1,
+      "SLOW MOVING": 1
+    },
+    "truth_comparison": {
+      "correct": 3,
+      "incorrect": 4,
+      "missed": 1,
+      "details": {
+        "G005": {
+          "predicted": "slow",
+          "truth": "slow",
+          "match": true,
+          "action_type": "discount",
+          "title": "Review Desk Lamp inventory"
+        },
+        "G002": {
+          "predicted": "fast",
+          "truth": "fast",
+          "match": true,
+          "action_type": "reorder",
+          "title": "High velocity: Phone Case"
+        },
+        "G001": {
+          "predicted": "fast",
+          "truth": "fast",
+          "match": true,
+          "action_type": "reorder",
+          "title": "High velocity: USB-C Charger"
+        },
+        "G004": {
+          "predicted": "overstock",
+          "truth": "seasonal",
+          "match": false,
+          "action_type": "recovery_match",
+          "title": "Review School Backpack for excess inventory"
+        },
+        "G003": {
+          "predicted": "not_found",
+          "truth": "dead",
+          "match": false
+        }
+      }
+    },
+    "classification_accuracy": 0.6
+  }
+}

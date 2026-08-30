@@ -1,0 +1,876 @@
+{
+  "meta": {
+    "experiment": "V12 AI-OFF Reality Test",
+    "purpose": "Independent ground truth for the deterministic-only product. Authored from first principles (classification rules in recovery_intelligence.classify_inventory and decision rules in ab_decision_framework.deterministic_decision_for_item in the V12 codebase). NOT fed into the engine at any point. Each case describes the designed per-SKU sales/inventory inputs and the EXPECTED classification + deterministic decision.",
+    "authored_at": "2026-08-27",
+    "count": 34,
+    "checksum_sha256": "bfdd36a6d87f41fa9bbfe1b2383241432f04fb7b64198f46445606660eb7b520",
+    "schema": {
+      "case": {
+        "sku": "string, must match generated CSV item_sku",
+        "category": "GT category tag (not the DB category): FAST|DEAD|SLOW|SEASONAL|STOCKOUT|PO|OVERSTOCK|GROWTH|MARGIN|OWNER_CONSTRAINT",
+        "scenario": "human description of designed inputs",
+        "inputs": {
+          "current_stock": "inventory units at audit time",
+          "qty_30d": "units sold in last 30 days (drives daily=qty_30d/30)",
+          "qty_prior_30d": "units sold in prior 30 days",
+          "days_since_last_sale": "days since last sale (None if never sold)",
+          "monthly_concentrations": "list of per-month qty in last 90d for seasonal detection (>=2 entries)",
+          "cost_price": "SAR",
+          "sell_price": "SAR",
+          "confirmed_inbound_qty": "units on confirmed purchase order",
+          "lead_time_days": "supplier lead time"
+        },
+        "expected_classification": "per classify_inventory: NEW|SEASONAL|DEAD|UNKNOWN|SLOW MOVING|FAST|HEALTHY",
+        "expected_monetary_classification": "the intended product category driving capital-at-risk vs healthy (FAST/DEAD/SLOW/SEASONAL/OVERSTOCK/GROWTH)",
+        "expected_decision": "per deterministic_decision_for_item: DO_NOTHING|REORDER|DISCOUNT|TRANSFER|RECOVERY_MATCH|MANUAL_REVIEW",
+        "expected_primary_action": "the money-audit action_type expected for this SKU (discount|reorder|transfer|none)",
+        "financial_expectation": "semantic expectation for the SKU's financial impact (CAPITAL_AT_RISK | REVENUE_AT_RISK | PROFIT_OPPORTUNITY | NONE) -- must NEVER be reported as recovered cash",
+        "expected_recovery_semantics": "expected_recovery must be null (no calibration) and recoverable_high bounded by min(cost basis, gross proceeds); the range is NOT recovered cash"
+      }
+    },
+    "checksum_algorithm": "sha256 over json.dumps({schema: meta.schema, cases: cases}, sort_keys=True)"
+  },
+  "cases": [
+    {
+      "sku": "V12-DEAD-001",
+      "category": "DEAD",
+      "scenario": "Dormant item with stock, no sales in 60+ days and no prior period demand.",
+      "inputs": {
+        "current_stock": 50,
+        "qty_30d": 0,
+        "qty_prior_30d": 0,
+        "days_since_last_sale": 90,
+        "monthly_concentrations": [
+          0,
+          0,
+          0
+        ],
+        "cost_price": 8,
+        "sell_price": 15,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "DEAD",
+      "expected_monetary_classification": "DEAD",
+      "expected_decision": "DISCOUNT",
+      "expected_primary_action": "discount",
+      "financial_expectation": "CAPITAL_AT_RISK",
+      "expected_recovery_semantics": "expected_recovery null; recoverable_high <= min(50*8, 50*15)"
+    },
+    {
+      "sku": "V12-DEAD-002",
+      "category": "DEAD",
+      "scenario": "Dormant item, high value, no demand at all (zero transactions).",
+      "inputs": {
+        "current_stock": 120,
+        "qty_30d": 0,
+        "qty_prior_30d": 0,
+        "days_since_last_sale": null,
+        "monthly_concentrations": [],
+        "cost_price": 25,
+        "sell_price": 45,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 7
+      },
+      "expected_classification": "DEAD",
+      "expected_monetary_classification": "DEAD",
+      "expected_decision": "DISCOUNT",
+      "expected_primary_action": "discount",
+      "financial_expectation": "CAPITAL_AT_RISK",
+      "expected_recovery_semantics": "expected_recovery null; recoverable_high <= min(120*25, 120*45)"
+    },
+    {
+      "sku": "V12-DEAD-003",
+      "category": "DEAD",
+      "scenario": "Dormant item with NO stock remaining - nothing to action.",
+      "inputs": {
+        "current_stock": 0,
+        "qty_30d": 0,
+        "qty_prior_30d": 0,
+        "days_since_last_sale": 120,
+        "monthly_concentrations": [
+          0
+        ],
+        "cost_price": 10,
+        "sell_price": 20,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "DEAD",
+      "expected_monetary_classification": "DEAD",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "NONE",
+      "expected_recovery_semantics": "no capital at risk because no stock"
+    },
+    {
+      "sku": "V12-SLOW-001",
+      "category": "SLOW",
+      "scenario": "Selling slowly but out of stock with low velocity (stockout of a slow seller).",
+      "inputs": {
+        "current_stock": 0,
+        "qty_30d": 30,
+        "qty_prior_30d": 10,
+        "days_since_last_sale": 2,
+        "monthly_concentrations": [
+          10,
+          10,
+          10
+        ],
+        "cost_price": 6,
+        "sell_price": 12,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "SLOW MOVING",
+      "expected_monetary_classification": "SLOW",
+      "expected_decision": "REORDER",
+      "expected_primary_action": "reorder",
+      "financial_expectation": "REVENUE_AT_RISK",
+      "expected_recovery_semantics": "daily=1.0 below 3, stock 0 => SLOW MOVING; zero-stock+demand => REORDER"
+    },
+    {
+      "sku": "V12-SLOW-002",
+      "category": "SLOW",
+      "scenario": "Slow moving WITH stock - hold it or discount stale slow stock.",
+      "inputs": {
+        "current_stock": 40,
+        "qty_30d": 15,
+        "qty_prior_30d": 20,
+        "days_since_last_sale": 10,
+        "monthly_concentrations": [
+          5,
+          5,
+          5
+        ],
+        "cost_price": 4,
+        "sell_price": 8,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 6
+      },
+      "expected_classification": "SLOW MOVING",
+      "expected_monetary_classification": "SLOW",
+      "expected_decision": "DISCOUNT",
+      "expected_primary_action": "discount",
+      "financial_expectation": "CAPITAL_AT_RISK",
+      "expected_recovery_semantics": "stock>0 slow => DISCOUNT in oracle; capital at risk"
+    },
+    {
+      "sku": "V12-FAST-001",
+      "category": "FAST",
+      "scenario": "High velocity, adequate stock - no action needed.",
+      "inputs": {
+        "current_stock": 100,
+        "qty_30d": 90,
+        "qty_prior_30d": 85,
+        "days_since_last_sale": 0,
+        "monthly_concentrations": [
+          30,
+          30,
+          30
+        ],
+        "cost_price": 5,
+        "sell_price": 11,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "FAST",
+      "expected_monetary_classification": "FAST",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "NONE",
+      "expected_recovery_semantics": "daily=3.0 >=1 and stock>0 => FAST; no overstock/stockout => DO_NOTHING; no capital at risk"
+    },
+    {
+      "sku": "V12-FAST-002",
+      "category": "STOCKOUT",
+      "scenario": "FAST mover currently OUT of stock with strong demand - must reorder.",
+      "inputs": {
+        "current_stock": 0,
+        "qty_30d": 120,
+        "qty_prior_30d": 110,
+        "days_since_last_sale": 1,
+        "monthly_concentrations": [
+          40,
+          40,
+          40
+        ],
+        "cost_price": 7,
+        "sell_price": 14,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 4
+      },
+      "expected_classification": "FAST",
+      "expected_monetary_classification": "FAST",
+      "expected_decision": "REORDER",
+      "expected_primary_action": "reorder",
+      "financial_expectation": "REVENUE_AT_RISK",
+      "expected_recovery_semantics": "zero stock + demand => REORDER; revenue-at-risk is profit opportunity, NOT recovered cash"
+    },
+    {
+      "sku": "V12-FAST-003",
+      "category": "STOCKOUT",
+      "scenario": "FAST mover out of stock but a confirmed PO is inbound - wait, do not double order.",
+      "inputs": {
+        "current_stock": 0,
+        "qty_30d": 150,
+        "qty_prior_30d": 140,
+        "days_since_last_sale": 1,
+        "monthly_concentrations": [
+          50,
+          50,
+          50
+        ],
+        "cost_price": 9,
+        "sell_price": 18,
+        "confirmed_inbound_qty": 300,
+        "lead_time_days": 4
+      },
+      "expected_classification": "FAST",
+      "expected_monetary_classification": "PO",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "REVENUE_AT_RISK",
+      "expected_recovery_semantics": "zero stock + demand but confirmed_inbound>0 => DO_NOTHING (wait for PO)"
+    },
+    {
+      "sku": "V12-FAST-004",
+      "category": "OVERSTOCK",
+      "scenario": "FAST mover with a huge stock surplus over 90 days supply - excess capital at risk, transfer/discount.",
+      "inputs": {
+        "current_stock": 2000,
+        "qty_30d": 60,
+        "qty_prior_30d": 65,
+        "days_since_last_sale": 0,
+        "monthly_concentrations": [
+          20,
+          20,
+          20
+        ],
+        "cost_price": 2,
+        "sell_price": 5,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "FAST",
+      "expected_monetary_classification": "OVERSTOCK",
+      "expected_decision": "TRANSFER",
+      "expected_primary_action": "transfer",
+      "financial_expectation": "CAPITAL_AT_RISK",
+      "expected_recovery_semantics": "daily=2, stock 2000 => 1000 days supply >90 => overstock; oracle FAST+overstock_days>90 => TRANSFER"
+    },
+    {
+      "sku": "V12-SEASONAL-001",
+      "category": "SEASONAL",
+      "scenario": "High June peak then low; holding stock ahead of next season - do not liquidate.",
+      "inputs": {
+        "current_stock": 150,
+        "qty_30d": 5,
+        "qty_prior_30d": 200,
+        "days_since_last_sale": 30,
+        "monthly_concentrations": [
+          40,
+          5,
+          0
+        ],
+        "cost_price": 10,
+        "sell_price": 22,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 7
+      },
+      "expected_classification": "SEASONAL",
+      "expected_monetary_classification": "SEASONAL",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "CAPITAL_AT_RISK",
+      "expected_recovery_semantics": "seasonal concentration peak/total >=0.6 => SEASONAL (not DEAD); must NOT be liquidated as dead stock; no recovery action recommended from dormancy"
+    },
+    {
+      "sku": "V12-SEASONAL-002",
+      "category": "SEASONAL",
+      "scenario": "Seasonal peak detected, stock held, decision must avoid destructive liquidation.",
+      "inputs": {
+        "current_stock": 90,
+        "qty_30d": 8,
+        "qty_prior_30d": 180,
+        "days_since_last_sale": 25,
+        "monthly_concentrations": [
+          50,
+          4,
+          0
+        ],
+        "cost_price": 3,
+        "sell_price": 7,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 8
+      },
+      "expected_classification": "SEASONAL",
+      "expected_monetary_classification": "SEASONAL",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "CAPITAL_AT_RISK",
+      "expected_recovery_semantics": "seasonal safeguard: DO NOT treat as dead stock or liquidate; hold inventory"
+    },
+    {
+      "sku": "V12-OVERSTOCK-001",
+      "category": "OVERSTOCK",
+      "scenario": "Healthy mover with excessive stock (over 90 days supply) - surplus capital at risk, discount high surplus.",
+      "inputs": {
+        "current_stock": 500,
+        "qty_30d": 40,
+        "qty_prior_30d": 42,
+        "days_since_last_sale": 3,
+        "monthly_concentrations": [
+          13,
+          13,
+          14
+        ],
+        "cost_price": 15,
+        "sell_price": 30,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 6
+      },
+      "expected_classification": "HEALTHY",
+      "expected_monetary_classification": "OVERSTOCK",
+      "expected_decision": "RECOVERY_MATCH",
+      "expected_primary_action": "discount",
+      "financial_expectation": "CAPITAL_AT_RISK",
+      "expected_recovery_semantics": "daily=1.33 (>=1, not FAST threshold misread) but stock 500 => 375 days supply; surplus value >=500; HEALTHY+overstock_days>120 => RECOVERY_MATCH; surplus is capital at risk not recovered cash"
+    },
+    {
+      "sku": "V12-GROWTH-001",
+      "category": "GROWTH",
+      "scenario": "Strong increasing demand, adequate stock - healthy growth, no action.",
+      "inputs": {
+        "current_stock": 80,
+        "qty_30d": 60,
+        "qty_prior_30d": 20,
+        "days_since_last_sale": 1,
+        "monthly_concentrations": [
+          10,
+          20,
+          30
+        ],
+        "cost_price": 6,
+        "sell_price": 13,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "FAST",
+      "expected_monetary_classification": "GROWTH",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "NONE",
+      "expected_recovery_semantics": "growing but in stock; daily=2 => FAST; no action; no capital at risk"
+    },
+    {
+      "sku": "V12-GROWTH-002",
+      "category": "GROWTH",
+      "scenario": "Growth product in stock selling well - do not discount, reorder if trending short.",
+      "inputs": {
+        "current_stock": 30,
+        "qty_30d": 90,
+        "qty_prior_30d": 30,
+        "days_since_last_sale": 0,
+        "monthly_concentrations": [
+          10,
+          30,
+          50
+        ],
+        "cost_price": 12,
+        "sell_price": 26,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 4
+      },
+      "expected_classification": "FAST",
+      "expected_monetary_classification": "GROWTH",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "NONE",
+      "expected_recovery_semantics": "high velocity in stock; no overstock/stockout though daily 3 means ~10 days supply; DO_NOTHING acceptable given no stockout flag"
+    },
+    {
+      "sku": "V12-MARGIN-001",
+      "category": "MARGIN",
+      "scenario": "Sold at a loss (cost > sell) - margin leakage must be reported as profit opportunity, not recovered cash.",
+      "inputs": {
+        "current_stock": 40,
+        "qty_30d": 20,
+        "qty_prior_30d": 18,
+        "days_since_last_sale": 5,
+        "monthly_concentrations": [
+          6,
+          7,
+          7
+        ],
+        "cost_price": 15,
+        "sell_price": 9,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "HEALTHY",
+      "expected_monetary_classification": "MARGIN",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "PROFIT_OPPORTUNITY",
+      "expected_recovery_semantics": "cost 15 > sell 9; margin leakage is profit opportunity, never reported as recovered cash; expected_recovery must remain null without calibration"
+    },
+    {
+      "sku": "V12-MARGIN-002",
+      "category": "MARGIN",
+      "scenario": "Negative-margin fast seller - leakage flagged, capital NOT treated as recovered.",
+      "inputs": {
+        "current_stock": 60,
+        "qty_30d": 90,
+        "qty_prior_30d": 85,
+        "days_since_last_sale": 0,
+        "monthly_concentrations": [
+          30,
+          30,
+          30
+        ],
+        "cost_price": 20,
+        "sell_price": 14,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "FAST",
+      "expected_monetary_classification": "MARGIN",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "PROFIT_OPPORTUNITY",
+      "expected_recovery_semantics": "fast selling but negative margin => margin leakage reported as profit opportunity; NOT recovered cash"
+    },
+    {
+      "sku": "V12-OWNER-001",
+      "category": "OWNER_CONSTRAINT",
+      "scenario": "Owners constraint: this strategic product must not be discounted even if slow/overstocked. Discount action must be blocked.",
+      "inputs": {
+        "current_stock": 200,
+        "qty_30d": 0,
+        "qty_prior_30d": 0,
+        "days_since_last_sale": 80,
+        "monthly_concentrations": [
+          0
+        ],
+        "cost_price": 20,
+        "sell_price": 40,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "DEAD",
+      "expected_monetary_classification": "OWNER_CONSTRAINT",
+      "expected_decision": "DISCOUNT",
+      "expected_primary_action": "blocked_by_constraint",
+      "financial_expectation": "CAPITAL_AT_RISK",
+      "expected_recovery_semantics": "base DEAD->DISCOUNT, but owner constraint (strategic/blocked discount) must suppress execution; action NOT executed"
+    },
+    {
+      "sku": "V12-OWNER-002",
+      "category": "OWNER_CONSTRAINT",
+      "scenario": "Slow seller on blocked-transfer route - transfer action must be blocked by owner constraint.",
+      "inputs": {
+        "current_stock": 150,
+        "qty_30d": 15,
+        "qty_prior_30d": 12,
+        "days_since_last_sale": 8,
+        "monthly_concentrations": [
+          5,
+          5,
+          5
+        ],
+        "cost_price": 8,
+        "sell_price": 17,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 6
+      },
+      "expected_classification": "SLOW MOVING",
+      "expected_monetary_classification": "OWNER_CONSTRAINT",
+      "expected_decision": "DISCOUNT",
+      "expected_primary_action": "blocked_by_constraint",
+      "financial_expectation": "CAPITAL_AT_RISK",
+      "expected_recovery_semantics": "owner constraint suppresses discount/transfer execution on this strategic SKU"
+    },
+    {
+      "sku": "V12-PO-001",
+      "category": "PO",
+      "scenario": "Zero stock fast mover, PO inbound soon - system must recognize PO and avoid duplicate reorder.",
+      "inputs": {
+        "current_stock": 0,
+        "qty_30d": 80,
+        "qty_prior_30d": 75,
+        "days_since_last_sale": 1,
+        "monthly_concentrations": [
+          26,
+          27,
+          27
+        ],
+        "cost_price": 4,
+        "sell_price": 9,
+        "confirmed_inbound_qty": 200,
+        "lead_time_days": 3
+      },
+      "expected_classification": "FAST",
+      "expected_monetary_classification": "PO",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "REVENUE_AT_RISK",
+      "expected_recovery_semantics": "PO-aware: do not double order when confirmed inbound"
+    },
+    {
+      "sku": "V12-PO-002",
+      "category": "PO",
+      "scenario": "Stock present but PO has already been confirmed - no redundant action.",
+      "inputs": {
+        "current_stock": 70,
+        "qty_30d": 45,
+        "qty_prior_30d": 40,
+        "days_since_last_sale": 1,
+        "monthly_concentrations": [
+          15,
+          15,
+          15
+        ],
+        "cost_price": 5,
+        "sell_price": 10,
+        "confirmed_inbound_qty": 60,
+        "lead_time_days": 5
+      },
+      "expected_classification": "FAST",
+      "expected_monetary_classification": "PO",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "NONE",
+      "expected_recovery_semantics": "in stock with PO inbound, healthy"
+    },
+    {
+      "sku": "V12-UNKNOWN-001",
+      "category": "DEAD",
+      "scenario": "Sold in prior period but went dormant with stock; classified UNKNOWN not DEAD (prior demand exists).",
+      "inputs": {
+        "current_stock": 25,
+        "qty_30d": 0,
+        "qty_prior_30d": 40,
+        "days_since_last_sale": 70,
+        "monthly_concentrations": [
+          0
+        ],
+        "cost_price": 3,
+        "sell_price": 7,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "UNKNOWN",
+      "expected_monetary_classification": "DEAD",
+      "expected_decision": "DISCOUNT",
+      "expected_primary_action": "discount",
+      "financial_expectation": "CAPITAL_AT_RISK",
+      "expected_recovery_semantics": "qty_30=0 with prior>0 => UNKNOWN not DEAD; stock>0 + dormant>45 => DISCOUNT in oracle"
+    },
+    {
+      "sku": "V12-UNKNOWN-002",
+      "category": "DEAD",
+      "scenario": "Stale stock with no recent sale but just under 45 days - ambiguous, MANUAL_REVIEW.",
+      "inputs": {
+        "current_stock": 30,
+        "qty_30d": 0,
+        "qty_prior_30d": 10,
+        "days_since_last_sale": 40,
+        "monthly_concentrations": [
+          0
+        ],
+        "cost_price": 2,
+        "sell_price": 5,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "UNKNOWN",
+      "expected_monetary_classification": "DEAD",
+      "expected_decision": "MANUAL_REVIEW",
+      "expected_primary_action": "none",
+      "financial_expectation": "CAPITAL_AT_RISK",
+      "expected_recovery_semantics": "stock>0, dormant 40d (<45) => MANUAL_REVIEW in oracle; handles ambiguity without false execution"
+    },
+    {
+      "sku": "V12-HEALTHY-001",
+      "category": "FAST",
+      "scenario": "Normal healthy item - the control case, no action.",
+      "inputs": {
+        "current_stock": 60,
+        "qty_30d": 55,
+        "qty_prior_30d": 58,
+        "days_since_last_sale": 0,
+        "monthly_concentrations": [
+          18,
+          19,
+          18
+        ],
+        "cost_price": 6,
+        "sell_price": 12,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "FAST",
+      "expected_monetary_classification": "FAST",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "NONE",
+      "expected_recovery_semantics": "healthy control: no action, no capital at risk"
+    },
+    {
+      "sku": "V12-HEALTHY-002",
+      "category": "FAST",
+      "scenario": "Moderate healthy mover, in stock, no action.",
+      "inputs": {
+        "current_stock": 45,
+        "qty_30d": 30,
+        "qty_prior_30d": 32,
+        "days_since_last_sale": 2,
+        "monthly_concentrations": [
+          10,
+          10,
+          10
+        ],
+        "cost_price": 4,
+        "sell_price": 9,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "FAST",
+      "expected_monetary_classification": "FAST",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "NONE",
+      "expected_recovery_semantics": "healthy: no action"
+    },
+    {
+      "sku": "V12-HEALTHY-003",
+      "category": "FAST",
+      "scenario": "Low-but-positive velocity, in stock (daily<1) - classified HEALTHY not FAST.",
+      "inputs": {
+        "current_stock": 20,
+        "qty_30d": 10,
+        "qty_prior_30d": 12,
+        "days_since_last_sale": 6,
+        "monthly_concentrations": [
+          3,
+          3,
+          4
+        ],
+        "cost_price": 5,
+        "sell_price": 11,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "HEALTHY",
+      "expected_monetary_classification": "FAST",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "NONE",
+      "expected_recovery_semantics": "daily=0.33 (<1) stock>0 => HEALTHY; no action required"
+    },
+    {
+      "sku": "V12-OVERSTOCK-002",
+      "category": "OVERSTOCK",
+      "scenario": "Moderately overstocked (surplus > 500 SAR) - surplus flagged as capital at risk.",
+      "inputs": {
+        "current_stock": 120,
+        "qty_30d": 30,
+        "qty_prior_30d": 28,
+        "days_since_last_sale": 3,
+        "monthly_concentrations": [
+          10,
+          10,
+          10
+        ],
+        "cost_price": 40,
+        "sell_price": 80,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 6
+      },
+      "expected_classification": "FAST",
+      "expected_monetary_classification": "OVERSTOCK",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "discount",
+      "financial_expectation": "CAPITAL_AT_RISK",
+      "expected_recovery_semantics": "daily=1, stock 120 => 120 days supply; surplus qty=30, value=1200 SAR >=500 => overstock surplus capital at risk; oracle FAST overstock>90 not hit so DO_NOTHING, money-audit flags surplus"
+    },
+    {
+      "sku": "V12-STOCKOUT-001",
+      "category": "STOCKOUT",
+      "scenario": "Low stock fast mover, imminent stockout (< 5 days cover) - urgent reorder.",
+      "inputs": {
+        "current_stock": 10,
+        "qty_30d": 150,
+        "qty_prior_30d": 145,
+        "days_since_last_sale": 0,
+        "monthly_concentrations": [
+          50,
+          50,
+          50
+        ],
+        "cost_price": 8,
+        "sell_price": 16,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 7
+      },
+      "expected_classification": "FAST",
+      "expected_monetary_classification": "FAST",
+      "expected_decision": "REORDER",
+      "expected_primary_action": "reorder",
+      "financial_expectation": "REVENUE_AT_RISK",
+      "expected_recovery_semantics": "daily=5, stock 10 => 2 days cover <5 => stockout => REORDER"
+    },
+    {
+      "sku": "V12-SEASONAL-003",
+      "category": "SEASONAL",
+      "scenario": "Seasonal item mid-cycle with demand - reorder to satisfy the season.",
+      "inputs": {
+        "current_stock": 20,
+        "qty_30d": 100,
+        "qty_prior_30d": 5,
+        "days_since_last_sale": 0,
+        "monthly_concentrations": [
+          5,
+          20,
+          75
+        ],
+        "cost_price": 7,
+        "sell_price": 15,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "SEASONAL",
+      "expected_monetary_classification": "SEASONAL",
+      "expected_decision": "REORDER",
+      "expected_primary_action": "reorder",
+      "financial_expectation": "REVENUE_AT_RISK",
+      "expected_recovery_semantics": "seasonal peak 75/100=0.75 >=0.6 => SEASONAL; in stock with demand and concentration not >0.7 but active => REORDER to serve season"
+    },
+    {
+      "sku": "V12-SEASONAL-004",
+      "category": "SEASONAL",
+      "scenario": "Seasonal item with peak concentration >0.7 - hold, do not reorder aggressively mid-dormancy.",
+      "inputs": {
+        "current_stock": 60,
+        "qty_30d": 90,
+        "qty_prior_30d": 3,
+        "days_since_last_sale": 0,
+        "monthly_concentrations": [
+          2,
+          8,
+          80
+        ],
+        "cost_price": 9,
+        "sell_price": 20,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "SEASONAL",
+      "expected_monetary_classification": "SEASONAL",
+      "expected_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "financial_expectation": "REVENUE_AT_RISK",
+      "expected_recovery_semantics": "peak 80/90=0.89 >=0.7 => DO_NOTHING (hold for season)"
+    },
+    {
+      "sku": "V12-DEAD-004",
+      "category": "DEAD",
+      "scenario": "Warehousing durable no sale in >60 days, prior also zero, has stock - real dead capital.",
+      "inputs": {
+        "current_stock": 300,
+        "qty_30d": 0,
+        "qty_prior_30d": 0,
+        "days_since_last_sale": 200,
+        "monthly_concentrations": [
+          0
+        ],
+        "cost_price": 10,
+        "sell_price": 19,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 10
+      },
+      "expected_classification": "DEAD",
+      "expected_monetary_classification": "DEAD",
+      "expected_decision": "DISCOUNT",
+      "expected_primary_action": "discount",
+      "financial_expectation": "CAPITAL_AT_RISK",
+      "expected_recovery_semantics": "large dead stock; capital at risk; recoverable_high <= min(300*10,300*19)"
+    },
+    {
+      "sku": "V12-PO-003",
+      "category": "PO",
+      "scenario": "Ghost PO: confirmed inbound but no demand for 120+ days - flag and reorder for real demand.",
+      "inputs": {
+        "current_stock": 0,
+        "qty_30d": 0,
+        "qty_prior_30d": 0,
+        "days_since_last_sale": 150,
+        "monthly_concentrations": [
+          0
+        ],
+        "cost_price": 5,
+        "sell_price": 10,
+        "confirmed_inbound_qty": 200,
+        "lead_time_days": 5
+      },
+      "expected_classification": "DEAD",
+      "expected_monetary_classification": "PO",
+      "expected_decision": "REORDER",
+      "expected_primary_action": "reorder",
+      "financial_expectation": "NONE",
+      "expected_recovery_semantics": "ghost PO detection: confirmed_inbound>0 but dormant>120 => reorder fresh; honest handling of stale PO"
+    },
+    {
+      "sku": "V12-STOCKOUT-002",
+      "category": "STOCKOUT",
+      "scenario": "Moderate velocity low stock - urgent reorder priority.",
+      "inputs": {
+        "current_stock": 8,
+        "qty_30d": 90,
+        "qty_prior_30d": 88,
+        "days_since_last_sale": 0,
+        "monthly_concentrations": [
+          30,
+          30,
+          30
+        ],
+        "cost_price": 3,
+        "sell_price": 7,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 5
+      },
+      "expected_classification": "FAST",
+      "expected_monetary_classification": "FAST",
+      "expected_decision": "REORDER",
+      "expected_primary_action": "reorder",
+      "financial_expectation": "REVENUE_AT_RISK",
+      "expected_recovery_semantics": "daily=3, stock 8 => 2.7 days cover => stockout => REORDER"
+    },
+    {
+      "sku": "V12-OVERSTOCK-003",
+      "category": "OVERSTOCK",
+      "scenario": "Very large dead stock over 120 days supply - strong capital recovery signal but still not counted as recovered cash.",
+      "inputs": {
+        "current_stock": 800,
+        "qty_30d": 0,
+        "qty_prior_30d": 0,
+        "days_since_last_sale": 300,
+        "monthly_concentrations": [
+          0
+        ],
+        "cost_price": 12,
+        "sell_price": 22,
+        "confirmed_inbound_qty": 0,
+        "lead_time_days": 8
+      },
+      "expected_classification": "DEAD",
+      "expected_monetary_classification": "OVERSTOCK",
+      "expected_decision": "DISCOUNT",
+      "expected_primary_action": "discount",
+      "financial_expectation": "CAPITAL_AT_RISK",
+      "expected_recovery_semantics": "dead with huge stock; recoverable_high bounded, expected_recovery null; not recovered cash"
+    }
+  ]
+}

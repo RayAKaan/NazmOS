@@ -1,0 +1,54 @@
+{
+  "version": "V11",
+  "description": "V11 outcome model for financial recovery estimation",
+  "recovery_factors": {
+    "on_correct_class_execution": 0.85,
+    "on_acceptable_manual": 0.70,
+    "on_bad_class_execution": 0.30,
+    "on_correct_challenge_execution": 0.90,
+    "on_bad_challenge_execution": 0.25
+  },
+  "daily_consumption_units_per_day": {
+    "al_noor_supermarket": {
+      "DAI-MLK-01": 2.5,
+      "SNK-CRP-06": 0.0,
+      "RMD-DTS-42": 0.0,
+      "SLS-FNR-35": 0.0,
+      "DRK-WTR-11": 1.8,
+      "DRK-JUC-13": 0.8,
+      "DAI-EGG-05": 1.2,
+      "PCL-DRD-27": 0.0,
+      "RCE-BSM-28": 0.5,
+      "IMP-COF-45": 0.3,
+      "HSH-TPT-20": 0.4,
+      "HSH-TRH-23": 0.2,
+      "FRZ-VGT-16": 0.6,
+      "FRZ-MPT-18": 0.4,
+      "SNK-CHC-10": 0.1,
+      "PCL-RZT-60": 0.0,
+      "ELC-PWR-32": 0.1,
+      "INJ-018-A": 0.0,
+      "INJ-019-A": 0.0,
+      "ZST-020-A": 1.0,
+      "NEW-021-A": 0.3,
+      "RMD-DTS-42-V": 0.0,
+      "SLS-HTR-36": 0.0,
+      "SUP-024-A": 0.5,
+      "MOQ-025-A": 0.2,
+      "STR-026-A": 0.8,
+      "PRM-027-A": 0.4,
+      "SUP-028-A": 0.3,
+      "BRH-029-A": 0.2,
+      "NOE-030-A": 0.0
+    }
+  },
+  "challenge_success_rate": {
+    "seasonal_context": 0.75,
+    "supplier_risk": 0.60,
+    "branch_transfer": 0.80,
+    "promo_distortion": 0.65,
+    "ghost_po": 0.70,
+    "zero_stock_demand": 0.85,
+    "margin_erosion": 0.55
+  }
+}

@@ -1,0 +1,614 @@
+{
+ "started": "2026-08-26T19:49:32",
+ "llm": "groq/openai-gpt-oss-120b via live stack",
+ "adoption": "C>B>A",
+ "checkpoints": [
+  "d00",
+  "d07",
+  "d14",
+  "d30",
+  "d45",
+  "d60"
+ ],
+ "businesses": {
+  "B1_healthy_supermarket": {
+   "business_id": "ec3ae209-f038-4327-ab58-410cfd5a6724",
+   "owner": "v9-B1_healthy_supermarket-1787753972@example.com"
+  },
+  "B2_poor_baqala": {
+   "business_id": "858fde10-5650-41da-b2bb-174d0f07bcbf",
+   "owner": "v9-B2_poor_baqala-1787753972@example.com"
+  },
+  "B3_growing_supermarket": {
+   "business_id": "dceac243-af7d-410c-9060-1f56ac936dcb",
+   "owner": "v9-B3_growing_supermarket-1787753972@example.com"
+  },
+  "B4_seasonal_retailer": {
+   "business_id": "8acf51ea-80fa-41dc-8e9c-13ea96485b16",
+   "owner": "v9-B4_seasonal_retailer-1787753972@example.com"
+  },
+  "B5_cash_constrained_restaurant": {
+   "business_id": "2c9f84c4-58a5-4a46-9ae8-c7ab33b01f4c",
+   "owner": "v9-B5_cash_constrained_restaurant-1787753972@example.com"
+  }
+ },
+ "checkpoints_data": {
+  "d00": {},
+  "d07": {},
+  "d14": {},
+  "d30": {},
+  "d45": {},
+  "d60": {
+   "B2_poor_baqala": {
+    "ab_attempts": [
+     {
+      "attempt": 1,
+      "elapsed_s": 34.4,
+      "effective_ai": 2,
+      "error": null,
+      "ai_calls": 6
+     }
+    ],
+    "eval_mode_a": {
+     "per_sku": {
+      "SLW-CAN-04": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "FST-WTR-07": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "correct"
+      },
+      "PRM-CHC-06": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "DED-PLS-01": {
+       "decision": "DISCOUNT",
+       "verdict": "bad_action"
+      },
+      "INJ-SAR-02": {
+       "decision": "DISCOUNT",
+       "verdict": "unknown_sku"
+      },
+      "DED-BIS-02": {
+       "decision": "DISCOUNT",
+       "verdict": "correct"
+      },
+      "DED-JUC-03": {
+       "decision": "DISCOUNT",
+       "verdict": "correct"
+      },
+      "CHW-WFR-05": {
+       "decision": "DISCOUNT",
+       "verdict": "unnecessary_action"
+      }
+     },
+     "counts": {
+      "correct": 3,
+      "bad_action": 1,
+      "unnecessary_action": 1,
+      "acceptable_manual": 2,
+      "neutral": 0,
+      "unknown_sku": 1,
+      "unnecessary_inaction": 0
+     },
+     "decisions_evaluated": 7,
+     "correct_decision_rate": 0.4286,
+     "bad_action_rate": 0.1429,
+     "unnecessary_action_rate": 0.1429
+    },
+    "eval_mode_b": {
+     "per_sku": {
+      "SLW-CAN-04": {
+       "decision": "DO_NOTHING",
+       "verdict": "correct"
+      },
+      "FST-WTR-07": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "correct"
+      },
+      "PRM-CHC-06": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "DED-PLS-01": {
+       "decision": "DISCOUNT",
+       "verdict": "bad_action"
+      },
+      "INJ-SAR-02": {
+       "decision": "DISCOUNT",
+       "verdict": "unknown_sku"
+      },
+      "DED-BIS-02": {
+       "decision": "DISCOUNT",
+       "verdict": "correct"
+      },
+      "DED-JUC-03": {
+       "decision": "DISCOUNT",
+       "verdict": "correct"
+      },
+      "CHW-WFR-05": {
+       "decision": "DISCOUNT",
+       "verdict": "unnecessary_action"
+      }
+     },
+     "counts": {
+      "correct": 4,
+      "bad_action": 1,
+      "unnecessary_action": 1,
+      "acceptable_manual": 1,
+      "neutral": 0,
+      "unknown_sku": 1,
+      "unnecessary_inaction": 0
+     },
+     "decisions_evaluated": 7,
+     "correct_decision_rate": 0.5714,
+     "bad_action_rate": 0.1429,
+     "unnecessary_action_rate": 0.1429
+    },
+    "eval_mode_c": {
+     "per_sku": {
+      "SLW-CAN-04": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "DED-PLS-01": {
+       "decision": "DISCOUNT",
+       "verdict": "bad_action"
+      },
+      "INJ-SAR-02": {
+       "decision": "DISCOUNT",
+       "verdict": "unknown_sku"
+      },
+      "DED-BIS-02": {
+       "decision": "DISCOUNT",
+       "verdict": "correct"
+      },
+      "DED-JUC-03": {
+       "decision": "DISCOUNT",
+       "verdict": "correct"
+      },
+      "CHW-WFR-05": {
+       "decision": "DISCOUNT",
+       "verdict": "unnecessary_action"
+      }
+     },
+     "counts": {
+      "correct": 2,
+      "bad_action": 1,
+      "unnecessary_action": 2,
+      "acceptable_manual": 1,
+      "neutral": 0,
+      "unknown_sku": 1,
+      "unnecessary_inaction": 0
+     },
+     "decisions_evaluated": 6,
+     "correct_decision_rate": 0.3333,
+     "bad_action_rate": 0.1667,
+     "unnecessary_action_rate": 0.3333
+    },
+    "adopted_source_counts": {
+     "C": 6,
+     "B": 2,
+     "A": 0
+    }
+   },
+   "B3_growing_supermarket": {
+    "ab_attempts": [
+     {
+      "attempt": 1,
+      "elapsed_s": 25.2,
+      "effective_ai": 0,
+      "error": null,
+      "ai_calls": 6
+     },
+     {
+      "attempt": 2,
+      "elapsed_s": 25.2,
+      "effective_ai": 0,
+      "error": null,
+      "ai_calls": 6
+     }
+    ],
+    "eval_mode_a": {
+     "per_sku": {
+      "GRW-RIC-01": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "CTL-TEA-06": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "GRW-EGG-05": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "correct"
+      },
+      "GRW-PAS-02": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "GRW-OIL-03": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "GRW-TOM-04": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "correct"
+      }
+     },
+     "counts": {
+      "correct": 2,
+      "bad_action": 0,
+      "unnecessary_action": 0,
+      "acceptable_manual": 4,
+      "neutral": 0,
+      "unknown_sku": 0,
+      "unnecessary_inaction": 0
+     },
+     "decisions_evaluated": 6,
+     "correct_decision_rate": 0.3333,
+     "bad_action_rate": 0.0,
+     "unnecessary_action_rate": 0.0
+    },
+    "eval_mode_b": {
+     "per_sku": {
+      "GRW-RIC-01": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "CTL-TEA-06": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "GRW-EGG-05": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "correct"
+      },
+      "GRW-PAS-02": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "GRW-OIL-03": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "GRW-TOM-04": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "correct"
+      }
+     },
+     "counts": {
+      "correct": 2,
+      "bad_action": 0,
+      "unnecessary_action": 0,
+      "acceptable_manual": 4,
+      "neutral": 0,
+      "unknown_sku": 0,
+      "unnecessary_inaction": 0
+     },
+     "decisions_evaluated": 6,
+     "correct_decision_rate": 0.3333,
+     "bad_action_rate": 0.0,
+     "unnecessary_action_rate": 0.0
+    },
+    "eval_mode_c": {
+     "per_sku": {
+      "GRW-RIC-01": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "CTL-TEA-06": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "GRW-EGG-05": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "correct"
+      },
+      "GRW-PAS-02": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "GRW-OIL-03": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "GRW-TOM-04": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "correct"
+      }
+     },
+     "counts": {
+      "correct": 3,
+      "bad_action": 0,
+      "unnecessary_action": 0,
+      "acceptable_manual": 4,
+      "neutral": 0,
+      "unknown_sku": 0,
+      "unnecessary_inaction": 0
+     },
+     "decisions_evaluated": 7,
+     "correct_decision_rate": 0.4286,
+     "bad_action_rate": 0.0,
+     "unnecessary_action_rate": 0.0
+    },
+    "adopted_source_counts": {
+     "C": 6,
+     "B": 0,
+     "A": 0
+    }
+   },
+   "B4_seasonal_retailer": {
+    "ab_attempts": [
+     {
+      "attempt": 1,
+      "elapsed_s": 21.1,
+      "effective_ai": 0,
+      "error": null,
+      "ai_calls": 5
+     },
+     {
+      "attempt": 2,
+      "elapsed_s": 21.2,
+      "effective_ai": 0,
+      "error": null,
+      "ai_calls": 5
+     }
+    ],
+    "eval_mode_a": {
+     "per_sku": {
+      "SEA-HTR-01": {
+       "decision": "DISCOUNT",
+       "verdict": "correct"
+      },
+      "SCL-FAN-03": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "STP-BRD-04": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "STP-RIC-05": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "UMB-RAIN-02": {
+       "decision": "DISCOUNT",
+       "verdict": "bad_action"
+      }
+     },
+     "counts": {
+      "correct": 1,
+      "bad_action": 1,
+      "unnecessary_action": 0,
+      "acceptable_manual": 3,
+      "neutral": 0,
+      "unknown_sku": 0,
+      "unnecessary_inaction": 0
+     },
+     "decisions_evaluated": 5,
+     "correct_decision_rate": 0.2,
+     "bad_action_rate": 0.2,
+     "unnecessary_action_rate": 0.0
+    },
+    "eval_mode_b": {
+     "per_sku": {
+      "SEA-HTR-01": {
+       "decision": "DISCOUNT",
+       "verdict": "correct"
+      },
+      "SCL-FAN-03": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "STP-BRD-04": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "STP-RIC-05": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "UMB-RAIN-02": {
+       "decision": "DISCOUNT",
+       "verdict": "bad_action"
+      }
+     },
+     "counts": {
+      "correct": 1,
+      "bad_action": 1,
+      "unnecessary_action": 0,
+      "acceptable_manual": 3,
+      "neutral": 0,
+      "unknown_sku": 0,
+      "unnecessary_inaction": 0
+     },
+     "decisions_evaluated": 5,
+     "correct_decision_rate": 0.2,
+     "bad_action_rate": 0.2,
+     "unnecessary_action_rate": 0.0
+    },
+    "eval_mode_c": {
+     "per_sku": {
+      "SEA-HTR-01": {
+       "decision": "DISCOUNT",
+       "verdict": "correct"
+      },
+      "SCL-FAN-03": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "STP-BRD-04": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "STP-RIC-05": {
+       "decision": "MANUAL_REVIEW",
+       "verdict": "acceptable_manual"
+      },
+      "UMB-RAIN-02": {
+       "decision": "DISCOUNT",
+       "verdict": "bad_action"
+      }
+     },
+     "counts": {
+      "correct": 1,
+      "bad_action": 2,
+      "unnecessary_action": 0,
+      "acceptable_manual": 3,
+      "neutral": 0,
+      "unknown_sku": 0,
+      "unnecessary_inaction": 0
+     },
+     "decisions_evaluated": 6,
+     "correct_decision_rate": 0.1667,
+     "bad_action_rate": 0.3333,
+     "unnecessary_action_rate": 0.0
+    },
+    "adopted_source_counts": {
+     "C": 5,
+     "B": 0,
+     "A": 0
+    }
+   },
+   "B5_cash_constrained_restaurant": {
+    "ab_attempts": [
+     {
+      "attempt": 1,
+      "elapsed_s": 21.0,
+      "effective_ai": 0,
+      "error": null,
+      "ai_calls": 5
+     },
+     {
+      "attempt": 2,
+      "elapsed_s": 21.1,
+      "effective_ai": 0,
+      "error": null,
+      "ai_calls": 5
+     }
+    ],
+    "eval_mode_a": {
+     "per_sku": {
+      "ING-TOM-03": {
+       "decision": "REORDER",
+       "verdict": "correct"
+      },
+      "STR-OLV-02": {
+       "decision": "REORDER",
+       "verdict": "correct"
+      },
+      "STR-SAF-01": {
+       "decision": "REORDER",
+       "verdict": "correct"
+      },
+      "ING-RIC-04": {
+       "decision": "REORDER",
+       "verdict": "unnecessary_action"
+      },
+      "HOLE-NODATA-01": {
+       "decision": "REORDER",
+       "verdict": "bad_action"
+      }
+     },
+     "counts": {
+      "correct": 3,
+      "bad_action": 1,
+      "unnecessary_action": 1,
+      "acceptable_manual": 0,
+      "neutral": 0,
+      "unknown_sku": 0,
+      "unnecessary_inaction": 0
+     },
+     "decisions_evaluated": 5,
+     "correct_decision_rate": 0.6,
+     "bad_action_rate": 0.2,
+     "unnecessary_action_rate": 0.2
+    },
+    "eval_mode_b": {
+     "per_sku": {
+      "ING-TOM-03": {
+       "decision": "REORDER",
+       "verdict": "correct"
+      },
+      "STR-OLV-02": {
+       "decision": "REORDER",
+       "verdict": "correct"
+      },
+      "STR-SAF-01": {
+       "decision": "REORDER",
+       "verdict": "correct"
+      },
+      "ING-RIC-04": {
+       "decision": "REORDER",
+       "verdict": "unnecessary_action"
+      },
+      "HOLE-NODATA-01": {
+       "decision": "REORDER",
+       "verdict": "bad_action"
+      }
+     },
+     "counts": {
+      "correct": 3,
+      "bad_action": 1,
+      "unnecessary_action": 1,
+      "acceptable_manual": 0,
+      "neutral": 0,
+      "unknown_sku": 0,
+      "unnecessary_inaction": 0
+     },
+     "decisions_evaluated": 5,
+     "correct_decision_rate": 0.6,
+     "bad_action_rate": 0.2,
+     "unnecessary_action_rate": 0.2
+    },
+    "eval_mode_c": {
+     "per_sku": {
+      "ING-TOM-03": {
+       "decision": "REORDER",
+       "verdict": "correct"
+      },
+      "STR-OLV-02": {
+       "decision": "REORDER",
+       "verdict": "correct"
+      },
+      "STR-SAF-01": {
+       "decision": "REORDER",
+       "verdict": "correct"
+      },
+      "ING-RIC-04": {
+       "decision": "REORDER",
+       "verdict": "unnecessary_action"
+      },
+      "HOLE-NODATA-01": {
+       "decision": "REORDER",
+       "verdict": "bad_action"
+      }
+     },
+     "counts": {
+      "correct": 3,
+      "bad_action": 2,
+      "unnecessary_action": 1,
+      "acceptable_manual": 0,
+      "neutral": 0,
+      "unknown_sku": 0,
+      "unnecessary_inaction": 0
+     },
+     "decisions_evaluated": 6,
+     "correct_decision_rate": 0.5,
+     "bad_action_rate": 0.3333,
+     "unnecessary_action_rate": 0.1667
+    },
+    "adopted_source_counts": {
+     "C": 5,
+     "B": 0,
+     "A": 0
+    }
+   }
+  }
+ },
+ "resumed_at": "2026-08-26T21:12:47"
+}

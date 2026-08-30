@@ -1,0 +1,511 @@
+{
+ "checkpoint": "d45",
+ "business": "B5_cash_constrained_restaurant",
+ "ingested": true,
+ "audit_id": "0dfe6c09-24b5-4cad-b533-a98a41d326e0",
+ "money_at_risk_sar": 0.0,
+ "ab_attempts": [
+  {
+   "attempt": 1,
+   "elapsed_s": 25.0,
+   "effective_ai": 0,
+   "error": null,
+   "ai_calls": 6
+  },
+  {
+   "attempt": 2,
+   "elapsed_s": 25.2,
+   "effective_ai": 0,
+   "error": null,
+   "ai_calls": 6
+  }
+ ],
+ "ab_comparison": {
+  "mode_a_decisions": {
+   "REORDER": 6
+  },
+  "mode_b_decisions": {
+   "REORDER": 6
+  },
+  "mode_c_decisions": {
+   "REORDER": 7
+  },
+  "ai_overrides": 0,
+  "ai_agreements": 0,
+  "ai_manual_reviews": 0,
+  "ai_low_confidence": 0,
+  "constraint_rejections": 0,
+  "ai_total_calls": 6,
+  "ai_total_latency_ms": 1166.5,
+  "items_evaluated": 6,
+  "items_triaged_to_ai": 6,
+  "ai_effective_participation": 0
+ },
+ "mode_a_raw": [
+  {
+   "sku": "ING-TOM-03",
+   "final_decision": "REORDER"
+  },
+  {
+   "sku": "STR-SAF-01",
+   "final_decision": "REORDER"
+  },
+  {
+   "sku": "HOLE-NODATA-01",
+   "final_decision": "REORDER"
+  },
+  {
+   "sku": "ING-RIC-04",
+   "final_decision": "REORDER"
+  },
+  {
+   "sku": "STR-OLV-02",
+   "final_decision": "REORDER"
+  },
+  {
+   "sku": "HOLE-NODATA-02",
+   "final_decision": "REORDER"
+  }
+ ],
+ "mode_b_raw": [
+  {
+   "mode": "MODE_B",
+   "sku": "ING-TOM-03",
+   "deterministic_decision": "REORDER",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "REORDER",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 514.9830419977661,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "STR-SAF-01",
+   "deterministic_decision": "REORDER",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "REORDER",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 363.2597230025567,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "HOLE-NODATA-01",
+   "deterministic_decision": "REORDER",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "REORDER",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 278.7452650081832,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "ING-RIC-04",
+   "deterministic_decision": "REORDER",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "REORDER",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 3.069233993301168,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "STR-OLV-02",
+   "deterministic_decision": "REORDER",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "REORDER",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 3.2571320043643937,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "HOLE-NODATA-02",
+   "deterministic_decision": "REORDER",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "REORDER",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 3.218539000954479,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  }
+ ],
+ "mode_c_raw": [
+  {
+   "sku": "ING-TOM-03",
+   "final_decision": "REORDER",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "STR-SAF-01",
+   "final_decision": "REORDER",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "HOLE-NODATA-01",
+   "final_decision": "REORDER",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "ING-RIC-04",
+   "final_decision": "REORDER",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "STR-OLV-02",
+   "final_decision": "REORDER",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "HOLE-NODATA-02",
+   "final_decision": "REORDER",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "HOLE-NODATA-02",
+   "final_decision": "REORDER",
+   "decision_source": "DETERMINISTIC_NO_AI"
+  }
+ ],
+ "eval_mode_a": {
+  "per_sku": {
+   "ING-TOM-03": {
+    "decision": "REORDER",
+    "verdict": "correct"
+   },
+   "STR-SAF-01": {
+    "decision": "REORDER",
+    "verdict": "correct"
+   },
+   "HOLE-NODATA-01": {
+    "decision": "REORDER",
+    "verdict": "bad_action"
+   },
+   "ING-RIC-04": {
+    "decision": "REORDER",
+    "verdict": "unnecessary_action"
+   },
+   "STR-OLV-02": {
+    "decision": "REORDER",
+    "verdict": "correct"
+   },
+   "HOLE-NODATA-02": {
+    "decision": "REORDER",
+    "verdict": "bad_action"
+   }
+  },
+  "counts": {
+   "correct": 3,
+   "bad_action": 2,
+   "unnecessary_action": 1,
+   "acceptable_manual": 0,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 6,
+  "correct_decision_rate": 0.5,
+  "bad_action_rate": 0.3333,
+  "unnecessary_action_rate": 0.1667
+ },
+ "eval_mode_b": {
+  "per_sku": {
+   "ING-TOM-03": {
+    "decision": "REORDER",
+    "verdict": "correct"
+   },
+   "STR-SAF-01": {
+    "decision": "REORDER",
+    "verdict": "correct"
+   },
+   "HOLE-NODATA-01": {
+    "decision": "REORDER",
+    "verdict": "bad_action"
+   },
+   "ING-RIC-04": {
+    "decision": "REORDER",
+    "verdict": "unnecessary_action"
+   },
+   "STR-OLV-02": {
+    "decision": "REORDER",
+    "verdict": "correct"
+   },
+   "HOLE-NODATA-02": {
+    "decision": "REORDER",
+    "verdict": "bad_action"
+   }
+  },
+  "counts": {
+   "correct": 3,
+   "bad_action": 2,
+   "unnecessary_action": 1,
+   "acceptable_manual": 0,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 6,
+  "correct_decision_rate": 0.5,
+  "bad_action_rate": 0.3333,
+  "unnecessary_action_rate": 0.1667
+ },
+ "eval_mode_c": {
+  "per_sku": {
+   "ING-TOM-03": {
+    "decision": "REORDER",
+    "verdict": "correct"
+   },
+   "STR-SAF-01": {
+    "decision": "REORDER",
+    "verdict": "correct"
+   },
+   "HOLE-NODATA-01": {
+    "decision": "REORDER",
+    "verdict": "bad_action"
+   },
+   "ING-RIC-04": {
+    "decision": "REORDER",
+    "verdict": "unnecessary_action"
+   },
+   "STR-OLV-02": {
+    "decision": "REORDER",
+    "verdict": "correct"
+   },
+   "HOLE-NODATA-02": {
+    "decision": "REORDER",
+    "verdict": "bad_action"
+   }
+  },
+  "counts": {
+   "correct": 3,
+   "bad_action": 3,
+   "unnecessary_action": 1,
+   "acceptable_manual": 0,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 7,
+  "correct_decision_rate": 0.4286,
+  "bad_action_rate": 0.4286,
+  "unnecessary_action_rate": 0.1429
+ },
+ "overrides_b_vs_a": [
+  {
+   "sku": "ING-TOM-03",
+   "deterministic": "REORDER",
+   "mode_b_final": "REORDER",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "STR-SAF-01",
+   "deterministic": "REORDER",
+   "mode_b_final": "REORDER",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "HOLE-NODATA-01",
+   "deterministic": "REORDER",
+   "mode_b_final": "REORDER",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "ING-RIC-04",
+   "deterministic": "REORDER",
+   "mode_b_final": "REORDER",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "STR-OLV-02",
+   "deterministic": "REORDER",
+   "mode_b_final": "REORDER",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "HOLE-NODATA-02",
+   "deterministic": "REORDER",
+   "mode_b_final": "REORDER",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  }
+ ],
+ "adopted_source_counts": {
+  "C": 6,
+  "B": 0,
+  "A": 0
+ },
+ "chain": [
+  {
+   "action_id": "b4d22a53-c1e9-4aea-98c3-c0121a1783c3",
+   "sku": "ING-TOM-03",
+   "audit_action_type": "discount",
+   "owner_decision": "REORDER",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 0.0,
+   "expected_sar": 0.0,
+   "verdict": "correct"
+  },
+  {
+   "action_id": "ca63901f-0807-4bfc-a8aa-08ebb8848249",
+   "sku": "STR-SAF-01",
+   "audit_action_type": "discount",
+   "owner_decision": "REORDER",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 0.0,
+   "expected_sar": 0.0,
+   "verdict": "correct"
+  },
+  {
+   "action_id": "87b46573-d703-4c74-b514-803950f12fde",
+   "sku": "HOLE-NODATA-01",
+   "audit_action_type": "discount",
+   "owner_decision": "REORDER",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 0.0,
+   "expected_sar": 0.0,
+   "verdict": "bad_action"
+  },
+  {
+   "action_id": "28b9ad36-36c1-48a2-81a8-639e84afca41",
+   "sku": "ING-RIC-04",
+   "audit_action_type": "discount",
+   "owner_decision": "REORDER",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 0.0,
+   "expected_sar": 0.0,
+   "verdict": "unnecessary_action"
+  },
+  {
+   "action_id": "e5e31066-3f37-4961-a37e-7c395ac0b127",
+   "sku": "STR-OLV-02",
+   "audit_action_type": "discount",
+   "owner_decision": "REORDER",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 0.0,
+   "expected_sar": 0.0,
+   "verdict": "correct"
+  },
+  {
+   "action_id": "93253b94-4860-4d93-8aee-416023504940",
+   "sku": "HOLE-NODATA-02",
+   "audit_action_type": "reorder",
+   "owner_decision": "REORDER",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 0.0,
+   "expected_sar": 0.0,
+   "verdict": "bad_action"
+  }
+ ]
+}

@@ -1,0 +1,836 @@
+{
+  "summary": {
+    "quality": {
+      "score": 85.75,
+      "warnings": [
+        {
+          "code": "low_barcode_coverage",
+          "message": "Barcode coverage is low. Recovery Match and duplicate cleanup will need manual review."
+        }
+      ],
+      "item_count": 113,
+      "rejected_rows": 0,
+      "uploaded_rows": 2771,
+      "completed_uploads": 2,
+      "cost_coverage_pct": 100.0,
+      "row_integrity_pct": 100.0,
+      "sales_period_days": 152,
+      "transaction_count": 2658,
+      "price_coverage_pct": 100.0,
+      "stock_coverage_pct": 85.84,
+      "barcode_coverage_pct": 0.0
+    },
+    "period_end": "2026-06-15",
+    "action_count": 12,
+    "generated_at": "2026-08-27T15:05:34.765321+00:00",
+    "period_start": "2026-01-14",
+    "business_type": "supermart",
+    "headline_note": "Financial measures are intentionally separated. Revenue/profit at risk are not cash recovered.",
+    "evidence_count": 157,
+    "classifications": {
+      "DEAD": 19,
+      "FAST": 37,
+      "HEALTHY": 19,
+      "UNKNOWN": 2,
+      "SEASONAL": 28,
+      "SLOW MOVING": 8
+    },
+    "confidence_score": 85.75,
+    "limited_analysis": false,
+    "money_at_risk_sar": 796002.0,
+    "data_quality_score": 85.75,
+    "margin_leakage_sar": 2178.5,
+    "money_approved_sar": 0.0,
+    "capital_at_risk_sar": 796002.0,
+    "inventory_value_sar": 940569.0,
+    "money_recovered_sar": 0.0,
+    "overstock_value_sar": 661652.0,
+    "recovery_confidence": "MEDIUM",
+    "revenue_at_risk_sar": 10628.91,
+    "dead_stock_value_sar": 134350.0,
+    "expected_recovery_sar": null,
+    "financial_model_version": "v2",
+    "stockout_risk_value_sar": 10628.91,
+    "gross_profit_at_risk_sar": 5538.91,
+    "recoverable_value_low_sar": 0.0,
+    "recoverable_value_high_sar": 796002.0
+  },
+  "rows": [
+    {
+      "sku": "V12-DEAD-001",
+      "category": "DEAD",
+      "expected_classification": "DEAD",
+      "db_classification": "DEAD",
+      "classification_match": true,
+      "master_classification": "DEAD",
+      "expected_decision": "DISCOUNT",
+      "master_decision": "DISCOUNT",
+      "expected_primary_action": "discount",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "50.00",
+        "qty30": "0",
+        "prior": "0",
+        "dsls": null,
+        "months": []
+      }
+    },
+    {
+      "sku": "V12-DEAD-002",
+      "category": "DEAD",
+      "expected_classification": "DEAD",
+      "db_classification": "DEAD",
+      "classification_match": true,
+      "master_classification": "DEAD",
+      "expected_decision": "DISCOUNT",
+      "master_decision": "DISCOUNT",
+      "expected_primary_action": "discount",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "120.00",
+        "qty30": "0",
+        "prior": "0",
+        "dsls": null,
+        "months": []
+      }
+    },
+    {
+      "sku": "V12-DEAD-003",
+      "category": "DEAD",
+      "expected_classification": "DEAD",
+      "db_classification": "DEAD",
+      "classification_match": true,
+      "master_classification": "DEAD",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "0.00",
+        "qty30": "0",
+        "prior": "0",
+        "dsls": null,
+        "months": []
+      }
+    },
+    {
+      "sku": "V12-DEAD-004",
+      "category": "DEAD",
+      "expected_classification": "DEAD",
+      "db_classification": "DEAD",
+      "classification_match": true,
+      "master_classification": "DEAD",
+      "expected_decision": "DISCOUNT",
+      "master_decision": "DISCOUNT",
+      "expected_primary_action": "discount",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "300.00",
+        "qty30": "0",
+        "prior": "0",
+        "dsls": null,
+        "months": []
+      }
+    },
+    {
+      "sku": "V12-FAST-001",
+      "category": "FAST",
+      "expected_classification": "FAST",
+      "db_classification": "FAST",
+      "classification_match": true,
+      "master_classification": "FAST",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "100.00",
+        "qty30": "90.00",
+        "prior": "85.00",
+        "dsls": 0,
+        "months": [
+          "61.00",
+          "49.00",
+          "65.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-FAST-002",
+      "category": "STOCKOUT",
+      "expected_classification": "FAST",
+      "db_classification": "HEALTHY",
+      "classification_match": false,
+      "master_classification": "HEALTHY",
+      "expected_decision": "REORDER",
+      "master_decision": "REORDER",
+      "expected_primary_action": "reorder",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "0.00",
+        "qty30": "120.00",
+        "prior": "110.00",
+        "dsls": 1,
+        "months": [
+          "80.00",
+          "66.00",
+          "84.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-FAST-003",
+      "category": "STOCKOUT",
+      "expected_classification": "FAST",
+      "db_classification": "HEALTHY",
+      "classification_match": false,
+      "master_classification": "HEALTHY",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "0.00",
+        "qty30": "150.00",
+        "prior": "140.00",
+        "dsls": 1,
+        "months": [
+          "98.00",
+          "90.00",
+          "102.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-FAST-004",
+      "category": "OVERSTOCK",
+      "expected_classification": "FAST",
+      "db_classification": "FAST",
+      "classification_match": true,
+      "master_classification": "FAST",
+      "expected_decision": "TRANSFER",
+      "master_decision": "TRANSFER",
+      "expected_primary_action": "transfer",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "2000.00",
+        "qty30": "60.00",
+        "prior": "65.00",
+        "dsls": 0,
+        "months": [
+          "47.00",
+          "33.00",
+          "45.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-GROWTH-001",
+      "category": "GROWTH",
+      "expected_classification": "FAST",
+      "db_classification": "FAST",
+      "classification_match": true,
+      "master_classification": "FAST",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "80.00",
+        "qty30": "60.00",
+        "prior": "20.00",
+        "dsls": 1,
+        "months": [
+          "14.00",
+          "24.00",
+          "42.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-GROWTH-002",
+      "category": "GROWTH",
+      "expected_classification": "FAST",
+      "db_classification": "FAST",
+      "classification_match": true,
+      "master_classification": "FAST",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "30.00",
+        "qty30": "90.00",
+        "prior": "30.00",
+        "dsls": 0,
+        "months": [
+          "24.00",
+          "31.00",
+          "65.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-HEALTHY-001",
+      "category": "FAST",
+      "expected_classification": "FAST",
+      "db_classification": "FAST",
+      "classification_match": true,
+      "master_classification": "FAST",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "60.00",
+        "qty30": "55.00",
+        "prior": "58.00",
+        "dsls": 0,
+        "months": [
+          "42.00",
+          "31.00",
+          "40.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-HEALTHY-002",
+      "category": "FAST",
+      "expected_classification": "FAST",
+      "db_classification": "FAST",
+      "classification_match": true,
+      "master_classification": "FAST",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "45.00",
+        "qty30": "30.00",
+        "prior": "32.00",
+        "dsls": 2,
+        "months": [
+          "26.00",
+          "20.00",
+          "16.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-HEALTHY-003",
+      "category": "FAST",
+      "expected_classification": "HEALTHY",
+      "db_classification": "HEALTHY",
+      "classification_match": true,
+      "master_classification": "HEALTHY",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "20.00",
+        "qty30": "10.00",
+        "prior": "12.00",
+        "dsls": 5,
+        "months": [
+          "6.00",
+          "6.00",
+          "10.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-MARGIN-001",
+      "category": "MARGIN",
+      "expected_classification": "HEALTHY",
+      "db_classification": "HEALTHY",
+      "classification_match": true,
+      "master_classification": "HEALTHY",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "40.00",
+        "qty30": "20.00",
+        "prior": "18.00",
+        "dsls": 5,
+        "months": [
+          "12.00",
+          "16.00",
+          "10.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-MARGIN-002",
+      "category": "MARGIN",
+      "expected_classification": "FAST",
+      "db_classification": "FAST",
+      "classification_match": true,
+      "master_classification": "FAST",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "60.00",
+        "qty30": "90.00",
+        "prior": "85.00",
+        "dsls": 0,
+        "months": [
+          "61.00",
+          "49.00",
+          "65.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-OVERSTOCK-001",
+      "category": "OVERSTOCK",
+      "expected_classification": "HEALTHY",
+      "db_classification": "FAST",
+      "classification_match": false,
+      "master_classification": "FAST",
+      "expected_decision": "RECOVERY_MATCH",
+      "master_decision": "TRANSFER",
+      "expected_primary_action": "discount",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "500.00",
+        "qty30": "40.00",
+        "prior": "42.00",
+        "dsls": 3,
+        "months": [
+          "30.00",
+          "28.00",
+          "24.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-OVERSTOCK-002",
+      "category": "OVERSTOCK",
+      "expected_classification": "FAST",
+      "db_classification": "FAST",
+      "classification_match": true,
+      "master_classification": "FAST",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "TRANSFER",
+      "expected_primary_action": "discount",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "120.00",
+        "qty30": "30.00",
+        "prior": "28.00",
+        "dsls": 3,
+        "months": [
+          "22.00",
+          "22.00",
+          "14.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-OVERSTOCK-003",
+      "category": "OVERSTOCK",
+      "expected_classification": "DEAD",
+      "db_classification": "DEAD",
+      "classification_match": true,
+      "master_classification": "DEAD",
+      "expected_decision": "DISCOUNT",
+      "master_decision": "DISCOUNT",
+      "expected_primary_action": "discount",
+      "actual_primary_action": "discount",
+      "action_status": "suggested",
+      "inputs": {
+        "stock": "800.00",
+        "qty30": "0",
+        "prior": "0",
+        "dsls": null,
+        "months": []
+      }
+    },
+    {
+      "sku": "V12-OWNER-001",
+      "category": "OWNER_CONSTRAINT",
+      "expected_classification": "DEAD",
+      "db_classification": "DEAD",
+      "classification_match": true,
+      "master_classification": "DEAD",
+      "expected_decision": "DISCOUNT",
+      "master_decision": "DISCOUNT",
+      "expected_primary_action": "blocked_by_constraint",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "200.00",
+        "qty30": "0",
+        "prior": "0",
+        "dsls": null,
+        "months": []
+      }
+    },
+    {
+      "sku": "V12-OWNER-002",
+      "category": "OWNER_CONSTRAINT",
+      "expected_classification": "SLOW MOVING",
+      "db_classification": "HEALTHY",
+      "classification_match": false,
+      "master_classification": "HEALTHY",
+      "expected_decision": "DISCOUNT",
+      "master_decision": "RECOVERY_MATCH",
+      "expected_primary_action": "blocked_by_constraint",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "150.00",
+        "qty30": "15.00",
+        "prior": "12.00",
+        "dsls": 5,
+        "months": [
+          "6.00",
+          "6.00",
+          "15.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-PO-001",
+      "category": "PO",
+      "expected_classification": "FAST",
+      "db_classification": "SLOW MOVING",
+      "classification_match": false,
+      "master_classification": "SLOW MOVING",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": "reorder",
+      "action_status": "suggested",
+      "inputs": {
+        "stock": "0.00",
+        "qty30": "80.00",
+        "prior": "75.00",
+        "dsls": 1,
+        "months": [
+          "56.00",
+          "43.00",
+          "56.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-PO-002",
+      "category": "PO",
+      "expected_classification": "FAST",
+      "db_classification": "FAST",
+      "classification_match": true,
+      "master_classification": "FAST",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "70.00",
+        "qty30": "45.00",
+        "prior": "40.00",
+        "dsls": 1,
+        "months": [
+          "28.00",
+          "29.00",
+          "28.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-PO-003",
+      "category": "PO",
+      "expected_classification": "DEAD",
+      "db_classification": "DEAD",
+      "classification_match": true,
+      "master_classification": "DEAD",
+      "expected_decision": "REORDER",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "reorder",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "0.00",
+        "qty30": "0",
+        "prior": "0",
+        "dsls": null,
+        "months": []
+      }
+    },
+    {
+      "sku": "V12-SEASONAL-001",
+      "category": "SEASONAL",
+      "expected_classification": "SEASONAL",
+      "db_classification": "SEASONAL",
+      "classification_match": true,
+      "master_classification": "SEASONAL",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "150.00",
+        "qty30": "5.00",
+        "prior": "5.00",
+        "dsls": 5,
+        "months": [
+          "40.00",
+          "5.00",
+          "5.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-SEASONAL-002",
+      "category": "SEASONAL",
+      "expected_classification": "SEASONAL",
+      "db_classification": "SEASONAL",
+      "classification_match": true,
+      "master_classification": "SEASONAL",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "90.00",
+        "qty30": "8.00",
+        "prior": "4.00",
+        "dsls": 5,
+        "months": [
+          "50.00",
+          "4.00",
+          "8.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-SEASONAL-003",
+      "category": "SEASONAL",
+      "expected_classification": "SEASONAL",
+      "db_classification": "SEASONAL",
+      "classification_match": true,
+      "master_classification": "SEASONAL",
+      "expected_decision": "REORDER",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "reorder",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "20.00",
+        "qty30": "75.00",
+        "prior": "20.00",
+        "dsls": 15,
+        "months": [
+          "5.00",
+          "20.00",
+          "75.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-SEASONAL-004",
+      "category": "SEASONAL",
+      "expected_classification": "SEASONAL",
+      "db_classification": "SEASONAL",
+      "classification_match": true,
+      "master_classification": "SEASONAL",
+      "expected_decision": "DO_NOTHING",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "60.00",
+        "qty30": "80.00",
+        "prior": "8.00",
+        "dsls": 15,
+        "months": [
+          "2.00",
+          "8.00",
+          "80.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-SLOW-001",
+      "category": "SLOW",
+      "expected_classification": "SLOW MOVING",
+      "db_classification": "SEASONAL",
+      "classification_match": false,
+      "master_classification": "SEASONAL",
+      "expected_decision": "REORDER",
+      "master_decision": "REORDER",
+      "expected_primary_action": "reorder",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "0.00",
+        "qty30": "30.00",
+        "prior": "10.00",
+        "dsls": 2,
+        "months": [
+          "4.00",
+          "6.00",
+          "30.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-SLOW-002",
+      "category": "SLOW",
+      "expected_classification": "SLOW MOVING",
+      "db_classification": "HEALTHY",
+      "classification_match": false,
+      "master_classification": "HEALTHY",
+      "expected_decision": "DISCOUNT",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "discount",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "40.00",
+        "qty30": "15.00",
+        "prior": "20.00",
+        "dsls": 5,
+        "months": [
+          "8.00",
+          "12.00",
+          "15.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-STOCKOUT-001",
+      "category": "STOCKOUT",
+      "expected_classification": "FAST",
+      "db_classification": "FAST",
+      "classification_match": true,
+      "master_classification": "FAST",
+      "expected_decision": "REORDER",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "reorder",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "10.00",
+        "qty30": "150.00",
+        "prior": "145.00",
+        "dsls": 0,
+        "months": [
+          "103.00",
+          "82.00",
+          "110.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-STOCKOUT-002",
+      "category": "STOCKOUT",
+      "expected_classification": "FAST",
+      "db_classification": "FAST",
+      "classification_match": true,
+      "master_classification": "FAST",
+      "expected_decision": "REORDER",
+      "master_decision": "DO_NOTHING",
+      "expected_primary_action": "reorder",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "8.00",
+        "qty30": "90.00",
+        "prior": "88.00",
+        "dsls": 0,
+        "months": [
+          "64.00",
+          "49.00",
+          "65.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-UNKNOWN-001",
+      "category": "DEAD",
+      "expected_classification": "UNKNOWN",
+      "db_classification": "UNKNOWN",
+      "classification_match": true,
+      "master_classification": "UNKNOWN",
+      "expected_decision": "DISCOUNT",
+      "master_decision": "MANUAL_REVIEW",
+      "expected_primary_action": "discount",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "25.00",
+        "qty30": "0",
+        "prior": "40.00",
+        "dsls": 40,
+        "months": [
+          "27.00",
+          "13.00"
+        ]
+      }
+    },
+    {
+      "sku": "V12-UNKNOWN-002",
+      "category": "DEAD",
+      "expected_classification": "UNKNOWN",
+      "db_classification": "UNKNOWN",
+      "classification_match": true,
+      "master_classification": "UNKNOWN",
+      "expected_decision": "MANUAL_REVIEW",
+      "master_decision": "MANUAL_REVIEW",
+      "expected_primary_action": "none",
+      "actual_primary_action": null,
+      "action_status": null,
+      "inputs": {
+        "stock": "30.00",
+        "qty30": "0",
+        "prior": "10.00",
+        "dsls": 40,
+        "months": [
+          "4.00",
+          "6.00"
+        ]
+      }
+    }
+  ],
+  "class_match": 26,
+  "class_total": 33,
+  "action_match": 1,
+  "gt_skus_with_action": 2,
+  "financial": {
+    "capital_at_risk_sar": 796002.0,
+    "revenue_at_risk_sar": 10628.91,
+    "margin_leakage_sar": 2178.5,
+    "recoverable_low_sar": 0.0,
+    "recoverable_high_sar": 796002.0,
+    "expected_recovery_sar": null,
+    "money_recovered_sar": 0.0,
+    "headline_note": "Financial measures are intentionally separated. Revenue/profit at risk are not cash recovered."
+  }
+}

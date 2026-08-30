@@ -1,0 +1,1262 @@
+{
+ "started": "2026-08-27T00:16:51",
+ "llm": "groq/openai-gpt-oss-120b via live stack",
+ "adoption": "C>B>A",
+ "business": "al_noor_supermarket",
+ "checkpoints": [
+  "d00",
+  "d07",
+  "d14",
+  "d30",
+  "d45",
+  "d60"
+ ],
+ "business_id": "d8e43dc3-32da-4861-bc1d-203c3876b84f",
+ "owner": "alnoor@example.com",
+ "checkpoints_data": {
+  "d00": {
+   "ab_attempts": [
+    {
+     "attempt": 1,
+     "elapsed_s": 67.0,
+     "effective_ai": 8,
+     "error": null,
+     "ai_calls": 10
+    }
+   ],
+   "eval_mode_a": {
+    "per_sku": {
+     "HSH-TRH-23": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-PWR-32": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "correct"
+     },
+     "ZST-020-A": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RMD-DTS-42": {
+      "decision": "DISCOUNT",
+      "verdict": "bad_action"
+     },
+     "SLS-HTR-36": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "SLS-FNR-35": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "SNK-NUT-07": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "SLS-LMP-34": {
+      "decision": "DISCOUNT",
+      "verdict": "bad_action"
+     },
+     "SNK-CRP-06": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "PCL-DRD-27": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "RCE-BSM-28": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 6,
+     "bad_action": 2,
+     "unnecessary_action": 0,
+     "acceptable_manual": 3,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 11,
+    "correct_decision_rate": 0.5455,
+    "bad_action_rate": 0.1818,
+    "unnecessary_action_rate": 0.0
+   },
+   "eval_mode_b": {
+    "per_sku": {
+     "HSH-TRH-23": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-PWR-32": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "correct"
+     },
+     "ZST-020-A": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RMD-DTS-42": {
+      "decision": "DISCOUNT",
+      "verdict": "bad_action"
+     },
+     "SLS-HTR-36": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "SLS-FNR-35": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "SNK-NUT-07": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "SLS-LMP-34": {
+      "decision": "DISCOUNT",
+      "verdict": "bad_action"
+     },
+     "SNK-CRP-06": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "PCL-DRD-27": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "RCE-BSM-28": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 6,
+     "bad_action": 2,
+     "unnecessary_action": 0,
+     "acceptable_manual": 3,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 11,
+    "correct_decision_rate": 0.5455,
+    "bad_action_rate": 0.1818,
+    "unnecessary_action_rate": 0.0
+   },
+   "eval_mode_c": {
+    "per_sku": {
+     "HSH-TRH-23": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-PWR-32": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "correct"
+     },
+     "ZST-020-A": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RMD-DTS-42": {
+      "decision": "DISCOUNT",
+      "verdict": "bad_action"
+     },
+     "SLS-HTR-36": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "SLS-FNR-35": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "SNK-NUT-07": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "SLS-LMP-34": {
+      "decision": "DISCOUNT",
+      "verdict": "bad_action"
+     },
+     "SNK-CRP-06": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "PCL-DRD-27": {
+      "decision": "DISCOUNT",
+      "verdict": "correct"
+     },
+     "RCE-BSM-28": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 6,
+     "bad_action": 2,
+     "unnecessary_action": 0,
+     "acceptable_manual": 3,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 11,
+    "correct_decision_rate": 0.5455,
+    "bad_action_rate": 0.1818,
+    "unnecessary_action_rate": 0.0
+   },
+   "adopted_source_counts": {
+    "C": 11,
+    "B": 0,
+    "A": 0
+   }
+  },
+  "d07": {
+   "ab_attempts": [
+    {
+     "attempt": 1,
+     "elapsed_s": 53.7,
+     "effective_ai": 4,
+     "error": null,
+     "ai_calls": 10
+    }
+   ],
+   "eval_mode_a": {
+    "per_sku": {
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-JUC-13": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-TEA-44": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-PWR-32": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "correct"
+     },
+     "DAI-EGG-05": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-CSD-12": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-COF-45": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "correct"
+     },
+     "PCL-RZT-60": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "correct"
+     },
+     "ZST-020-A": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RMD-DTS-42": {
+      "decision": "DISCOUNT",
+      "verdict": "bad_action"
+     }
+    },
+    "counts": {
+     "correct": 3,
+     "bad_action": 1,
+     "unnecessary_action": 0,
+     "acceptable_manual": 8,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 12,
+    "correct_decision_rate": 0.25,
+    "bad_action_rate": 0.0833,
+    "unnecessary_action_rate": 0.0
+   },
+   "eval_mode_b": {
+    "per_sku": {
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-JUC-13": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-TEA-44": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-PWR-32": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "correct"
+     },
+     "DAI-EGG-05": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-CSD-12": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-COF-45": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "correct"
+     },
+     "PCL-RZT-60": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "correct"
+     },
+     "ZST-020-A": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RMD-DTS-42": {
+      "decision": "DISCOUNT",
+      "verdict": "bad_action"
+     }
+    },
+    "counts": {
+     "correct": 3,
+     "bad_action": 1,
+     "unnecessary_action": 0,
+     "acceptable_manual": 8,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 12,
+    "correct_decision_rate": 0.25,
+    "bad_action_rate": 0.0833,
+    "unnecessary_action_rate": 0.0
+   },
+   "eval_mode_c": {
+    "per_sku": {
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-JUC-13": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-TEA-44": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-PWR-32": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "correct"
+     },
+     "DAI-EGG-05": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-CSD-12": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-COF-45": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "correct"
+     },
+     "RMD-DTS-42": {
+      "decision": "DISCOUNT",
+      "verdict": "bad_action"
+     }
+    },
+    "counts": {
+     "correct": 2,
+     "bad_action": 2,
+     "unnecessary_action": 0,
+     "acceptable_manual": 7,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 11,
+    "correct_decision_rate": 0.1818,
+    "bad_action_rate": 0.1818,
+    "unnecessary_action_rate": 0.0
+   },
+   "adopted_source_counts": {
+    "C": 10,
+    "B": 2,
+    "A": 0
+   }
+  },
+  "d14": {
+   "ab_attempts": [
+    {
+     "attempt": 1,
+     "elapsed_s": 47.5,
+     "effective_ai": 1,
+     "error": null,
+     "ai_calls": 10
+    }
+   ],
+   "eval_mode_a": {
+    "per_sku": {
+     "RMD-QRM-67": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "FRZ-MPT-18": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-HLD-76": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "SCH-GLU-78": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RCE-LNT-62": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-SCE-66": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TPR-55": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-FLT-73": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "PCL-SOP-25": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 0,
+     "bad_action": 0,
+     "unnecessary_action": 0,
+     "acceptable_manual": 12,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 12,
+    "correct_decision_rate": 0.0,
+    "bad_action_rate": 0.0,
+    "unnecessary_action_rate": 0.0
+   },
+   "eval_mode_b": {
+    "per_sku": {
+     "RMD-QRM-67": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "FRZ-MPT-18": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-HLD-76": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "SCH-GLU-78": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RCE-LNT-62": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-SCE-66": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TPR-55": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-FLT-73": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "PCL-SOP-25": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 0,
+     "bad_action": 0,
+     "unnecessary_action": 0,
+     "acceptable_manual": 12,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 12,
+    "correct_decision_rate": 0.0,
+    "bad_action_rate": 0.0,
+    "unnecessary_action_rate": 0.0
+   },
+   "eval_mode_c": {
+    "per_sku": {
+     "RMD-QRM-67": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "FRZ-MPT-18": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-HLD-76": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "SCH-GLU-78": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RCE-LNT-62": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-SCE-66": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TPR-55": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "PCL-SOP-25": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 0,
+     "bad_action": 0,
+     "unnecessary_action": 0,
+     "acceptable_manual": 11,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 11,
+    "correct_decision_rate": 0.0,
+    "bad_action_rate": 0.0,
+    "unnecessary_action_rate": 0.0
+   },
+   "adopted_source_counts": {
+    "C": 11,
+    "B": 1,
+    "A": 0
+   }
+  },
+  "d30": {
+   "ab_attempts": [
+    {
+     "attempt": 1,
+     "elapsed_s": 47.4,
+     "effective_ai": 1,
+     "error": null,
+     "ai_calls": 10
+    }
+   ],
+   "eval_mode_a": {
+    "per_sku": {
+     "RMD-QRM-67": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "FRZ-MPT-18": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-HLD-76": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "SCH-GLU-78": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RCE-LNT-62": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-SCE-66": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TPR-55": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-FLT-73": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "PCL-SOP-25": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 0,
+     "bad_action": 0,
+     "unnecessary_action": 0,
+     "acceptable_manual": 12,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 12,
+    "correct_decision_rate": 0.0,
+    "bad_action_rate": 0.0,
+    "unnecessary_action_rate": 0.0
+   },
+   "eval_mode_b": {
+    "per_sku": {
+     "RMD-QRM-67": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "FRZ-MPT-18": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-HLD-76": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "SCH-GLU-78": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RCE-LNT-62": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-SCE-66": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TPR-55": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-FLT-73": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "PCL-SOP-25": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 0,
+     "bad_action": 0,
+     "unnecessary_action": 0,
+     "acceptable_manual": 12,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 12,
+    "correct_decision_rate": 0.0,
+    "bad_action_rate": 0.0,
+    "unnecessary_action_rate": 0.0
+   },
+   "eval_mode_c": {
+    "per_sku": {
+     "RMD-QRM-67": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "FRZ-MPT-18": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-HLD-76": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "SCH-GLU-78": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RCE-LNT-62": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-SCE-66": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TPR-55": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "PCL-SOP-25": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 0,
+     "bad_action": 0,
+     "unnecessary_action": 0,
+     "acceptable_manual": 11,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 11,
+    "correct_decision_rate": 0.0,
+    "bad_action_rate": 0.0,
+    "unnecessary_action_rate": 0.0
+   },
+   "adopted_source_counts": {
+    "C": 11,
+    "B": 1,
+    "A": 0
+   }
+  },
+  "d45": {
+   "ab_attempts": [
+    {
+     "attempt": 1,
+     "elapsed_s": 45.9,
+     "effective_ai": 0,
+     "error": null,
+     "ai_calls": 10
+    },
+    {
+     "attempt": 2,
+     "elapsed_s": 45.3,
+     "effective_ai": 0,
+     "error": null,
+     "ai_calls": 10
+    }
+   ],
+   "eval_mode_a": {
+    "per_sku": {
+     "RMD-QRM-67": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "FRZ-MPT-18": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-HLD-76": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "SCH-GLU-78": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RCE-LNT-62": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-SCE-66": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TRH-23": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TPR-55": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-FLT-73": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 0,
+     "bad_action": 0,
+     "unnecessary_action": 0,
+     "acceptable_manual": 12,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 12,
+    "correct_decision_rate": 0.0,
+    "bad_action_rate": 0.0,
+    "unnecessary_action_rate": 0.0
+   },
+   "eval_mode_b": {
+    "per_sku": {
+     "RMD-QRM-67": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "FRZ-MPT-18": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-HLD-76": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "SCH-GLU-78": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RCE-LNT-62": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-SCE-66": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TRH-23": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TPR-55": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-FLT-73": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 0,
+     "bad_action": 0,
+     "unnecessary_action": 0,
+     "acceptable_manual": 12,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 12,
+    "correct_decision_rate": 0.0,
+    "bad_action_rate": 0.0,
+    "unnecessary_action_rate": 0.0
+   },
+   "eval_mode_c": {
+    "per_sku": {
+     "RMD-QRM-67": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "FRZ-MPT-18": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-HLD-76": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "SCH-GLU-78": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RCE-LNT-62": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-SCE-66": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TRH-23": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-FLT-73": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 0,
+     "bad_action": 0,
+     "unnecessary_action": 0,
+     "acceptable_manual": 11,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 11,
+    "correct_decision_rate": 0.0,
+    "bad_action_rate": 0.0,
+    "unnecessary_action_rate": 0.0
+   },
+   "adopted_source_counts": {
+    "C": 11,
+    "B": 1,
+    "A": 0
+   }
+  },
+  "d60": {
+   "ab_attempts": [
+    {
+     "attempt": 1,
+     "elapsed_s": 45.8,
+     "effective_ai": 0,
+     "error": null,
+     "ai_calls": 10
+    },
+    {
+     "attempt": 2,
+     "elapsed_s": 46.0,
+     "effective_ai": 0,
+     "error": null,
+     "ai_calls": 10
+    }
+   ],
+   "eval_mode_a": {
+    "per_sku": {
+     "RMD-QRM-67": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "FRZ-MPT-18": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-HLD-76": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "SCH-GLU-78": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RCE-LNT-62": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-SCE-66": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TRH-23": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TPR-55": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-FLT-73": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 0,
+     "bad_action": 0,
+     "unnecessary_action": 0,
+     "acceptable_manual": 12,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 12,
+    "correct_decision_rate": 0.0,
+    "bad_action_rate": 0.0,
+    "unnecessary_action_rate": 0.0
+   },
+   "eval_mode_b": {
+    "per_sku": {
+     "RMD-QRM-67": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "FRZ-MPT-18": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-HLD-76": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "SCH-GLU-78": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RCE-LNT-62": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-SCE-66": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TRH-23": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TPR-55": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-FLT-73": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 0,
+     "bad_action": 0,
+     "unnecessary_action": 0,
+     "acceptable_manual": 12,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 12,
+    "correct_decision_rate": 0.0,
+    "bad_action_rate": 0.0,
+    "unnecessary_action_rate": 0.0
+   },
+   "eval_mode_c": {
+    "per_sku": {
+     "RMD-QRM-67": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "FRZ-MPT-18": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "ELC-HLD-76": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "DRK-WTR-11": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "SCH-GLU-78": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "RCE-LNT-62": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-SCE-66": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-TRH-23": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "BBQ-GLV-79": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "IMP-SPC-68": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     },
+     "HSH-FLT-73": {
+      "decision": "MANUAL_REVIEW",
+      "verdict": "acceptable_manual"
+     }
+    },
+    "counts": {
+     "correct": 0,
+     "bad_action": 0,
+     "unnecessary_action": 0,
+     "acceptable_manual": 11,
+     "neutral": 0,
+     "unknown_sku": 0,
+     "unnecessary_inaction": 0
+    },
+    "decisions_evaluated": 11,
+    "correct_decision_rate": 0.0,
+    "bad_action_rate": 0.0,
+    "unnecessary_action_rate": 0.0
+   },
+   "adopted_source_counts": {
+    "C": 11,
+    "B": 1,
+    "A": 0
+   }
+  }
+ }
+}

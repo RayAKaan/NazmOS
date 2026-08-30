@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NazmOS — Design System Preview (stages 1–3)</title>
+<style>
+  :root {
+    --background: oklch(15.85% 0.008 163.8);
+    --card: oklch(19.2% 0.008 165);
+    --foreground: oklch(93% 0.005 180);
+    --muted-foreground: oklch(64% 0.012 165);
+    --border: oklch(26% 0.008 165);
+    --primary: oklch(75.41% 0.085 67.1);      /* gold */
+    --secondary: oklch(70.38% 0.123 182.5);   /* teal */
+    --success: oklch(62.12% 0.152 154.0);
+    --destructive: oklch(63.68% 0.208 25.3);
+    --weave-opacity-bg: 0.04;
+    --duration-seam: 600ms;
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 48px 24px;
+    background: var(--background); color: var(--foreground);
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; }
+  h1 { font-size: 31px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.02em; }
+  h2 { font-size: 20px; font-weight: 600; margin: 32px 0 12px; }
+  .sub { color: var(--muted-foreground); font-size: 14px; margin: 0 0 32px; }
+  .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted-foreground); }
+  .figure { font-size: 49px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; line-height: 1.1; }
+  .figure.sec { font-size: 39px; font-weight: 700; }
+  .cur { font-size: 14px; color: var(--muted-foreground); }
+  .trend-up { color: var(--success); font-size: 14px; }
+  .trend-down { color: var(--destructive); font-size: 14px; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden; position: relative;
+  }
+  .card.editorial { padding: 32px; }
+  .card.data { padding: 16px; }
+  .card .trim { height: 24px; position: relative; }
+  .card .trim .weave { position: absolute; inset: 0; }
+
+  .weave {
+    background-color: var(--primary);
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='48' viewBox='0 0 24 48'%3E%3Cg fill='none' stroke='black' stroke-width='2'%3E%3Cpath transform='rotate(45 12 12)' d='M 12 4 C 19 4 19 12 12 12 C 5 12 5 20 12 20'/%3E%3Cpath transform='translate(0 24) rotate(-45 12 12)' d='M 12 4 C 19 4 19 12 12 12 C 5 12 5 20 12 20'/%3E%3C/g%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='48' viewBox='0 0 24 48'%3E%3Cg fill='none' stroke='black' stroke-width='2'%3E%3Cpath transform='rotate(45 12 12)' d='M 12 4 C 19 4 19 12 12 12 C 5 12 5 20 12 20'/%3E%3Cpath transform='translate(0 24) rotate(-45 12 12)' d='M 12 4 C 19 4 19 12 12 12 C 5 12 5 20 12 20'/%3E%3C/g%3E%3C/svg%3E");
+    -webkit-mask-repeat: repeat; mask-repeat: repeat;
+    -webkit-mask-size: 24px 48px; mask-size: 24px 48px;
+  }
+  .weave.field { opacity: var(--weave-opacity-bg); }
+
+  .bento { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  @media (max-width: 720px) { .bento { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .bento { grid-template-columns: 1fr; } }
+
+  .chevron {
+    height: 12px;
+    background-color: var(--primary);
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cg fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M 0 3 L 6 9 L 12 3'/%3E%3C/g%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cg fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M 0 3 L 6 9 L 12 3'/%3E%3C/g%3E%3C/svg%3E");
+    -webkit-mask-repeat: repeat-x; mask-repeat: repeat-x;
+    -webkit-mask-size: 12px 12px; mask-size: 12px 12px;
+  }
+
+  .seam { border: 1px solid oklch(75.41% 0.085 67.1 / 0.4); border-radius: 8px; background: var(--card); overflow: hidden; position: relative; }
+  .seam .pad { padding: 24px; }
+  .seam svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .seam path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: seam var(--duration-seam) ease-out forwards; }
+  @keyframes seam { from { stroke-dashoffset: 1; opacity: 0; } to { stroke-dashoffset: 0; opacity: 1; } }
+
+  .hero { position: relative; border-radius: 8px; border: 1px solid var(--border); background: var(--card); overflow: hidden; }
+  .hero .pad { position: relative; z-index: 1; padding: 48px; }
+  .muted { color: var(--muted-foreground); }
+
+  /* ---- v3 polish: elevation · shine · marquee · split-text · ambient ---- */
+  .elev-1 { box-shadow: 0 1px 2px oklch(0% 0 0 / 0.3); }
+  .elev-2 { box-shadow: 0 1px 2px oklch(0% 0 0 / 0.3), 0 8px 24px -8px oklch(0% 0 0 / 0.45); transition: transform .15s ease-out, box-shadow .15s ease-out, border-color .15s ease-out; }
+  .elev-2:hover { transform: translateY(-2px); border-color: oklch(75.41% 0.085 67.1 / 0.3); }
+  .elev-3 { box-shadow: 0 1px 2px oklch(0% 0 0 / 0.3), 0 8px 24px -8px oklch(0% 0 0 / 0.45), 0 24px 48px -12px oklch(0% 0 0 / 0.6), inset 0 1px 0 oklch(100% 0 0 / 0.04); }
+
+  .shine { position: relative; overflow: hidden; border-radius: 8px; display: inline-flex; }
+  .shine svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .shine rect { stroke-dasharray: 25 275; animation: beam 6s linear infinite; }
+  @keyframes beam { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -300; } }
+
+  .marquee-track { display: flex; width: max-content; animation: marquee 28s linear infinite; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .split { display: inline-block; overflow: hidden; vertical-align: bottom; }
+  .split > span { display: inline-block; transform: translateY(110%); animation: rise .6s cubic-bezier(0.16,1,0.3,1) forwards; }
+  @keyframes rise { to { transform: translateY(0); } }
+
+  .ambient { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(120px); }
+  .blob.gold { background: oklch(86.44% 0.127 90.6); opacity: 0.08; animation: drift 22s ease-in-out infinite; }
+  .blob.teal { background: oklch(70.38% 0.123 182.5); opacity: 0.07; animation: drift2 26s ease-in-out infinite; }
+  @keyframes drift { 0%,100% { transform: translate(0,0); } 50% { transform: translate(60px,40px); } }
+  @keyframes drift2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-50px,-30px); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>NazmOS — design system preview</h1>
+  <p class="sub">Stages 1–3: token diff + primitives (WeaveTile · FigureHeadline · BentoGrid · ChevronDivider · SeamBorder). A private banking terminal engraved with a Najdi weaver's precision.</p>
+
+  <h2>FigureHeadline — the SAR number is the headline</h2>
+  <div class="card editorial">
+    <div class="trim"><div class="weave"></div></div>
+    <div style="padding:32px">
+      <span class="label">Money recovered</span>
+      <div style="display:flex;align-items:baseline;gap:8px;margin-top:4px">
+        <span class="figure">128,450</span><span class="cur">SAR</span>
+      </div>
+      <div class="trend-up" style="margin-top:6px">▲ +12.4%</div>
+      <div style="margin-top:20px">
+        <span class="label">Margin leakage</span>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-top:4px">
+          <span class="figure sec">3,120</span><span class="cur">SAR</span>
+        </div>
+        <div class="trend-down" style="margin-top:6px">▼ −2.4%</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>BentoGrid — one primitive, four KPI cards</h2>
+  <div class="bento">
+    <div class="card editorial"><span class="label">Sales</span><div class="figure sec" style="margin-top:6px">412,000</div></div>
+    <div class="card editorial"><span class="label">Margin</span><div class="figure sec" style="margin-top:6px">18.4%</div></div>
+    <div class="card editorial"><span class="label">Dead stock</span><div class="figure sec" style="margin-top:6px">6,720</div></div>
+    <div class="card editorial"><span class="label">Recovery</span><div class="figure sec" style="margin-top:6px">8,400</div></div>
+  </div>
+
+  <h2>ChevronDivider — section break</h2>
+  <div class="card data">
+    <span class="muted" style="font-size:14px">Above</span>
+    <div class="chevron" style="margin:12px 0"></div>
+    <span class="muted" style="font-size:14px">Below</span>
+  </div>
+
+  <h2>WeaveTile field — full-bleed, 4% gold on night</h2>
+  <div class="hero" style="height:220px">
+    <div class="weave field" style="position:absolute;inset:0"></div>
+    <div class="pad muted" style="font-size:14px">Foreground copy stays AA over the motif (gold-on-night = 8.73:1).</div>
+  </div>
+
+  <h2>SeamBorder — kintsugi, earned only</h2>
+  <div class="seam">
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" aria-hidden="true">
+      <path d="M 0 1.5 L 100 1.5" pathLength="1" stroke="var(--primary)" stroke-width="1.5"></path>
+    </svg>
+    <div class="pad">
+      <span class="label">Recovered value</span>
+      <div style="display:flex;align-items:baseline;gap:8px;margin-top:4px"><span class="figure sec">8,400</span><span class="cur">SAR</span></div>
+      <p class="muted" style="font-size:14px">resolving → recovered draws the gold seam once (600ms). Money Audit &amp; Recovery Match only.</p>
+    </div>
+  </div>
+
+  <h2 style="margin-top:48px">v3 polish — elevation system</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:12px">
+    <div class="card data elev-1"><span class="label">level-1</span><p class="muted" style="font-size:13px;margin:8px 0 0">standard / data-dense</p></div>
+    <div class="card data elev-2"><span class="label">level-2 · hover</span><p class="muted" style="font-size:13px;margin:8px 0 0">KPI / hero — lift + gold border</p></div>
+    <div class="card data elev-3"><span class="label">level-3</span><p class="muted" style="font-size:13px;margin:8px 0 0">modal / popover</p></div>
+  </div>
+
+  <h2>ShineBorder — gold beam, primary CTA only</h2>
+  <div class="shine">
+    <button style="border:none;background:var(--primary);color:oklch(15.85% 0.008 163.8);font-weight:700;padding:14px 28px;border-radius:8px;cursor:pointer;font-size:14px">Get a Free Money Audit</button>
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" aria-hidden="true">
+      <defs><linearGradient id="beam" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="transparent"/><stop offset="50%" stop-color="oklch(75.41% 0.085 67.1)"/><stop offset="100%" stop-color="transparent"/></linearGradient></defs>
+      <rect x="0.6" y="0.6" width="98.8" height="98.8" rx="7" stroke="url(#beam)" stroke-width="1.4" fill="none"></rect>
+    </svg>
+  </div>
+
+  <h2>SplitText — one-time hero reveal</h2>
+  <div style="font-size:31px;font-weight:800;letter-spacing:-0.03em">
+    <span class="split"><span style="animation-delay:.05s">Find</span></span>
+    <span class="split"><span style="animation-delay:.11s">the</span></span>
+    <span class="split"><span style="animation-delay:.17s">cash</span></span>
+    <span class="split"><span style="animation-delay:.23s">trapped</span></span>
+    <span class="split"><span style="animation-delay:.29s">inside</span></span>
+    <span class="split"><span style="animation-delay:.35s">your</span></span>
+    <span class="split"><span style="animation-delay:.41s">store.</span></span>
+  </div>
+
+  <h2>Marquee — merchant strip</h2>
+  <div style="overflow:hidden">
+    <div class="marquee-track" style="gap:64px">
+      <div style="display:flex;gap:64px;padding-right:64px">
+        <span style="font-size:20px;font-weight:700;color:oklch(64% 0.012 165);white-space:nowrap">Manara Markets</span>
+        <span style="font-size:20px;font-weight:700;color:oklch(64% 0.012 165);white-space:nowrap">Souq Al-Watan</span>
+        <span style="font-size:20px;font-weight:700;color:oklch(64% 0.012 165);white-space:nowrap">Nakhla</span>
+        <span style="font-size:20px;font-weight:700;color:oklch(64% 0.012 165);white-space:nowrap">Joud Retail</span>
+      </div>
+      <div style="display:flex;gap:64px;padding-right:64px">
+        <span style="font-size:20px;font-weight:700;color:oklch(64% 0.012 165);white-space:nowrap">Manara Markets</span>
+        <span style="font-size:20px;font-weight:700;color:oklch(64% 0.012 165);white-space:nowrap">Souq Al-Watan</span>
+        <span style="font-size:20px;font-weight:700;color:oklch(64% 0.012 165);white-space:nowrap">Nakhla</span>
+        <span style="font-size:20px;font-weight:700;color:oklch(64% 0.012 165);white-space:nowrap">Joud Retail</span>
+      </div>
+    </div>
+  </div>
+
+  <h2>AmbientBackground — brand-forward only</h2>
+  <div class="card" style="position:relative;height:200px;overflow:hidden">
+    <div class="ambient">
+      <div class="blob gold" style="top:-25%;left:-25%;width:70%;height:70%"></div>
+      <div class="blob teal" style="bottom:-25%;right:-25%;width:60%;height:60%"></div>
+    </div>
+    <div style="position:relative;z-index:1;padding:24px" class="muted" style="font-size:14px">slow gold/teal aurora, 6–10% opacity.</div>
+  </div>
+</div>
+</body>
+</html>

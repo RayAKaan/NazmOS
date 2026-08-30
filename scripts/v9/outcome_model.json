@@ -1,0 +1,36 @@
+{
+  "_meta": {
+    "purpose": "V9 simulated-outcome economics. Committed BEFORE the longitudinal run. Defines post-Day-0 baseline consumption per SKU (units/day) used to advance inventory between checkpoints. All produced money is SIMULATED_OUTCOME.",
+    "note": "Factors fixed ex ante so neither engine can influence them."
+  },
+  "recovery_factors": {
+    "on_correct_class_execution": 0.85,
+    "on_acceptable_manual": 0.0,
+    "on_bad_class_execution": 0.25,
+    "noise_pct": 0.05
+  },
+  "daily_consumption_units_per_day": {
+    "B1_healthy_supermarket": {
+      "DAI-MILK-01": 18, "DAI-YOG-02": 12, "DAI-CHS-03": 7,
+      "BBQ-CHR-04": 1, "BBQ-GLL-05": 0,
+      "OVE-RIC-06": 2, "NEW-SNK-07": 2, "INJ-DISCOUNT-01": 5
+    },
+    "B2_poor_baqala": {
+      "DED-PLS-01": 0, "DED-BIS-02": 0, "DED-JUC-03": 0,
+      "SLW-CAN-04": 1, "CHW-WFR-05": 0, "PRM-CHC-06": 8,
+      "FST-WTR-07": 10, "INJ-SAR-02": 0
+    },
+    "B3_growing_supermarket": {
+      "GRW-RIC-01": 22, "GRW-PAS-02": 30, "GRW-OIL-03": 18,
+      "GRW-TOM-04": 14, "GRW-EGG-05": 12, "CTL-TEA-06": 6
+    },
+    "B4_seasonal_retailer": {
+      "SEA-HTR-01": 0, "UMB-RAIN-02": 0, "SCL-FAN-03": 4,
+      "STP-BRD-04": 20, "STP-RIC-05": 9
+    },
+    "B5_cash_constrained_restaurant": {
+      "STR-SAF-01": 1, "STR-OLV-02": 1, "ING-TOM-03": 3,
+      "ING-RIC-04": 2, "HOLE-NODATA-01": 1, "HOLE-NODATA-02": 0
+    }
+  }
+}

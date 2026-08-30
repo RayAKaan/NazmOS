@@ -1,0 +1,384 @@
+{
+ "checkpoint": "d45",
+ "business": "B4_seasonal_retailer",
+ "ingested": true,
+ "audit_id": "366a4234-8d35-440e-a23d-9b37db1185b6",
+ "money_at_risk_sar": 13920.0,
+ "ab_attempts": [
+  {
+   "attempt": 1,
+   "elapsed_s": 17.2,
+   "effective_ai": 0,
+   "error": null,
+   "ai_calls": 4
+  },
+  {
+   "attempt": 2,
+   "elapsed_s": 17.2,
+   "effective_ai": 0,
+   "error": null,
+   "ai_calls": 4
+  }
+ ],
+ "ab_comparison": {
+  "mode_a_decisions": {
+   "DISCOUNT": 2,
+   "MANUAL_REVIEW": 2
+  },
+  "mode_b_decisions": {
+   "DISCOUNT": 2,
+   "MANUAL_REVIEW": 2
+  },
+  "mode_c_decisions": {
+   "DISCOUNT": 3,
+   "MANUAL_REVIEW": 2
+  },
+  "ai_overrides": 0,
+  "ai_agreements": 0,
+  "ai_manual_reviews": 0,
+  "ai_low_confidence": 0,
+  "constraint_rejections": 0,
+  "ai_total_calls": 4,
+  "ai_total_latency_ms": 1121.0,
+  "items_evaluated": 4,
+  "items_triaged_to_ai": 4,
+  "ai_effective_participation": 0
+ },
+ "mode_a_raw": [
+  {
+   "sku": "SEA-HTR-01",
+   "final_decision": "DISCOUNT"
+  },
+  {
+   "sku": "STP-BRD-04",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "STP-RIC-05",
+   "final_decision": "MANUAL_REVIEW"
+  },
+  {
+   "sku": "UMB-RAIN-02",
+   "final_decision": "DISCOUNT"
+  }
+ ],
+ "mode_b_raw": [
+  {
+   "mode": "MODE_B",
+   "sku": "SEA-HTR-01",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 482.98324800271075,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "STP-BRD-04",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 301.65430800116155,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "STP-RIC-05",
+   "deterministic_decision": "MANUAL_REVIEW",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 333.34989901049994,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  },
+  {
+   "mode": "MODE_B",
+   "sku": "UMB-RAIN-02",
+   "deterministic_decision": "DISCOUNT",
+   "ai_decision": "MANUAL_REVIEW",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC",
+   "ai_confidence": 0.0,
+   "ai_reasoning": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation": {
+    "is_valid": false,
+    "decision": "MANUAL_REVIEW",
+    "reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)",
+    "constraint_rejected": false,
+    "constraint_reason": "",
+    "financial_mismatch": false,
+    "financial_mismatch_detail": ""
+   },
+   "ai_latency_ms": 2.966557993204333,
+   "ai_calls": 1,
+   "constraint_rejected": false
+  }
+ ],
+ "mode_c_raw": [
+  {
+   "sku": "SEA-HTR-01",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "STP-BRD-04",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "STP-RIC-05",
+   "final_decision": "MANUAL_REVIEW",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "UMB-RAIN-02",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC"
+  },
+  {
+   "sku": "UMB-RAIN-02",
+   "final_decision": "DISCOUNT",
+   "decision_source": "DETERMINISTIC_NO_AI"
+  }
+ ],
+ "eval_mode_a": {
+  "per_sku": {
+   "SEA-HTR-01": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "STP-BRD-04": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "STP-RIC-05": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "UMB-RAIN-02": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   }
+  },
+  "counts": {
+   "correct": 1,
+   "bad_action": 1,
+   "unnecessary_action": 0,
+   "acceptable_manual": 2,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 4,
+  "correct_decision_rate": 0.25,
+  "bad_action_rate": 0.25,
+  "unnecessary_action_rate": 0.0
+ },
+ "eval_mode_b": {
+  "per_sku": {
+   "SEA-HTR-01": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "STP-BRD-04": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "STP-RIC-05": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "UMB-RAIN-02": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   }
+  },
+  "counts": {
+   "correct": 1,
+   "bad_action": 1,
+   "unnecessary_action": 0,
+   "acceptable_manual": 2,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 4,
+  "correct_decision_rate": 0.25,
+  "bad_action_rate": 0.25,
+  "unnecessary_action_rate": 0.0
+ },
+ "eval_mode_c": {
+  "per_sku": {
+   "SEA-HTR-01": {
+    "decision": "DISCOUNT",
+    "verdict": "correct"
+   },
+   "STP-BRD-04": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "STP-RIC-05": {
+    "decision": "MANUAL_REVIEW",
+    "verdict": "acceptable_manual"
+   },
+   "UMB-RAIN-02": {
+    "decision": "DISCOUNT",
+    "verdict": "bad_action"
+   }
+  },
+  "counts": {
+   "correct": 1,
+   "bad_action": 2,
+   "unnecessary_action": 0,
+   "acceptable_manual": 2,
+   "neutral": 0,
+   "unknown_sku": 0,
+   "unnecessary_inaction": 0
+  },
+  "decisions_evaluated": 5,
+  "correct_decision_rate": 0.2,
+  "bad_action_rate": 0.4,
+  "unnecessary_action_rate": 0.0
+ },
+ "overrides_b_vs_a": [
+  {
+   "sku": "SEA-HTR-01",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "STP-BRD-04",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "STP-RIC-05",
+   "deterministic": "MANUAL_REVIEW",
+   "mode_b_final": "MANUAL_REVIEW",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  },
+  {
+   "sku": "UMB-RAIN-02",
+   "deterministic": "DISCOUNT",
+   "mode_b_final": "DISCOUNT",
+   "source": "DETERMINISTIC",
+   "classification": "NEUTRAL_OVERRIDE",
+   "confidence": 0.0,
+   "reasoning_excerpt": "AI call failed: LLM unavailable (all providers failed or circuit open)",
+   "validation_reason": "AI response invalid: AI call failed: LLM unavailable (all providers failed or circuit open)"
+  }
+ ],
+ "adopted_source_counts": {
+  "C": 4,
+  "B": 0,
+  "A": 0
+ },
+ "chain": [
+  {
+   "action_id": "3168e01b-f459-4b2b-bc86-8e90cf9013fd",
+   "sku": "SEA-HTR-01",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 5838.89,
+   "expected_sar": 7140.0,
+   "verdict": "correct"
+  },
+  {
+   "action_id": "424a95fc-7843-4fdf-8d3d-8f8444ebff3e",
+   "sku": "STP-BRD-04",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "43084bdf-59eb-4821-8489-972285d54264",
+   "sku": "STP-RIC-05",
+   "audit_action_type": "reorder",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "527371db-5d3f-4aba-a12c-33ad80b7a541",
+   "sku": "UMB-RAIN-02",
+   "audit_action_type": "discount",
+   "owner_decision": "DISCOUNT",
+   "decided_by": "C",
+   "approved": true,
+   "executed": true,
+   "completed": true,
+   "simulated_actual_sar": 161.15,
+   "expected_sar": 655.2,
+   "verdict": "bad_action"
+  },
+  {
+   "action_id": "d3910588-9b39-4d93-9ba6-31a6aab73449",
+   "sku": "STP-BRD-04",
+   "audit_action_type": "discount",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  },
+  {
+   "action_id": "b69d843c-324a-425f-966e-01a814217114",
+   "sku": "STP-RIC-05",
+   "audit_action_type": "discount",
+   "owner_decision": "MANUAL_REVIEW",
+   "decided_by": "C"
+  }
+ ]
+}

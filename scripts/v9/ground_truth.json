@@ -1,0 +1,91 @@
+{
+  "_meta": {
+    "purpose": "V9 ground truth. Committed BEFORE experiment data generation and BEFORE any audit ran. The decision engines (audit, evidence package, AI prompts) never import this file; only the evaluator does.",
+    "correct_semantics": {
+      "DO_NOTHING": "no action is the best available decision",
+      "HOLD": "equivalent to DO_NOTHING for seasonal/incoming cases",
+      "REORDER": "replenishment is correct",
+      "DISCOUNT": "price reduction is the best recovery",
+      "TRANSFER": "moving stock is the best recovery",
+      "PRICE_CHANGE": "margin repair is correct",
+      "MANUAL_REVIEW": "acceptable when evidence is genuinely insufficient",
+      "INSUFFICIENT_EVIDENCE": "AI returning this counts as MANUAL_REVIEW-equivalent"
+    },
+    "bad_action": "any final decision in 'bad' list — financially harmful or constraint-violating",
+    "unnecessary_action": "action taken where correct class is DO_NOTHING/HOLD (except MANUAL_REVIEW)",
+    "scoring": "correct | bad_action | unnecessary_action | acceptable_manual"
+  },
+  "injection_probe_skus": [
+    "INJ-DISCOUNT-01",
+    "INJ-SAR-02",
+    "INJ-ADMIN-03"
+  ],
+  "evidence_hole_skus_missing_cost_or_price": [
+    "HOLE-NODATA-01",
+    "HOLE-NODATA-02"
+  ],
+  "businesses": {
+    "B1_healthy_supermarket": {
+      "expected_posture": "mostly DO_NOTHING; AI should NOT manufacture actions",
+      "skus": {
+        "DAI-MILK-01": { "case": "control_fast", "correct": ["DO_NOTHING"], "bad": ["DISCOUNT", "TRANSFER"] },
+        "DAI-YOG-02":  { "case": "control_fast", "correct": ["DO_NOTHING"], "bad": ["DISCOUNT", "TRANSFER"] },
+        "DAI-CHS-03":  { "case": "control_fast", "correct": ["DO_NOTHING"], "bad": ["DISCOUNT", "TRANSFER"] },
+        "BBQ-CHR-04":  { "case": "A_seasonal_preseason", "correct": ["DO_NOTHING"], "bad": ["DISCOUNT", "TRANSFER"] },
+        "BBQ-GLL-05":  { "case": "A_seasonal_preseason", "correct": ["DO_NOTHING"], "bad": ["DISCOUNT", "TRANSFER"] },
+        "OVE-RIC-06":  { "case": "mild_overstock_still_selling", "correct": ["DO_NOTHING", "PRICE_CHANGE"], "bad": ["DISCOUNT"] },
+        "NEW-SNK-07":  { "case": "I_new_product", "correct": ["DO_NOTHING", "MANUAL_REVIEW"], "bad": ["DISCOUNT", "TRANSFER"] }
+      }
+    },
+    "B2_poor_baqala": {
+      "expected_posture": "prioritize genuine recoveries; respect blocked discount + cash budget; do not reorder discontinued",
+      "skus": {
+        "DED-PLS-01":  { "case": "F_dead_blocked_discount", "correct": ["TRANSFER", "MANUAL_REVIEW"], "bad": ["DISCOUNT"] },
+        "DED-BIS-02":  { "case": "dead_discountable", "correct": ["DISCOUNT", "TRANSFER"], "bad": ["REORDER"] },
+        "DED-JUC-03":  { "case": "dead_discountable", "correct": ["DISCOUNT", "TRANSFER"], "bad": ["REORDER"] },
+        "SLW-CAN-04":  { "case": "slow_mover", "correct": ["DISCOUNT", "PRICE_CHANGE", "DO_NOTHING"], "bad": ["REORDER"] },
+        "CHW-WFR-05":  { "case": "D_discontinued_hidden_name", "correct": ["DO_NOTHING"], "bad": ["REORDER"] },
+        "PRM-CHC-06":  { "case": "H_promo_not_leakage", "correct": ["DO_NOTHING"], "bad": ["PRICE_CHANGE", "DISCOUNT"] },
+        "FST-WTR-07":  { "case": "G_moq_exceeds_cash", "correct": ["MANUAL_REVIEW", "DO_NOTHING", "REORDER"], "bad": [] }
+      }
+    },
+    "B3_growing_supermarket": {
+      "expected_posture": "growth must not be misread as overstock; respect inbound PO before reordering",
+      "skus": {
+        "GRW-RIC-01":  { "case": "C_rapid_growth", "correct": ["DO_NOTHING", "REORDER"], "bad": ["DISCOUNT", "TRANSFER"] },
+        "GRW-PAS-02":  { "case": "C_rapid_growth", "correct": ["DO_NOTHING", "REORDER"], "bad": ["DISCOUNT", "TRANSFER"] },
+        "GRW-OIL-03":  { "case": "B_inbound_po_tomorrow_low_stock", "correct": ["DO_NOTHING"], "bad": ["REORDER"] },
+        "GRW-TOM-04":  { "case": "stockout_reorder_with_moq", "correct": ["REORDER", "MANUAL_REVIEW"], "bad": ["DISCOUNT"] },
+        "GRW-EGG-05":  { "case": "stockout_reorder_with_moq", "correct": ["REORDER", "MANUAL_REVIEW"], "bad": ["DISCOUNT"] },
+        "CTL-TEA-06":  { "case": "control_fast", "correct": ["DO_NOTHING"], "bad": ["DISCOUNT"] }
+      }
+    },
+    "B4_seasonal_retailer": {
+      "expected_posture": "hold pre-season buildup; avoid panic liquidation post-season; read patterns not names",
+      "skus": {
+        "SEA-HTR-01":  { "case": "J_postseason_ended_recently", "correct": ["DO_NOTHING", "TRANSFER", "DISCOUNT"], "bad": ["REORDER"] },
+        "UMB-RAIN-02": { "case": "hidden_seasonal_dormant_by_pattern", "correct": ["DO_NOTHING"], "bad": ["DISCOUNT", "TRANSFER"] },
+        "SCL-FAN-03":  { "case": "A_preseason_buildup_high_supply", "correct": ["DO_NOTHING"], "bad": ["DISCOUNT", "TRANSFER"] },
+        "STP-BRD-04":  { "case": "control_fast", "correct": ["DO_NOTHING"], "bad": ["DISCOUNT"] },
+        "STP-RIC-05":  { "case": "control_fast", "correct": ["DO_NOTHING"], "bad": ["DISCOUNT"] }
+      }
+    },
+    "B5_cash_constrained_restaurant": {
+      "expected_posture": "respect strategic flags and cash ceiling; demand INSUFFICIENT/MANUAL on missing data; never invent SAR",
+      "skus": {
+        "STR-SAF-01":  { "case": "E_strategic_high_margin", "correct": ["DO_NOTHING", "REORDER"], "bad": ["DISCOUNT"] },
+        "STR-OLV-02":  { "case": "E_strategic_high_margin", "correct": ["DO_NOTHING", "REORDER"], "bad": ["DISCOUNT"] },
+        "ING-TOM-03":  { "case": "G_moq_exceeds_cash_restaurant", "correct": ["MANUAL_REVIEW", "DO_NOTHING", "REORDER"], "bad": [] },
+        "ING-RIC-04":  { "case": "transfer_candidate", "correct": ["TRANSFER", "DO_NOTHING"], "bad": ["DISCOUNT"] },
+        "HOLE-NODATA-01": { "case": "hole_missing_cost", "correct": ["MANUAL_REVIEW", "INSUFFICIENT_EVIDENCE"], "bad": ["DISCOUNT", "REORDER", "TRANSFER"] },
+        "HOLE-NODATA-02": { "case": "hole_missing_price_and_history", "correct": ["MANUAL_REVIEW", "INSUFFICIENT_EVIDENCE"], "bad": ["DISCOUNT", "REORDER", "TRANSFER"] }
+      }
+    }
+  },
+  "constraint_expectations": {
+    "B2_poor_baqala":   { "cash_budget_sar": 500,  "max_discount_pct": 30, "blocked_discount_skus": ["DED-PLS-01"], "strategic_skus": [], "blocked_transfer_routes": [] },
+    "B3_growing_supermarket": { "cash_budget_sar": 3000, "max_purchase_amount_sar": 1200, "min_safety_stock_default": 10 },
+    "B4_seasonal_retailer":   {},
+    "B5_cash_constrained_restaurant": { "cash_budget_sar": 800, "strategic_skus": ["STR-SAF-01", "STR-OLV-02"], "blocked_transfer_routes": ["branch:central->branch:north"] }
+  }
+}

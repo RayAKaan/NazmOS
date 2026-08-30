@@ -1,0 +1,6 @@
+business,snapshot_date,sku,item_name,category,current_stock,cost_price,sell_price,supplier,reorder_level,inventory_age_days
+general_retail,2026-08-24,G001,USB-C Charger,Electronics,6,27,49,general_retail-supplier,10,15
+general_retail,2026-08-24,G002,Phone Case,Accessories,3,15,35,general_retail-supplier,6,15
+general_retail,2026-08-24,G003,Old Android Cable,Electronics,22,10,18,general_retail-supplier,1,90
+general_retail,2026-08-24,G004,School Backpack,Seasonal,28,48,85,general_retail-supplier,4,15
+general_retail,2026-08-24,G005,Desk Lamp,Home,0,36,65,general_retail-supplier,3,15

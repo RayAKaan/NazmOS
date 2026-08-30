@@ -1,9 +1,11 @@
 """Tests for RLS predicate indexes (Phase 1.7).
 
 Every table guarded by a ``business_id = app.current_tenant_id()`` RLS policy
-needs an index with ``business_id`` as the leading column.  This list mirrors
-``TENANT_TABLES`` in alembic/versions/a25a714a2de8_add_tenant_rls_policies.py
-so a future table addition without an index fails loudly here.
+needs an index with ``business_id`` as the leading column.  This list is the
+union of ``TENANT_TABLES`` across the RLS Alembic migrations; the WS2 drift-guard
+(``test_rls_coverage_complete.py``) fails if a business-scoped ORM table is
+added without a policy, so a future table addition without an index fails
+loudly here too.
 
 A leading-column ``business_id`` unique constraint also satisfies the RLS
 predicate, so both indexes and unique constraints are inspected.
@@ -16,24 +18,33 @@ from app.database.models import Base
 
 TENANT_TABLES = [
     "agent_actions",
+    "agent_runs",
     "analytics_cache",
     "audit_log",
+    "audit_runs",
     "autonomy_policies",
     "billing_events",
+    "business_goals",
     "categories",
     "chat_sessions",
+    "constraint_blocks",
     "daily_summaries",
     "decision_log",
     "enabled_modules",
     "executed_actions",
+    "findings",
     "forecast_cache",
+    "goal_progress_history",
+    "impact_ledger",
     "inventory",
     "items",
+    "learned_outcomes",
     "money_audit_actions",
     "money_audits",
     "notification_preferences",
     "notifications",
     "pharmacy_lots",
+    "pilot_baselines",
     "pos_connections",
     "pricing_recommendations",
     "pricing_rules",

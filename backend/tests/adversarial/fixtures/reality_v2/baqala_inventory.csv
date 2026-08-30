@@ -1,0 +1,6 @@
+business,snapshot_date,sku,item_name,category,current_stock,cost_price,sell_price,supplier,reorder_level,inventory_age_days
+baqala,2026-08-24,B001,Milk 1L,Dairy,7,4.2,6,baqala-supplier,12,15
+baqala,2026-08-24,B002,Water 1.5L,Beverage,15,0.75,2,baqala-supplier,25,15
+baqala,2026-08-24,B003,Imported Biscuit,Snacks,40,10.5,16,baqala-supplier,2,90
+baqala,2026-08-24,B004,Seasonal Ice Cream,Frozen,35,18.0,28,baqala-supplier,5,15
+baqala,2026-08-24,B005,Phone Cable,Accessories,0,12.0,22,baqala-supplier,2,15

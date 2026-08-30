@@ -1,0 +1,6 @@
+business,snapshot_date,sku,item_name,category,current_stock,cost_price,sell_price,supplier,reorder_level,inventory_age_days
+supermarket,2026-08-24,S001,Rice 5kg,Grocery,10,24.0,32,supermarket-supplier,18,15
+supermarket,2026-08-24,S002,Chicken 1kg,Fresh,15,15.5,19,supermarket-supplier,25,15
+supermarket,2026-08-24,S003,Organic Cereal,Grocery,39,25.0,34,supermarket-supplier,2,90
+supermarket,2026-08-24,S004,BBQ Charcoal,Seasonal,28,13.5,22,supermarket-supplier,4,15
+supermarket,2026-08-24,S005,Olive Oil,Grocery,0,30.0,38,supermarket-supplier,2,15

@@ -60,6 +60,8 @@ async def test_approve_restock_action_writes_outcome(db_session):
         {"id": action_id},
     )
     action = row.fetchone()
-    assert action.status == "approved"
+    # approve_agent_action transitions an executed action to 'executed' (not
+    # 'approved'): terminal_status = 'executed' when outcome.executed is True.
+    assert action.status == "executed"
     assert action.outcome_json["po_number"].startswith("NAZM-")
     assert action.outcome_json["total_sar"] == 150.0

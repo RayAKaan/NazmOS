@@ -27,7 +27,10 @@ from app.config import get_settings
 from app.database import connection as connection_mod
 
 
-TEST_DATABASE_URL = "postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos_test"
+TEST_DATABASE_URL = os.environ.get(
+    "TEST_DATABASE_URL",
+    "postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos_test",
+)
 APP_ROLE = "nazmos_app"
 
 
@@ -174,5 +177,55 @@ async def test_app_role_isolates_tenant_rows(
             assert item_a in ids, "Tenant A should see its own item"
             assert item_b not in ids, "Tenant A must not see tenant B item"
             assert len(ids) == 1, f"Expected exactly one row, got {ids}"
+        finally:
+            connection_mod._rls_tenant_id.reset(token)
+
+
+@pytest.mark.asyncio
+async def test_app_role_new_policies_isolate_findings(
+    rls_engine, app_role_enabled, monkeypatch
+):
+    """WS2: the hardened findings/audit_runs/impact_ledger policies enforce
+    row isolation AND reject cross-tenant inserts under SET ROLE nazmos_app."""
+    SessionLocal = async_sessionmaker(rls_engine, class_=AsyncSession, expire_on_commit=False)
+
+    async with SessionLocal() as owner_session:
+        bus_a, bus_b, _, _ = await _seed_two_businesses(owner_session)
+        # Seed one finding per tenant as the RLS-bypassing owner.
+        for bid, label in ((bus_a, "A"), (bus_b, "B")):
+            await owner_session.execute(
+                text("""
+                    INSERT INTO findings (id, business_id, domain, category, severity,
+                                          title, status, source, created_at)
+                    VALUES (:id, :b, 'inventory', 'stockout_risk', 'high',
+                            :title, 'detected', 'audit_engine', NOW())
+                """),
+                {"id": str(uuid.uuid4()), "b": bid, "title": f"finding {label}"},
+            )
+        await owner_session.commit()
+
+    async with SessionLocal() as restricted_session:
+        from app.database.connection import set_rls_tenant_id
+        token = set_rls_tenant_id(bus_a)
+        try:
+            await connection_mod._set_rls_context(restricted_session)
+            rows = (await restricted_session.execute(
+                text("SELECT business_id FROM findings")
+            )).fetchall()
+            ids = {str(r.business_id) for r in rows}
+            assert ids == {bus_a}, f"Tenant A must only see its own finding, got {ids}"
+
+            # Cross-tenant INSERT must be rejected by WITH CHECK.
+            with pytest.raises(Exception):
+                await restricted_session.execute(
+                    text("""
+                        INSERT INTO findings (id, business_id, domain, category, severity,
+                                              title, status, source)
+                        VALUES (:id, :b, 'inventory', 'stockout_risk', 'high',
+                                'crosstenant', 'detected', 'audit_engine')
+                    """),
+                    {"id": str(uuid.uuid4()), "b": bus_b},
+                )
+                await restricted_session.commit()
         finally:
             connection_mod._rls_tenant_id.reset(token)

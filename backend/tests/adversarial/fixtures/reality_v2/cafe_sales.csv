@@ -1,0 +1,387 @@
+business,date,sku,item_name,category,quantity,unit_price,total_amount,cost_price,transaction_type
+cafe,2026-04-27,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-04-28,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-04-29,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-04-30,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-05-01,C001,Americano,Coffee,8,12,96,3.2,sale
+cafe,2026-05-02,C001,Americano,Coffee,8,12,96,3.2,sale
+cafe,2026-05-03,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-05-04,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-05-05,C001,Americano,Coffee,2,12,24,3.2,sale
+cafe,2026-05-06,C001,Americano,Coffee,3,12,36,3.2,sale
+cafe,2026-05-07,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-05-08,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-05-09,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-05-10,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-05-11,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-05-12,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-05-13,C001,Americano,Coffee,3,12,36,3.2,sale
+cafe,2026-05-14,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-05-15,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-05-16,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-05-17,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-05-18,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-05-19,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-05-20,C001,Americano,Coffee,2,12,24,3.2,sale
+cafe,2026-05-21,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-05-22,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-05-23,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-05-24,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-05-25,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-05-26,C001,Americano,Coffee,3,12,36,3.2,sale
+cafe,2026-05-27,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-05-28,C001,Americano,Coffee,2,12,24,3.2,sale
+cafe,2026-05-29,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-05-30,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-05-31,C001,Americano,Coffee,3,12,36,3.2,sale
+cafe,2026-06-01,C001,Americano,Coffee,3,12,36,3.2,sale
+cafe,2026-06-02,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-06-03,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-06-04,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-06-05,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-06-06,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-06-07,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-06-08,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-06-09,C001,Americano,Coffee,1,12,12,3.2,sale
+cafe,2026-06-10,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-06-11,C001,Americano,Coffee,3,12,36,3.2,sale
+cafe,2026-06-12,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-06-13,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-06-14,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-06-15,C001,Americano,Coffee,2,12,24,3.2,sale
+cafe,2026-06-16,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-06-17,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-06-18,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-06-19,C001,Americano,Coffee,8,12,96,3.2,sale
+cafe,2026-06-20,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-06-21,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-06-22,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-06-23,C001,Americano,Coffee,8,12,96,3.2,sale
+cafe,2026-06-24,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-06-25,C001,Americano,Coffee,3,12,36,3.2,sale
+cafe,2026-06-26,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-06-27,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-06-28,C001,Americano,Coffee,3,12,36,3.2,sale
+cafe,2026-06-29,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-06-30,C001,Americano,Coffee,1,12,12,3.2,sale
+cafe,2026-07-01,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-07-02,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-07-03,C001,Americano,Coffee,8,12,96,3.2,sale
+cafe,2026-07-04,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-07-05,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-07-06,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-07-07,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-07-08,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-07-09,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-07-10,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-07-11,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-07-12,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-07-13,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-07-14,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-07-15,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-07-16,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-07-17,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-07-18,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-07-19,C001,Americano,Coffee,8,12,96,3.2,sale
+cafe,2026-07-20,C001,Americano,Coffee,8,12,96,3.2,sale
+cafe,2026-07-21,C001,Americano,Coffee,2,12,24,3.2,sale
+cafe,2026-07-22,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-07-23,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-07-24,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-07-25,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-07-26,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-07-27,C001,Americano,Coffee,8,12,96,3.2,sale
+cafe,2026-07-28,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-07-29,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-07-30,C001,Americano,Coffee,8,12,96,3.2,sale
+cafe,2026-07-31,C001,Americano,Coffee,8,12,96,3.2,sale
+cafe,2026-08-01,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-08-02,C001,Americano,Coffee,8,12,96,3.2,sale
+cafe,2026-08-03,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-08-04,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-08-05,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-08-06,C001,Americano,Coffee,7,12,84,3.2,sale
+cafe,2026-08-07,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-08-08,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-08-09,C001,Americano,Coffee,2,12,24,3.2,sale
+cafe,2026-08-10,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-08-11,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-08-12,C001,Americano,Coffee,8,12,96,3.2,sale
+cafe,2026-08-13,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-08-14,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-08-15,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-08-16,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-08-17,C001,Americano,Coffee,4,12,48,3.2,sale
+cafe,2026-08-18,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-08-19,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-08-20,C001,Americano,Coffee,3,12,36,3.2,sale
+cafe,2026-08-21,C001,Americano,Coffee,8,12,96,3.2,sale
+cafe,2026-08-22,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-08-23,C001,Americano,Coffee,5,12,60,3.2,sale
+cafe,2026-08-24,C001,Americano,Coffee,6,12,72,3.2,sale
+cafe,2026-04-27,C002,Latte,Coffee,1,18,18,5.5,sale
+cafe,2026-04-28,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-04-29,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-04-30,C002,Latte,Coffee,8,18,144,5.5,sale
+cafe,2026-05-01,C002,Latte,Coffee,8,18,144,5.5,sale
+cafe,2026-05-02,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-05-03,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-05-04,C002,Latte,Coffee,3,18,54,5.5,sale
+cafe,2026-05-05,C002,Latte,Coffee,2,18,36,5.5,sale
+cafe,2026-05-06,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-05-07,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-05-08,C002,Latte,Coffee,8,18,144,5.5,sale
+cafe,2026-05-09,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-05-10,C002,Latte,Coffee,3,18,54,5.5,sale
+cafe,2026-05-11,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-05-12,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-05-13,C002,Latte,Coffee,7,18,126,5.5,sale
+cafe,2026-05-14,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-05-15,C002,Latte,Coffee,7,18,126,5.5,sale
+cafe,2026-05-16,C002,Latte,Coffee,9,18,162,5.5,sale
+cafe,2026-05-17,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-05-18,C002,Latte,Coffee,3,18,54,5.5,sale
+cafe,2026-05-19,C002,Latte,Coffee,9,18,162,5.5,sale
+cafe,2026-05-20,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-05-21,C002,Latte,Coffee,8,18,144,5.5,sale
+cafe,2026-05-22,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-05-23,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-05-24,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-05-25,C002,Latte,Coffee,2,18,36,5.5,sale
+cafe,2026-05-26,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-05-27,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-05-28,C002,Latte,Coffee,3,18,54,5.5,sale
+cafe,2026-05-29,C002,Latte,Coffee,9,18,162,5.5,sale
+cafe,2026-05-30,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-05-31,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-06-01,C002,Latte,Coffee,8,18,144,5.5,sale
+cafe,2026-06-02,C002,Latte,Coffee,3,18,54,5.5,sale
+cafe,2026-06-03,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-06-04,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-06-05,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-06-06,C002,Latte,Coffee,10,18,180,5.5,sale
+cafe,2026-06-07,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-06-08,C002,Latte,Coffee,1,18,18,5.5,sale
+cafe,2026-06-09,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-06-10,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-06-11,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-06-12,C002,Latte,Coffee,8,18,144,5.5,sale
+cafe,2026-06-13,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-06-14,C002,Latte,Coffee,8,18,144,5.5,sale
+cafe,2026-06-15,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-06-16,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-06-17,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-06-18,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-06-19,C002,Latte,Coffee,9,18,162,5.5,sale
+cafe,2026-06-20,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-06-21,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-06-22,C002,Latte,Coffee,7,18,126,5.5,sale
+cafe,2026-06-23,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-06-24,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-06-25,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-06-26,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-06-27,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-06-28,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-06-29,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-06-30,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-07-01,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-07-02,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-07-03,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-07-04,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-07-05,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-07-06,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-07-07,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-07-08,C002,Latte,Coffee,7,18,126,5.5,sale
+cafe,2026-07-09,C002,Latte,Coffee,2,18,36,5.5,sale
+cafe,2026-07-10,C002,Latte,Coffee,3,18,54,5.5,sale
+cafe,2026-07-11,C002,Latte,Coffee,3,18,54,5.5,sale
+cafe,2026-07-12,C002,Latte,Coffee,3,18,54,5.5,sale
+cafe,2026-07-13,C002,Latte,Coffee,3,18,54,5.5,sale
+cafe,2026-07-14,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-07-15,C002,Latte,Coffee,3,18,54,5.5,sale
+cafe,2026-07-16,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-07-17,C002,Latte,Coffee,8,18,144,5.5,sale
+cafe,2026-07-18,C002,Latte,Coffee,8,18,144,5.5,sale
+cafe,2026-07-19,C002,Latte,Coffee,7,18,126,5.5,sale
+cafe,2026-07-20,C002,Latte,Coffee,2,18,36,5.5,sale
+cafe,2026-07-21,C002,Latte,Coffee,8,18,144,5.5,sale
+cafe,2026-07-22,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-07-23,C002,Latte,Coffee,8,18,144,5.5,sale
+cafe,2026-07-24,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-07-25,C002,Latte,Coffee,8,18,144,5.5,sale
+cafe,2026-07-26,C002,Latte,Coffee,3,18,54,5.5,sale
+cafe,2026-07-27,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-07-28,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-07-29,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-07-30,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-07-31,C002,Latte,Coffee,8,18,144,5.5,sale
+cafe,2026-08-01,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-08-02,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-08-03,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-08-04,C002,Latte,Coffee,7,18,126,5.5,sale
+cafe,2026-08-05,C002,Latte,Coffee,7,18,126,5.5,sale
+cafe,2026-08-06,C002,Latte,Coffee,3,18,54,5.5,sale
+cafe,2026-08-07,C002,Latte,Coffee,9,18,162,5.5,sale
+cafe,2026-08-08,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-08-09,C002,Latte,Coffee,7,18,126,5.5,sale
+cafe,2026-08-10,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-08-11,C002,Latte,Coffee,7,18,126,5.5,sale
+cafe,2026-08-12,C002,Latte,Coffee,7,18,126,5.5,sale
+cafe,2026-08-13,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-08-14,C002,Latte,Coffee,5,18,90,5.5,sale
+cafe,2026-08-15,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-08-16,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-08-17,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-08-18,C002,Latte,Coffee,8,18,144,5.5,sale
+cafe,2026-08-19,C002,Latte,Coffee,6,18,108,5.5,sale
+cafe,2026-08-20,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-08-21,C002,Latte,Coffee,7,18,126,5.5,sale
+cafe,2026-08-22,C002,Latte,Coffee,7,18,126,5.5,sale
+cafe,2026-08-23,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-08-24,C002,Latte,Coffee,4,18,72,5.5,sale
+cafe,2026-04-28,C003,Imported Syrup,Ingredient,1,55,55,34.0,sale
+cafe,2026-05-11,C003,Imported Syrup,Ingredient,1,55,55,34.0,sale
+cafe,2026-05-16,C003,Imported Syrup,Ingredient,1,55,55,34.0,sale
+cafe,2026-05-27,C003,Imported Syrup,Ingredient,1,55,55,34.0,sale
+cafe,2026-06-06,C003,Imported Syrup,Ingredient,1,55,55,34.0,sale
+cafe,2026-05-04,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-05-09,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-06-10,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-07-07,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-07-19,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-07-21,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-07-24,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-08-04,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-08-05,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-08-06,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-08-07,C004,Berry Tart,Dessert,2,28,56,15.0,sale
+cafe,2026-08-08,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-08-09,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-08-11,C004,Berry Tart,Dessert,2,28,56,15.0,sale
+cafe,2026-08-12,C004,Berry Tart,Dessert,3,28,84,15.0,sale
+cafe,2026-08-13,C004,Berry Tart,Dessert,3,28,84,15.0,sale
+cafe,2026-08-14,C004,Berry Tart,Dessert,2,28,56,15.0,sale
+cafe,2026-08-15,C004,Berry Tart,Dessert,2,28,56,15.0,sale
+cafe,2026-08-16,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-08-17,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-08-18,C004,Berry Tart,Dessert,3,28,84,15.0,sale
+cafe,2026-08-20,C004,Berry Tart,Dessert,2,28,56,15.0,sale
+cafe,2026-08-21,C004,Berry Tart,Dessert,3,28,84,15.0,sale
+cafe,2026-08-22,C004,Berry Tart,Dessert,3,28,84,15.0,sale
+cafe,2026-08-23,C004,Berry Tart,Dessert,2,28,56,15.0,sale
+cafe,2026-08-24,C004,Berry Tart,Dessert,1,28,28,15.0,sale
+cafe,2026-04-27,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-04-28,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-04-29,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-04-30,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-05-01,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-05-02,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-05-03,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-05-04,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-05-05,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-05-06,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-05-07,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-05-08,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-05-09,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-05-10,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-05-11,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-05-12,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-05-13,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-05-14,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-05-15,C005,Matcha Latte,Coffee,4,22,88,7.0,sale
+cafe,2026-05-16,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-05-17,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-05-18,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-05-19,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-05-20,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-05-21,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-05-22,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-05-23,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-05-24,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-05-25,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-05-26,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-05-27,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-05-28,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-05-29,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-05-30,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-05-31,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-06-01,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-06-02,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-06-03,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-06-04,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-06-05,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-06-06,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-06-07,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-06-08,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-06-09,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-06-11,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-06-12,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-06-13,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-06-15,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-06-16,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-06-17,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-06-18,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-06-19,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-06-20,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-06-21,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-06-22,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-06-23,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-06-24,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-06-25,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-06-26,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-06-27,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-06-28,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-06-29,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-06-30,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-07-01,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-07-02,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-07-03,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-07-04,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-07-05,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-07-06,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-07-07,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-07-08,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-07-09,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-07-10,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-07-11,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-07-12,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-07-13,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-07-14,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-07-15,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-07-17,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-07-18,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-07-19,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-07-20,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-07-21,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-07-22,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-07-23,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-07-24,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-07-25,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-07-26,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-07-27,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-07-28,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-07-29,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-07-30,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-07-31,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-08-01,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-08-02,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-08-03,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-08-04,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-08-05,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-08-06,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-08-07,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-08-08,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-08-10,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-08-11,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-08-12,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-08-13,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-08-14,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-08-15,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-08-17,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-08-18,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-08-19,C005,Matcha Latte,Coffee,1,22,22,7.0,sale
+cafe,2026-08-20,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-08-21,C005,Matcha Latte,Coffee,3,22,66,7.0,sale
+cafe,2026-08-22,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-08-23,C005,Matcha Latte,Coffee,2,22,44,7.0,sale
+cafe,2026-08-24,C005,Matcha Latte,Coffee,2,22,44,7.0,sale

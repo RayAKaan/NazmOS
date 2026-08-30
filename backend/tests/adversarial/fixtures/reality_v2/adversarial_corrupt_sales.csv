@@ -1,0 +1,16 @@
+business,date,sku,item_name,quantity,unit_price,total_amount,cost_price
+baqala,not-a-date,BAD1,Bad Date,2,10,20,5
+baqala,2026-08-24,BAD2,Negative Without Type,-2,10,-20,5
+baqala,2026-08-24,BAD3,Missing Cost,2,10,20,bad
+supermarket,not-a-date,BAD1,Bad Date,2,10,20,5
+supermarket,2026-08-24,BAD2,Negative Without Type,-2,10,-20,5
+supermarket,2026-08-24,BAD3,Missing Cost,2,10,20,bad
+cafe,not-a-date,BAD1,Bad Date,2,10,20,5
+cafe,2026-08-24,BAD2,Negative Without Type,-2,10,-20,5
+cafe,2026-08-24,BAD3,Missing Cost,2,10,20,bad
+restaurant,not-a-date,BAD1,Bad Date,2,10,20,5
+restaurant,2026-08-24,BAD2,Negative Without Type,-2,10,-20,5
+restaurant,2026-08-24,BAD3,Missing Cost,2,10,20,bad
+general_retail,not-a-date,BAD1,Bad Date,2,10,20,5
+general_retail,2026-08-24,BAD2,Negative Without Type,-2,10,-20,5
+general_retail,2026-08-24,BAD3,Missing Cost,2,10,20,bad

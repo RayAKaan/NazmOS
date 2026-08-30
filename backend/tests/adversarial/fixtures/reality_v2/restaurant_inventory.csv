@@ -1,0 +1,6 @@
+business,snapshot_date,sku,item_name,category,current_stock,cost_price,sell_price,supplier,reorder_level,inventory_age_days
+restaurant,2026-08-24,R001,Chicken Plate,Main,10,14,32,restaurant-supplier,18,15
+restaurant,2026-08-24,R002,Mixed Grill,Main,6,31,68,restaurant-supplier,10,15
+restaurant,2026-08-24,R003,Imported Dessert,Dessert,18,18,32,restaurant-supplier,1,90
+restaurant,2026-08-24,R004,Iftar Box,Seasonal,21,48,85,restaurant-supplier,3,15
+restaurant,2026-08-24,R005,Premium Steak,Main,0,68,115,restaurant-supplier,2,15

@@ -1,0 +1,6 @@
+business,snapshot_date,sku,item_name,category,current_stock,cost_price,sell_price,supplier,reorder_level,inventory_age_days
+cafe,2026-08-24,C001,Americano,Coffee,18,3.2,12,cafe-supplier,30,15
+cafe,2026-08-24,C002,Latte,Coffee,15,5.5,18,cafe-supplier,25,15
+cafe,2026-08-24,C003,Imported Syrup,Ingredient,17,34.0,55,cafe-supplier,1,90
+cafe,2026-08-24,C004,Berry Tart,Dessert,7,15.0,28,cafe-supplier,1,15
+cafe,2026-08-24,C005,Matcha Latte,Coffee,0,7.0,22,cafe-supplier,7,15

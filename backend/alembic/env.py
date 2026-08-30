@@ -53,8 +53,16 @@ async def run_async_migrations() -> None:
         connect_args={"server_settings": {"search_path": "public"}},
     )
 
+    # Ensure the schema exists in its own committed transaction. If this ran
+    # on the same connection/transaction the migrations execute in, its
+    # autobegin would make alembic treat ``context.begin_transaction()`` as a
+    # nested savepoint; committing that leaves the outer auto-begun transaction
+    # open and SQLAlchemy rolls the whole migration back on close (the alembic
+    # step would report success while leaving a schema with zero tables).
+    async with connectable.begin() as conn:
+        await conn.execute(text("CREATE SCHEMA IF NOT EXISTS public"))
+
     async with connectable.connect() as connection:
-        await connection.execute(text("CREATE SCHEMA IF NOT EXISTS public"))
         await connection.run_sync(do_run_migrations)
 
     await connectable.dispose()

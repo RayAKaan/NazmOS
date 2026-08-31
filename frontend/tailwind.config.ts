@@ -113,8 +113,6 @@ const config: Config = {
           "steel": "oklch(var(--chat-steel) / <alpha-value>)",
           "warm": "oklch(var(--chat-warm) / <alpha-value>)"
         },
-        "border-primary": "oklch(var(--border-literal-primary) / <alpha-value>)",
-        "border-secondary": "oklch(var(--border-literal-secondary) / <alpha-value>)",
         "whatsapp": {
           "DEFAULT": "var(--whatsapp)",
           "deep": "oklch(var(--whatsapp-deep) / <alpha-value>)",

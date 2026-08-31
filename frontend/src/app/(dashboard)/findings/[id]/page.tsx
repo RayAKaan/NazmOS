@@ -250,7 +250,7 @@ export default function FindingDetailPage() {
       {recommendation && (
         <Card density="editorial">
           <h2 className="mb-3 text-lg font-semibold text-foreground">Why NazmOS recommends this</h2>
-          <div className="mb-4 rounded-lg border border-primary/30 bg-primary/5 p-3">
+          <div className="mb-4 rounded-lg border border-border/30 bg-primary/5 p-3">
             <p className="text-sm font-semibold text-foreground">
               Recommended: {recommendation.recommended?.replace(/_/g, " ")}
             </p>

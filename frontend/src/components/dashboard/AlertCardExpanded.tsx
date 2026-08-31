@@ -65,7 +65,7 @@ export function AlertCardExpanded({ alert, onDismiss, onApply }: AlertCardExpand
     info: {
       icon: Info,
       bgColor: "bg-secondary/10",
-      borderColor: "border-secondary/30",
+      borderColor: "border-border/30",
       accentColor: "border-l-secondary",
       badgeColor: "bg-secondary text-brand-night",
       iconColor: "text-secondary",

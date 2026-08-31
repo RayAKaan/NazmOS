@@ -101,7 +101,7 @@ export default function SuppliersPage() {
         </div>
       )}
 
-      <div className="mt-4 bg-primary/5 border border-primary/20 rounded-xl p-4 text-sm">
+      <div className="mt-4 bg-primary/5 border border-border/20 rounded-xl p-4 text-sm">
         <b>Network effect – تأثير الشبكة:</b> Once NazmOS routes orders from 30+ shops to the same distributor, we negotiate better prices / faster fulfillment for all our shops. You benefit automatically – no extra work.
         <br />
         <span className="text-muted-foreground">حاليا: تتبع فقط – التفاوض يبدأ عند 30 متجر نشط</span>

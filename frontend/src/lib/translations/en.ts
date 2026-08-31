@@ -440,4 +440,140 @@ export const en = {
     profit: "Profit",
     transactions: "Transactions",
   },
+
+  landing: {
+    nav: {
+      product: "Product",
+      howItWorks: "How it works",
+      freeAudit: "Free audit",
+      pricing: "Pricing",
+      faq: "FAQ",
+      runDemo: "Run interactive demo",
+      getStarted: "Get Started",
+      signedOut: "Signed out — your files stay yours",
+    },
+    hero: {
+      badge: "The Retail Recovery System",
+      title1: "Find the cash trapped",
+      title2: "inside your store.",
+      subtitle:
+        "NazmOS audits your sales and inventory, finds dead stock, prevents stockouts, protects margins, and sends owner approvals on WhatsApp — so you act with confidence, not guesswork.",
+      primaryCta: "Upload Sales + Inventory — Analyze Free",
+      secondaryCta: "Watch the demo",
+      trust: "No POS replacement · no customer names · no sign-up required",
+      liveBadge: "Money Audit · live result from your files",
+      liveCta: "See my full audit",
+      sampleLabel: "Sample",
+      sampleNote:
+        "Static illustrative numbers. Upload your own files above to see a live audit computed from your data.",
+      sampleTitle: "Abu Fahad-style store audit",
+      idle: {
+        title: "Send two files. See trapped cash.",
+        body: "Drop your sales and inventory exports. We match them by product name and show where cash is stuck — usually in under 10 seconds.",
+        cta: "Try the Free Money Audit",
+      },
+    },
+    problem: {
+      badge: "The hidden cost",
+      title: "Money disappears quietly in your store.",
+      items: [
+        { stat: "Stockouts", detail: "Fast-moving items run dry before the weekend or Ramadan demand — customers walk out." },
+        { stat: "Dead stock", detail: "Products nobody buys sit on shelves while cash stays locked up." },
+        { stat: "Margin leakage", detail: "Supplier costs creep up and quietly shrink your profit." },
+        { stat: "Branch imbalance", detail: "One branch overstocks while another is about to run out." },
+      ],
+      transition: "What if your store could turn that data into decisions?",
+    },
+    how: {
+      badge: "How it works",
+      title: "From raw data to a recovery habit.",
+      steps: [
+        { title: "Your data comes in", detail: "You send a sales export plus an inventory export. No customer names, no POS replacement, no sign-up." },
+        { title: "Nazm matches products", detail: "Sales are paired to stock by product name so every result traces to your own lines." },
+        { title: "You get a Money Audit", detail: "Dead stock, stockout risk, margin leakage, and an estimate of value at risk — in one report." },
+        { title: "You approve actions", detail: "Recovery actions arrive as owner approvals for you to review and act on." },
+        { title: "Weekly proof", detail: "A short weekly report shows what was recovered and what still needs attention." },
+      ],
+    },
+    businessMemory: {
+      badge: "Built with your sources",
+      title: "Designed to learn from outcomes, not to run on its own.",
+      body:
+        "Nazm reasons across your sales, inventory, and context to surface what is worth your attention. It is built to learn from each outcome you approve — the decision always stays with you.",
+      points: [
+        "Explains its reasoning with evidence and confidence",
+        "Marks estimates as estimates — confidence is always shown",
+        "Never invents numbers: what cannot be computed is labelled as not estimated",
+      ],
+    },
+    integrations: {
+      badge: "Built with, not certified",
+      title: "The connectors we build against are code-verified.",
+      body:
+        "Our integrations are wired into our codebase, but they are not yet runtime-verified in every live system. Treat the list as what we build against — not a promise about a specific deployment.",
+      items: ["Foodics", "Salla", "WhatsApp Business", "Cloud / export uploads (CSV, Excel)"],
+      note: "Integration status is audited, not assumed. See our integration audit for details.",
+    },
+    trust: {
+      badge: "Product truth",
+      title: "No invented customers, logos, or numbers.",
+      body:
+        "Anything we cannot show you or compute from your own data is labelled as Sample or Illustrative. We do not fabricate testimonials, ROIs, or certifications. You can see exactly what our own systems verified.",
+      points: [
+        "Free Money Audit is deterministic — it runs on your files, not a language model guess",
+        "AI autonomy stays off by default; you approve actions",
+        "Sample figures are always labelled, never presented as real results",
+      ],
+    },
+    pricing: {
+      badge: "Start small, prove value",
+      title: "Simple pricing after we prove value.",
+      cards: [
+        {
+          name: "Free Money Audit",
+          price: "SAR 0",
+          body: "Send two files. Get a Money Audit computed from your data in 48 hours.",
+          features: ["Unlimited preview uploads", "1 full audit per account", "Sample WhatsApp preview", "Recovery Match preview"],
+        },
+        {
+          name: "30-Day Recovery Pilot",
+          price: "SAR 3,000",
+          body: "Credited toward an annual license if you continue after the pilot.",
+          features: ["Weekly recovery reports", "WhatsApp owner approvals", "Founder support", "Actionable cash-leakage findings"],
+        },
+        {
+          name: "Annual Plans",
+          price: "From SAR 6,900 / year",
+          body: "Small Retail, Growing Retail, and custom chain plans.",
+          features: ["Unlimited store analytics", "Priority support", "Recovery Match across branches", "Partner add-ons when needed"],
+        },
+      ],
+      note: "Pilot pricing is shown as a guide. Final quotes depend on store size and scope.",
+    },
+    faq: {
+      badge: "FAQ",
+      title: "Straight answers.",
+      items: [
+        { q: "Is the Free Money Audit really free?", a: "Yes. Upload a sales or inventory file and get an audit computed from your own data — no credit card, no sign-up, no customer data required." },
+        { q: "Will this replace my POS system?", a: "No. Nazm sits beside your existing tools. You keep selling the way you do today; we add the intelligence layer on top." },
+        { q: "Do you need my customer data?", a: "No. We work from sales quantities, prices, and inventory — we do not need names or customer records." },
+        { q: "Does AI act on its own?", a: "No. Autonomy is off by default. Nazm prepares recovery actions and you approve them before anything changes." },
+        { q: "What do you mean by 'Built with, not certified'?", a: "Our connectors are code-verified in our own environment. We do not claim they are certified or verified against every live system." },
+      ],
+    },
+    finalCta: {
+      title: "Free proves value. Paid plans unlock continuous recovery.",
+      body: "Free shows your Money Audit. Paid plans unlock weekly recovery reports, live approvals, and Recovery Match between nearby stores.",
+      cta: "Get a Free Money Audit",
+    },
+    footer: {
+      tagline: "Nazmak is the company building NazmOS — the Retail Recovery System for Saudi stores.",
+      privacy: "Privacy",
+      terms: "Terms",
+      allRights: "All rights reserved.",
+      systemsOperational: "All systems operational",
+      madeIn: "Built for Saudi Arabia",
+    },
+    toggleLanguage: "Language",
+  },
 } as const;

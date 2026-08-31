@@ -20,7 +20,7 @@ export function AlertCard({ alert, onAction }: AlertCardProps) {
   const typeStyles = {
     critical: "bg-destructive/5 border-destructive/30 text-destructive",
     warning: "bg-warning/5 border-warning/30 text-warning",
-    info: "bg-primary/5 border-primary/30 text-primary",
+    info: "bg-primary/5 border-border/30 text-primary",
     success: "bg-success/5 border-success/30 text-success",
   };
 

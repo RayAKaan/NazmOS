@@ -147,23 +147,28 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Ban legacy design tokens in PR diff
+      - name: Self-test the token guard (positive & negative cases)
+        working-directory: frontend
+        run: node scripts/check_legacy_tokens.mjs --self-test
+      - name: Ban forbidden design tokens in PR diff
         working-directory: frontend
         run: |
           set -o pipefail
-          # Banned top-level legacy namespaces that must no longer appear as
-          # Tailwind classes. See frontend/design-tokens/README.md for the
-          # canonical single-token-layer architecture.
-          PATTERNS='bg-navy-|text-navy-|border-navy-|bg-bg-|text-text-|bg-status-|text-status-|border-status-|bg-chart-literals-|text-chart-literals-|border-border-primary|border-border-secondary'
+          # Forbidden class tokens. Matched as whole word-boundary tokens so
+          # canonical classes (border-border, bg-background, text-foreground,
+          # bg-primary, text-primary, bg-secondary, text-secondary) never match.
+          # border-border-primary/-secondary are legacy double forms; the actual
+          # regressions were border-primary/border-secondary — both are rejected.
+          PATTERNS='\bbg-navy-|\btext-navy-|\bborder-navy-|\bbg-bg-|\btext-text-|\bbg-status-|\btext-status-|\bborder-status-|\bbg-chart-literals-|\btext-chart-literals-|\bborder-border-primary\b|\bborder-border-secondary\b|\bborder-primary\b|\bborder-secondary\b'
           REF="${GITHUB_BASE_REF:-origin/main}"
           DIFF=$(git diff "$REF...HEAD" -- '*.tsx' '*.ts' '*.jsx' '*.js' '*.css' 2>/dev/null || true)
           COMMIT_DIFF=$(git diff "HEAD^..HEAD" -- '*.tsx' '*.ts' '*.jsx' '*.js' '*.css' 2>/dev/null || true)
           HITS=$(printf '%s\n%s\n' "$DIFF" "$COMMIT_DIFF" | grep -oE "$PATTERNS" | sort -u || true)
           if [ -n "$HITS" ]; then
-            echo "::error::Banned legacy design-token class(es) found in diff: $(echo "$HITS" | tr '\n' ' ')"
+            echo "::error::Forbidden design-token class(es) found in diff: $(echo "$HITS" | tr '\n' ' ')"
             echo "Migrate these to the canonical semantic Token layer. See frontend/design-tokens/README.md and run:"
             echo "  npm run build:tokens   (regenerate tailwind + globals from tokens.json)"
             echo "  node scripts/token-migration/migrate.ts   (codemod)"
             exit 1
           fi
-          echo "No banned legacy design-token classes in diff."
+          echo "No forbidden design-token classes in diff."

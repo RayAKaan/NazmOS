@@ -27,7 +27,7 @@ export function Toast({ message, type = "info", onClose, duration = 5000 }: Toas
     success: "bg-success/10 border-success/30 text-success",
     error: "bg-destructive/10 border-destructive/30 text-destructive",
     warning: "bg-warning/10 border-warning/30 text-warning",
-    info: "bg-secondary/10 border-secondary/30 text-secondary",
+    info: "bg-secondary/10 border-border/30 text-secondary",
   };
 
   return (
@@ -140,7 +140,7 @@ const toastConfig = {
   },
   info: {
     icon: Info,
-    className: "border-secondary/30 bg-secondary/10",
+    className: "border-border/30 bg-secondary/10",
     iconClass: "text-secondary",
   },
 };

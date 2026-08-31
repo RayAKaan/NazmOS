@@ -85,7 +85,7 @@ function actionTone(type: string) {
   if (type === "reorder") return "text-brand-amber bg-brand-amber/10 border-brand-amber/25";
   if (type === "discount") return "text-brand-red-light bg-brand-red/10 border-brand-red/25";
   if (type === "margin_fix") return "text-brand-green bg-brand-green/10 border-brand-green/25";
-  return "text-primary bg-primary/10 border-primary/20";
+  return "text-primary bg-primary/10 border-border/20";
 }
 
 function statusTone(status: string) {

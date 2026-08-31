@@ -31,8 +31,8 @@ export function SeamBorder({ state, children, className }: SeamBorderProps) {
     <div
       className={cn(
         "relative overflow-hidden rounded-lg border bg-card",
-        recovered ? "border-primary/40" : "border-border",
-        resolving && "border-dashed border-secondary/60",
+        recovered ? "border-border/40" : "border-border",
+        resolving && "border-dashed border-border/60",
         className
       )}
     >

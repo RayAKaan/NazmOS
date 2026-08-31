@@ -449,7 +449,7 @@ export default function IntegrationsPage() {
                     disabled={formLoading}
                     className="flex-1 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50"
                   >
-                    {formLoading ? "Saving…" : "Connect"}
+                    {formLoading ? "Savingâ€¦" : "Connect"}
                   </button>
                 </div>
               </div>
@@ -508,7 +508,7 @@ function AdapterForm({ adapter, values, onChange, error }: {
             value={values[field.key] || ""}
             onChange={(e) => onChange({ ...values, [field.key]: e.target.value })}
             placeholder={field.placeholder}
-            className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
+            className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-border"
           />
         </div>
       ))}

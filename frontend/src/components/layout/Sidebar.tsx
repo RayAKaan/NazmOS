@@ -44,7 +44,7 @@ export function Sidebar() {
         className={cn(
           "flex items-center gap-3 px-4 py-3 rounded-xl transition-colors",
           isActive
-            ? "bg-primary/10 text-primary border border-primary/30"
+            ? "bg-primary/10 text-primary border border-border/30"
             : "text-muted-foreground hover:bg-card-hover hover:text-foreground"
         )}
       >

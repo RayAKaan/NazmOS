@@ -97,7 +97,7 @@ export default function FeedPage() {
 
       <div className="space-y-3">
         {items.map((it) => (
-          <div key={it.id} className="bg-surface border border-border rounded-2xl p-5 hover:border-primary/30 transition-colors">
+          <div key={it.id} className="bg-surface border border-border rounded-2xl p-5 hover:border-border/30 transition-colors">
             <div className="flex items-start justify-between mb-2">
               <div className="text-xs uppercase tracking-wider text-muted-foreground">
                 {it.action_type.replace("_", " ")} • confidence {(it.confidence * 100).toFixed(0)}%

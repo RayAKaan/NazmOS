@@ -32,7 +32,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             type={isPassword && showPassword ? "text" : type}
             className={cn(
-              "w-full px-4 py-3 bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-colors duration-200",
+              "w-full px-4 py-3 bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-border/50 transition-colors duration-200",
               "rounded-md",
               error && "border-destructive/50 focus:border-destructive",
               leftIcon && "pl-11",

@@ -151,7 +151,7 @@ export default function MobilePage() {
 
       <main className="p-4 space-y-4">
         {notice && (
-          <div className="rounded-xl border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-primary">
+          <div className="rounded-xl border border-border/30 bg-primary/10 px-4 py-2 text-sm text-primary">
             {notice}
           </div>
         )}

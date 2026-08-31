@@ -13,57 +13,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import api from "@/lib/api";
-
-interface GuestAuditSummary {
-  money_at_risk_sar: number;
-  inventory_value_sar: number;
-  capital_at_risk_sar: number;
-  revenue_at_risk_sar: number;
-  gross_profit_at_risk_sar: number;
-  recoverable_value_low_sar: number;
-  recoverable_value_high_sar: number;
-  expected_recovery_sar?: number | null;
-  recovery_confidence: string;
-  dead_stock_value_sar: number;
-  stockout_risk_value_sar: number;
-  margin_leakage_sar: number;
-  overstock_value_sar: number;
-  action_count: number;
-  row_count: number;
-  confidence_score: number;
-  headline_note?: string;
-  products_needing_attention?: number;
-  guest_session_id: string;
-  is_two_file?: boolean;
-  is_arabic?: boolean;
-  pairing?: {
-    attempted: number;
-    paired: number;
-    high: number;
-    medium: number;
-    unmatched_sales: number;
-    unmatched_inventory: number;
-    success_rate: number;
-    truncated: boolean;
-  };
-}
-
-interface GuestAuditAction {
-  action_type: string;
-  title: string;
-  description: string;
-  expected_recovery_sar?: number | null;
-  recoverable_value_low_sar?: number | null;
-  recoverable_value_high_sar?: number | null;
-  recovery_confidence?: string;
-  priority: number;
-}
-
-interface GuestAuditResult {
-  summary: GuestAuditSummary;
-  actions: GuestAuditAction[];
-  missing_data: { code: string; message: string }[];
-}
+import { useAudit } from "@/components/landing/audit-context";
+import type { GuestAuditResult } from "@/components/landing/audit-types";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ACCEPT = ".csv,.xlsx,.xls,.xlsm,.json";
@@ -73,6 +24,7 @@ function pickFirstFile(ev: React.ChangeEvent<HTMLInputElement>): File | null {
 }
 
 export function GuestAuditUploader() {
+  const { setResult: setAuditResult } = useAudit();
   const [salesFile, setSalesFile] = useState<File | null>(null);
   const [inventoryFile, setInventoryFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState<"sales" | "inventory" | null>(null);
@@ -135,13 +87,14 @@ export function GuestAuditUploader() {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setResult(response.data);
+      setAuditResult(response.data);
       setStatus("done");
     } catch (err: any) {
       const detail = err?.response?.data?.detail;
       setError(typeof detail === "string" ? detail : "Could not run the free audit. Try different files.");
       setStatus("error");
     }
-  }, [salesFile, inventoryFile]);
+  }, [salesFile, inventoryFile, setAuditResult]);
 
   const reset = () => {
     setSalesFile(null);

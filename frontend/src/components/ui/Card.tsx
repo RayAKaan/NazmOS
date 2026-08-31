@@ -32,7 +32,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
           "overflow-hidden rounded-lg border bg-card",
           variant === "bordered" ? "border-input" : "border-border",
           elevated
-            ? "shadow-elevation-2 transition-[transform,border-color,box-shadow] duration-150 ease-out hover:-translate-y-0.5 hover:border-primary/30"
+            ? "shadow-elevation-2 transition-[transform,border-color,box-shadow] duration-150 ease-out hover:-translate-y-0.5 hover:border-border/30"
             : "shadow-elevation-1",
           hoverable && "transition-colors duration-200 hover:bg-surface-hover",
           className

@@ -102,7 +102,7 @@ export function ActionCenter() {
           <p className="mt-1 text-xs text-muted-foreground">Actions completed</p>
         </Card>
 
-        <Card density="editorial" hoverable className={cn(pendingApprovals.length > 0 && "border-primary/40")}>
+        <Card density="editorial" hoverable className={cn(pendingApprovals.length > 0 && "border-border/40")}>
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium uppercase tracking-[0.04em] text-muted-foreground">
               Needs Your Approval

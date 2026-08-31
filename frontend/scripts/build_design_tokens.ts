@@ -79,9 +79,9 @@ for (const ns of LEGACY_NS) {
   colors[ns] = obj;
 }
 
-// top-level border-primary / border-secondary (current class names)
-colors["border-primary"] = twValue("border-literal-primary", legacy.borderLiteral.primary);
-colors["border-secondary"] = twValue("border-literal-secondary", legacy.borderLiteral.secondary);
+// The top-level border accent classes were previously generated from the pruned
+// borderLiteral legacy namespace (not part of the canonical layer); all borders
+// now resolve through the neutral border-border token only.
 
 // whatsapp: legacy namespace is the full current surface
 colors.whatsapp = {

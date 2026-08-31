@@ -90,7 +90,7 @@ export default function PartnersPage() {
                   className={cn(
                     "cursor-pointer rounded-xl border p-4 transition",
                     form.partner_type === pt.value
-                      ? "border-primary bg-primary/10"
+                      ? "border-border bg-primary/10"
                       : "border-border bg-brand-cream/[0.02] hover:border-brand-cream/20"
                   )}
                 >
@@ -139,7 +139,7 @@ function Field({ label, value, onChange, type = "text", required }: { label: str
         required={required}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl border border-border bg-brand-night/30 px-3 py-2 text-brand-cream outline-none focus:border-primary"
+        className="w-full rounded-xl border border-border bg-brand-night/30 px-3 py-2 text-brand-cream outline-none focus:border-border"
       />
     </label>
   );

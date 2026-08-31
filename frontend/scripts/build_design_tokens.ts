@@ -315,7 +315,7 @@ ${cssVarsFromLegacy().replace(/^/gm, "    ")}
   }
 
   .prose-intelligence {
-    @apply text-sm leading-6 text-text-secondary;
+    @apply text-sm leading-6 text-muted-foreground;
   }
 
   .prose-intelligence p {
@@ -323,7 +323,7 @@ ${cssVarsFromLegacy().replace(/^/gm, "    ")}
   }
 
   .prose-intelligence strong {
-    @apply text-text-primary font-semibold;
+    @apply text-foreground font-semibold;
   }
 
   .prose-intelligence ul {
@@ -331,7 +331,7 @@ ${cssVarsFromLegacy().replace(/^/gm, "    ")}
   }
 
   .focus-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 }
 

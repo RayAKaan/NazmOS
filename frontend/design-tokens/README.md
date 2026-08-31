@@ -51,6 +51,8 @@ The authoritative machine-readable mapping lives in
 - Borders / dividers: `border-navy-panel-2` → `border-border`;
   `divide-navy-panel-2` → `divide-border`;
   `border-border-primary`/`border-border-secondary` → prune (zero usage).
+- Focus ring offset (`.focus-ring` utility in `build_design_tokens.ts`, emitted into
+  `globals.css`): `focus-visible:ring-offset-bg-primary` → `ring-offset-background`.
 - Status: `text/bg/border status-*` → canonical:
   `success → success`, `warning → warning`, `error → destructive`,
   `info → secondary`. See decision D-01 in the audit report.

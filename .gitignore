@@ -261,6 +261,9 @@ media/
 *.ico
 *.svg
 !.logo.svg
+# Visual-regression baseline screenshots are required for CI comparison
+!frontend/e2e/__screenshots__/
+!frontend/e2e/__screenshots__/**/*.png
 
 # Documents (unless needed for repo)
 *.pdf

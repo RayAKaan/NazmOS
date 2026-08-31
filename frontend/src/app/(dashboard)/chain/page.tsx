@@ -72,11 +72,11 @@ export default function ChainDashboardPage() {
   if (!dashboard) {
     return (
       <div className="text-center py-12">
-        <Building2 className="w-16 h-16 text-navy-muted mx-auto mb-4" />
-        <h2 className="text-xl font-semibold text-navy-text mb-2">
+        <Building2 className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+        <h2 className="text-xl font-semibold text-foreground mb-2">
           Chain Dashboard
         </h2>
-        <p className="text-navy-muted">
+        <p className="text-muted-foreground">
           Create or join an organization to see chain-level insights.
         </p>
       </div>
@@ -95,14 +95,14 @@ export default function ChainDashboardPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-navy-text">
+          <h1 className="text-2xl font-bold text-foreground">
             {dashboard.organization_name}
           </h1>
-          <p className="text-sm text-navy-muted">
+          <p className="text-sm text-muted-foreground">
             {dashboard.total_locations} locations in Saudi Arabia
           </p>
         </div>
-        <span className="px-4 py-2 bg-navy-panel text-navy-muted rounded-xl text-sm">
+        <span className="px-4 py-2 bg-card text-muted-foreground rounded-xl text-sm">
           Chain Settings — coming soon
         </span>
       </div>
@@ -111,15 +111,15 @@ export default function ChainDashboardPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-navy-panel rounded-2xl p-6"
+          className="bg-card rounded-2xl p-6"
         >
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-xl bg-success/20 flex items-center justify-center">
               <DollarSign className="w-5 h-5 text-success" />
             </div>
-            <span className="text-sm text-navy-muted">Today's Revenue</span>
+            <span className="text-sm text-muted-foreground">Today's Revenue</span>
           </div>
-          <p className="text-2xl font-bold text-navy-text">
+          <p className="text-2xl font-bold text-foreground">
             {formatSAR(dashboard.total_revenue_today)}
           </p>
           <div className="flex items-center gap-1 mt-2">
@@ -131,7 +131,7 @@ export default function ChainDashboardPage() {
             <span className={`text-sm ${revenueChange >= 0 ? "text-success" : "text-destructive"}`}>
               {Math.abs(revenueChange).toFixed(1)}%
             </span>
-            <span className="text-sm text-navy-muted">vs yesterday</span>
+            <span className="text-sm text-muted-foreground">vs yesterday</span>
           </div>
         </motion.div>
 
@@ -139,51 +139,51 @@ export default function ChainDashboardPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-navy-panel rounded-2xl p-6"
+          className="bg-card rounded-2xl p-6"
         >
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
               <ShoppingCart className="w-5 h-5 text-primary" />
             </div>
-            <span className="text-sm text-navy-muted">Transactions</span>
+            <span className="text-sm text-muted-foreground">Transactions</span>
           </div>
-          <p className="text-2xl font-bold text-navy-text">
+          <p className="text-2xl font-bold text-foreground">
             {dashboard.total_transactions_today.toLocaleString("ar-SA")}
           </p>
-          <p className="text-sm text-navy-muted mt-2">Today</p>
+          <p className="text-sm text-muted-foreground mt-2">Today</p>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-navy-panel rounded-2xl p-6"
+          className="bg-card rounded-2xl p-6"
         >
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-xl bg-accent-purple/20 flex items-center justify-center">
               <Building2 className="w-5 h-5 text-accent-purple" />
             </div>
-            <span className="text-sm text-navy-muted">Locations</span>
+            <span className="text-sm text-muted-foreground">Locations</span>
           </div>
-          <p className="text-2xl font-bold text-navy-text">
+          <p className="text-2xl font-bold text-foreground">
             {dashboard.total_locations}
           </p>
-          <p className="text-sm text-navy-muted mt-2">Active</p>
+          <p className="text-sm text-muted-foreground mt-2">Active</p>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-navy-panel rounded-2xl p-6"
+          className="bg-card rounded-2xl p-6"
         >
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-xl bg-destructive/20 flex items-center justify-center">
               <AlertTriangle className="w-5 h-5 text-destructive" />
             </div>
-            <span className="text-sm text-navy-muted">Alerts</span>
+            <span className="text-sm text-muted-foreground">Alerts</span>
           </div>
-          <p className="text-2xl font-bold text-navy-text">
+          <p className="text-2xl font-bold text-foreground">
             {criticalLocations.length}
           </p>
           <p className="text-sm text-destructive mt-2">Need attention</p>
@@ -205,33 +205,33 @@ export default function ChainDashboardPage() {
         </motion.div>
       )}
 
-      <div className="bg-navy-panel rounded-2xl overflow-hidden">
-        <div className="p-4 border-b border-navy-panel-2">
-          <h2 className="text-lg font-semibold text-navy-text">All Locations</h2>
+      <div className="bg-card rounded-2xl overflow-hidden">
+        <div className="p-4 border-b border-border">
+          <h2 className="text-lg font-semibold text-foreground">All Locations</h2>
         </div>
         
-        <div className="divide-y divide-navy-panel-2">
+        <div className="divide-y divide-border">
           {dashboard.locations_summary.map((location) => (
             <div
               key={location.id}
               className="flex items-center justify-between p-4 transition-colors"
             >
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-navy-panel-2 flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-navy-muted" />
+                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center">
+                  <MapPin className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <div>
-                  <p className="font-medium text-navy-text">{location.name}</p>
-                  <p className="text-sm text-navy-muted">{location.city}</p>
+                  <p className="font-medium text-foreground">{location.name}</p>
+                  <p className="text-sm text-muted-foreground">{location.city}</p>
                 </div>
               </div>
               
               <div className="flex items-center gap-6">
                 <div className="text-right">
-                  <p className="font-medium text-navy-text">
+                  <p className="font-medium text-foreground">
                     {formatSAR(location.revenue_today)}
                   </p>
-                  <p className="text-sm text-navy-muted">
+                  <p className="text-sm text-muted-foreground">
                     {location.transactions_today} transactions
                   </p>
                 </div>

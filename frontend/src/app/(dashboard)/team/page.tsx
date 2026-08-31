@@ -136,8 +136,8 @@ export default function TeamPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-navy-text">Team</h1>
-          <p className="text-sm text-navy-muted">
+          <h1 className="text-2xl font-bold text-foreground">Team</h1>
+          <p className="text-sm text-muted-foreground">
             Manage your team members and their permissions
           </p>
         </div>
@@ -151,48 +151,48 @@ export default function TeamPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-navy-panel rounded-2xl p-6">
+        <div className="bg-card rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
             <Users className="w-5 h-5 text-primary" />
-            <span className="text-sm text-navy-muted">Total Members</span>
+            <span className="text-sm text-muted-foreground">Total Members</span>
           </div>
-          <p className="text-2xl font-bold text-navy-text">{members.length}</p>
+          <p className="text-2xl font-bold text-foreground">{members.length}</p>
         </div>
-        <div className="bg-navy-panel rounded-2xl p-6">
+        <div className="bg-card rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
             <Clock className="w-5 h-5 text-warning" />
-            <span className="text-sm text-navy-muted">Pending Invites</span>
+            <span className="text-sm text-muted-foreground">Pending Invites</span>
           </div>
-          <p className="text-2xl font-bold text-navy-text">{invitations.length}</p>
+          <p className="text-2xl font-bold text-foreground">{invitations.length}</p>
         </div>
-        <div className="bg-navy-panel rounded-2xl p-6">
+        <div className="bg-card rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
             <Shield className="w-5 h-5 text-success" />
-            <span className="text-sm text-navy-muted">Admins</span>
+            <span className="text-sm text-muted-foreground">Admins</span>
           </div>
-          <p className="text-2xl font-bold text-navy-text">
+          <p className="text-2xl font-bold text-foreground">
             {members.filter((m) => m.role === "admin" || m.role === "owner").length}
           </p>
         </div>
       </div>
 
-      <div className="bg-navy-panel rounded-2xl overflow-hidden">
-        <div className="p-4 border-b border-navy-panel-2">
-          <h2 className="text-lg font-semibold text-navy-text">Team Members</h2>
+      <div className="bg-card rounded-2xl overflow-hidden">
+        <div className="p-4 border-b border-border">
+          <h2 className="text-lg font-semibold text-foreground">Team Members</h2>
         </div>
         
-        <div className="divide-y divide-navy-panel-2">
+        <div className="divide-y divide-border">
           {members.map((member) => (
             <div key={member.id} className="flex items-center justify-between p-4">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-navy-panel-2 flex items-center justify-center">
-                  <span className="text-navy-text font-medium">
+                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                  <span className="text-foreground font-medium">
                     {member.full_name.charAt(0).toUpperCase()}
                   </span>
                 </div>
                 <div>
-                  <p className="font-medium text-navy-text">{member.full_name}</p>
-                  <p className="text-sm text-navy-muted">{member.email}</p>
+                  <p className="font-medium text-foreground">{member.full_name}</p>
+                  <p className="text-sm text-muted-foreground">{member.email}</p>
                 </div>
               </div>
               
@@ -227,21 +227,21 @@ export default function TeamPage() {
       </div>
 
       {invitations.length > 0 && (
-        <div className="bg-navy-panel rounded-2xl overflow-hidden">
-          <div className="p-4 border-b border-navy-panel-2">
-            <h2 className="text-lg font-semibold text-navy-text">Pending Invitations</h2>
+        <div className="bg-card rounded-2xl overflow-hidden">
+          <div className="p-4 border-b border-border">
+            <h2 className="text-lg font-semibold text-foreground">Pending Invitations</h2>
           </div>
           
-          <div className="divide-y divide-navy-panel-2">
+          <div className="divide-y divide-border">
             {invitations.map((invite) => (
               <div key={invite.id} className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-navy-panel-2 flex items-center justify-center">
-                    <Mail className="w-5 h-5 text-navy-muted" />
+                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                    <Mail className="w-5 h-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="font-medium text-navy-text">{invite.email}</p>
-                    <p className="text-sm text-navy-muted">
+                    <p className="font-medium text-foreground">{invite.email}</p>
+                    <p className="text-sm text-muted-foreground">
                       Invited as {invite.role} • Expires {new Date(invite.expires_at).toLocaleDateString()}
                     </p>
                   </div>
@@ -270,28 +270,28 @@ export default function TeamPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-navy-panel rounded-2xl p-6 w-full max-w-md"
+            className="bg-card rounded-2xl p-6 w-full max-w-md"
           >
-            <h3 className="text-lg font-semibold text-navy-text mb-4">Invite Team Member</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Invite Team Member</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-navy-muted mb-2">Email</label>
+                <label className="block text-sm text-muted-foreground mb-2">Email</label>
                 <input
                   type="email"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
-                  className="w-full px-4 py-3 bg-navy-panel-2 rounded-xl text-navy-text focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-4 py-3 bg-muted rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="colleague@company.com"
                 />
               </div>
               
               <div>
-                <label className="block text-sm text-navy-muted mb-2">Role</label>
+                <label className="block text-sm text-muted-foreground mb-2">Role</label>
                 <select
                   value={inviteRole}
                   onChange={(e) => setInviteRole(e.target.value)}
-                  className="w-full px-4 py-3 bg-navy-panel-2 rounded-xl text-navy-text focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-4 py-3 bg-muted rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="admin">Admin</option>
                   <option value="manager">Manager</option>
@@ -304,7 +304,7 @@ export default function TeamPage() {
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={() => setShowInviteModal(false)}
-                  className="flex-1 px-4 py-3 bg-navy-panel-2 text-navy-text rounded-xl hover:bg-navy-panel-3 transition-colors"
+                  className="flex-1 px-4 py-3 bg-muted text-foreground rounded-xl hover:bg-muted transition-colors"
                 >
                   Cancel
                 </button>

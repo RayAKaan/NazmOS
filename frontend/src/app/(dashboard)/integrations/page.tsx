@@ -274,8 +274,8 @@ export default function IntegrationsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-navy-text">Integrations</h1>
-          <p className="text-sm text-navy-muted">
+          <h1 className="text-2xl font-bold text-foreground">Integrations</h1>
+          <p className="text-sm text-muted-foreground">
             Connect the tools you already use and let NazmOS turn their data into decisions.
           </p>
         </div>
@@ -289,46 +289,46 @@ export default function IntegrationsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-navy-panel rounded-2xl p-6">
+        <div className="bg-card rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
             <Link2 className="w-5 h-5 text-primary" />
-            <span className="text-sm text-navy-muted">Active Connections</span>
+            <span className="text-sm text-muted-foreground">Active Connections</span>
           </div>
-          <p className="text-2xl font-bold text-navy-text">
+          <p className="text-2xl font-bold text-foreground">
             {connections.filter((c) => c.is_active).length}
           </p>
         </div>
-        <div className="bg-navy-panel rounded-2xl p-6">
+        <div className="bg-card rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
             <RefreshCw className="w-5 h-5 text-success" />
-            <span className="text-sm text-navy-muted">Last Sync</span>
+            <span className="text-sm text-muted-foreground">Last Sync</span>
           </div>
-          <p className="text-2xl font-bold text-navy-text">
+          <p className="text-2xl font-bold text-foreground">
             {connections[0]?.last_sync_at
               ? new Date(connections[0].last_sync_at).toLocaleTimeString()
               : "Never"}
           </p>
         </div>
-        <div className="bg-navy-panel rounded-2xl p-6">
+        <div className="bg-card rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
             <Zap className="w-5 h-5 text-accent-purple" />
-            <span className="text-sm text-navy-muted">Records Synced</span>
+            <span className="text-sm text-muted-foreground">Records Synced</span>
           </div>
-          <p className="text-2xl font-bold text-navy-text">
+          <p className="text-2xl font-bold text-foreground">
             {connections.reduce((sum, c) => sum + (c.last_sync_records_processed || 0), 0)}
           </p>
         </div>
       </div>
 
-      <div className="bg-navy-panel rounded-2xl overflow-hidden">
-        <div className="p-4 border-b border-navy-panel-2">
-          <h2 className="text-lg font-semibold text-navy-text">Connected Systems</h2>
+      <div className="bg-card rounded-2xl overflow-hidden">
+        <div className="p-4 border-b border-border">
+          <h2 className="text-lg font-semibold text-foreground">Connected Systems</h2>
         </div>
         
         {connections.length === 0 ? (
           <div className="p-12 text-center">
-            <Link2 className="w-16 h-16 text-navy-faint mx-auto mb-4" />
-            <p className="text-navy-muted mb-4">No integrations configured yet</p>
+            <Link2 className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground mb-4">No integrations configured yet</p>
             <button
               onClick={() => setShowAddModal(true)}
               className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors"
@@ -337,7 +337,7 @@ export default function IntegrationsPage() {
             </button>
           </div>
         ) : (
-          <div className="divide-y divide-navy-panel-2">
+          <div className="divide-y divide-border">
             {connections.map((conn) => {
               const adapter = ADAPTERS.find((a) => a.id === conn.adapter_type);
               const AdapterIcon = adapter?.icon || Link2;
@@ -345,12 +345,12 @@ export default function IntegrationsPage() {
               return (
                 <div key={conn.id} className="flex items-center justify-between p-4">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-navy-panel-2 flex items-center justify-center">
-                      <AdapterIcon className="w-6 h-6 text-navy-muted" />
+                    <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
+                      <AdapterIcon className="w-6 h-6 text-muted-foreground" />
                     </div>
                     <div>
-                      <p className="font-medium text-navy-text">{conn.connection_name}</p>
-                      <p className="text-sm text-navy-muted">{adapter?.name}</p>
+                      <p className="font-medium text-foreground">{conn.connection_name}</p>
+                      <p className="text-sm text-muted-foreground">{adapter?.name}</p>
                     </div>
                   </div>
                   
@@ -369,7 +369,7 @@ export default function IntegrationsPage() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleTestConnection(conn.id)}
-                        className="p-2 text-navy-muted hover:bg-navy-panel-2 rounded-lg transition-colors"
+                        className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
                         title="Test connection"
                       >
                         <Zap className="w-4 h-4" />
@@ -377,7 +377,7 @@ export default function IntegrationsPage() {
                       <button
                         onClick={() => handleSync(conn.id)}
                         disabled={conn.sync_status === "syncing"}
-                        className="p-2 text-navy-muted hover:bg-navy-panel-2 rounded-lg transition-colors disabled:opacity-50"
+                        className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors disabled:opacity-50"
                         title="Sync now"
                       >
                         <RefreshCw className={`w-4 h-4 ${conn.sync_status === "syncing" ? "animate-spin" : ""}`} />
@@ -403,9 +403,9 @@ export default function IntegrationsPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-navy-panel rounded-2xl p-6 w-full max-w-2xl max-h-[85vh] overflow-y-auto"
+            className="bg-card rounded-2xl p-6 w-full max-w-2xl max-h-[85vh] overflow-y-auto"
           >
-            <h3 className="text-lg font-semibold text-navy-text mb-4">
+            <h3 className="text-lg font-semibold text-foreground mb-4">
               {selectedAdapter ? "Configure integration" : "Add Integration"}
             </h3>
             
@@ -416,7 +416,7 @@ export default function IntegrationsPage() {
                 <AdapterGrid title="Custom" adapters={customAdapters} onSelect={openAdapter} />
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="w-full py-3 bg-navy-panel-2 text-navy-text rounded-xl hover:bg-navy-panel-3 transition-colors"
+                  className="w-full py-3 bg-muted text-foreground rounded-xl hover:bg-muted transition-colors"
                 >
                   Cancel
                 </button>
@@ -440,7 +440,7 @@ export default function IntegrationsPage() {
                 <div className="mt-6 flex gap-3">
                   <button
                     onClick={() => setSelectedAdapter(null)}
-                    className="flex-1 py-3 bg-navy-panel-2 text-navy-text rounded-xl hover:bg-navy-panel-3 transition-colors"
+                    className="flex-1 py-3 bg-muted text-foreground rounded-xl hover:bg-muted transition-colors"
                   >
                     Back
                   </button>
@@ -464,7 +464,7 @@ export default function IntegrationsPage() {
 function AdapterGrid({ title, adapters, onSelect }: { title: string; adapters: AdapterConfig[]; onSelect: (id: AdapterId) => void }) {
   return (
     <div>
-      <h4 className="text-sm font-medium text-navy-muted mb-3">{title}</h4>
+      <h4 className="text-sm font-medium text-muted-foreground mb-3">{title}</h4>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {adapters.map((adapter) => {
           const Icon = adapter.icon;
@@ -472,14 +472,14 @@ function AdapterGrid({ title, adapters, onSelect }: { title: string; adapters: A
             <button
               key={adapter.id}
               onClick={() => onSelect(adapter.id)}
-              className="flex items-start gap-4 p-4 bg-navy-panel-2 rounded-xl hover:bg-navy-panel-3 transition-colors text-left"
+              className="flex items-start gap-4 p-4 bg-muted rounded-xl hover:bg-muted transition-colors text-left"
             >
-              <div className="w-10 h-10 rounded-lg bg-navy-panel flex items-center justify-center shrink-0">
-                <Icon className="w-5 h-5 text-navy-muted" />
+              <div className="w-10 h-10 rounded-lg bg-card flex items-center justify-center shrink-0">
+                <Icon className="w-5 h-5 text-muted-foreground" />
               </div>
               <div>
-                <p className="font-medium text-navy-text">{adapter.name}</p>
-                <p className="text-sm text-navy-muted">{adapter.description}</p>
+                <p className="font-medium text-foreground">{adapter.name}</p>
+                <p className="text-sm text-muted-foreground">{adapter.description}</p>
               </div>
             </button>
           );
@@ -499,7 +499,7 @@ function AdapterForm({ adapter, values, onChange, error }: {
     <div className="space-y-4">
       {adapter.fields.map((field) => (
         <div key={field.key}>
-          <label className="block text-sm font-medium text-navy-text mb-1.5">
+          <label className="block text-sm font-medium text-foreground mb-1.5">
             {field.label}
             {field.required && <span className="text-destructive ml-1">*</span>}
           </label>
@@ -508,7 +508,7 @@ function AdapterForm({ adapter, values, onChange, error }: {
             value={values[field.key] || ""}
             onChange={(e) => onChange({ ...values, [field.key]: e.target.value })}
             placeholder={field.placeholder}
-            className="w-full px-4 py-2.5 bg-navy-deep border border-navy-panel-2 rounded-xl text-navy-text placeholder-navy-faint focus:outline-none focus:border-primary"
+            className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
           />
         </div>
       ))}

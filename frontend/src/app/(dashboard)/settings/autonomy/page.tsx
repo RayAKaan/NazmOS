@@ -85,20 +85,20 @@ export default function AutonomyPage() {
   };
 
   const labelFor = (d: number) => d === 0 ? "Inform – إخبار" : d < 50 ? "Suggest – اقتراح" : d < 95 ? "Approve – موافقة" : "Auto – تلقائي";
-  const colorFor = (d: number) => d === 0 ? "text-text-muted" : d < 50 ? "text-warning" : d < 95 ? "text-primary" : "text-success";
+  const colorFor = (d: number) => d === 0 ? "text-muted-foreground" : d < 50 ? "text-warning" : d < 95 ? "text-primary" : "text-success";
 
   return (
     <div className="p-6 md:p-8 max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold mb-1">Autonomy Dial – التحكم الذاتي</h1>
-      <p className="text-text-muted text-sm mb-8">Control how much Nazm does on its own. 0 = inform only · 50 = draft + approve · 100 = auto-execute</p>
+      <p className="text-muted-foreground text-sm mb-8">Control how much Nazm does on its own. 0 = inform only · 50 = draft + approve · 100 = auto-execute</p>
 
       <div className="space-y-6">
         {policies.map((p) => (
           <div key={p.action_type} className="bg-surface border border-border rounded-2xl p-5">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <div className="font-semibold">{p.label} <span className="text-text-muted font-normal">· {p.label_en}</span></div>
-                <div className="text-xs text-text-muted">{p.description_ar}</div>
+                <div className="font-semibold">{p.label} <span className="text-muted-foreground font-normal">· {p.label_en}</span></div>
+                <div className="text-xs text-muted-foreground">{p.description_ar}</div>
               </div>
               <div className={`text-sm font-mono font-bold ${colorFor(p.dial)}`}>
                 {p.dial} – {labelFor(p.dial)}
@@ -113,13 +113,13 @@ export default function AutonomyPage() {
               onChange={(e) => setDial(p.action_type, parseInt(e.target.value))}
               className="w-full accent-primary"
             />
-            <div className="flex justify-between text-xs text-text-muted mt-1">
+            <div className="flex justify-between text-xs text-muted-foreground mt-1">
               <span>0 Inform</span>
               <span>50 Approve</span>
               <span>100 Auto</span>
             </div>
             {p.ceiling_sar !== undefined && (
-              <div className="text-xs text-text-muted mt-2">Auto-spend ceiling: ﷼ {p.ceiling_sar} SAR</div>
+              <div className="text-xs text-muted-foreground mt-2">Auto-spend ceiling: ﷼ {p.ceiling_sar} SAR</div>
             )}
             {p.max_price_increase_pct !== undefined && (
               <div className="text-xs text-warning mt-2">⚠️ Max auto price increase: {p.max_price_increase_pct}% – higher requires manual approval</div>
@@ -139,13 +139,13 @@ export default function AutonomyPage() {
       {/* Phase 5 §18–19: what can happen automatically vs needs approval vs always human */}
       {explanation.length > 0 && (
         <div className="mt-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-text-muted mb-2">What Nazm can do</h2>
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">What Nazm can do</h2>
           <div className="space-y-2">
             {explanation.map((e) => (
               <div key={e.action_type} className="flex items-start justify-between gap-3 rounded-lg border border-border bg-surface p-3 text-sm">
                 <div>
                   <div className="font-medium">{e.label}</div>
-                  <div className="text-xs text-text-muted">{e.explanation}</div>
+                  <div className="text-xs text-muted-foreground">{e.explanation}</div>
                 </div>
                 <span className={
                   e.mode === "automatic" ? "shrink-0 rounded-full bg-success/10 px-2 py-0.5 text-xs font-bold text-success" :
@@ -162,14 +162,14 @@ export default function AutonomyPage() {
       )}
 
       {floors && (
-        <div className="mt-4 text-xs text-text-muted bg-surface border border-border rounded-xl p-4">
+        <div className="mt-4 text-xs text-muted-foreground bg-surface border border-border rounded-xl p-4">
           <b>Safety floors (cannot be changed here):</b><br/>
           Min auto confidence: {floors.min_confidence} · Medium-risk escalation: ﷼ {floors.risk_escalate_medium_sar} SAR · High-risk escalation: ﷼ {floors.risk_escalate_high_sar} SAR
-          <div className="mt-1 text-text-muted">{floors.note}</div>
+          <div className="mt-1 text-muted-foreground">{floors.note}</div>
         </div>
       )}
 
-      <div className="mt-6 text-xs text-text-muted bg-surface border border-border rounded-xl p-4">
+      <div className="mt-6 text-xs text-muted-foreground bg-surface border border-border rounded-xl p-4">
         <b>Recommended for Saudi pharmacies (starting):</b><br/>
         Restock 50 · Pricing 20 · Cash 0 · Staff 0 · Expiry 50<br/>
         Increase dial gradually as you trust Nazm. You can always pull it back to 0.

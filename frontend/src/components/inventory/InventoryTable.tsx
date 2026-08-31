@@ -57,22 +57,22 @@ export function InventoryTable({ data, isLoading, onItemClick }: InventoryTableP
       <table className="w-full min-w-[600px] md:min-w-0">
         <thead>
           <tr className="border-b border-border">
-            <th className="text-left p-3 text-xs font-medium text-text-muted uppercase tracking-wider">
+            <th className="text-left p-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Item
             </th>
-            <th className="text-right p-3 text-xs font-medium text-text-muted uppercase tracking-wider">
+            <th className="text-right p-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Stock
             </th>
-            <th className="text-right p-3 text-xs font-medium text-text-muted uppercase tracking-wider hidden sm:table-cell">
+            <th className="text-right p-3 text-xs font-medium text-muted-foreground uppercase tracking-wider hidden sm:table-cell">
               Daily Avg
             </th>
-            <th className="text-right p-3 text-xs font-medium text-text-muted uppercase tracking-wider">
+            <th className="text-right p-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Days Left
             </th>
-            <th className="text-center p-3 text-xs font-medium text-text-muted uppercase tracking-wider">
+            <th className="text-center p-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Status
             </th>
-            <th className="text-right p-3 text-xs font-medium text-text-muted uppercase tracking-wider hidden md:table-cell">
+            <th className="text-right p-3 text-xs font-medium text-muted-foreground uppercase tracking-wider hidden md:table-cell">
               Value
             </th>
           </tr>
@@ -87,14 +87,14 @@ export function InventoryTable({ data, isLoading, onItemClick }: InventoryTableP
               <td className="p-3">
                 <div>
                   <p className="font-medium text-sm">{item.name}</p>
-                  <p className="text-xs text-text-muted">{item.category}</p>
+                  <p className="text-xs text-muted-foreground">{item.category}</p>
                 </div>
               </td>
               <td className="p-3 text-right">
                 <span className="font-medium">
                   {item.current_stock.toFixed(0)}
                 </span>
-                <span className="text-text-muted text-xs ml-1">{item.unit}</span>
+                <span className="text-muted-foreground text-xs ml-1">{item.unit}</span>
               </td>
               <td className="p-3 text-right hidden sm:table-cell">
                 {item.daily_avg_sale.toFixed(1)}/day
@@ -111,7 +111,7 @@ export function InventoryTable({ data, isLoading, onItemClick }: InventoryTableP
                       item.days_until_stockout < 7 &&
                       "text-warning",
                     (item.days_until_stockout === null || item.days_until_stockout === undefined) &&
-                      "text-text-muted"
+                      "text-muted-foreground"
                   )}
                 >
                   {item.days_until_stockout !== null

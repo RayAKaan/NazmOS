@@ -33,7 +33,7 @@ export function ReorderModal({ item, isOpen, onClose }: ReorderModalProps) {
         <div className="sticky top-0 bg-surface border-b border-border p-4 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold">{itemData.name}</h2>
-            <p className="text-sm text-text-muted">{itemData.category}</p>
+            <p className="text-sm text-muted-foreground">{itemData.category}</p>
           </div>
           <button
             onClick={onClose}
@@ -46,36 +46,36 @@ export function ReorderModal({ item, isOpen, onClose }: ReorderModalProps) {
         <div className="p-4 space-y-6">
           <div className="flex items-center gap-4">
             <StockStatusBadge status={itemData.status} />
-            <span className="text-sm text-text-muted">
+            <span className="text-sm text-muted-foreground">
               SKU: {itemData.sku || "N/A"}
             </span>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-4 rounded-lg bg-background">
-              <p className="text-xs text-text-muted mb-1">Current Stock</p>
+              <p className="text-xs text-muted-foreground mb-1">Current Stock</p>
               <p className="text-lg font-bold">
                 {itemData.current_stock.toFixed(0)} {itemData.unit}
               </p>
             </div>
             <div className="p-4 rounded-lg bg-background">
-              <p className="text-xs text-text-muted mb-1">Daily Average</p>
+              <p className="text-xs text-muted-foreground mb-1">Daily Average</p>
               <p className="text-lg font-bold">{itemData.daily_avg_sale} {itemData.unit}</p>
             </div>
             <div className="p-4 rounded-lg bg-background">
-              <p className="text-xs text-text-muted mb-1">Days Left</p>
+              <p className="text-xs text-muted-foreground mb-1">Days Left</p>
               <p className="text-lg font-bold">
                 {itemData.days_until_stockout?.toFixed(1) || "∞"}
               </p>
             </div>
             <div className="p-4 rounded-lg bg-background">
-              <p className="text-xs text-text-muted mb-1">Stock Value</p>
+              <p className="text-xs text-muted-foreground mb-1">Stock Value</p>
               <p className="text-lg font-bold">{formatCurrency(itemData.stock_value)}</p>
             </div>
           </div>
 
           <div>
-            <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider mb-3">
+            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-3">
               Sales History (30 Days)
             </h3>
             <div className="h-48">
@@ -115,16 +115,16 @@ export function ReorderModal({ item, isOpen, onClose }: ReorderModalProps) {
           {reorder_recommendation.should_reorder && (
             <div className="p-4 rounded-xl bg-warning/10 border border-warning/30">
               <h4 className="font-semibold text-warning mb-2">Reorder Recommendation</h4>
-              <p className="text-sm text-text-secondary mb-2">
+              <p className="text-sm text-muted-foreground mb-2">
                 {reorder_recommendation.reason}
               </p>
               <p className="text-sm">
-                <span className="text-text-muted">Recommended Quantity:</span>{" "}
+                <span className="text-muted-foreground">Recommended Quantity:</span>{" "}
                 <span className="font-semibold">{reorder_recommendation.recommended_qty} {itemData.unit}</span>
               </p>
               {reorder_recommendation.recommended_by_date && (
                 <p className="text-sm">
-                  <span className="text-text-muted">Order By:</span>{" "}
+                  <span className="text-muted-foreground">Order By:</span>{" "}
                   <span className="font-semibold">{formatDate(reorder_recommendation.recommended_by_date)}</span>
                 </p>
               )}
@@ -135,7 +135,7 @@ export function ReorderModal({ item, isOpen, onClose }: ReorderModalProps) {
           )}
 
           <div className="flex items-center justify-between pt-4 border-t border-border">
-            <div className="text-sm text-text-muted">
+            <div className="text-sm text-muted-foreground">
               <p>Last Restocked: {itemData.last_restocked ? formatDate(itemData.last_restocked) : "N/A"}</p>
               <p>Trend: {itemData.trend_7d === "up" ? "📈 Trending Up" : itemData.trend_7d === "down" ? "📉 Trending Down" : "➡️ Stable"}</p>
             </div>

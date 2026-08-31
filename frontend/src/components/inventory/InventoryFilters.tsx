@@ -36,27 +36,27 @@ export function InventoryFilters({
     <div className="space-y-3">
       <div className="flex items-center gap-3">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search items..."
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
           />
         </div>
       </div>
 
       <div className="flex items-center gap-3 overflow-x-auto pb-1 -mx-4 px-4 md:mx-0 md:px-0">
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-text-muted" />
-          <span className="text-sm text-text-muted">Filters:</span>
+          <Filter className="w-4 h-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Filters:</span>
         </div>
 
         <select
           value={statusValue}
           onChange={(e) => onStatusChange(e.target.value)}
-          className="px-3 py-1.5 bg-surface border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-primary cursor-pointer"
+          className="px-3 py-1.5 bg-surface border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-primary cursor-pointer"
         >
           <option value="all">All Status</option>
           <option value="critical">Critical</option>
@@ -69,7 +69,7 @@ export function InventoryFilters({
         <select
           value={categoryValue}
           onChange={(e) => onCategoryChange(e.target.value)}
-          className="px-3 py-1.5 bg-surface border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-primary cursor-pointer"
+          className="px-3 py-1.5 bg-surface border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-primary cursor-pointer"
         >
           <option value="all">All Categories</option>
           {categories.map((cat) => (

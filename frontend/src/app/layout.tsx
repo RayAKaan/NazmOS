@@ -81,7 +81,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-bg-primary text-text-primary font-sans antialiased">
+      <body className="min-h-screen bg-background text-foreground font-sans antialiased">
         {/* §6: single shared WeaveTile sprite — referenced via <use> everywhere, never duplicated. */}
         <WeaveSprite />
         <Providers>

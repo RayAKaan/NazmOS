@@ -22,7 +22,7 @@ export function TopProducts({ data, isLoading }: TopProductsProps) {
 
   if (!data || data.products.length === 0) {
     return (
-      <div className="text-center text-text-muted py-8">
+      <div className="text-center text-muted-foreground py-8">
         No sales data available
       </div>
     );
@@ -32,7 +32,7 @@ export function TopProducts({ data, isLoading }: TopProductsProps) {
     <div>
       <div className="flex items-center gap-2 mb-4">
         <Trophy className="w-5 h-5 text-warning" />
-        <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider">
+        <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
           Top Sellers
         </h3>
       </div>
@@ -48,23 +48,23 @@ export function TopProducts({ data, isLoading }: TopProductsProps) {
                 product.rank === 1
                   ? "bg-warning/20 text-warning"
                   : product.rank === 2
-                  ? "bg-text-muted/20 text-text-muted"
+                  ? "bg-muted/40 text-muted-foreground"
                   : product.rank === 3
                   ? "bg-warning/20 text-warning"
-                  : "bg-surface text-text-muted"
+                  : "bg-surface text-muted-foreground"
               )}
             >
               {product.rank}
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-medium text-sm truncate">{product.name}</p>
-              <p className="text-xs text-text-muted">{product.category}</p>
+              <p className="text-xs text-muted-foreground">{product.category}</p>
             </div>
             <div className="text-right">
               <p className="font-semibold text-sm">
                 {formatCurrency(product.total_revenue)}
               </p>
-              <p className="text-xs text-text-muted">
+              <p className="text-xs text-muted-foreground">
                 {product.total_qty.toFixed(0)} sold
               </p>
             </div>
@@ -75,7 +75,7 @@ export function TopProducts({ data, isLoading }: TopProductsProps) {
                   ? "text-success"
                   : product.trend === "down"
                   ? "text-destructive"
-                  : "text-text-muted"
+                  : "text-muted-foreground"
               )}
             >
               {product.trend === "up" ? "↑" : product.trend === "down" ? "↓" : "→"}

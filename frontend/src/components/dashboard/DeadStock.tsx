@@ -24,12 +24,12 @@ export function DeadStock({ data, isLoading }: DeadStockProps) {
     return (
       <div>
         <div className="flex items-center gap-2 mb-4">
-          <Trash2 className="w-5 h-5 text-text-muted" />
-          <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider">
+          <Trash2 className="w-5 h-5 text-muted-foreground" />
+          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
             Dead Stock
           </h3>
         </div>
-        <div className="text-center py-8 text-text-muted">
+        <div className="text-center py-8 text-muted-foreground">
           <p className="text-lg mb-2">🎉</p>
           <p>No dead stock found!</p>
         </div>
@@ -41,7 +41,7 @@ export function DeadStock({ data, isLoading }: DeadStockProps) {
     <div>
       <div className="flex items-center gap-2 mb-4">
         <Trash2 className="w-5 h-5 text-destructive" />
-        <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider">
+        <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
           Dead Stock
         </h3>
       </div>
@@ -66,7 +66,7 @@ export function DeadStock({ data, isLoading }: DeadStockProps) {
                 {item.recommendation}
               </span>
             </div>
-            <p className="text-xs text-text-muted">
+            <p className="text-xs text-muted-foreground">
               {item.days_since_last_sale || "∞"} days no sale •{" "}
               {formatCurrency(item.stock_value)} stuck
             </p>
@@ -75,7 +75,7 @@ export function DeadStock({ data, isLoading }: DeadStockProps) {
       </div>
       {data.items.length > 0 && (
         <div className="mt-4 pt-3 border-t border-border">
-          <p className="text-sm text-text-muted">
+          <p className="text-sm text-muted-foreground">
             Total stuck value:{" "}
             <span className="font-semibold text-destructive">
               {formatCurrency(data.total_stuck_value)}

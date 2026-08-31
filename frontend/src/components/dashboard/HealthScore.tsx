@@ -30,7 +30,7 @@ export function HealthScore({ score, isLoading }: HealthScoreProps) {
 
   return (
     <div className="bg-surface rounded-lg border border-border p-6 shadow-elevation-1">
-      <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider mb-4">
+      <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">
         Store Health
       </h3>
       <div className="flex items-center justify-center">

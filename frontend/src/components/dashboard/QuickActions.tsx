@@ -21,7 +21,7 @@ export function QuickActions() {
       description: "Download",
       onClick: () => {},
       disabled: true,
-      color: "text-text-muted",
+      color: "text-muted-foreground",
       bg: "bg-surface",
     },
     {
@@ -30,14 +30,14 @@ export function QuickActions() {
       description: "Phase 2",
       onClick: () => {},
       disabled: true,
-      color: "text-text-muted",
+      color: "text-muted-foreground",
       bg: "bg-surface",
     },
   ];
 
   return (
     <div>
-      <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider mb-4">
+      <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">
         Quick Actions
       </h3>
       <div className="grid grid-cols-3 gap-3">
@@ -59,7 +59,7 @@ export function QuickActions() {
                 <Icon className={cn("w-5 h-5", action.color)} />
               </div>
               <span className="text-xs font-medium text-center">{action.label}</span>
-              <span className="text-xs text-text-muted">{action.description}</span>
+              <span className="text-xs text-muted-foreground">{action.description}</span>
             </button>
           );
         })}

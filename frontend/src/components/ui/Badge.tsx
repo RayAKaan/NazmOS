@@ -11,7 +11,7 @@ export function Badge({ className, variant = "default", ...props }: BadgeProps) 
     success: "bg-success/10 text-success border border-success/30",
     warning: "bg-warning/10 text-warning border border-warning/30",
     danger: "bg-destructive/10 text-destructive border border-destructive/30",
-    info: "bg-status-info/10 text-status-info border border-status-info/30",
+    info: "bg-secondary/10 text-secondary border border-secondary/30",
     purple: "bg-accent-purple/10 text-accent-purple border border-accent-purple/30",
     brand: "bg-primary/10 text-primary border border-primary/30",
   };

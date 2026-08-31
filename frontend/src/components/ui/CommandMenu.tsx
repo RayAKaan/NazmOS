@@ -91,25 +91,25 @@ export function CommandMenu({ items, isOpen, onClose }: CommandMenuProps) {
           className="absolute top-[20%] left-1/2 -translate-x-1/2 w-full max-w-xl"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="bg-bg-secondary border border-border rounded-2xl shadow-2xl overflow-hidden">
+          <div className="bg-card border border-border rounded-2xl shadow-2xl overflow-hidden">
             <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
-              <Search className="w-5 h-5 text-text-muted" />
+              <Search className="w-5 h-5 text-muted-foreground" />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Type a command or search..."
-                className="flex-1 bg-transparent text-text-primary placeholder:text-text-muted outline-none"
+                className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none"
                 autoFocus
               />
-              <kbd className="px-2 py-1 bg-bg-tertiary rounded text-xs text-text-muted">
+              <kbd className="px-2 py-1 bg-muted rounded text-xs text-muted-foreground">
                 ESC
               </kbd>
             </div>
 
             <div className="max-h-80 overflow-y-auto py-2">
               {filteredItems.length === 0 ? (
-                <div className="px-4 py-8 text-center text-text-muted">
+                <div className="px-4 py-8 text-center text-muted-foreground">
                   No results found
                 </div>
               ) : (
@@ -121,23 +121,23 @@ export function CommandMenu({ items, isOpen, onClose }: CommandMenuProps) {
                     className={cn(
                       "w-full flex items-center gap-3 px-4 py-3 transition-colors",
                       index === selectedIndex
-                        ? "bg-brand-primary/10 text-text-primary"
-                        : "text-text-secondary hover:bg-bg-tertiary"
+                        ? "bg-brand-primary/10 text-foreground"
+                        : "text-muted-foreground hover:bg-muted"
                     )}
                   >
                     {item.icon && (
-                      <div className="w-8 h-8 rounded-lg bg-bg-tertiary flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
                         {item.icon}
                       </div>
                     )}
                     <div className="flex-1 text-left">
                       <div className="font-medium">{item.label}</div>
                       {item.description && (
-                        <div className="text-sm text-text-muted">{item.description}</div>
+                        <div className="text-sm text-muted-foreground">{item.description}</div>
                       )}
                     </div>
                     {item.shortcut && (
-                      <kbd className="px-2 py-1 bg-bg-tertiary rounded text-xs text-text-muted">
+                      <kbd className="px-2 py-1 bg-muted rounded text-xs text-muted-foreground">
                         {item.shortcut}
                       </kbd>
                     )}

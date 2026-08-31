@@ -24,10 +24,10 @@ export function Toast({ message, type = "info", onClose, duration = 5000 }: Toas
   }, [duration, onClose]);
 
   const toastStyles = {
-    success: "bg-status-success/10 border-status-success/30 text-status-success",
-    error: "bg-status-error/10 border-status-error/30 text-status-error",
-    warning: "bg-status-warning/10 border-status-warning/30 text-status-warning",
-    info: "bg-status-info/10 border-status-info/30 text-status-info",
+    success: "bg-success/10 border-success/30 text-success",
+    error: "bg-destructive/10 border-destructive/30 text-destructive",
+    warning: "bg-warning/10 border-warning/30 text-warning",
+    info: "bg-secondary/10 border-secondary/30 text-secondary",
   };
 
   return (
@@ -125,23 +125,23 @@ function ToastContainer() {
 const toastConfig = {
   success: {
     icon: CheckCircle,
-    className: "border-status-success/30 bg-status-success/10",
-    iconClass: "text-status-success",
+    className: "border-success/30 bg-success/10",
+    iconClass: "text-success",
   },
   error: {
     icon: AlertCircle,
-    className: "border-status-error/30 bg-status-error/10",
-    iconClass: "text-status-error",
+    className: "border-destructive/30 bg-destructive/10",
+    iconClass: "text-destructive",
   },
   warning: {
     icon: AlertTriangle,
-    className: "border-status-warning/30 bg-status-warning/10",
-    iconClass: "text-status-warning",
+    className: "border-warning/30 bg-warning/10",
+    iconClass: "text-warning",
   },
   info: {
     icon: Info,
-    className: "border-status-info/30 bg-status-info/10",
-    iconClass: "text-status-info",
+    className: "border-secondary/30 bg-secondary/10",
+    iconClass: "text-secondary",
   },
 };
 
@@ -156,20 +156,20 @@ function ToastItem({ toast, onClose }: { toast: ToastItem; onClose: () => void }
       exit={{ opacity: 0, x: 100, scale: 0.9 }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className={cn(
-        "flex items-start gap-3 p-4 rounded-xl border shadow-xl shadow-brand-night/20 backdrop-blur-sm min-w-[320px] max-w-md bg-bg-secondary",
+        "flex items-start gap-3 p-4 rounded-xl border shadow-xl shadow-brand-night/20 backdrop-blur-sm min-w-[320px] max-w-md bg-card",
         config.className
       )}
     >
       <Icon className={cn("w-5 h-5 mt-0.5 flex-shrink-0", config.iconClass)} />
       <div className="flex-1 min-w-0">
-        <div className="font-medium text-text-primary">{toast.title}</div>
+        <div className="font-medium text-foreground">{toast.title}</div>
         {toast.description && (
-          <div className="text-sm text-text-secondary mt-0.5">{toast.description}</div>
+          <div className="text-sm text-muted-foreground mt-0.5">{toast.description}</div>
         )}
       </div>
       <button
         onClick={onClose}
-        className="text-text-muted hover:text-text-secondary transition-colors"
+        className="text-muted-foreground hover:text-muted-foreground transition-colors"
       >
         <X className="w-4 h-4" />
       </button>

@@ -20,7 +20,7 @@ export function ButtonWithIcon({
       {...props}
     >
       <span className="relative z-10">{children}</span>
-      <div className="absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 bg-accent-primary text-bg-primary rounded-none flex items-center justify-center transition-all duration-300 group-hover:right-[calc(100%-44px)]">
+      <div className="absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 bg-accent-primary text-primary-foreground rounded-none flex items-center justify-center transition-all duration-300 group-hover:right-[calc(100%-44px)]">
         {icon}
       </div>
     </Button>

@@ -71,7 +71,7 @@ export default function DashboardPage() {
             <h1 className="text-2xl md:text-3xl font-bold">
               {getGreeting()}, {user?.full_name?.split(" ")[0] || "User"}
             </h1>
-            <p className="text-text-muted">Let&apos;s create your first Money Audit.</p>
+            <p className="text-muted-foreground">Let&apos;s create your first Money Audit.</p>
           </div>
         </div>
         <MoneyAuditEmptyState />
@@ -87,7 +87,7 @@ export default function DashboardPage() {
           <h1 className="text-2xl md:text-3xl font-bold">
             {getGreeting()}, {user?.full_name?.split(" ")[0] || "User"}
           </h1>
-          <p className="text-text-muted">Here&apos;s your store overview</p>
+          <p className="text-muted-foreground">Here&apos;s your store overview</p>
         </div>
         <RunAuditButton />
       </div>
@@ -112,12 +112,12 @@ export default function DashboardPage() {
         >
           {intelligenceSummary.top_action && (
             <div className="space-y-2">
-              <p className="text-sm text-text-secondary">
-                <span className="text-text-primary font-medium">Top action:</span>{" "}
+              <p className="text-sm text-muted-foreground">
+                <span className="text-foreground font-medium">Top action:</span>{" "}
                 {intelligenceSummary.top_action.title || intelligenceSummary.top_action.action_type}
               </p>
               {intelligenceSummary.top_action.description && (
-                <p className="text-sm text-text-secondary">
+                <p className="text-sm text-muted-foreground">
                   {intelligenceSummary.top_action.description}
                 </p>
               )}
@@ -153,20 +153,20 @@ export default function DashboardPage() {
         <div className="grid md:grid-cols-2 gap-6">
           <HealthScore score={summary.health_score} isLoading={isLoading} />
           <Card density="data">
-            <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider mb-4">
+            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">
               Today&apos;s Stats
             </h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-text-secondary">Transactions</span>
+                <span className="text-muted-foreground">Transactions</span>
                 <span className="font-semibold">{summary.today.transactions}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-text-secondary">Avg Basket Size</span>
+                <span className="text-muted-foreground">Avg Basket Size</span>
                 <span className="font-semibold">﷼ {summary.today.avg_basket_size.toFixed(0)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-text-secondary">Today&apos;s Profit</span>
+                <span className="text-muted-foreground">Today&apos;s Profit</span>
                 <span className="font-semibold text-success">﷼ {summary.today.profit.toLocaleString()}</span>
               </div>
             </div>

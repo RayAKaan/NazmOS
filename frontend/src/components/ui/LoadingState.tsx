@@ -23,7 +23,7 @@ export function LoadingState({
         className={cn("flex flex-col items-center justify-center gap-3 py-16", className)}
       >
         <Loader2 className="h-8 w-8 animate-spin text-brand-amber" aria-hidden />
-        <p className="text-sm text-navy-muted">{label}</p>
+        <p className="text-sm text-muted-foreground">{label}</p>
       </div>
     );
   }

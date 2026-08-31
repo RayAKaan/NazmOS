@@ -73,17 +73,17 @@ export function KPICardAnimated({
   };
 
   const changeColors = {
-    up: "text-status-success bg-status-success/10",
-    down: "text-status-error bg-status-error/10",
-    neutral: "text-text-muted bg-bg-tertiary",
+    up: "text-success bg-success/10",
+    down: "text-destructive bg-destructive/10",
+    neutral: "text-muted-foreground bg-muted",
   };
 
   if (loading) {
     return (
-      <div className={cn("p-5 rounded-xl bg-bg-secondary border border-border animate-pulse", className)}>
-        <div className="h-4 w-24 bg-bg-tertiary rounded mb-4" />
-        <div className="h-8 w-32 bg-bg-tertiary rounded mb-4" />
-        <div className="h-6 w-full bg-bg-tertiary rounded" />
+      <div className={cn("p-5 rounded-xl bg-card border border-border animate-pulse", className)}>
+        <div className="h-4 w-24 bg-muted rounded mb-4" />
+        <div className="h-8 w-32 bg-muted rounded mb-4" />
+        <div className="h-6 w-full bg-muted rounded" />
       </div>
     );
   }
@@ -96,14 +96,14 @@ export function KPICardAnimated({
       whileHover={{ y: -2, boxShadow: "0 10px 40px rgba(0, 0, 0, 0.2)" }}
       transition={{ duration: 0.5 }}
       className={cn(
-        "relative p-5 rounded-xl bg-bg-secondary border border-border border-l-[3px] transition-shadow cursor-default",
+        "relative p-5 rounded-xl bg-card border border-border border-l-[3px] transition-shadow cursor-default",
         colorClasses[colorScheme],
         className
       )}
       data-tour="dashboard"
     >
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-medium uppercase tracking-wider text-text-muted">
+        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {label}
         </span>
 
@@ -125,7 +125,7 @@ export function KPICardAnimated({
         )}
       </div>
 
-      <motion.div className="text-3xl font-bold font-mono text-text-primary mb-3">
+      <motion.div className="text-3xl font-bold font-mono text-foreground mb-3">
         {displayValue}
       </motion.div>
 
@@ -135,7 +135,7 @@ export function KPICardAnimated({
         )}
 
         {previousValue !== undefined && (
-          <span className="text-xs text-text-muted">
+          <span className="text-xs text-muted-foreground">
             vs ﷼ {previousValue.toLocaleString("ar-SA")}
           </span>
         )}

@@ -21,7 +21,7 @@ export function LanguageSwitcher({ className, variant = "default" }: LanguageSwi
       )}
       title={locale === "en" ? "التبديل إلى العربية" : "Switch to English"}
     >
-      <Globe className="w-4 h-4 text-text-muted" />
+      <Globe className="w-4 h-4 text-muted-foreground" />
       {variant === "default" ? (
         <span className="text-sm font-medium">{locale === "en" ? "عربي" : "English"}</span>
       ) : (

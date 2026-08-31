@@ -48,35 +48,35 @@ export function AlertCardExpanded({ alert, onDismiss, onApply }: AlertCardExpand
   const config = {
     critical: {
       icon: AlertCircle,
-      bgColor: "bg-status-error/10",
-      borderColor: "border-status-error/30",
+      bgColor: "bg-destructive/10",
+      borderColor: "border-destructive/30",
       accentColor: "border-l-status-error",
       badgeColor: "bg-destructive text-destructive-foreground",
-      iconColor: "text-status-error",
+      iconColor: "text-destructive",
     },
     warning: {
       icon: AlertTriangle,
-      bgColor: "bg-status-warning/10",
-      borderColor: "border-status-warning/30",
+      bgColor: "bg-warning/10",
+      borderColor: "border-warning/30",
       accentColor: "border-l-status-warning",
       badgeColor: "bg-warning text-warning-foreground",
-      iconColor: "text-status-warning",
+      iconColor: "text-warning",
     },
     info: {
       icon: Info,
-      bgColor: "bg-status-info/10",
-      borderColor: "border-status-info/30",
+      bgColor: "bg-secondary/10",
+      borderColor: "border-secondary/30",
       accentColor: "border-l-status-info",
-      badgeColor: "bg-status-info text-brand-night",
-      iconColor: "text-status-info",
+      badgeColor: "bg-secondary text-brand-night",
+      iconColor: "text-secondary",
     },
     success: {
       icon: CheckCircle,
-      bgColor: "bg-status-success/10",
-      borderColor: "border-status-success/30",
+      bgColor: "bg-success/10",
+      borderColor: "border-success/30",
       accentColor: "border-l-status-success",
       badgeColor: "bg-success text-success-foreground",
-      iconColor: "text-status-success",
+      iconColor: "text-success",
     },
   };
 
@@ -104,7 +104,7 @@ export function AlertCardExpanded({ alert, onDismiss, onApply }: AlertCardExpand
           <span className={cn("px-2 py-0.5 rounded text-xs font-semibold uppercase", badgeColor)}>
             {alert.type}
           </span>
-          <span className="text-xs text-text-muted">
+          <span className="text-xs text-muted-foreground">
             {new Date(alert.createdAt).toLocaleTimeString("ar-SA", {
               hour: "numeric",
               minute: "2-digit",
@@ -115,7 +115,7 @@ export function AlertCardExpanded({ alert, onDismiss, onApply }: AlertCardExpand
         <div className="flex items-center gap-1">
           <button
             onClick={() => setExpanded(!expanded)}
-            className="p-1.5 rounded-lg hover:bg-bg-hover text-text-muted hover:text-text-primary transition-colors"
+            className="p-1.5 rounded-lg hover:bg-surface-hover text-muted-foreground hover:text-foreground transition-colors"
             aria-label={expanded ? "Collapse alert details" : "Expand alert details"}
             aria-expanded={expanded}
           >
@@ -123,7 +123,7 @@ export function AlertCardExpanded({ alert, onDismiss, onApply }: AlertCardExpand
           </button>
           <button
             onClick={() => setDismissed(true)}
-            className="p-1.5 rounded-lg hover:bg-bg-hover text-text-muted hover:text-text-primary transition-colors"
+            className="p-1.5 rounded-lg hover:bg-surface-hover text-muted-foreground hover:text-foreground transition-colors"
             aria-label="Dismiss alert"
           >
             <X size={16} />
@@ -138,36 +138,36 @@ export function AlertCardExpanded({ alert, onDismiss, onApply }: AlertCardExpand
           </div>
 
           <div className="flex-1 min-w-0">
-            <h4 className="font-semibold text-text-primary mb-1">{alert.title}</h4>
-            <p className="text-sm text-text-secondary">{alert.message}</p>
+            <h4 className="font-semibold text-foreground mb-1">{alert.title}</h4>
+            <p className="text-sm text-muted-foreground">{alert.message}</p>
 
             {alert.currentStock !== undefined && (
               <div className="flex flex-wrap gap-4 mt-3 text-sm">
-                <div className="flex items-center gap-1.5 text-text-muted">
+                <div className="flex items-center gap-1.5 text-muted-foreground">
                   <Package size={14} />
                   <span>
                     Current:{" "}
-                    <span className="text-text-primary font-medium">{alert.currentStock}</span>
+                    <span className="text-foreground font-medium">{alert.currentStock}</span>
                   </span>
                 </div>
                 {alert.dailyAvg && (
-                  <div className="flex items-center gap-1.5 text-text-muted">
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
                     <TrendingDown size={14} />
                     <span>
                       Daily avg:{" "}
-                      <span className="text-text-primary font-medium">{alert.dailyAvg}</span>
+                      <span className="text-foreground font-medium">{alert.dailyAvg}</span>
                     </span>
                   </div>
                 )}
                 {alert.daysLeft && (
-                  <div className="flex items-center gap-1.5 text-text-muted">
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
                     <Clock size={14} />
                     <span>
                       Days left:{" "}
                       <span
                         className={cn(
                           "font-medium",
-                          alert.daysLeft <= 2 ? "text-status-error" : "text-text-primary"
+                          alert.daysLeft <= 2 ? "text-destructive" : "text-foreground"
                         )}
                       >
                         {alert.daysLeft}
@@ -189,15 +189,15 @@ export function AlertCardExpanded({ alert, onDismiss, onApply }: AlertCardExpand
               transition={{ duration: 0.2 }}
               className="mt-4"
             >
-              <div className="p-4 rounded-lg bg-bg-tertiary/50 border border-border">
+              <div className="p-4 rounded-lg bg-muted/50 border border-border">
                 <div className="flex items-start gap-2 mb-3">
                   <span className="text-lg">📦</span>
                   <div>
-                    <h5 className="font-medium text-text-primary">
+                    <h5 className="font-medium text-foreground">
                       Recommendation: Order {alert.recommendation.quantity}{" "}
                       {alert.recommendation.unit}
                     </h5>
-                    <p className="text-sm text-text-muted">
+                    <p className="text-sm text-muted-foreground">
                       Estimated cost: ﷼ {alert.recommendation.estimatedCost.toLocaleString("ar-SA")} ·{" "}
                       Lead time: {alert.recommendation.leadTime}
                     </p>
@@ -207,7 +207,7 @@ export function AlertCardExpanded({ alert, onDismiss, onApply }: AlertCardExpand
                 <div className="flex items-center justify-end gap-3 mt-4">
                   <button
                     onClick={() => setDismissed(true)}
-                    className="px-4 py-2 rounded-lg text-sm text-text-muted hover:text-text-primary hover:bg-bg-hover transition-colors"
+                    className="px-4 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-colors"
                   >
                     Dismiss
                   </button>

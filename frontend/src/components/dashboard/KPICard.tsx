@@ -34,16 +34,16 @@ export function KPICard({
       )}
     >
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-medium uppercase tracking-wider text-text-muted">
+        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {title}
         </span>
-        {icon && <div className="text-text-muted">{icon}</div>}
+        {icon && <div className="text-muted-foreground">{icon}</div>}
       </div>
       <p className="text-2xl md:text-3xl font-bold mb-1">
         {prefix}
         {typeof value === "number" ? (
           value >= 1000 ? (
-            <span className="text-text-primary">﷼ {value.toLocaleString("ar-SA", { maximumFractionDigits: 0 })}</span>
+            <span className="text-foreground">﷼ {value.toLocaleString("ar-SA", { maximumFractionDigits: 0 })}</span>
           ) : (
             value.toLocaleString("ar-SA")
           )
@@ -64,7 +64,7 @@ export function KPICard({
             {change >= 0 ? "↑" : "↓"} {formatPercent(Math.abs(change))}
           </span>
           {changeLabel && (
-            <span className="text-xs text-text-muted">{changeLabel}</span>
+            <span className="text-xs text-muted-foreground">{changeLabel}</span>
           )}
         </div>
       )}

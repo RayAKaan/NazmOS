@@ -31,7 +31,7 @@ export function AlertSection({ alerts, isLoading }: AlertSectionProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider">
+        <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
           Alerts ({alerts.alerts.length})
         </h3>
       </div>

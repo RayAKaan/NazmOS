@@ -45,9 +45,9 @@ export function AlertCard({ alert, onAction }: AlertCardProps) {
         </div>
         <div className="flex-1 min-w-0">
           <h4 className="font-semibold text-sm mb-1">{alert.title}</h4>
-          <p className="text-xs text-text-secondary mb-2">{alert.message}</p>
+          <p className="text-xs text-muted-foreground mb-2">{alert.message}</p>
           {alert.detail && (
-            <p className="text-xs text-text-muted mb-2">{alert.detail}</p>
+            <p className="text-xs text-muted-foreground mb-2">{alert.detail}</p>
           )}
           {alert.action_text && (
             <div className="flex items-center gap-1 text-xs text-primary font-medium">

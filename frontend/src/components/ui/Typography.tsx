@@ -7,7 +7,7 @@ export const Display = forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLH
       <h1
         ref={ref}
         className={cn(
-          "font-serif text-5xl md:text-6xl lg:text-7xl font-normal tracking-tight text-text-primary",
+          "font-serif text-5xl md:text-6xl lg:text-7xl font-normal tracking-tight text-foreground",
           className
         )}
         {...props}
@@ -32,7 +32,7 @@ export const Heading = forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLH
     return (
       <h1
         ref={ref}
-        className={cn(levels[level], "text-text-primary", className)}
+        className={cn(levels[level], "text-foreground", className)}
         {...props}
       >
         {children}
@@ -54,7 +54,7 @@ export const Body = forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLPa
     return (
       <p
         ref={ref}
-        className={cn("font-sans text-text-secondary", sizes[size], className)}
+        className={cn("font-sans text-muted-foreground", sizes[size], className)}
         {...props}
       >
         {children}
@@ -71,7 +71,7 @@ export const Label = forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTML
       <label
         ref={ref}
         className={cn(
-          "font-sans text-xs font-medium uppercase tracking-widest text-text-muted",
+          "font-sans text-xs font-medium uppercase tracking-widest text-muted-foreground",
           className
         )}
         {...props}
@@ -89,7 +89,7 @@ export const Number = forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpanE
     return (
       <span
         ref={ref}
-        className={cn("font-mono tabular-nums text-text-primary", className)}
+        className={cn("font-mono tabular-nums text-foreground", className)}
         {...props}
       >
         {children}

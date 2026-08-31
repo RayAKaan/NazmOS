@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { StructuredData } from "@/components/structured-data";
@@ -6,6 +7,18 @@ import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import { WeaveSprite } from "@/components/ui/WeaveSprite";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.nazm.ai";
+
+// Phase 1 typography: real display serif for headline money/KPI figures, self-hosted
+// (committed woff2) so builds never depend on a Google Fonts fetch — see the font-stack
+// note in build_design_tokens.ts. Exposed as --font-serif, consumed by the `font-serif`
+// utility. Source Serif 4 ships lining+tabular figures by default, which is what keeps
+// the animated tabular-nums money figures from jittering. Weights 200-900 (Black).
+const serif = localFont({
+  src: "./fonts/source-serif-4-latin.woff2",
+  variable: "--font-serif",
+  display: "swap",
+  weight: "200 900",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
@@ -59,7 +72,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" dir="ltr" className="dark">
+    <html lang="en" dir="ltr" className={`${serif.variable} dark`}>
       <head>
         <StructuredData />
         <script

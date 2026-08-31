@@ -64,7 +64,7 @@ export function ActionCenter() {
             </span>
             <ShieldCheck className="h-4 w-4 text-secondary" />
           </div>
-          <div className="mt-2 font-sans text-4xl font-extrabold tabular-nums tracking-[-0.03em] text-foreground">
+          <div className="mt-2 font-serif text-4xl font-extrabold tabular-nums tracking-[-0.03em] text-foreground">
             {report?.overall_health ?? 0}
             <span className="ml-1 text-base font-semibold text-muted-foreground">/ 100</span>
           </div>
@@ -96,7 +96,7 @@ export function ActionCenter() {
             </span>
             <Sparkles className="h-4 w-4 text-primary" />
           </div>
-          <div className="mt-2 font-sans text-4xl font-extrabold tabular-nums tracking-[-0.03em] text-foreground">
+          <div className="mt-2 font-serif text-4xl font-extrabold tabular-nums tracking-[-0.03em] text-foreground">
             {approvals.filter((a) => !a.can_approve).length}
           </div>
           <p className="mt-1 text-xs text-muted-foreground">Actions completed</p>
@@ -109,7 +109,7 @@ export function ActionCenter() {
             </span>
             <CheckCircle2 className="h-4 w-4 text-warning" />
           </div>
-          <div className="mt-2 font-sans text-4xl font-extrabold tabular-nums tracking-[-0.03em] text-warning">
+          <div className="mt-2 font-serif text-4xl font-extrabold tabular-nums tracking-[-0.03em] text-warning">
             {pendingApprovals.length}
           </div>
           <p className="mt-1 text-xs text-muted-foreground">Approvals required</p>
@@ -343,7 +343,7 @@ export function ActionCenter() {
                 <h2 className="text-lg font-semibold text-foreground">Health trend</h2>
               </div>
               <div className="flex items-baseline gap-3">
-                <span className="font-sans text-4xl font-extrabold tabular-nums tracking-[-0.03em] text-foreground">
+                <span className="font-serif text-4xl font-extrabold tabular-nums tracking-[-0.03em] text-foreground">
                   {healthTrend.current_health}
                 </span>
                 <span className="flex items-center gap-1 text-sm font-medium">

@@ -171,7 +171,7 @@ export default function WeeklyReportPage() {
                 <TrendingUp className="h-5 w-5 text-primary" /> Business health
               </h2>
               <div className="mb-4 flex items-baseline gap-2">
-                <span className="font-sans text-4xl font-extrabold tabular-nums tracking-[-0.03em]">{report.health.overall_health}</span>
+                <span className="font-serif text-4xl font-extrabold tabular-nums tracking-[-0.03em]">{report.health.overall_health}</span>
                 <span className="text-muted-foreground">/ 100</span>
               </div>
               <ul className="space-y-1.5">

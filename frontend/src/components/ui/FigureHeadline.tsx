@@ -8,9 +8,10 @@ import { cn } from "@/lib/utils";
 /**
  * FigureHeadline — the money figure is a HEADLINE, not a chip (§1 editorial priority).
  *
- * §2.2 + v3 §Typography: ALWAYS --font-sans (Inter), tabular-nums, weight 800 (primary) /
- * 700 (secondary), 4xl/3xl with -0.03em tracking — never serif, never mono. Label above:
- * xs, uppercase, muted, 0.04em tracking.
+ * §2.2 + v3 §Typography (mission override, D-03): headline money figures use the display
+ * serif --font-serif (Source Serif 4, Phase 1), tabular-nums, weight 800 (primary) /
+ * 700 (secondary), 4xl/3xl with -0.03em tracking. Sans never renders money headlines.
+ * Label above: xs, uppercase, muted, 0.04em tracking.
  *
  * §B + v3: counts up on mount (and on value change) via @number-flow/react — the already
  * installed, previously-unused dependency. No new animation library.
@@ -69,7 +70,7 @@ export function FigureHeadline({
       <div className="mt-1 flex items-baseline gap-2">
         <span
           className={cn(
-            "font-sans tabular-nums tracking-[-0.03em]",
+            "font-serif tabular-nums tracking-[-0.03em]",
             toneClass[tone],
             sizeClass
           )}

@@ -223,7 +223,11 @@ ${cssMotionVars().replace(/^/gm, "    ")}
     /* §3 WeaveTile tokens (light = 40% intensity of dark, see §2.5). */
 ${cssWeaveVars("light").replace(/^/gm, "    ")}
 
-    /* Local/system font stack: avoids build-time Google Font fetch failures. */
+    /* Local/system font stack: avoids build-time Google Font fetch failures.
+       --font-sans/--font-mono/--font-arabic are fully local. --font-serif here is ONLY
+       the static fallback — at runtime it is overridden inline on <html> by a
+       next/font/local self-hosted Source Serif 4 woff2 (Phase 1, see layout.tsx), so
+       builds never depend on a Google Fonts network fetch. */
     --font-serif: Georgia, Cambria, "Times New Roman", serif;
     --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;

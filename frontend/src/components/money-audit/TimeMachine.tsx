@@ -67,7 +67,7 @@ export function TimeMachine({ auditId, businessId, className }: TimeMachineProps
         <Clock className="h-5 w-5 text-brand-amber" />
         <h2 className="text-xl font-bold">What Happens If I Do Nothing?</h2>
       </div>
-      <p className="mt-1 text-sm text-text-secondary">
+      <p className="mt-1 text-sm text-muted-foreground">
         Simulate the financial impact over time. Every result is a <span className="font-bold text-brand-amber">SIMULATION / ESTIMATE</span>.
       </p>
 
@@ -82,7 +82,7 @@ export function TimeMachine({ auditId, businessId, className }: TimeMachineProps
               "rounded-xl px-4 py-2 text-sm font-bold transition-all",
               horizon === days
                 ? "bg-brand-amber text-brand-night"
-                : "border border-border bg-brand-night/5 text-text-secondary hover:bg-brand-night/10"
+                : "border border-border bg-brand-night/5 text-muted-foreground hover:bg-brand-night/10"
             )}
           >
             {days} days
@@ -91,7 +91,7 @@ export function TimeMachine({ auditId, businessId, className }: TimeMachineProps
       </div>
 
       {loading && (
-        <div className="mt-4 flex items-center gap-2 text-sm text-text-secondary">
+        <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
           <div className="h-4 w-4 animate-spin rounded-full border-2 border-brand-amber border-t-transparent" />
           Simulating...
         </div>
@@ -131,7 +131,7 @@ export function TimeMachine({ auditId, businessId, className }: TimeMachineProps
 
           {/* Net difference */}
           <div className="rounded-2xl bg-brand-night/5 p-4">
-            <div className="text-sm text-text-secondary">
+            <div className="text-sm text-muted-foreground">
               Net impact of following NazmOS recommendation vs doing nothing:
             </div>
             <div className={cn(
@@ -146,12 +146,12 @@ export function TimeMachine({ auditId, businessId, className }: TimeMachineProps
 
           {/* Item details */}
           <details className="rounded-2xl border border-border bg-brand-night/5">
-            <summary className="cursor-pointer p-4 text-sm font-bold text-text-secondary hover:text-text-primary">
+            <summary className="cursor-pointer p-4 text-sm font-bold text-muted-foreground hover:text-foreground">
               Show per-item breakdown ({result.do_nothing.item_details.length} items)
             </summary>
             <div className="border-t border-border p-4">
               <div className="grid gap-2 text-xs">
-                <div className="grid grid-cols-4 gap-2 font-bold text-text-secondary">
+                <div className="grid grid-cols-4 gap-2 font-bold text-muted-foreground">
                   <div>Product</div>
                   <div className="text-right">Do Nothing</div>
                   <div className="text-right">NazmOS</div>
@@ -161,14 +161,14 @@ export function TimeMachine({ auditId, businessId, className }: TimeMachineProps
                   const nzItem = result.nazmos_recommendation.item_details[idx];
                   return (
                     <div key={idx} className="grid grid-cols-4 gap-2 border-t border-border/50 pt-2">
-                      <div className="truncate text-text-primary">{item.product_name || item.sku}</div>
-                      <div className={cn("text-right font-mono", item.financial_impact_sar < 0 ? "text-brand-red" : "text-text-secondary")}>
+                      <div className="truncate text-foreground">{item.product_name || item.sku}</div>
+                      <div className={cn("text-right font-mono", item.financial_impact_sar < 0 ? "text-brand-red" : "text-muted-foreground")}>
                         {money(item.financial_impact_sar)}
                       </div>
-                      <div className={cn("text-right font-mono", nzItem?.financial_impact_sar > 0 ? "text-brand-green" : "text-text-secondary")}>
+                      <div className={cn("text-right font-mono", nzItem?.financial_impact_sar > 0 ? "text-brand-green" : "text-muted-foreground")}>
                         {nzItem ? money(nzItem.financial_impact_sar) : "—"}
                       </div>
-                      <div className="truncate text-text-secondary">{item.description}</div>
+                      <div className="truncate text-muted-foreground">{item.description}</div>
                     </div>
                   );
                 })}
@@ -179,7 +179,7 @@ export function TimeMachine({ auditId, businessId, className }: TimeMachineProps
       )}
 
       {!result && !loading && (
-        <div className="mt-6 rounded-2xl bg-brand-night/5 p-8 text-center text-sm text-text-secondary">
+        <div className="mt-6 rounded-2xl bg-brand-night/5 p-8 text-center text-sm text-muted-foreground">
           Select a time horizon to simulate the impact of doing nothing vs following NazmOS recommendations.
         </div>
       )}
@@ -213,8 +213,8 @@ function ScenarioCard({
           {icon}
         </div>
         <div>
-          <div className="text-sm font-bold text-text-primary">{label}</div>
-          <div className="text-xs text-text-secondary">{itemsAffected} items affected</div>
+          <div className="text-sm font-bold text-foreground">{label}</div>
+          <div className="text-xs text-muted-foreground">{itemsAffected} items affected</div>
         </div>
       </div>
       <div className={cn(
@@ -223,7 +223,7 @@ function ScenarioCard({
       )}>
         {money(impact)}
       </div>
-      <div className="text-xs text-text-secondary">estimated net impact</div>
+      <div className="text-xs text-muted-foreground">estimated net impact</div>
     </div>
   );
 }

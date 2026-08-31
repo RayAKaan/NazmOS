@@ -44,8 +44,8 @@ export function DecisionComparison({ productName, options, recommendation, class
         <Scale className="h-5 w-5 text-brand-amber" />
         <h2 className="text-xl font-bold">Decision Comparison</h2>
       </div>
-      <p className="mt-1 text-sm text-text-secondary">
-        Comparing options for <span className="font-bold text-text-primary">{productName}</span>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Comparing options for <span className="font-bold text-foreground">{productName}</span>
       </p>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -66,18 +66,18 @@ export function DecisionComparison({ productName, options, recommendation, class
             )}
 
             <div className="flex items-start justify-between">
-              <h3 className="font-bold text-text-primary">{option.name}</h3>
+              <h3 className="font-bold text-foreground">{option.name}</h3>
               {option.recommended && <CheckCircle2 className="h-5 w-5 text-brand-green" />}
-              {!option.recommended && <Minus className="h-4 w-4 text-text-secondary" />}
+              {!option.recommended && <Minus className="h-4 w-4 text-muted-foreground" />}
             </div>
 
             <div className="mt-3">
-              <div className="text-2xl font-bold text-text-primary">
+              <div className="text-2xl font-bold text-foreground">
                 {option.expected_recovery_sar != null
                   ? money(option.expected_recovery_sar)
                   : `${money(option.low_sar)}–${money(option.high_sar)}`}
               </div>
-              <div className="mt-1 text-xs text-text-secondary">estimated recovery</div>
+              <div className="mt-1 text-xs text-muted-foreground">estimated recovery</div>
             </div>
 
             <div className="mt-3 flex items-center gap-2">
@@ -85,14 +85,14 @@ export function DecisionComparison({ productName, options, recommendation, class
                 {option.confidence}
               </span>
               {option.estimate_only && (
-                <span className="rounded-full bg-brand-cream/10 px-2 py-0.5 text-xs font-bold text-text-secondary">
+                <span className="rounded-full bg-brand-cream/10 px-2 py-0.5 text-xs font-bold text-muted-foreground">
                   ESTIMATE
                 </span>
               )}
             </div>
 
             {/* Risks */}
-            <div className="mt-3 text-xs text-text-secondary">
+            <div className="mt-3 text-xs text-muted-foreground">
               {option.name === "DO NOTHING" && (
                 <div className="flex items-start gap-1">
                   <AlertTriangle className="mt-0.5 h-3 w-3 shrink-0 text-brand-amber" />
@@ -118,12 +118,12 @@ export function DecisionComparison({ productName, options, recommendation, class
               <>
                 <button
                   onClick={() => setExpanded(expanded === option.name ? null : option.name)}
-                  className="mt-3 text-xs font-bold text-text-secondary hover:text-text-primary"
+                  className="mt-3 text-xs font-bold text-muted-foreground hover:text-foreground"
                 >
                   {expanded === option.name ? "Hide details" : "Show details"}
                 </button>
                 {expanded === option.name && (
-                  <div className="mt-2 rounded-xl bg-brand-night/10 p-2 text-xs text-text-secondary">
+                  <div className="mt-2 rounded-xl bg-brand-night/10 p-2 text-xs text-muted-foreground">
                     {Object.entries(option.evidence).map(([key, value]) => (
                       <div key={key}>
                         <span className="font-bold">{key.replace(/_/g, " ")}:</span>{" "}
@@ -139,7 +139,7 @@ export function DecisionComparison({ productName, options, recommendation, class
       </div>
 
       {recommendation && (
-        <div className="mt-4 rounded-xl bg-brand-green/5 p-3 text-sm text-text-primary">
+        <div className="mt-4 rounded-xl bg-brand-green/5 p-3 text-sm text-foreground">
           <span className="font-bold">NazmOS recommends:</span> {recommendation}
         </div>
       )}

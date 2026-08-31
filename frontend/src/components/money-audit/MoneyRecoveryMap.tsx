@@ -54,7 +54,7 @@ export function MoneyRecoveryMap({
     <section className={cn("rounded-3xl border border-border bg-surface p-6", className)}>
       <div className="mb-4">
         <h2 className="text-2xl font-bold">I Found Where Your Money Is Trapped</h2>
-        <p className="mt-1 text-sm text-text-secondary">
+        <p className="mt-1 text-sm text-muted-foreground">
           Breakdown of your {money(inventoryValue)} inventory value by financial status.
         </p>
       </div>
@@ -136,11 +136,11 @@ function LegendItem({
       <div className={cn("mt-0.5 h-3 w-3 shrink-0 rounded-full", color)} />
       <div className="min-w-0">
         <div className="flex items-baseline gap-2">
-          <span className="text-sm font-bold text-text-primary">{label}</span>
-          {pctValue && <span className="text-xs text-text-secondary">{pctValue}</span>}
+          <span className="text-sm font-bold text-foreground">{label}</span>
+          {pctValue && <span className="text-xs text-muted-foreground">{pctValue}</span>}
         </div>
-        <div className="text-lg font-bold text-text-primary">{money(amount)}</div>
-        <div className="text-xs text-text-secondary">{description}</div>
+        <div className="text-lg font-bold text-foreground">{money(amount)}</div>
+        <div className="text-xs text-muted-foreground">{description}</div>
       </div>
     </div>
   );

@@ -50,7 +50,7 @@ export default function AIReasoningPanel({ auditId }: { auditId: string }) {
       <div className="flex items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold">How NazmOS Reasons (AI vs Deterministic)</h2>
-          <p className="text-sm text-text-secondary">
+          <p className="text-sm text-muted-foreground">
             Every ambiguous item, what the deterministic engine decided, what AI concluded,
             and which one was followed.
           </p>
@@ -65,9 +65,9 @@ export default function AIReasoningPanel({ auditId }: { auditId: string }) {
 
       {open && (
         <div className="mt-5 space-y-3">
-          {error && <p className="text-sm text-status-error">{error}</p>}
+          {error && <p className="text-sm text-destructive">{error}</p>}
           {comparison != null && (
-            <p className="text-xs text-text-muted">
+            <p className="text-xs text-muted-foreground">
               Items evaluated: {String((comparison as Record<string, unknown>).items_evaluated ?? "—")} ·
               {" "}AI overrides: {String((comparison as Record<string, unknown>).ai_overrides ?? 0)} ·
               {" "}AI agrees: {String((comparison as Record<string, unknown>).ai_agreements ?? 0)} ·
@@ -83,13 +83,13 @@ export default function AIReasoningPanel({ auditId }: { auditId: string }) {
                   ? ` · confidence ${(r.ai_confidence * 100).toFixed(0)}%` : ""}
               </summary>
               <div className="mt-2 space-y-1 text-sm">
-                <p><span className="text-text-secondary">Deterministic:</span> {r.deterministic_decision}</p>
-                <p><span className="text-text-secondary">Final:</span> {r.final_decision}</p>
+                <p><span className="text-muted-foreground">Deterministic:</span> {r.deterministic_decision}</p>
+                <p><span className="text-muted-foreground">Final:</span> {r.final_decision}</p>
                 {r.ai_reasoning && (
-                  <p><span className="text-text-secondary">AI reasoning:</span> {r.ai_reasoning}</p>
+                  <p><span className="text-muted-foreground">AI reasoning:</span> {r.ai_reasoning}</p>
                 )}
                 {r.validation?.reason && (
-                  <p className="text-text-muted">Validator: {r.validation.reason}</p>
+                  <p className="text-muted-foreground">Validator: {r.validation.reason}</p>
                 )}
               </div>
             </details>

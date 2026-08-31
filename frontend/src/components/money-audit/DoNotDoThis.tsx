@@ -69,8 +69,8 @@ export function DoNotDoThis({ decisions, className }: DoNotDoThisProps) {
           <AlertTriangle className="h-4 w-4 text-brand-amber" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-text-primary">One Thing I Would Not Do</h2>
-          <p className="mt-1 text-sm text-text-secondary">
+          <h2 className="text-xl font-bold text-foreground">One Thing I Would Not Do</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
             Sometimes the best decision is no decision.
           </p>
         </div>
@@ -79,18 +79,18 @@ export function DoNotDoThis({ decisions, className }: DoNotDoThisProps) {
       <div className="mt-4 rounded-2xl bg-brand-night/5 p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h3 className="font-bold text-text-primary">{pick.title}</h3>
+            <h3 className="font-bold text-foreground">{pick.title}</h3>
             {pick.description && (
-              <p className="mt-1 text-sm text-text-secondary">{pick.description}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{pick.description}</p>
             )}
           </div>
-          <span className="shrink-0 rounded-full bg-brand-cream/10 px-3 py-1 text-xs font-bold text-text-secondary">
+          <span className="shrink-0 rounded-full bg-brand-cream/10 px-3 py-1 text-xs font-bold text-muted-foreground">
             DO NOT ACT
           </span>
         </div>
-        <p className="mt-3 text-sm leading-6 text-text-primary">{reason}</p>
+        <p className="mt-3 text-sm leading-6 text-foreground">{reason}</p>
         {Number(evidence.confirmed_inbound_qty) > 0 && (
-          <p className="mt-2 text-xs text-text-secondary">
+          <p className="mt-2 text-xs text-muted-foreground">
             Evidence: {Number(evidence.confirmed_inbound_qty)} confirmed inbound unit
             {Number(evidence.confirmed_inbound_qty) === 1 ? "" : "s"}
             {Boolean(evidence.ghost_po_risk) ? " · ⚠ ghost-PO risk detected" : ""}

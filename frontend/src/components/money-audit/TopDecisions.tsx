@@ -53,7 +53,7 @@ export function TopDecisions({ decisions, onApprove, onReject, className }: TopD
   return (
     <section className={cn("rounded-3xl border border-border bg-surface p-6", className)}>
       <h2 className="text-2xl font-bold">What Deserves Your Attention</h2>
-      <p className="mt-1 text-sm text-text-secondary">
+      <p className="mt-1 text-sm text-muted-foreground">
         Top {top3.length} decisions ranked by priority and financial impact.
       </p>
 
@@ -102,10 +102,10 @@ function DecisionCard({
             <div>
               <div className="flex items-center gap-2">
                 <ActionIcon type={decision.action_type} />
-                <h3 className="text-lg font-bold text-text-primary">{decision.title}</h3>
+                <h3 className="text-lg font-bold text-foreground">{decision.title}</h3>
               </div>
               {decision.description && (
-                <p className="mt-1 text-sm text-text-secondary">{decision.description}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{decision.description}</p>
               )}
             </div>
             <div className="text-right">
@@ -118,8 +118,8 @@ function DecisionCard({
 
           {/* Why section */}
           <div className="mt-3 rounded-xl bg-brand-night/10 p-3">
-            <p className="text-xs font-bold uppercase tracking-wider text-text-secondary">Why</p>
-            <p className="mt-1 text-sm text-text-primary">
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Why</p>
+            <p className="mt-1 text-sm text-foreground">
               {decision.action_type === "discount" && "This item has low or no recent sales. Capital is locked in inventory that is not generating revenue."}
               {decision.action_type === "reorder" && "This item is selling well and may face a stockout. Reordering preserves revenue."}
               {decision.action_type === "recovery_match" && "This item has excess inventory beyond 30-day demand. Consider matching with a buyer."}
@@ -131,18 +131,18 @@ function DecisionCard({
           {/* Expand evidence */}
           <button
             onClick={() => setExpanded(!expanded)}
-            className="mt-3 flex items-center gap-1 text-xs font-bold text-text-secondary hover:text-text-primary"
+            className="mt-3 flex items-center gap-1 text-xs font-bold text-muted-foreground hover:text-foreground"
           >
             {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
             {expanded ? "Hide evidence" : "Show evidence"}
           </button>
 
           {expanded && (
-            <div className="mt-2 rounded-xl bg-brand-night/10 p-3 text-xs text-text-secondary">
+            <div className="mt-2 rounded-xl bg-brand-night/10 p-3 text-xs text-muted-foreground">
               <div className="grid gap-2 sm:grid-cols-2">
                 {Object.entries(evidence).map(([key, value]) => (
                   <div key={key}>
-                    <span className="font-bold text-text-primary">{key.replace(/_/g, " ")}:</span>{" "}
+                    <span className="font-bold text-foreground">{key.replace(/_/g, " ")}:</span>{" "}
                     {typeof value === "number" ? value.toLocaleString() : String(value ?? "—")}
                   </div>
                 ))}
@@ -164,7 +164,7 @@ function DecisionCard({
               {onReject && (
                 <button
                   onClick={() => onReject(decision.id)}
-                  className="rounded-xl border border-brand-cream/20 px-4 py-2 text-sm font-bold text-text-secondary hover:bg-brand-cream/5"
+                  className="rounded-xl border border-brand-cream/20 px-4 py-2 text-sm font-bold text-muted-foreground hover:bg-brand-cream/5"
                 >
                   Reject
                 </button>

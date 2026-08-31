@@ -226,7 +226,7 @@ export default function MoneyAuditPage() {
       <div className="flex min-h-[50vh] items-center justify-center">
         <div className="text-center">
           <div className="mx-auto h-14 w-14 animate-pulse rounded-2xl bg-brand-amber/20" />
-          <p className="mt-4 text-text-muted">Generating Money Audit...</p>
+          <p className="mt-4 text-muted-foreground">Generating Money Audit...</p>
         </div>
       </div>
     );
@@ -306,11 +306,11 @@ export default function MoneyAuditPage() {
           {audit.intelligence_actions && audit.intelligence_actions.length > 0 && (
             <ul className="space-y-2">
               {audit.intelligence_actions.map((action, idx) => (
-                <li key={idx} className="text-sm text-text-secondary">
-                  <span className="text-text-primary font-medium">{action.title}</span>
+                <li key={idx} className="text-sm text-muted-foreground">
+                  <span className="text-foreground font-medium">{action.title}</span>
                   {action.description && <> — {action.description}</>}
                   {typeof action.expected_value_sar === "number" && (
-                    <span className="ml-2 text-status-success">
+                    <span className="ml-2 text-success">
                       SAR {action.expected_value_sar.toLocaleString()}
                     </span>
                   )}
@@ -377,7 +377,7 @@ export default function MoneyAuditPage() {
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <h2 className="text-2xl font-bold">Recovery Actions</h2>
-            <p className="mt-1 text-sm text-text-secondary">Approve, reject, or record a measured outcome. Only measured outcomes count as recovered.</p>
+            <p className="mt-1 text-sm text-muted-foreground">Approve, reject, or record a measured outcome. Only measured outcomes count as recovered.</p>
           </div>
           <div className="inline-flex items-center gap-2 rounded-full bg-brand-green/10 px-3 py-2 text-xs font-bold text-whatsapp-light">
             <ShieldCheck className="h-4 w-4" /> Owner stays in control
@@ -429,7 +429,7 @@ function Kpi({ icon: Icon, label, amount, body, tone }: { icon: any; label: stri
 function Mini({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-4">
-      <p className="text-xs text-text-muted">{label}</p>
+      <p className="text-xs text-muted-foreground">{label}</p>
       <p className="mt-1 text-xl font-bold text-brand-cream">{value}</p>
     </div>
   );
@@ -465,13 +465,13 @@ function ActionCard({ action, businessId, onApprove, onReject, onComplete, disab
             <span className="rounded-full bg-brand-cream/10 px-3 py-1 text-xs font-bold text-brand-cream/50">Priority {action.priority}</span>
           </div>
           <h3 className="mt-3 text-lg font-bold text-brand-cream">{action.title}</h3>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-text-secondary">{action.description}</p>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{action.description}</p>
         </div>
         <div className="shrink-0 rounded-2xl bg-brand-night/20 p-4 text-right">
-          <p className="text-xs text-text-muted">Expected recovery</p>
+          <p className="text-xs text-muted-foreground">Expected recovery</p>
           <p className="mt-1 text-2xl font-black text-brand-green">{action.expected_recovery_sar != null ? money(action.expected_recovery_sar) : "Not estimated"}</p>
-          <p className="mt-1 text-xs text-text-muted">{action.recoverable_value_low_sar != null || action.recoverable_value_high_sar != null ? `Range ${money(action.recoverable_value_low_sar)}–${money(action.recoverable_value_high_sar)}` : "Insufficient evidence for a recovery estimate"}</p>
-          <p className="mt-1 text-xs font-bold text-text-muted">{action.recovery_confidence || "INSUFFICIENT DATA"}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{action.recoverable_value_low_sar != null || action.recoverable_value_high_sar != null ? `Range ${money(action.recoverable_value_low_sar)}–${money(action.recoverable_value_high_sar)}` : "Insufficient evidence for a recovery estimate"}</p>
+          <p className="mt-1 text-xs font-bold text-muted-foreground">{action.recovery_confidence || "INSUFFICIENT DATA"}</p>
         </div>
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
@@ -491,7 +491,7 @@ function ActionCard({ action, businessId, onApprove, onReject, onComplete, disab
             <div key={scenario.name} className="rounded-xl border border-brand-cream/10 bg-brand-cream/[0.03] p-3">
               <p className="text-xs font-bold text-brand-cream">{scenario.name}</p>
               <p className="mt-1 text-sm text-brand-green">{scenario.expected_recovery_sar != null ? money(scenario.expected_recovery_sar) : `${money(scenario.low_sar)}–${money(scenario.high_sar)}`}</p>
-              <p className="mt-1 text-[11px] text-text-muted">Estimate only · {scenario.confidence}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">Estimate only · {scenario.confidence}</p>
             </div>
           ))}
         </div>
@@ -505,7 +505,7 @@ function Workflow({ title, body, icon: Icon }: { title: string; body: string; ic
     <div className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-5">
       <Icon className="h-5 w-5 text-brand-amber" />
       <h3 className="mt-3 font-bold text-brand-cream">{title}</h3>
-      <p className="mt-2 text-sm leading-6 text-text-secondary">{body}</p>
+      <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
     </div>
   );
 }
@@ -514,7 +514,7 @@ function EmptyActions() {
   return (
     <div className="rounded-2xl border border-dashed border-brand-cream/10 p-8 text-center">
       <p className="font-bold text-brand-cream">No actions generated yet.</p>
-      <p className="mt-1 text-sm text-text-muted">Upload sales and inventory data with cost/current stock for a useful audit.</p>
+      <p className="mt-1 text-sm text-muted-foreground">Upload sales and inventory data with cost/current stock for a useful audit.</p>
     </div>
   );
 }

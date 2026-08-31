@@ -48,7 +48,7 @@ export default function PartnersPage() {
           <h1 className="mt-5 font-serif text-4xl font-black tracking-tight md:text-5xl">
             Grow with NazmOS
           </h1>
-          <p className="mt-4 text-text-secondary">
+          <p className="mt-4 text-muted-foreground">
             Accountants, Monshaat advisors, consultants, auditors, and fintechs — refer merchants, earn commissions, and co-deliver value.
           </p>
         </div>
@@ -64,7 +64,7 @@ export default function PartnersPage() {
         {submitted ? (
           <div className="mt-10 rounded-2xl border border-brand-green/30 bg-brand-green/10 p-8 text-center">
             <h2 className="text-2xl font-bold text-brand-cream">Application received</h2>
-            <p className="mt-2 text-text-secondary">
+            <p className="mt-2 text-muted-foreground">
               The Nazmak team will review your profile and send your partner referral code within 2 business days.
             </p>
           </div>
@@ -82,7 +82,7 @@ export default function PartnersPage() {
               <Field label="Bank IBAN (optional)" value={form.bank_iban} onChange={(v) => setForm({ ...form, bank_iban: v })} />
             </div>
 
-            <label className="block text-sm font-medium text-text-secondary">Partner type</label>
+            <label className="block text-sm font-medium text-muted-foreground">Partner type</label>
             <div className="grid gap-3 md:grid-cols-2">
               {partnerTypes.map((pt) => (
                 <label
@@ -103,7 +103,7 @@ export default function PartnersPage() {
                     className="sr-only"
                   />
                   <p className="font-bold text-brand-cream">{pt.label}</p>
-                  <p className="mt-1 text-xs text-text-muted">{pt.desc}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{pt.desc}</p>
                 </label>
               ))}
             </div>
@@ -133,7 +133,7 @@ export default function PartnersPage() {
 function Field({ label, value, onChange, type = "text", required }: { label: string; value: string; onChange: (v: string) => void; type?: string; required?: boolean }) {
   return (
     <label className="block space-y-1.5 text-sm">
-      <span className="text-text-secondary">{label}</span>
+      <span className="text-muted-foreground">{label}</span>
       <input
         type={type}
         required={required}
@@ -150,7 +150,7 @@ function Value({ icon: Icon, title, body }: { icon: React.ElementType; title: st
     <div className="rounded-2xl border border-border bg-surface p-5">
       <Icon className="h-6 w-6 text-primary" />
       <h3 className="mt-3 font-bold text-brand-cream">{title}</h3>
-      <p className="mt-1 text-sm text-text-muted">{body}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{body}</p>
     </div>
   );
 }

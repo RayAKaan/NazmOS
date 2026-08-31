@@ -82,16 +82,16 @@ export default function FeedPage() {
     <div className="p-6 md:p-8 max-w-2xl mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Nazm – Attention Feed</h1>
-        <p className="text-text-muted text-sm">نظم – كل ما يحتاج موافقتك، مرتب حسب الأهمية</p>
+        <p className="text-muted-foreground text-sm">نظم – كل ما يحتاج موافقتك، مرتب حسب الأهمية</p>
       </div>
 
-      {loading && <div className="text-text-muted">Loading Nazm…</div>}
+      {loading && <div className="text-muted-foreground">Loading Nazm…</div>}
 
       {!loading && items.length === 0 && (
         <div className="bg-surface border border-border rounded-2xl p-12 text-center">
           <div className="text-4xl mb-3">✅</div>
           <div className="font-semibold mb-1">All clear – لا يوجد شيء يحتاج انتباهك</div>
-          <div className="text-sm text-text-muted">Nazm is watching your inventory 24/7</div>
+          <div className="text-sm text-muted-foreground">Nazm is watching your inventory 24/7</div>
         </div>
       )}
 
@@ -99,20 +99,20 @@ export default function FeedPage() {
         {items.map((it) => (
           <div key={it.id} className="bg-surface border border-border rounded-2xl p-5 hover:border-primary/30 transition-colors">
             <div className="flex items-start justify-between mb-2">
-              <div className="text-xs uppercase tracking-wider text-text-muted">
+              <div className="text-xs uppercase tracking-wider text-muted-foreground">
                 {it.action_type.replace("_", " ")} • confidence {(it.confidence * 100).toFixed(0)}%
               </div>
-              <div className="text-xs text-text-muted">
+              <div className="text-xs text-muted-foreground">
                 {new Date(it.created_at).toLocaleTimeString("ar-SA", { hour: "2-digit", minute: "2-digit" })}
               </div>
             </div>
             <div className="font-semibold text-lg mb-1">{it.title_ar || it.title}</div>
-            <div className="text-sm text-text-secondary mb-1">{it.summary_ar || it.summary}</div>
+            <div className="text-sm text-muted-foreground mb-1">{it.summary_ar || it.summary}</div>
             {it.summary_ar && it.summary !== it.summary_ar && (
-              <div className="text-xs text-text-muted mb-3">{it.summary}</div>
+              <div className="text-xs text-muted-foreground mb-3">{it.summary}</div>
             )}
             {it.estimated_value_sar && (
-              <div className="text-sm text-text-muted mb-3">﷼ {it.estimated_value_sar.toLocaleString("ar-SA")} SAR</div>
+              <div className="text-sm text-muted-foreground mb-3">﷼ {it.estimated_value_sar.toLocaleString("ar-SA")} SAR</div>
             )}
             {it.can_approve ? (
               <div className="flex gap-2">
@@ -124,19 +124,19 @@ export default function FeedPage() {
                 </button>
                 <button
                   onClick={() => act(it.id, "reject")}
-                  className="px-4 py-2.5 bg-surface-hover rounded-xl text-text-secondary hover:text-text-primary"
+                  className="px-4 py-2.5 bg-surface-hover rounded-xl text-muted-foreground hover:text-foreground"
                 >
                   Reject
                 </button>
               </div>
             ) : (
-              <div className="text-xs text-text-muted">Info only – لا يحتاج موافقة</div>
+              <div className="text-xs text-muted-foreground">Info only – لا يحتاج موافقة</div>
             )}
           </div>
         ))}
       </div>
 
-      <div className="mt-8 text-center text-xs text-text-muted">
+      <div className="mt-8 text-center text-xs text-muted-foreground">
         Autonomy dial: <a href="/settings/autonomy" className="text-primary hover:underline">Settings → التحكم الذاتي</a>
       </div>
     </div>

@@ -34,14 +34,14 @@ export function IntelligenceChat({ className }: IntelligenceChatProps) {
   };
 
   return (
-    <div className={cn("flex flex-col h-full bg-bg-secondary border border-border rounded-2xl overflow-hidden", className)}>
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-border bg-bg-tertiary">
+    <div className={cn("flex flex-col h-full bg-card border border-border rounded-2xl overflow-hidden", className)}>
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-border bg-muted">
         <div className="w-8 h-8 rounded-lg bg-brand-teal/15 flex items-center justify-center text-brand-teal">
           <Sparkles className="w-4 h-4" />
         </div>
         <div>
           <h2 className="font-semibold text-sm">Nazm Copilot</h2>
-          <p className="text-xs text-text-muted">Ask anything about your store</p>
+          <p className="text-xs text-muted-foreground">Ask anything about your store</p>
         </div>
       </div>
 
@@ -52,8 +52,8 @@ export function IntelligenceChat({ className }: IntelligenceChatProps) {
               <div className="w-12 h-12 rounded-xl bg-brand-teal/10 mx-auto flex items-center justify-center text-brand-teal mb-3">
                 <Sparkles className="w-6 h-6" />
               </div>
-              <h3 className="font-semibold text-text-primary">What would you like to know?</h3>
-              <p className="text-sm text-text-muted mt-1">
+              <h3 className="font-semibold text-foreground">What would you like to know?</h3>
+              <p className="text-sm text-muted-foreground mt-1">
                 Nazm can reason across sales, inventory, context, and decisions.
               </p>
             </div>
@@ -63,7 +63,7 @@ export function IntelligenceChat({ className }: IntelligenceChatProps) {
                 <button
                   key={suggestion}
                   onClick={() => handleSuggestion(suggestion)}
-                  className="text-left px-4 py-3 rounded-xl border border-border bg-bg-tertiary text-sm text-text-secondary hover:text-text-primary hover:border-brand-teal/30 hover:bg-brand-teal/5 transition-colors"
+                  className="text-left px-4 py-3 rounded-xl border border-border bg-muted text-sm text-muted-foreground hover:text-foreground hover:border-brand-teal/30 hover:bg-brand-teal/5 transition-colors"
                 >
                   {suggestion}
                 </button>
@@ -85,7 +85,7 @@ export function IntelligenceChat({ className }: IntelligenceChatProps) {
                 "max-w-[90%] md:max-w-[80%] rounded-xl px-4 py-3 text-sm",
                 message.role === "user"
                   ? "bg-brand-teal text-brand-night rounded-br-none"
-                  : "bg-bg-tertiary border border-border rounded-bl-none"
+                  : "bg-muted border border-border rounded-bl-none"
               )}
             >
               {message.role === "user" ? (
@@ -101,8 +101,8 @@ export function IntelligenceChat({ className }: IntelligenceChatProps) {
 
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-bg-tertiary border border-border rounded-xl rounded-bl-none px-4 py-3">
-              <div className="flex items-center gap-2 text-text-muted text-sm">
+            <div className="bg-muted border border-border rounded-xl rounded-bl-none px-4 py-3">
+              <div className="flex items-center gap-2 text-muted-foreground text-sm">
                 <Loader2 className="w-4 h-4 animate-spin text-brand-teal" />
                 Nazm is thinking...
               </div>
@@ -111,19 +111,19 @@ export function IntelligenceChat({ className }: IntelligenceChatProps) {
         )}
 
         {error && (
-          <div className="rounded-xl border border-status-error/30 bg-status-error/10 p-3 text-sm text-status-error">
+          <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
             {error}
           </div>
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="p-4 border-t border-border bg-bg-tertiary">
+      <form onSubmit={handleSubmit} className="p-4 border-t border-border bg-muted">
         <div className="flex gap-2">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask Nazm..."
-            className="flex-1 rounded-xl border border-border bg-bg-primary px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-teal transition-colors"
+            className="flex-1 rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand-teal transition-colors"
           />
           <button
             type="submit"
@@ -134,7 +134,7 @@ export function IntelligenceChat({ className }: IntelligenceChatProps) {
             <Send className="w-4 h-4" />
           </button>
         </div>
-        <p className="mt-2 text-[10px] text-text-muted text-center">
+        <p className="mt-2 text-[10px] text-muted-foreground text-center">
           AI-generated answers may be incorrect. Always review before acting.
         </p>
       </form>

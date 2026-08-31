@@ -217,14 +217,14 @@ export default function UploadPage() {
                     ? "bg-brand-amber text-brand-night"
                     : stepIndex > i
                       ? "bg-brand-green text-brand-night"
-                      : "bg-navy-panel-2 text-navy-muted"
+                      : "bg-muted text-muted-foreground"
                 )}
               >
                 {stepIndex > i ? <CheckCircle size={16} /> : i + 1}
               </div>
-              <span className={cn("text-sm font-bold", step === s ? "text-brand-cream" : "text-navy-muted")}>{stepLabels[s]}</span>
+              <span className={cn("text-sm font-bold", step === s ? "text-brand-cream" : "text-muted-foreground")}>{stepLabels[s]}</span>
             </div>
-            {i < stepOrder.length - 1 && <div className={cn("h-0.5 w-10", stepIndex > i ? "bg-brand-green" : "bg-navy-panel-2")} />}
+            {i < stepOrder.length - 1 && <div className={cn("h-0.5 w-10", stepIndex > i ? "bg-brand-green" : "bg-muted")} />}
           </div>
         ))}
       </div>
@@ -251,24 +251,24 @@ export default function UploadPage() {
         )}
 
         {step === "processing" && (
-          <motion.div key="processing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="rounded-3xl border border-brand-cream/10 bg-navy-panel p-8 text-center">
+          <motion.div key="processing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="rounded-3xl border border-brand-cream/10 bg-card p-8 text-center">
             <div className="mx-auto mb-6 flex h-16 w-16 animate-pulse items-center justify-center rounded-full bg-brand-amber/10">
               <Database size={24} className="text-brand-amber" />
             </div>
-            <h2 className="text-xl font-bold text-navy-text">Building your Money Audit dataset</h2>
-            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-navy-muted">
+            <h2 className="text-xl font-bold text-foreground">Building your Money Audit dataset</h2>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
               NazmOS is importing products, stock, and sales rows. This is where the product becomes useful.
             </p>
 
             {ingestionProgress && (
               <div className="mx-auto mt-6 max-w-md">
                 <div className="mb-2 flex justify-between text-sm">
-                  <span className="text-navy-muted">Progress</span>
-                  <span className="text-navy-text">
+                  <span className="text-muted-foreground">Progress</span>
+                  <span className="text-foreground">
                     {ingestionProgress.rows_processed.toLocaleString()} / {ingestionProgress.total_rows.toLocaleString()} rows
                   </span>
                 </div>
-                <div className="h-3 w-full overflow-hidden rounded-full bg-navy-panel-2">
+                <div className="h-3 w-full overflow-hidden rounded-full bg-muted">
                   <motion.div className="h-full rounded-full bg-brand-amber" initial={{ width: 0 }} animate={{ width: `${ingestionProgress.progress}%` }} transition={{ duration: 0.3 }} />
                 </div>
                 {ingestionProgress.errors.length > 0 && (
@@ -302,7 +302,7 @@ export default function UploadPage() {
                 {ingestionResult.errors.slice(0, 10).map((err, i) => (
                   <p key={i} className="text-xs leading-5 text-destructive">Row {err.row}: {err.error}</p>
                 ))}
-                {ingestionResult.errors.length > 10 && <p className="mt-2 text-xs text-navy-muted">...and {ingestionResult.errors.length - 10} more.</p>}
+                {ingestionResult.errors.length > 10 && <p className="mt-2 text-xs text-muted-foreground">...and {ingestionResult.errors.length - 10} more.</p>}
               </div>
             )}
 
@@ -444,18 +444,18 @@ function DropZoneWithCallback({ onUploadComplete }: { onUploadComplete: (result:
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_.85fr]">
-      <div className="rounded-3xl border border-brand-cream/10 bg-navy-panel p-6 md:p-8">
+      <div className="rounded-3xl border border-brand-cream/10 bg-card p-6 md:p-8">
         {state === "preview" && uploadResult ? (
           <div className="text-center">
             <CheckCircle size={48} className="mx-auto mb-4 text-brand-green" />
             <p className="font-mono text-xs uppercase tracking-[0.22em] text-brand-green">File scanned</p>
-            <h3 className="mt-2 text-xl font-bold text-navy-text">{uploadResult.filename}</h3>
-            <p className="mt-1 text-sm text-navy-muted">
+            <h3 className="mt-2 text-xl font-bold text-foreground">{uploadResult.filename}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
               {uploadResult.row_count.toLocaleString()} rows · {uploadResult.suggested_file_kind === "inventory_snapshot" ? "Looks like inventory" : "Looks like sales"}
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
               {Object.entries(uploadResult.detected_columns).slice(0, 8).map(([col, mapped]) => (
-                <span key={col} className="rounded bg-navy-panel-2 px-2 py-1 text-xs text-navy-chip">{col} → {mapped}</span>
+                <span key={col} className="rounded bg-muted px-2 py-1 text-xs text-muted-foreground">{col} → {mapped}</span>
               ))}
             </div>
             <button onClick={() => onUploadComplete(uploadResult)} className="mt-6 rounded-xl bg-brand-amber px-6 py-3 font-bold text-brand-night hover:bg-brand-gold">
@@ -471,7 +471,7 @@ function DropZoneWithCallback({ onUploadComplete }: { onUploadComplete: (result:
           >
             <div className={cn(
               "flex min-h-[280px] flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 text-center transition-all",
-              isDragging ? "border-brand-amber bg-brand-amber/10" : "border-navy-panel-2 hover:border-brand-amber/50 hover:bg-brand-amber/5"
+              isDragging ? "border-brand-amber bg-brand-amber/10" : "border-border hover:border-brand-amber/50 hover:bg-brand-amber/5"
             )}>
               <input
                 type="file"
@@ -482,14 +482,14 @@ function DropZoneWithCallback({ onUploadComplete }: { onUploadComplete: (result:
                   if (file) handleFile(file);
                 }}
               />
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-navy-panel-2">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
                 {state === "scan" ? <Database className="h-8 w-8 animate-pulse text-brand-amber" /> : <UploadCloud className="h-8 w-8 text-brand-amber" />}
               </div>
-              <p className="mb-2 text-lg font-bold text-navy-text">
+              <p className="mb-2 text-lg font-bold text-foreground">
                 {state === "scan" ? "Scanning file..." : "Drop a sales or inventory file here"}
               </p>
-              <p className="text-sm leading-6 text-navy-muted">or click to browse · CSV, XLSX, XLS · max 15 MB</p>
-              <p className="mt-3 text-xs text-navy-faint-2">Start with one file. Upload the second after import.</p>
+              <p className="text-sm leading-6 text-muted-foreground">or click to browse · CSV, XLSX, XLS · max 15 MB</p>
+              <p className="mt-3 text-xs text-muted-foreground">Start with one file. Upload the second after import.</p>
             </div>
           </label>
         )}

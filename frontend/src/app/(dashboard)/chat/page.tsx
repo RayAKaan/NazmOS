@@ -12,7 +12,7 @@ export default function ChatPage() {
           <span>UNIFIED INTELLIGENCE API</span>
         </div>
         <h1 className="text-2xl md:text-3xl font-bold mt-1">Nazm Copilot</h1>
-        <p className="text-text-muted text-sm">
+        <p className="text-muted-foreground text-sm">
           Reason across memory, graph, context, and decisions — all in one conversation.
         </p>
       </div>

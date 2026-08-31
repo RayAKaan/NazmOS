@@ -45,7 +45,7 @@ export default function OpsPage() {
   }, [load]);
 
   if (loading) {
-    return <div className="p-8 text-center text-text-muted">Loading pilot console...</div>;
+    return <div className="p-8 text-center text-muted-foreground">Loading pilot console...</div>;
   }
 
   if (error || !data) {
@@ -95,7 +95,7 @@ export default function OpsPage() {
                 <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                   <div>
                     <p className="font-bold text-brand-cream">{upload.filename}</p>
-                    <p className="mt-1 text-xs text-text-muted">{upload.row_count_imported || 0} imported · {upload.row_count_failed || 0} failed</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{upload.row_count_imported || 0} imported · {upload.row_count_failed || 0} failed</p>
                   </div>
                   <span className="rounded-full bg-brand-cream/10 px-3 py-1 text-xs font-bold text-brand-cream/60">{upload.status}</span>
                 </div>
@@ -112,7 +112,7 @@ export default function OpsPage() {
                 <CheckCircle2 className="mt-0.5 h-5 w-5 text-brand-green" />
                 <div>
                   <p className="font-bold text-brand-cream">Step {index + 1}</p>
-                  <p className="mt-1 text-sm leading-6 text-text-secondary">{step}</p>
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">{step}</p>
                 </div>
               </div>
             ))}
@@ -129,7 +129,7 @@ export default function OpsPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="font-bold text-brand-cream">{action.title}</p>
-                    <p className="mt-1 text-xs text-text-muted">{action.action_type} · priority {action.priority}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{action.action_type} · priority {action.priority}</p>
                   </div>
                   <p className="shrink-0 font-bold text-brand-green">{action.expected_recovery_sar != null ? money(action.expected_recovery_sar) : "Not estimated"}</p>
                 </div>
@@ -164,7 +164,7 @@ function Kpi({ icon: Icon, label, value, danger = false }: { icon: any; label: s
   return (
     <div className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.03] p-5">
       <Icon className={danger ? "h-5 w-5 text-brand-red-light" : "h-5 w-5 text-brand-amber"} />
-      <p className="mt-3 text-xs text-text-muted">{label}</p>
+      <p className="mt-3 text-xs text-muted-foreground">{label}</p>
       <p className={danger ? "mt-1 text-2xl font-black text-brand-red-light" : "mt-1 text-2xl font-black text-brand-cream"}>{value}</p>
     </div>
   );
@@ -174,12 +174,12 @@ function Panel({ title, subtitle, children }: { title: string; subtitle: string;
   return (
     <section className="rounded-3xl border border-border bg-surface p-6">
       <h2 className="text-2xl font-bold text-brand-cream">{title}</h2>
-      <p className="mt-1 text-sm text-text-secondary">{subtitle}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
       <div className="mt-5">{children}</div>
     </section>
   );
 }
 
 function Empty({ text }: { text: string }) {
-  return <div className="rounded-2xl border border-dashed border-brand-cream/10 p-6 text-center text-sm text-text-muted">{text}</div>;
+  return <div className="rounded-2xl border border-dashed border-brand-cream/10 p-6 text-center text-sm text-muted-foreground">{text}</div>;
 }

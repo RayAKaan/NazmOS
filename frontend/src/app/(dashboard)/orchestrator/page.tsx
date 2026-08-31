@@ -40,12 +40,12 @@ export default function OrchestratorPage() {
             <span>UNIVERSAL AGENTIC OPERATING SYSTEM (v3.0)</span>
           </div>
           <h1 className="text-2xl font-bold mt-1">Multi-Location Stock & Profit Orchestration</h1>
-          <p className="text-text-secondary text-sm">Autonomous inter-branch stock rebalancing and real-time margin defense.</p>
+          <p className="text-muted-foreground text-sm">Autonomous inter-branch stock rebalancing and real-time margin defense.</p>
         </div>
       </div>
 
       {loading ? (
-        <div className="p-12 text-center text-text-secondary font-mono text-sm flex items-center justify-center gap-3">
+        <div className="p-12 text-center text-muted-foreground font-mono text-sm flex items-center justify-center gap-3">
           <RefreshCw className="w-5 h-5 animate-spin text-primary" />
           Analyzing multi-branch ledgers and wholesale cost inflation...
         </div>
@@ -61,7 +61,7 @@ export default function OrchestratorPage() {
                 </span>
               </div>
               <h3 className="text-xl font-bold">Autonomous Inter-Branch Transfers</h3>
-              <p className="text-xs text-text-secondary">
+              <p className="text-xs text-muted-foreground">
                 Eliminates unnecessary external purchasing by moving surplus items from overstocked locations to branches near stockout.
               </p>
             </div>
@@ -92,7 +92,7 @@ export default function OrchestratorPage() {
                 </span>
               </div>
               <h3 className="text-xl font-bold">Proactive Wholesale Inflation Shield</h3>
-              <p className="text-xs text-text-secondary">
+              <p className="text-xs text-muted-foreground">
                 Continuously scans OCR invoices. When supplier prices rise, calculates ethical retail shelf adjustments to protect net profitability.
               </p>
             </div>

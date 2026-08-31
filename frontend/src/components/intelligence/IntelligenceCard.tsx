@@ -46,8 +46,8 @@ export function IntelligenceCard({
       className={cn(
         "relative overflow-hidden border transition-all",
         isInline
-          ? "rounded-xl bg-bg-secondary border-border"
-          : "rounded-2xl bg-gradient-to-br from-intelligence-surface/60 to-bg-secondary border-intelligence-border shadow-glow-teal",
+          ? "rounded-xl bg-card border-border"
+          : "rounded-2xl bg-gradient-to-br from-intelligence-surface/60 to-card border-intelligence-border shadow-glow-teal",
         className
       )}
     >
@@ -80,7 +80,7 @@ export function IntelligenceCard({
               )}
             </div>
 
-            <p className={cn("mt-1 text-text-secondary", isCompact ? "text-xs" : "text-sm leading-6")}>
+            <p className={cn("mt-1 text-muted-foreground", isCompact ? "text-xs" : "text-sm leading-6")}>
               {summary}
             </p>
 
@@ -96,7 +96,7 @@ export function IntelligenceCard({
               {children && (
                 <button
                   onClick={() => setExpanded((v) => !v)}
-                  className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-brand-cream/5 transition-colors"
+                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-brand-cream/5 transition-colors"
                   aria-expanded={expanded}
                   aria-label={expanded ? "Collapse explanation" : "Expand explanation"}
                 >
@@ -106,7 +106,7 @@ export function IntelligenceCard({
               {onDismiss && (
                 <button
                   onClick={onDismiss}
-                  className="p-1.5 rounded-lg text-text-muted hover:text-status-error hover:bg-status-error/10 transition-colors"
+                  className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                   aria-label="Dismiss insight"
                 >
                   <X className="w-4 h-4" />
@@ -140,7 +140,7 @@ export function IntelligenceCard({
             {onExplain && (
               <button
                 onClick={onExplain}
-                className="inline-flex items-center gap-2 rounded-lg border border-brand-cream/10 px-3 py-2 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-brand-cream/5 transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg border border-brand-cream/10 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-brand-cream/5 transition-colors"
               >
                 Why this?
               </button>

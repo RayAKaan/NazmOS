@@ -36,7 +36,7 @@ export default function InventoryPage() {
           <Package className="w-8 h-8" />
           Inventory
         </h1>
-        <p className="text-text-muted">Manage your stock levels</p>
+        <p className="text-muted-foreground">Manage your stock levels</p>
       </div>
 
       {inventory && (
@@ -61,7 +61,7 @@ export default function InventoryPage() {
 
       {inventory?.intelligence_recommendations && inventory.intelligence_recommendations.length > 0 && (
         <div className="space-y-3">
-          <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider">
+          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
             Intelligence Recommendations
           </h3>
           <div className="grid gap-3 md:grid-cols-2">
@@ -126,7 +126,7 @@ export default function InventoryPage() {
 
         {inventory && inventory.pagination.total_pages > 1 && (
           <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-            <p className="text-sm text-text-muted">
+            <p className="text-sm text-muted-foreground">
               Page {inventory.pagination.page} of {inventory.pagination.total_pages}
             </p>
             <div className="flex gap-2">
@@ -153,11 +153,11 @@ export default function InventoryPage() {
         <div className="p-5 rounded-xl bg-surface border border-border">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-text-muted">Total Stock Value</p>
+              <p className="text-sm text-muted-foreground">Total Stock Value</p>
               <p className="text-xl font-bold">{formatCurrency(inventory.summary.total_stock_value)}</p>
             </div>
             <div>
-              <p className="text-sm text-text-muted">Items Needing Attention</p>
+              <p className="text-sm text-muted-foreground">Items Needing Attention</p>
               <p className="text-xl font-bold text-warning">
                 {inventory.summary.critical_count + inventory.summary.low_count}
               </p>

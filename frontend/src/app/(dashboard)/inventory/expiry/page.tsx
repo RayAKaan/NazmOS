@@ -45,9 +45,9 @@ export default function ExpiryPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Expiry Tracker – تتبع انتهاء الصلاحية</h1>
-          <p className="text-text-muted text-sm">FEFO – First Expired, First Out – SFDA compliant</p>
+          <p className="text-muted-foreground text-sm">FEFO – First Expired, First Out – SFDA compliant</p>
         </div>
-        <div className="text-sm text-text-muted">Pharmacy Module – وحدة الصيدلية</div>
+        <div className="text-sm text-muted-foreground">Pharmacy Module – وحدة الصيدلية</div>
       </div>
 
       <div className="flex gap-2 mb-4 flex-wrap">
@@ -63,7 +63,7 @@ export default function ExpiryPage() {
             className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
               filter === f.k
                 ? "bg-primary text-primary-foreground"
-                : "bg-surface border border-border text-text-secondary hover:text-text-primary"
+                : "bg-surface border border-border text-muted-foreground hover:text-foreground"
             }`}
           >
             {f.label}
@@ -73,7 +73,7 @@ export default function ExpiryPage() {
 
       <div className="bg-surface border border-border rounded-2xl overflow-hidden">
         <table className="w-full">
-          <thead className="bg-surface-hover text-xs uppercase tracking-wider text-text-muted">
+          <thead className="bg-surface-hover text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
               <th className="text-left px-5 py-3">Product / المنتج</th>
               <th className="text-left px-5 py-3">Batch</th>
@@ -90,12 +90,12 @@ export default function ExpiryPage() {
                 <tr key={l.id} className="hover:bg-surface-hover/50">
                   <td className="px-5 py-4">
                     <div className="font-medium">{l.item_name_ar || l.item_name}</div>
-                    <div className="text-xs text-text-muted">{l.item_name}</div>
+                    <div className="text-xs text-muted-foreground">{l.item_name}</div>
                   </td>
                   <td className="px-5 py-4 font-mono text-sm">{l.batch_number}</td>
                   <td className="px-5 py-4 text-sm">
                     {new Date(l.expiry_date).toLocaleDateString("ar-SA")}
-                    <div className="text-xs text-text-muted">{l.days_left} days</div>
+                    <div className="text-xs text-muted-foreground">{l.days_left} days</div>
                   </td>
                   <td className="px-5 py-4 text-right font-mono">{l.quantity}</td>
                   <td className="px-5 py-4 text-right">
@@ -105,7 +105,7 @@ export default function ExpiryPage() {
                     {l.days_left < 90 ? (
                       <button className="text-xs text-primary hover:underline">Discount – خصم</button>
                     ) : (
-                      <span className="text-xs text-text-muted">—</span>
+                      <span className="text-xs text-muted-foreground">—</span>
                     )}
                   </td>
                 </tr>
@@ -114,11 +114,11 @@ export default function ExpiryPage() {
           </tbody>
         </table>
         {filtered.length === 0 && (
-          <div className="px-5 py-12 text-center text-text-muted">No lots in this category – لا توجد دفعات</div>
+          <div className="px-5 py-12 text-center text-muted-foreground">No lots in this category – لا توجد دفعات</div>
         )}
       </div>
 
-      <div className="mt-4 text-xs text-text-muted">
+      <div className="mt-4 text-xs text-muted-foreground">
         SFDA recall check: <span className="text-success">✓ Active – no recalls matched to your inventory</span>
         <span className="mx-2">•</span>
         Last scan: just now

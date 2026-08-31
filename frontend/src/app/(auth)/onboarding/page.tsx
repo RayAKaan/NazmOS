@@ -90,7 +90,7 @@ function OnboardingContent() {
             ن
           </div>
           <h1 className="text-2xl md:text-3xl font-bold">{t.onboarding.welcome}</h1>
-          <p className="text-text-muted mt-1">{t.onboarding.subtitle}</p>
+          <p className="text-muted-foreground mt-1">{t.onboarding.subtitle}</p>
         </div>
 
         {step === 1 && (
@@ -110,11 +110,11 @@ function OnboardingContent() {
                     className={cn(
                       "flex flex-col items-start gap-2 p-4 rounded-xl border text-left transition-all",
                       selected
-                        ? "border-brand-teal bg-brand-teal/10 text-text-primary"
-                        : "border-border bg-bg-secondary text-text-secondary hover:border-brand-teal/30 hover:bg-brand-teal/5"
+                        ? "border-brand-teal bg-brand-teal/10 text-foreground"
+                        : "border-border bg-card text-muted-foreground hover:border-brand-teal/30 hover:bg-brand-teal/5"
                     )}
                   >
-                    <Icon className={cn("w-5 h-5", selected ? "text-brand-teal" : "text-text-muted")} />
+                    <Icon className={cn("w-5 h-5", selected ? "text-brand-teal" : "text-muted-foreground")} />
                     <span className="font-semibold">{g.label}</span>
                     <span className="text-xs leading-5">{g.description}</span>
                   </button>
@@ -128,15 +128,15 @@ function OnboardingContent() {
           <div className="space-y-6">
             <div className="text-center">
               <h2 className="text-lg font-semibold">{t.onboarding.uploadData}</h2>
-              <p className="text-sm text-text-muted mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 CSV / Excel from your POS or cashier export. We auto-detect columns.
               </p>
             </div>
 
-            <div className="rounded-xl border border-dashed border-border bg-bg-secondary p-8 text-center">
+            <div className="rounded-xl border border-dashed border-border bg-card p-8 text-center">
               <Upload className="w-8 h-8 text-brand-teal mx-auto mb-3" />
               <p className="font-medium">Drag a file here or click to upload</p>
-              <p className="text-xs text-text-muted mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 product_name, quantity, price, date — all data stays local
               </p>
             </div>
@@ -150,7 +150,7 @@ function OnboardingContent() {
               </Link>
               <button
                 onClick={next}
-                className="flex-1 border border-border bg-bg-secondary text-text-primary py-3 rounded-xl font-medium hover:bg-bg-tertiary transition-colors"
+                className="flex-1 border border-border bg-card text-foreground py-3 rounded-xl font-medium hover:bg-muted transition-colors"
               >
                 Skip — I uploaded already
               </button>
@@ -162,7 +162,7 @@ function OnboardingContent() {
           <div className="space-y-6">
             <div className="text-center">
               <h2 className="text-lg font-semibold">{t.onboarding.firstInsight}</h2>
-              <p className="text-sm text-text-muted mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Example preview — what an insight looks like once your files are analyzed. No data is processed at this step.
               </p>
             </div>
@@ -176,7 +176,7 @@ function OnboardingContent() {
                 {goal === "compliance" && "Keep your VAT return clean — real gaps appear after your first audit."}
                 {!goal && "Insight previews appear here once your first audit is complete."}
               </div>
-              <p className="text-sm text-text-secondary">
+              <p className="text-sm text-muted-foreground">
                 After your first real audit, ask Nazm Copilot to explain any recommendation, approve actions, or generate a plan.
               </p>
             </div>
@@ -196,7 +196,7 @@ function OnboardingContent() {
               <CheckCircle2 className="w-8 h-8 text-brand-teal" />
             </div>
             <h2 className="text-xl font-bold">You are all set</h2>
-            <p className="text-sm text-text-muted">
+            <p className="text-sm text-muted-foreground">
               Your dashboard is ready. Nazm will keep watching your inventory 24/7.
             </p>
             <button
@@ -215,7 +215,7 @@ function OnboardingContent() {
                 key={s.id}
                 className={cn(
                   "flex-1 text-center text-xs font-medium transition-colors",
-                  s.id <= step ? "text-brand-teal" : "text-text-muted"
+                  s.id <= step ? "text-brand-teal" : "text-muted-foreground"
                 )}
               >
                 {s.label}
@@ -236,7 +236,7 @@ function OnboardingContent() {
           {step > 1 && step < 4 && (
             <button
               onClick={prev}
-              className="mt-4 text-sm text-text-muted hover:text-text-primary underline"
+              className="mt-4 text-sm text-muted-foreground hover:text-foreground underline"
             >
               {isAr ? "رجوع" : "Back"}
             </button>

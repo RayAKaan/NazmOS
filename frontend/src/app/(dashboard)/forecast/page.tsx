@@ -30,7 +30,7 @@ interface SummaryResponse {
 function trendTone(trend: string | null) {
   if (trend === "up") return "text-brand-green bg-brand-green/10 border-brand-green/25";
   if (trend === "down") return "text-brand-red-light bg-brand-red/10 border-brand-red/25";
-  return "text-navy-muted bg-brand-cream/5 border-brand-cream/10";
+  return "text-muted-foreground bg-brand-cream/5 border-brand-cream/10";
 }
 
 function trendLabel(trend: string | null) {
@@ -111,8 +111,8 @@ export default function ForecastPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-navy-text">Demand Forecast</h1>
-          <p className="mt-1 text-sm text-navy-muted">
+          <h1 className="text-2xl font-bold text-foreground">Demand Forecast</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             AI demand predictions per item — KSA edition, Prophet-powered.
           </p>
         </div>
@@ -149,18 +149,18 @@ export default function ForecastPage() {
                 { label: "Trending down", value: summary.trending_down },
                 { label: "Stable", value: summary.stable },
               ].map((stat) => (
-                <div key={stat.label} className="rounded-2xl border border-border bg-bg-secondary p-4">
-                  <p className="text-sm text-navy-muted">{stat.label}</p>
-                  <p className="mt-2 text-2xl font-bold text-navy-text">{stat.value}</p>
+                <div key={stat.label} className="rounded-2xl border border-border bg-card p-4">
+                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="mt-2 text-2xl font-bold text-foreground">{stat.value}</p>
                 </div>
               ))}
             </div>
           )}
 
           <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
-            <div className="rounded-2xl border border-border bg-bg-secondary overflow-hidden">
+            <div className="rounded-2xl border border-border bg-card overflow-hidden">
               <div className="border-b border-border p-4">
-                <h2 className="text-lg font-semibold text-navy-text">Forecasted items</h2>
+                <h2 className="text-lg font-semibold text-foreground">Forecasted items</h2>
               </div>
               <div className="divide-y divide-border">
                 {forecasts!.map((forecast) => (
@@ -168,13 +168,13 @@ export default function ForecastPage() {
                     key={forecast.item_id}
                     onClick={() => openDetail(forecast)}
                     className={cn(
-                      "flex w-full items-center justify-between gap-4 p-4 text-left transition-colors hover:bg-bg-tertiary",
-                      selected?.item_id === forecast.item_id && "bg-bg-tertiary"
+                      "flex w-full items-center justify-between gap-4 p-4 text-left transition-colors hover:bg-muted",
+                      selected?.item_id === forecast.item_id && "bg-muted"
                     )}
                   >
                     <div className="min-w-0">
-                      <p className="truncate font-medium text-navy-text">{forecast.item_name || "Unnamed item"}</p>
-                      <p className="text-sm text-navy-muted">
+                      <p className="truncate font-medium text-foreground">{forecast.item_name || "Unnamed item"}</p>
+                      <p className="text-sm text-muted-foreground">
                         {forecast.trained_at ? new Date(forecast.trained_at).toLocaleDateString() : "Not trained"}
                       </p>
                     </div>
@@ -186,12 +186,12 @@ export default function ForecastPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-border bg-bg-secondary p-5">
+            <div className="rounded-2xl border border-border bg-card p-5">
               {!selected ? (
                 <div className="flex flex-col items-center justify-center py-16 text-center">
-                  <TrendingUp className="h-10 w-10 text-navy-muted" aria-hidden />
-                  <p className="mt-4 font-medium text-navy-text">Select an item</p>
-                  <p className="mt-1 text-sm text-navy-muted">Pick a forecasted item to view its demand curve.</p>
+                  <TrendingUp className="h-10 w-10 text-muted-foreground" aria-hidden />
+                  <p className="mt-4 font-medium text-foreground">Select an item</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Pick a forecasted item to view its demand curve.</p>
                 </div>
               ) : !detail ? (
                 <LoadingState label="Loading forecast detail…" variant="chart" />
@@ -203,12 +203,12 @@ export default function ForecastPage() {
                         {selected.trend_direction === "down" ? <TrendingDown className="h-5 w-5" aria-hidden /> : <TrendingUp className="h-5 w-5" aria-hidden />}
                       </div>
                       <div>
-                        <h3 className="font-semibold text-navy-text">{selected.item_name || "Unnamed item"}</h3>
-                        <p className="text-sm text-navy-muted">{selected.model_version || "model"} · {selected.trend_strength.toFixed(2)} strength</p>
+                        <h3 className="font-semibold text-foreground">{selected.item_name || "Unnamed item"}</h3>
+                        <p className="text-sm text-muted-foreground">{selected.model_version || "model"} · {selected.trend_strength.toFixed(2)} strength</p>
                       </div>
                     </div>
                     {detail.from_cache !== undefined && (
-                      <span className="rounded-full border border-brand-cream/10 bg-brand-cream/5 px-3 py-1 text-xs font-semibold text-navy-muted">
+                      <span className="rounded-full border border-brand-cream/10 bg-brand-cream/5 px-3 py-1 text-xs font-semibold text-muted-foreground">
                         {detail.from_cache ? "Cached" : "Fallback"}
                       </span>
                     )}
@@ -222,24 +222,24 @@ export default function ForecastPage() {
                           const height = Math.max((day.predicted_qty / max) * 100, 4);
                           return (
                             <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                              <span className="text-[10px] text-navy-muted">{Math.round(day.predicted_qty)}</span>
+                              <span className="text-[10px] text-muted-foreground">{Math.round(day.predicted_qty)}</span>
                               <div
-                                className={cn("w-full rounded-t-md", day.predicted_qty > 0 ? "bg-brand-amber" : "bg-navy-panel-2")}
+                                className={cn("w-full rounded-t-md", day.predicted_qty > 0 ? "bg-brand-amber" : "bg-muted")}
                                 style={{ height: `${height}%` }}
                               />
-                              <span className="text-[10px] text-navy-faint">
+                              <span className="text-[10px] text-muted-foreground">
                                 {new Date(day.date + "T00:00:00").toLocaleDateString(undefined, { weekday: "narrow" })}
                               </span>
                             </div>
                           );
                         })}
                       </div>
-                      <p className="flex items-center gap-1.5 text-sm text-navy-muted">
+                      <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
                         <MoveRight className="h-4 w-4" aria-hidden /> 7-day demand projection per item
                       </p>
                     </div>
                   ) : (
-                    <p className="mt-6 rounded-xl border border-brand-cream/10 bg-brand-cream/5 p-4 text-sm text-navy-muted">
+                    <p className="mt-6 rounded-xl border border-brand-cream/10 bg-brand-cream/5 p-4 text-sm text-muted-foreground">
                       No forecast curve available yet. Refresh forecasts after importing enough sales history.
                     </p>
                   )}

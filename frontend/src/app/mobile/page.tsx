@@ -99,7 +99,7 @@ export default function MobilePage() {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary animate-pulse" />
-          <p className="text-text-muted text-sm">Loading your briefing…</p>
+          <p className="text-muted-foreground text-sm">Loading your briefing…</p>
         </div>
       </div>
     );
@@ -110,7 +110,7 @@ export default function MobilePage() {
       <div className="min-h-screen flex items-center justify-center bg-background p-6">
         <div className="text-center space-y-4">
           <h1 className="text-2xl font-bold">NazmOS Mobile</h1>
-          <p className="text-text-muted">Please log in to view your owner briefing.</p>
+          <p className="text-muted-foreground">Please log in to view your owner briefing.</p>
           <Link href="/login" className="inline-block rounded-xl bg-primary px-6 py-3 text-primary-foreground font-medium">
             Sign in
           </Link>
@@ -131,7 +131,7 @@ export default function MobilePage() {
               <span className="text-brand-cream font-bold">ن</span>
             </div>
             <div>
-              <p className="text-xs text-text-muted">NazmOS Mobile</p>
+              <p className="text-xs text-muted-foreground">NazmOS Mobile</p>
               <p className="text-sm font-semibold">Owner Briefing</p>
             </div>
           </div>
@@ -144,7 +144,7 @@ export default function MobilePage() {
             </button>
           )}
           {isInstalled && (
-            <span className="text-xs text-text-muted">App installed</span>
+            <span className="text-xs text-muted-foreground">App installed</span>
           )}
         </div>
       </header>
@@ -157,7 +157,7 @@ export default function MobilePage() {
         )}
 
         <section className="rounded-2xl border border-border bg-surface p-4">
-          <p className="text-xs text-text-muted uppercase tracking-wider">Good {getGreeting()}</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider">Good {getGreeting()}</p>
           <h1 className="mt-1 text-xl font-bold">{user?.full_name?.split(" ")[0] || "Owner"}</h1>
           <div className="mt-4 grid grid-cols-2 gap-3">
             <Metric label="Today sales" value={money(summary?.today?.sales)} />
@@ -176,7 +176,7 @@ export default function MobilePage() {
               <span className="text-xs font-bold uppercase tracking-wider">Top action</span>
             </div>
             <h2 className="mt-2 font-bold">{topAction.title}</h2>
-            <p className="mt-1 text-sm text-text-secondary line-clamp-2">{topAction.summary}</p>
+            <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{topAction.summary}</p>
             <div className="mt-3 flex gap-2">
               {topAction.can_approve ? (
                 <>
@@ -207,16 +207,16 @@ export default function MobilePage() {
             <h2 className="font-bold flex items-center gap-2">
               <Bell className="w-4 h-4 text-primary" /> Pending approvals
             </h2>
-            <span className="text-xs text-text-muted">{pending.length}</span>
+            <span className="text-xs text-muted-foreground">{pending.length}</span>
           </div>
           {pending.length === 0 && (
-            <p className="text-sm text-text-muted">No pending approvals. Nazm is watching your store.</p>
+            <p className="text-sm text-muted-foreground">No pending approvals. Nazm is watching your store.</p>
           )}
           <div className="space-y-2">
             {pending.slice(0, 5).map((item) => (
               <div key={item.id} className="rounded-xl border border-brand-cream/5 bg-brand-cream/[0.02] p-3">
                 <p className="text-sm font-medium">{item.title}</p>
-                <p className="text-xs text-text-muted line-clamp-1">{item.summary}</p>
+                <p className="text-xs text-muted-foreground line-clamp-1">{item.summary}</p>
                 <div className="mt-2 flex gap-2">
                   <button
                     onClick={() => approve(item.id)}
@@ -250,7 +250,7 @@ export default function MobilePage() {
 function Metric({ label, value, good }: { label: string; value: string; good?: boolean }) {
   return (
     <div className="rounded-xl bg-brand-cream/[0.03] p-3">
-      <p className="text-xs text-text-muted">{label}</p>
+      <p className="text-xs text-muted-foreground">{label}</p>
       <p className={cn("mt-1 text-lg font-bold", good && "text-success")}>{value}</p>
     </div>
   );
@@ -260,7 +260,7 @@ function MobileButton({ href, icon: Icon, label }: { href: string; icon: React.E
   return (
     <Link
       href={href}
-      className="flex flex-col items-center gap-1 rounded-xl border border-border bg-surface p-3 text-text-secondary"
+      className="flex flex-col items-center gap-1 rounded-xl border border-border bg-surface p-3 text-muted-foreground"
     >
       <Icon className="w-5 h-5" />
       <span className="text-xs font-medium">{label}</span>

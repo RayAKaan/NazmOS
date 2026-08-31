@@ -40,10 +40,10 @@ export default function SuppliersPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Suppliers – الموردين</h1>
-          <p className="text-text-muted text-sm">Your order network – aggregate volume builds negotiating leverage</p>
+          <p className="text-muted-foreground text-sm">Your order network – aggregate volume builds negotiating leverage</p>
         </div>
         <div className="text-right">
-          <div className="text-xs text-text-muted">Total routed (all shops)</div>
+          <div className="text-xs text-muted-foreground">Total routed (all shops)</div>
           <div className="text-xl font-mono font-bold">﷼ {totalVolume.toLocaleString("ar-SA")} SAR</div>
         </div>
       </div>
@@ -58,7 +58,7 @@ export default function SuppliersPage() {
       ) : (
         <div className="bg-surface border border-border rounded-2xl overflow-hidden">
           <table className="w-full">
-            <thead className="bg-surface-hover text-xs uppercase tracking-wider text-text-muted">
+            <thead className="bg-surface-hover text-xs uppercase tracking-wider text-muted-foreground">
               <tr>
                 <th className="text-left px-5 py-3">Supplier</th>
                 <th className="text-left px-5 py-3">City</th>
@@ -74,11 +74,11 @@ export default function SuppliersPage() {
                 <tr key={s.id} className="hover:bg-surface-hover/50">
                   <td className="px-5 py-4">
                     <div className="font-medium">{s.name_ar}</div>
-                    <div className="text-xs text-text-muted">{s.name_en}</div>
+                    <div className="text-xs text-muted-foreground">{s.name_en}</div>
                   </td>
                   <td className="px-5 py-4 text-sm">{s.city}</td>
                   <td className="px-5 py-4 text-xs">
-                    <span className="px-2 py-1 rounded bg-surface-hover text-text-muted">{s.category}</span>
+                    <span className="px-2 py-1 rounded bg-surface-hover text-muted-foreground">{s.category}</span>
                   </td>
                   <td className="px-5 py-4 text-right text-sm">{s.lead_time_days}d</td>
                   <td className="px-5 py-4 text-right font-mono">{s.total_orders}</td>
@@ -104,7 +104,7 @@ export default function SuppliersPage() {
       <div className="mt-4 bg-primary/5 border border-primary/20 rounded-xl p-4 text-sm">
         <b>Network effect – تأثير الشبكة:</b> Once NazmOS routes orders from 30+ shops to the same distributor, we negotiate better prices / faster fulfillment for all our shops. You benefit automatically – no extra work.
         <br />
-        <span className="text-text-muted">حاليا: تتبع فقط – التفاوض يبدأ عند 30 متجر نشط</span>
+        <span className="text-muted-foreground">حاليا: تتبع فقط – التفاوض يبدأ عند 30 متجر نشط</span>
       </div>
     </div>
   );

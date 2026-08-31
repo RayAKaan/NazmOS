@@ -274,6 +274,7 @@ const JUSTIFIED_ORPHANS = new Map([
   ["/mobile", "Standalone mobile PWA shell; reached from device home screen"],
   ["/partners", "External partner signup form; linked only from partner emails"],
   ["/ui-kit", "Internal design-system reference page; intentionally not linked in production navigation"],
+  ["/onboarding", "Post-registration onboarding wizard; reached only via router.push after signup (ternary arg not statically linkable)"],
 ]);
 
 const broken = [];

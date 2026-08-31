@@ -67,8 +67,8 @@ export function KPICardAnimated({
 
   const colorClasses = {
     blue: "border-l-brand-primary",
-    green: "border-l-status-success",
-    yellow: "border-l-status-warning",
+    green: "border-l-success",
+    yellow: "border-l-warning",
     purple: "border-l-brand-secondary",
   };
 

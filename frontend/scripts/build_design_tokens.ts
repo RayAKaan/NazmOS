@@ -65,8 +65,11 @@ for (const s of SINGLES) {
   colors[s] = twValue(s, canonical[s].dark);
 }
 
-// legacy namespaces (keep every existing class resolving)
-const LEGACY_NS = ["brand", "status", "navy", "bg", "text", "intelligence", "chat"];
+// legacy namespaces (keep every existing class resolving). brand is Tier 1, and
+// intelligence/chat are sanctioned Tier 3. status/navy/bg/text namespaces were
+// fully migrated to canonical Tier 2 tokens (see PHASE_0_TOKEN_AUDIT_REPORT.md)
+// and pruned in the token canon (Phase 6), so they are no longer generated.
+const LEGACY_NS = ["brand", "intelligence", "chat"];
 for (const ns of LEGACY_NS) {
   const obj: Record<string, string> = {};
   for (const [k, v] of Object.entries(legacy[ns])) {

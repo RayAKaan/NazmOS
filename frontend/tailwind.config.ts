@@ -102,37 +102,6 @@ const config: Config = {
           "cream-dark": "oklch(var(--brand-cream-dark) / <alpha-value>)",
           "sand": "oklch(var(--brand-sand) / <alpha-value>)"
         },
-        "status": {
-          "success": "oklch(var(--status-success) / <alpha-value>)",
-          "warning": "oklch(var(--status-warning) / <alpha-value>)",
-          "error": "oklch(var(--status-error) / <alpha-value>)",
-          "info": "oklch(var(--status-info) / <alpha-value>)"
-        },
-        "navy": {
-          "text": "oklch(var(--navy-text) / <alpha-value>)",
-          "muted": "oklch(var(--navy-muted) / <alpha-value>)",
-          "faint": "oklch(var(--navy-faint) / <alpha-value>)",
-          "faint-2": "oklch(var(--navy-faint-2) / <alpha-value>)",
-          "chip": "oklch(var(--navy-chip) / <alpha-value>)",
-          "panel": "oklch(var(--navy-panel) / <alpha-value>)",
-          "panel-2": "oklch(var(--navy-panel-2) / <alpha-value>)",
-          "panel-3": "oklch(var(--navy-panel-3) / <alpha-value>)",
-          "deep": "oklch(var(--navy-deep) / <alpha-value>)",
-          "deep-2": "oklch(var(--navy-deep-2) / <alpha-value>)"
-        },
-        "bg": {
-          "primary": "oklch(var(--bg-primary) / <alpha-value>)",
-          "secondary": "oklch(var(--bg-secondary) / <alpha-value>)",
-          "tertiary": "oklch(var(--bg-tertiary) / <alpha-value>)",
-          "surface": "oklch(var(--bg-surface) / <alpha-value>)",
-          "warm": "oklch(var(--bg-warm) / <alpha-value>)"
-        },
-        "text": {
-          "primary": "oklch(var(--text-primary) / <alpha-value>)",
-          "secondary": "oklch(var(--text-secondary) / <alpha-value>)",
-          "muted": "oklch(var(--text-muted) / <alpha-value>)",
-          "subtle": "oklch(var(--text-subtle) / <alpha-value>)"
-        },
         "intelligence": {
           "DEFAULT": "oklch(var(--intelligence) / <alpha-value>)",
           "muted": "oklch(var(--intelligence-muted) / <alpha-value>)",

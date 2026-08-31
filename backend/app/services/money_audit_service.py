@@ -11,7 +11,8 @@ from uuid import UUID
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.services.recovery_intelligence import classify_inventory, estimate_recovery, stockout_financials, ZERO
+from app.services.audit_core import ProductMetrics, analyze_product
+from app.services.recovery_intelligence import (classify_inventory, estimate_recovery, stockout_financials, ZERO)
 from app.utils.clock import utcnow
 
 TARGET_MARGIN_PCT = Decimal("0.22")
@@ -345,28 +346,62 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
         if row.last_restocked:
             restocked = row.last_restocked.date() if isinstance(row.last_restocked, datetime) else row.last_restocked
             inventory_age_days = max(0, (anchor - restocked).days)
-        classification = classify_inventory(
-            stock=stock,
-            recent_qty_30=qty_30d,
-            prior_qty_30=qty_prior,
-            days_since_last_sale=last_sold_days,
-            inventory_age_days=inventory_age_days,
-            monthly_concentrations=monthly_data.get(str(row.item_id)),
-        )
-        classifications[classification] = classifications.get(classification, 0) + 1
 
-        recovery = estimate_recovery(
-            classification=classification,
+        # Time-aware inputs to the shared audit core (Section 4 / A6 / A7):
+        # compute the projected stockout date from on-hand stock, then count as
+        # *usable* only the confirmed inbound that arrives STRICTLY BEFORE that
+        # date. A PO that arrives at/after the projected stockout (or with
+        # unknown arrival) must NOT suppress an immediate reorder.
+        lead_time = None
+        if row.supplier_id is not None and row.supplier_lead_time_days is not None:
+            lead_time = int(row.supplier_lead_time_days)
+        elif row.supplier_id is not None and row.lead_time_days is not None:
+            lead_time = int(row.lead_time_days)
+        inbound_total = confirmed_inbound.get(str(row.item_id), Decimal('0'))
+        stockout_dt = None
+        usable_inbound = Decimal('0')
+        late_inbound = Decimal('0')
+        if daily_velocity > 0:
+            stockout_dt = projected_stockout_date(
+                as_of=anchor, current_stock=stock, daily_demand=daily_velocity
+            )
+            timing = usable_confirmed_inbound(
+                inbound_map.get(str(row.item_id)),
+                stockout_date=stockout_dt,
+            )
+            usable_inbound = timing.usable_qty if timing is not None else Decimal('0')
+            late_inbound = timing.late_qty if timing is not None else Decimal('0')
+        projected_stock = stock + usable_inbound
+
+        # Single source of truth: identical input metrics produce identical
+        # classifications and financial deltas for the guest and money audits.
+        audit = analyze_product(ProductMetrics(
+            name=item_name,
             stock=stock,
             cost=cost,
             sell=sell,
+            recent_qty_30=qty_30d,
+            prior_qty_30=qty_prior,
+            last_sold_days=last_sold_days,
+            inventory_age_days=inventory_age_days,
+            monthly_concentrations=monthly_data.get(str(row.item_id)),
+            calibration_discount_rates=calibration.get("discount", []),
+            projected_stock=projected_stock,
+            lead_time_days=lead_time,
+            safety_stock=_money(row.safety_stock) if row.safety_stock is not None else None,
+        ))
+        classification = audit.classification
+        classifications[classification] = classifications.get(classification, 0) + 1
+        recovery = audit.recovery or estimate_recovery(
+            classification=classification, stock=stock, cost=cost, sell=sell,
             calibration_rates=calibration.get("discount", []),
         )
-        if classification in {"DEAD", "SLOW MOVING"}:
-            capital_at_risk += stock_value
-            dead_stock_value += stock_value
-            recoverable_low += recovery.recoverable_low
-            recoverable_high += recovery.recoverable_high
+
+        if audit.has_dead_or_slow_risk:
+            capital_at_risk += audit.capital_at_risk
+            dead_stock_value += audit.dead_stock_value + audit.slow_moving_value
+            recoverable_low += audit.dead_recoverable_low
+            recoverable_high += audit.dead_recoverable_high
             evidence_count += 1
             days_label = f"{last_sold_days} days" if last_sold_days is not None else "no recorded sale"
             actions.append({
@@ -375,8 +410,8 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
                 "title": f"Review {item_name} inventory",
                 "description": f"{stock} units in stock; last sale {days_label}; recent 30-day demand {qty_30d} units vs {qty_prior} units in the preceding 30 days.",
                 "expected_recovery_sar": recovery.expected_recovery,
-                "recoverable_value_low_sar": recovery.recoverable_low,
-                "recoverable_value_high_sar": recovery.recoverable_high,
+                "recoverable_value_low_sar": audit.dead_recoverable_low,
+                "recoverable_value_high_sar": audit.dead_recoverable_high,
                 "recovery_confidence": recovery.confidence,
                 "quantity": stock,
                 "recommended_discount_pct": None,
@@ -419,7 +454,7 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
                 "item_id": str(row.item_id), "action_type": "reorder",
                 "priority": 3,
                 "title": f"High velocity: {item_name}",
-                "description": f"Selling well. {stock} units in stock; {daily_velocity.quantize(Decimal('0.1'))} units/day; {stock/daily_velocity if daily_velocity > 0 else 0:.0f} days supply.",
+                "description": f"Selling well. {stock} units in stock; {audit.daily_velocity.quantize(Decimal('0.1'))} units/day; {stock/audit.daily_velocity if audit.daily_velocity > 0 else 0:.0f} days supply.",
                 "expected_recovery_sar": None,
                 "recoverable_value_low_sar": Decimal("0"),
                 "recoverable_value_high_sar": Decimal("0"),
@@ -430,103 +465,70 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
                 "financial_model": {**recovery.json(), "financial_impact_type": "HEALTHY"},
                 "evidence": {
                     "item_id": str(row.item_id), "sku": row.sku, "item_name": item_name,
-                    "current_stock": float(stock), "daily_velocity": float(daily_velocity),
+                    "current_stock": float(stock), "daily_velocity": float(audit.daily_velocity),
                     "classification": classification,
                 },
             })
 
-        if stock > 0 and cost > 0 and daily_velocity > 0:
-            days_supply = stock / daily_velocity
-            if days_supply > OVERSTOCK_DAYS:
-                surplus_qty = max(Decimal("0"), stock - daily_velocity * Decimal("30"))
-                surplus_value = surplus_qty * cost
-                if surplus_value >= Decimal("500") and classification not in {"SEASONAL", "SLOW MOVING"}:
-                    capital_at_risk += surplus_value
-                    overstock_value += surplus_value
-                    recoverable_high += min(surplus_value, _money(surplus_qty * sell))
-                    evidence_count += 1
-                    actions.append({
-                        "item_id": str(row.item_id), "action_type": "recovery_match", "priority": 3,
-                        "title": f"Review {item_name} for excess inventory",
-                        "description": f"Approximately {surplus_qty.quantize(Decimal('0.01'))} units exceed a 30-day demand cover. No recovery percentage is assumed.",
-                        "expected_recovery_sar": None,
-                        "recoverable_value_low_sar": Decimal("0"),
-                        "recoverable_value_high_sar": min(surplus_value, _money(surplus_qty * sell)),
-                        "recovery_confidence": "LOW",
-                        "quantity": surplus_qty.quantize(Decimal("0.01")), "recommended_discount_pct": None,
-                        "reason": "overstock",
-                        "financial_impact_type": "CAPITAL_AT_RISK",
-                        "financial_model": {"classification": classification, "days_supply": float(days_supply), "surplus_units": float(surplus_qty)},
-                        "evidence": {"sku": row.sku, "current_stock": float(stock), "daily_velocity": float(daily_velocity), "days_supply": float(days_supply), "surplus_value_sar": float(surplus_value)},
-                    })
+        if audit.has_overstock_risk:
+            surplus_qty = audit.surplus_qty
+            surplus_value = audit.overstock_value
+            capital_at_risk += surplus_value
+            overstock_value += surplus_value
+            evidence_count += 1
+            actions.append({
+                "item_id": str(row.item_id), "action_type": "recovery_match", "priority": 3,
+                "title": f"Review {item_name} for excess inventory",
+                "description": f"Approximately {surplus_qty.quantize(Decimal('0.01'))} units exceed a 30-day demand cover. No recovery percentage is assumed.",
+                "expected_recovery_sar": None,
+                "recoverable_value_low_sar": Decimal("0"),
+                "recoverable_value_high_sar": audit.overstock_recoverable_high,
+                "recovery_confidence": "LOW",
+                "quantity": surplus_qty.quantize(Decimal("0.01")), "recommended_discount_pct": None,
+                "reason": "overstock",
+                "financial_impact_type": "CAPITAL_AT_RISK",
+                "financial_model": {"classification": classification, "days_supply": float(audit.days_supply or 0), "surplus_units": float(surplus_qty)},
+                "evidence": {"sku": row.sku, "current_stock": float(stock), "daily_velocity": float(audit.daily_velocity), "days_supply": float(audit.days_supply or 0), "surplus_value_sar": float(surplus_value)},
+            })
 
-        if daily_velocity > 0 and sell > 0:
-            lead_time = None
-            if row.supplier_id is not None and row.supplier_lead_time_days is not None:
-                lead_time = int(row.supplier_lead_time_days)
-            elif row.supplier_id is not None and row.lead_time_days is not None:
-                lead_time = int(row.lead_time_days)
-            inbound_total = confirmed_inbound.get(str(row.item_id), Decimal('0'))
-            # Time-aware reasoning (Section 4 / A6 / A7): compute the projected
-            # stockout date from on-hand stock, then count as *usable* only the
-            # confirmed inbound that arrives STRICTLY BEFORE that date. A PO that
-            # arrives at/after the projected stockout (or with unknown arrival)
-            # must NOT suppress an immediate reorder — it is surfaced as
-            # actionable stockout risk instead.
-            stockout_dt = projected_stockout_date(
-                as_of=anchor, current_stock=stock, daily_demand=daily_velocity
-            )
-            timing = usable_confirmed_inbound(
-                inbound_map.get(str(row.item_id)),
-                stockout_date=stockout_dt,
-            )
-            usable_inbound = timing.usable_qty if timing is not None else Decimal('0')
-            late_inbound = timing.late_qty if timing is not None else Decimal('0')
-            projected_stock = stock + usable_inbound
-            stockout = stockout_financials(
-                stock=projected_stock, daily_velocity=daily_velocity, sell=sell, cost=cost,
-                lead_time_days=lead_time,
-                safety_stock=_money(row.safety_stock) if row.safety_stock is not None else None,
-            )
-            if projected_stock / daily_velocity < STOCKOUT_DAYS:
-                revenue_at_risk += stockout.revenue_at_risk
-                gross_profit_at_risk += stockout.gross_profit_at_risk
-                stockout_risk_value += stockout.revenue_at_risk
-                evidence_count += 1
-                order_qty = max(Decimal("0"), daily_velocity * Decimal(str(lead_time or 7)) + (_money(row.safety_stock) if row.safety_stock is not None else Decimal("0")) - projected_stock)
-                actions.append({
-                    "item_id": str(row.item_id), "action_type": "reorder",
-                    "priority": 1 if stock / daily_velocity < Decimal("2") else 2,
-                    "title": f"Prevent stockout on {item_name}",
-                    "description": f"Projected stock cover is {(projected_stock / daily_velocity).quantize(Decimal('0.1'))} days (incl. {usable_inbound} confirmed inbound arriving before stockout). Supplier lead time is {'unavailable' if lead_time is None else str(lead_time) + ' days'}." if late_inbound <= 0 else f"Projected stock cover is {(projected_stock / daily_velocity).quantize(Decimal('0.1'))} days. {late_inbound} units of confirmed inbound arrive too late (at/after projected stockout) to prevent the stockout. Supplier lead time is {'unavailable' if lead_time is None else str(lead_time) + ' days'}.",
-                    "expected_recovery_sar": None,
-                    "recoverable_value_low_sar": Decimal("0"), "recoverable_value_high_sar": Decimal("0"),
-                    "recovery_confidence": stockout.confidence,
-                    "quantity": order_qty.quantize(Decimal("1")), "recommended_discount_pct": None,
-                    "reason": "stockout_risk", "financial_impact_type": "REVENUE_AT_RISK", "financial_model": {**stockout.json(), "financial_impact_type": "REVENUE_AT_RISK"},
-                    "evidence": {"sku": row.sku, "item_name": item_name, **stockout.evidence, "confirmed_inbound_qty": float(inbound_total), "usable_inbound_qty": float(usable_inbound), "late_inbound_qty": float(late_inbound), "projected_stockout_date": stockout_dt.isoformat() if stockout_dt else None, "ghost_po_risk": bool(confirmed_inbound_ghost.get(str(row.item_id), False)), "supplier_name": row.supplier_name, "supplier_min_order_sar": float(row.supplier_min_order_sar) if row.supplier_min_order_sar is not None else None},
-                })
+        if audit.has_stockout_risk and audit.stockout is not None:
+            stockout = audit.stockout
+            order_qty = audit.order_qty
+            revenue_at_risk += stockout.revenue_at_risk
+            gross_profit_at_risk += stockout.gross_profit_at_risk
+            stockout_risk_value += stockout.revenue_at_risk
+            evidence_count += 1
+            actions.append({
+                "item_id": str(row.item_id), "action_type": "reorder",
+                "priority": 1 if stock / audit.daily_velocity < Decimal("2") else 2,
+                "title": f"Prevent stockout on {item_name}",
+                "description": f"Projected stock cover is {(projected_stock / audit.daily_velocity).quantize(Decimal('0.1'))} days (incl. {usable_inbound} confirmed inbound arriving before stockout). Supplier lead time is {'unavailable' if lead_time is None else str(lead_time) + ' days'}." if late_inbound <= 0 else f"Projected stock cover is {(projected_stock / audit.daily_velocity).quantize(Decimal('0.1'))} days. {late_inbound} units of confirmed inbound arrive too late (at/after projected stockout) to prevent the stockout. Supplier lead time is {'unavailable' if lead_time is None else str(lead_time) + ' days'}.",
+                "expected_recovery_sar": None,
+                "recoverable_value_low_sar": Decimal("0"), "recoverable_value_high_sar": Decimal("0"),
+                "recovery_confidence": stockout.confidence,
+                "quantity": order_qty.quantize(Decimal("1")), "recommended_discount_pct": None,
+                "reason": "stockout_risk", "financial_impact_type": "REVENUE_AT_RISK", "financial_model": {**stockout.json(), "financial_impact_type": "REVENUE_AT_RISK"},
+                "evidence": {"sku": row.sku, "item_name": item_name, **stockout.evidence, "confirmed_inbound_qty": float(inbound_total), "usable_inbound_qty": float(usable_inbound), "late_inbound_qty": float(late_inbound), "projected_stockout_date": stockout_dt.isoformat() if stockout_dt else None, "ghost_po_risk": bool(confirmed_inbound_ghost.get(str(row.item_id), False)), "supplier_name": row.supplier_name, "supplier_min_order_sar": float(row.supplier_min_order_sar) if row.supplier_min_order_sar is not None else None},
+            })
 
-        if qty_30d > 0 and cost > 0 and sell > 0:
+        if audit.has_margin_leakage:
+            leakage = audit.margin_leakage
             margin = (sell - cost) / sell
-            if margin < TARGET_MARGIN_PCT:
-                target_price = (cost / (Decimal("1") - TARGET_MARGIN_PCT)).quantize(Decimal("0.01"))
-                leakage = max(Decimal("0"), target_price - sell) * qty_30d
-                if leakage > 0:
-                    # This is profit opportunity, not recoverable cash.
-                    gross_profit_at_risk += leakage
-                    margin_leakage_value += leakage
-                    evidence_count += 1
-                    actions.append({
-                        "item_id": str(row.item_id), "action_type": "margin_fix", "priority": 2,
-                        "title": f"Review margin on {item_name}",
-                        "description": f"Current gross margin {pct(margin)}%; target reference {pct(TARGET_MARGIN_PCT)}%. This is theoretical profit opportunity, not recovered cash.",
-                        "expected_recovery_sar": None, "recoverable_value_low_sar": Decimal("0"),
-                        "recoverable_value_high_sar": leakage, "recovery_confidence": "LOW",
-                        "quantity": qty_30d, "recommended_discount_pct": None, "reason": "margin_leakage",
-                        "financial_model": {"current_cost_sar": float(cost), "current_price_sar": float(sell), "target_price_sar": float(target_price), "units_affected": float(qty_30d), "gross_profit_opportunity_sar": float(leakage)},
-                        "evidence": {"sku": row.sku, "current_cost_sar": float(cost), "current_price_sar": float(sell), "current_margin_pct": float(pct(margin)), "units_30d": float(qty_30d), "target_price_sar": float(target_price)},
-                    })
+            target_price = (cost / (Decimal("1") - TARGET_MARGIN_PCT)).quantize(Decimal("0.01"))
+            # This is profit opportunity, not recoverable cash.
+            gross_profit_at_risk += leakage
+            margin_leakage_value += leakage
+            evidence_count += 1
+            actions.append({
+                "item_id": str(row.item_id), "action_type": "margin_fix", "priority": 2,
+                "title": f"Review margin on {item_name}",
+                "description": f"Current gross margin {pct(margin)}%; target reference {pct(TARGET_MARGIN_PCT)}%. This is theoretical profit opportunity, not recovered cash.",
+                "expected_recovery_sar": None, "recoverable_value_low_sar": Decimal("0"),
+                "recoverable_value_high_sar": leakage, "recovery_confidence": "LOW",
+                "quantity": qty_30d, "recommended_discount_pct": None, "reason": "margin_leakage",
+                "financial_model": {"current_cost_sar": float(cost), "current_price_sar": float(sell), "target_price_sar": float(target_price), "units_affected": float(qty_30d), "gross_profit_opportunity_sar": float(leakage)},
+                "evidence": {"sku": row.sku, "current_cost_sar": float(cost), "current_price_sar": float(sell), "current_margin_pct": float(pct(margin)), "units_30d": float(qty_30d), "target_price_sar": float(target_price)},
+            })
 
     actions = sorted(actions, key=lambda a: (a["priority"], -(float(a.get("recoverable_value_high_sar") or 0))))[:MAX_ACTIONS]
     calibrated_expected = sum((Decimal(str(a["expected_recovery_sar"])) for a in actions if a.get("expected_recovery_sar") is not None), Decimal("0"))

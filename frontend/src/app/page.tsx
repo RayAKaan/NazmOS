@@ -228,16 +228,16 @@ export default function LandingPage() {
             <motion.div variants={fadeUp} className="flex flex-col gap-3 sm:flex-row">
               {/* §B: gold ShineBorder reserved for the PRIMARY CTA only */}
               <ShineBorder className="inline-flex rounded-2xl">
-                <Link href="/register?intent=free-audit" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-amber px-6 py-4 font-bold text-brand-night shadow-2xl shadow-brand-amber/20 hover:bg-brand-gold-soft">
-                  Get a Free Money Audit <ArrowRight className="h-4 w-4" />
-                </Link>
+                <a href="#free-audit" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-amber px-6 py-4 font-bold text-brand-night shadow-2xl shadow-brand-amber/20 hover:bg-brand-gold-soft">
+                  Upload Sales + Inventory — Analyze Free <ArrowRight className="h-4 w-4" />
+                </a>
               </ShineBorder>
               <a href="#demo" className="inline-flex items-center justify-center rounded-2xl border border-brand-cream/12 px-6 py-4 font-semibold text-brand-cream/80 hover:bg-brand-cream/5">
                 Watch the demo
               </a>
             </motion.div>
             <motion.p variants={fadeUp} className="text-sm text-brand-cream/50">
-              No POS replacement. No customer names needed. Excel, CSV, or POS export is fine.
+              Two files in, trapped cash out. No POS replacement, no customer names, no sign-up.
             </motion.p>
           </motion.div>
 
@@ -263,7 +263,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="border-y border-brand-cream/10 bg-brand-night px-5 py-16 md:px-8">
+      <section id="free-audit" className="border-y border-brand-cream/10 bg-brand-night px-5 py-16 md:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 text-center">
             <SectionLabel dark>Try it free</SectionLabel>
@@ -271,7 +271,8 @@ export default function LandingPage() {
               See your trapped cash in under 60 seconds
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-brand-cream/60">
-              Upload a sales or inventory export. No sign-up, no credit card, no customer data needed.
+              Send your sales file plus your inventory file. We match products by name and show where cash is stuck.
+              No sign-up, no credit card, no customer data needed.
             </p>
           </div>
           <GuestAuditUploader />

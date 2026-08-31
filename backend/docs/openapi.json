@@ -72,6 +72,7 @@
           },
           "external_actions": {
             "items": {
+              "additionalProperties": true,
               "type": "object"
             },
             "title": "External Actions",
@@ -91,12 +92,14 @@
             "type": "boolean"
           },
           "new_state": {
+            "additionalProperties": true,
             "title": "New State",
             "type": "object"
           },
           "outcome": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -106,6 +109,7 @@
             "title": "Outcome"
           },
           "previous_state": {
+            "additionalProperties": true,
             "title": "Previous State",
             "type": "object"
           },
@@ -195,6 +199,7 @@
             "type": "string"
           },
           "new_state": {
+            "additionalProperties": true,
             "title": "New State",
             "type": "object"
           }
@@ -459,6 +464,7 @@
             "type": "number"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -493,6 +499,7 @@
             "type": "string"
           },
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           }
@@ -506,6 +513,7 @@
       "AgentReasonRequest": {
         "properties": {
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           },
@@ -641,6 +649,7 @@
       "AnalyzeOut": {
         "properties": {
           "context_evidence": {
+            "additionalProperties": true,
             "title": "Context Evidence",
             "type": "object"
           },
@@ -656,12 +665,14 @@
           },
           "graph_evidence": {
             "items": {
+              "additionalProperties": true,
               "type": "object"
             },
             "title": "Graph Evidence",
             "type": "array"
           },
           "memory_snapshot": {
+            "additionalProperties": true,
             "title": "Memory Snapshot",
             "type": "object"
           },
@@ -708,6 +719,7 @@
       "AnalyzeRequest": {
         "properties": {
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           },
@@ -897,6 +909,7 @@
             "type": "string"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -920,6 +933,7 @@
       "Body_create_connection_api_v1_pos_connections_post": {
         "properties": {
           "credentials": {
+            "additionalProperties": true,
             "title": "Credentials",
             "type": "object"
           },
@@ -1110,6 +1124,7 @@
             "type": "array"
           },
           "supplier_preferences": {
+            "additionalProperties": true,
             "title": "Supplier Preferences",
             "type": "object"
           },
@@ -1157,6 +1172,7 @@
             "title": "Effective Until"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -1235,6 +1251,7 @@
             "type": "string"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -1510,6 +1527,7 @@
             "type": "string"
           },
           "data": {
+            "additionalProperties": true,
             "title": "Data",
             "type": "object"
           },
@@ -1615,6 +1633,7 @@
             "title": "Expected Roi"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -1756,6 +1775,7 @@
         "properties": {
           "locations_summary": {
             "items": {
+              "additionalProperties": true,
               "type": "object"
             },
             "title": "Locations Summary",
@@ -1802,6 +1822,7 @@
       "ChatReasonRequest": {
         "properties": {
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           },
@@ -1998,6 +2019,7 @@
             "type": "string"
           },
           "data": {
+            "additionalProperties": true,
             "title": "Data",
             "type": "object"
           },
@@ -2141,6 +2163,7 @@
           "estimated_impact": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2170,6 +2193,7 @@
         "properties": {
           "alternative_actions": {
             "items": {
+              "additionalProperties": true,
               "type": "object"
             },
             "title": "Alternative Actions",
@@ -2189,6 +2213,7 @@
             "type": "string"
           },
           "evidence": {
+            "additionalProperties": true,
             "title": "Evidence",
             "type": "object"
           },
@@ -2213,6 +2238,7 @@
           "ranked_action": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2253,6 +2279,7 @@
       "DecisionGenerateRequest": {
         "properties": {
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           },
@@ -2313,6 +2340,7 @@
           },
           "candidate_actions": {
             "items": {
+              "additionalProperties": true,
               "type": "object"
             },
             "title": "Candidate Actions",
@@ -2325,6 +2353,7 @@
           "context_evidence": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2354,12 +2383,14 @@
             "title": "Expected Roi"
           },
           "explanation": {
+            "additionalProperties": true,
             "title": "Explanation",
             "type": "object"
           },
           "graph_evidence": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2383,6 +2414,7 @@
           "memory_snapshot": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2394,6 +2426,7 @@
           "ranked_action": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2537,6 +2570,7 @@
           "evidence": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2586,6 +2620,7 @@
           "evidence": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2655,6 +2690,7 @@
           "context_snapshot": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2694,6 +2730,7 @@
             "title": "Occurred At"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -2773,6 +2810,7 @@
           "context_snapshot": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -2819,6 +2857,7 @@
             "type": "string"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -2989,6 +3028,7 @@
           "example": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -3004,6 +3044,7 @@
             "type": "string"
           },
           "schema": {
+            "additionalProperties": true,
             "title": "Schema",
             "type": "object"
           },
@@ -3041,6 +3082,7 @@
           "example": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -3063,6 +3105,7 @@
             "type": "string"
           },
           "schema": {
+            "additionalProperties": true,
             "title": "Schema",
             "type": "object"
           },
@@ -3193,6 +3236,7 @@
             "type": "string"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -3211,6 +3255,7 @@
           "result": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -3281,6 +3326,7 @@
             "type": "string"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -3430,6 +3476,7 @@
         "description": "Request schema for setting merchant goals.",
         "properties": {
           "goals": {
+            "additionalProperties": true,
             "description": "Arbitrary goal payload, e.g. profit or stockout targets",
             "title": "Goals",
             "type": "object"
@@ -3444,6 +3491,7 @@
       "GraphEntityCreate": {
         "properties": {
           "attributes": {
+            "additionalProperties": true,
             "title": "Attributes",
             "type": "object"
           },
@@ -3496,6 +3544,7 @@
       "GraphEntityOut": {
         "properties": {
           "attributes": {
+            "additionalProperties": true,
             "title": "Attributes",
             "type": "object"
           },
@@ -3718,6 +3767,7 @@
           "checks": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -3950,6 +4000,7 @@
             "anyOf": [
               {
                 "items": {
+                  "additionalProperties": true,
                   "type": "object"
                 },
                 "type": "array"
@@ -4038,6 +4089,7 @@
             "anyOf": [
               {
                 "items": {
+                  "additionalProperties": true,
                   "type": "object"
                 },
                 "type": "array"
@@ -4606,6 +4658,7 @@
       "OutcomeFeedbackCreate": {
         "properties": {
           "actual_outcome": {
+            "additionalProperties": true,
             "title": "Actual Outcome",
             "type": "object"
           },
@@ -4689,6 +4742,7 @@
       "OutcomeFeedbackOut": {
         "properties": {
           "actual_outcome": {
+            "additionalProperties": true,
             "title": "Actual Outcome",
             "type": "object"
           },
@@ -4726,6 +4780,7 @@
             "title": "Decision Type"
           },
           "delta": {
+            "additionalProperties": true,
             "title": "Delta",
             "type": "object"
           },
@@ -4751,6 +4806,7 @@
             "type": "string"
           },
           "predicted_outcome": {
+            "additionalProperties": true,
             "title": "Predicted Outcome",
             "type": "object"
           },
@@ -5107,6 +5163,7 @@
           },
           "errors": {
             "items": {
+              "additionalProperties": true,
               "type": "object"
             },
             "title": "Errors",
@@ -5305,6 +5362,7 @@
       "PlanCreate": {
         "properties": {
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           },
@@ -5441,6 +5499,7 @@
           },
           "steps": {
             "items": {
+              "additionalProperties": true,
               "type": "object"
             },
             "title": "Steps",
@@ -5475,6 +5534,7 @@
       "PlanRequest": {
         "properties": {
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           },
@@ -5679,6 +5739,7 @@
       "ReasonRequest": {
         "properties": {
           "context": {
+            "additionalProperties": true,
             "title": "Context",
             "type": "object"
           },
@@ -5925,6 +5986,7 @@
       "RememberOut": {
         "properties": {
           "data": {
+            "additionalProperties": true,
             "title": "Data",
             "type": "object"
           },
@@ -5950,6 +6012,7 @@
           "goals": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -6023,6 +6086,7 @@
           "reorder_evidence": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -6247,6 +6311,7 @@
       "SimulationCreate": {
         "properties": {
           "assumptions": {
+            "additionalProperties": true,
             "title": "Assumptions",
             "type": "object"
           },
@@ -6257,6 +6322,7 @@
             "type": "string"
           },
           "scenario": {
+            "additionalProperties": true,
             "title": "Scenario",
             "type": "object"
           }
@@ -6270,6 +6336,7 @@
       "SimulationOut": {
         "properties": {
           "assumptions": {
+            "additionalProperties": true,
             "title": "Assumptions",
             "type": "object"
           },
@@ -6307,6 +6374,7 @@
           "results": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -6316,6 +6384,7 @@
             "title": "Results"
           },
           "scenario": {
+            "additionalProperties": true,
             "title": "Scenario",
             "type": "object"
           },
@@ -6712,6 +6781,7 @@
           "context_snapshot": {
             "anyOf": [
               {
+                "additionalProperties": true,
                 "type": "object"
               },
               {
@@ -6735,6 +6805,7 @@
             "type": "string"
           },
           "payload": {
+            "additionalProperties": true,
             "title": "Payload",
             "type": "object"
           },
@@ -6942,14 +7013,17 @@
       "UsageResponse": {
         "properties": {
           "ai_queries": {
+            "additionalProperties": true,
             "title": "Ai Queries",
             "type": "object"
           },
           "decisions": {
+            "additionalProperties": true,
             "title": "Decisions",
             "type": "object"
           },
           "notifications": {
+            "additionalProperties": true,
             "title": "Notifications",
             "type": "object"
           }
@@ -7083,6 +7157,7 @@
             "type": "string"
           },
           "summary": {
+            "additionalProperties": true,
             "title": "Summary",
             "type": "object"
           }
@@ -18489,7 +18564,7 @@
     },
     "/api/v1/guest-audit": {
       "post": {
-        "description": "Run a free Money Audit on a small sales or inventory sample.\n\nAccepts either:\n- `multipart/form-data` with a `file` field (CSV/XLSX/JSON), or\n- `application/json` body with `{ \"rows\": [...] }`.\n\nReturns a simplified Money Audit summary and top recovery actions. No\naccount or authentication is required.",
+        "description": "Run a free Money Audit on a sales/inventory sample.\n\nAccepts either:\n- `multipart/form-data` with a `file` field (CSV/XLSX/JSON) \u2014 single file, or\n- `multipart/form-data` with `sales_file` + `inventory_file` fields \u2014 the\n  full two-file flow (pairs products by name, no AI), or\n- `application/json` body with `{ \"rows\": [...] }`.\n\nReturns a simplified Money Audit summary and top recovery actions. No\naccount or authentication is required.",
         "operationId": "guest_audit_api_v1_guest_audit_post",
         "responses": {
           "200": {
@@ -24688,6 +24763,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": true,
                 "default": {},
                 "title": "Payload",
                 "type": "object"
@@ -33531,6 +33607,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": true,
                 "title": "Payload",
                 "type": "object"
               }
@@ -33771,6 +33848,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": true,
                 "title": "Payload",
                 "type": "object"
               }

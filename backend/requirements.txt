@@ -46,6 +46,7 @@ openpyxl==3.1.5
 python-magic==0.4.27
 chardet==5.2.0
 xlrd==2.0.1
+rapidfuzz>=3.9,<4
 
 # Background Tasks
 celery==5.4.0

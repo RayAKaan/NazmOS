@@ -139,3 +139,31 @@ jobs:
       - name: Frontend axe accessibility scan (static pages)
         working-directory: frontend
         run: node scripts/check_a11y.mjs
+
+  token-guard:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Ban legacy design tokens in PR diff
+        working-directory: frontend
+        run: |
+          set -o pipefail
+          # Banned top-level legacy namespaces that must no longer appear as
+          # Tailwind classes. See frontend/design-tokens/README.md for the
+          # canonical single-token-layer architecture.
+          PATTERNS='bg-navy-|text-navy-|border-navy-|bg-bg-|text-text-|bg-status-|text-status-|border-status-|bg-chart-literals-|text-chart-literals-|border-border-primary|border-border-secondary'
+          REF="${GITHUB_BASE_REF:-origin/main}"
+          DIFF=$(git diff "$REF...HEAD" -- '*.tsx' '*.ts' '*.jsx' '*.js' '*.css' 2>/dev/null || true)
+          COMMIT_DIFF=$(git diff "HEAD^..HEAD" -- '*.tsx' '*.ts' '*.jsx' '*.js' '*.css' 2>/dev/null || true)
+          HITS=$(printf '%s\n%s\n' "$DIFF" "$COMMIT_DIFF" | grep -oE "$PATTERNS" | sort -u || true)
+          if [ -n "$HITS" ]; then
+            echo "::error::Banned legacy design-token class(es) found in diff: $(echo "$HITS" | tr '\n' ' ')"
+            echo "Migrate these to the canonical semantic Token layer. See frontend/design-tokens/README.md and run:"
+            echo "  npm run build:tokens   (regenerate tailwind + globals from tokens.json)"
+            echo "  node scripts/token-migration/migrate.ts   (codemod)"
+            exit 1
+          fi
+          echo "No banned legacy design-token classes in diff."

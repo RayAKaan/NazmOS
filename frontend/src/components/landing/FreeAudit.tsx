@@ -13,7 +13,7 @@ export function FreeAudit() {
       <div className="mx-auto max-w-3xl text-center">
         <Reveal>
           <SectionLabel className="justify-center">{t.landing.nav.freeAudit}</SectionLabel>
-          <h2 className="mt-5 font-serif text-4xl font-black leading-tight tracking-[-0.02em] text-foreground md:text-5xl">
+          <h2 className="mt-5 font-serif text-3xl font-bold leading-tight tracking-[-0.02em] text-foreground md:text-4xl">
             {t.landing.hero.idle.title}
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">{t.landing.hero.idle.body}</p>

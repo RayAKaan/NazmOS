@@ -3,7 +3,7 @@
 import { useId } from "react";
 import { ChevronDown } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { Section, SectionLabel } from "@/components/landing/section";
+import { Section } from "@/components/landing/section";
 import { Reveal } from "@/components/landing/Reveal";
 import { cn } from "@/lib/utils";
 
@@ -21,8 +21,7 @@ export function FAQ() {
     <Section id="faq" className="bg-muted/30">
       <div className="mx-auto max-w-3xl">
         <Reveal className="text-center">
-          <SectionLabel className="justify-center">{t.landing.faq.badge}</SectionLabel>
-          <h2 className="mt-5 font-serif text-4xl font-black leading-tight tracking-[-0.02em] text-foreground md:text-5xl">
+          <h2 className="mt-5 font-serif text-3xl font-bold leading-tight tracking-[-0.02em] text-foreground md:text-4xl">
             {t.landing.faq.title}
           </h2>
         </Reveal>

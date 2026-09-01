@@ -16,7 +16,7 @@ import { FreeAudit } from '@/components/landing/FreeAudit';
 import { HowItWorks } from '@/components/landing/HowItWorks';
 import { BusinessMemory } from '@/components/landing/BusinessMemory';
 import { Integrations } from '@/components/landing/Integrations';
-import { Trust } from '@/components/landing/Trust';
+import { RecoveryMatch } from '@/components/landing/RecoveryMatch';
 import { Pricing } from '@/components/landing/Pricing';
 import { FAQ } from '@/components/landing/FAQ';
 import { FinalCTA } from '@/components/landing/FinalCTA';
@@ -39,7 +39,7 @@ export default function LandingPage() {
         <HowItWorks />
         <BusinessMemory />
         <Integrations />
-        <Trust />
+        <RecoveryMatch />
         <Pricing />
         <FAQ />
         <FinalCTA />

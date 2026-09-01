@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ArrowRight, Sparkles } from "lucide-react";
+import { Menu, X, Sparkles } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
@@ -12,7 +12,7 @@ import { logoMark } from "@/components/landing/logo";
 import { track } from "@/lib/analytics";
 
 export function SiteHeader() {
-  const { t, dir } = useI18n();
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const links: { href: string; label: string }[] = [
@@ -75,7 +75,6 @@ export function SiteHeader() {
             className="hidden items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 md:inline-flex"
           >
             {t.landing.nav.getStarted}
-            <ArrowRight className={cn("h-4 w-4", dir === "rtl" && "rotate-180")} aria-hidden="true" />
           </Link>
 
           <button
@@ -120,7 +119,6 @@ export function SiteHeader() {
               className="mt-2 flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-bold text-primary-foreground"
             >
               {t.landing.nav.getStarted}
-              <ArrowRight className={cn("h-4 w-4", dir === "rtl" && "rotate-180")} aria-hidden="true" />
             </Link>
           </nav>
         </div>

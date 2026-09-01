@@ -10,6 +10,7 @@ import { GraphDiagram } from "./viz/GraphDiagram";
 import { AgentPipeline } from "./viz/AgentPipeline";
 import { DecisionGate } from "./viz/DecisionGate";
 import { OutcomeLoop } from "./viz/OutcomeLoop";
+import { ApprovalPhone } from "./ApprovalPhone";
 import {
   SAMPLE_GRAPH,
   SAMPLE_FINDINGS,
@@ -30,7 +31,7 @@ function StoryHeader({
   return (
     <Reveal className="min-w-0">
       <SectionLabel>{badge}</SectionLabel>
-      <h2 className="mt-5 max-w-3xl font-serif text-4xl font-black leading-tight tracking-[-0.02em] text-foreground [overflow-wrap:anywhere] md:text-5xl">
+      <h2 className="mt-5 max-w-3xl font-serif text-3xl font-bold leading-tight tracking-[-0.02em] text-foreground [overflow-wrap:anywhere] md:text-4xl">
         {title}
       </h2>
       <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground [overflow-wrap:anywhere]">{body}</p>
@@ -219,8 +220,23 @@ export function OutcomeSection() {
             title={t.landing.story.outcome.title}
             body={t.landing.story.outcome.body}
           />
-          <div className="mt-6">
-            <Reveal delay={0.15}>
+          <div className="mt-8">
+            <Reveal delay={0.1}>
+              <p className="font-serif text-2xl font-bold leading-snug text-foreground [overflow-wrap:anywhere]">
+                {t.landing.whatsapp.title}
+              </p>
+              <p className="mt-2 text-base leading-7 text-muted-foreground [overflow-wrap:anywhere]">
+                {t.landing.whatsapp.body}
+              </p>
+            </Reveal>
+          </div>
+          <div className="mt-8">
+            <Reveal delay={0.16}>
+              <ApprovalPhone />
+            </Reveal>
+          </div>
+          <div className="mt-8">
+            <Reveal delay={0.2}>
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Scaling className="h-4 w-4 text-success" aria-hidden="true" />
                 {t.landing.story.loopNote}

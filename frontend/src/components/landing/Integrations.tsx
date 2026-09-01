@@ -2,7 +2,7 @@
 
 import { Plug, FileSpreadsheet, MessageCircle, Store, Cloud } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { Section, SectionLabel } from "@/components/landing/section";
+import { Section } from "@/components/landing/section";
 import { Reveal } from "@/components/landing/Reveal";
 import { cn } from "@/lib/utils";
 
@@ -16,8 +16,7 @@ export function Integrations() {
     <Section>
       <div className="grid items-start gap-12 lg:grid-cols-[0.9fr_1.1fr]">
         <Reveal>
-          <SectionLabel>{t.landing.integrations.badge}</SectionLabel>
-          <h2 className="mt-5 font-serif text-4xl font-black leading-tight tracking-[-0.02em] text-foreground md:text-5xl">
+          <h2 className="mt-5 font-serif text-3xl font-bold leading-tight tracking-[-0.02em] text-foreground md:text-4xl">
             {t.landing.integrations.title}
           </h2>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">{t.landing.integrations.body}</p>

@@ -2,7 +2,7 @@
 
 import { UploadCloud, Link2, FileSearch, CheckCircle2, BarChart3 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { Section, SectionLabel } from "@/components/landing/section";
+import { Section } from "@/components/landing/section";
 import { Reveal } from "@/components/landing/Reveal";
 
 const ICONS = [UploadCloud, Link2, FileSearch, CheckCircle2, BarChart3] as const;
@@ -15,8 +15,7 @@ export function HowItWorks() {
     <Section id="how-it-works">
       <div className="max-w-3xl">
         <Reveal>
-          <SectionLabel>{t.landing.how.badge}</SectionLabel>
-          <h2 className="mt-5 font-serif text-4xl font-black leading-tight tracking-[-0.02em] text-foreground md:text-6xl">
+          <h2 className="mt-5 font-serif text-3xl font-bold leading-tight tracking-[-0.02em] text-foreground md:text-4xl">
             {t.landing.how.title}
           </h2>
         </Reveal>

@@ -6,8 +6,6 @@ import {
   UploadCloud,
   FileSpreadsheet,
   RefreshCw,
-  ArrowRight,
-  ArrowLeft,
   AlertTriangle,
   Layers,
 } from "lucide-react";
@@ -170,7 +168,7 @@ export function GuestAuditUploader() {
                   : "cursor-not-allowed border border-brand-cream/10 text-brand-cream/35"
               )}
             >
-              Analyze Free <ArrowRight className="h-5 w-5" />
+              Analyze Free
             </button>
           </motion.div>
         )}
@@ -283,7 +281,7 @@ export function GuestAuditUploader() {
                   href="/register?intent=free-audit"
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-amber px-5 py-3 text-sm font-bold text-brand-night hover:bg-brand-gold-soft"
                 >
-                  See My Full Audit {rtl ? <ArrowLeft className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+                  See My Full Audit
                 </a>
               </div>
             </div>

@@ -551,6 +551,18 @@ export const en = {
     problem: {
       badge: "The hidden cost",
       title: "Money disappears quietly in your store.",
+      hLead: "Four ways",
+      hBold: "stores lose money",
+      hTail: "quietly.",
+      featured: {
+        numeral: "01",
+        name: "Cash leakage",
+        caption:
+          "Products nobody buys sit on shelves for months while cash stays locked inside them — the weekend sells out beside it.",
+        figure: "SAR 27,400",
+        figureLabel: "Cash trapped in dead stock",
+        figureNote: "Sample figure — from our audit fixtures, not your store.",
+      },
       items: [
         { stat: "Stockouts", detail: "Fast-moving items run dry before the weekend or Ramadan demand — customers walk out." },
         { stat: "Dead stock", detail: "Products nobody buys sit on shelves while cash stays locked up." },
@@ -573,6 +585,10 @@ export const en = {
     businessMemory: {
       badge: "Built with your sources",
       title: "Designed to learn from outcomes, not to run on its own.",
+      companyLead: "Built by",
+      companyBold: "Nazmak",
+      companyTail: "— for stores like yours.",
+      sub: "The company that builds NazmOS, the Retail Recovery System.",
       body:
         "Nazm reasons across your sales, inventory, and context to surface what is worth your attention. It is built to learn from each outcome you approve — the decision always stays with you.",
       points: [
@@ -588,6 +604,38 @@ export const en = {
         "Our integrations are wired into our codebase, but they are not yet runtime-verified in every live system. Treat the list as what we build against — not a promise about a specific deployment.",
       items: ["Foodics", "Salla", "WhatsApp Business", "Cloud / export uploads (CSV, Excel)"],
       note: "Integration status is audited, not assumed. See our integration audit for details.",
+    },
+    match: {
+      badge: "Recovery Match",
+      hLead: "A branch that has it",
+      hBold: "meets a branch that needs it.",
+      body: "Surplus moves to shortage before the weekend drains either side — a transfer prices the cash instead of a late discount.",
+      fromLabel: "Branch A",
+      fromDetail: "Surplus — supply ahead of demand",
+      toLabel: "Branch B",
+      toDetail: "Short — demand faster than supply",
+      arcNote: "Proposed recovery · net SAR 8,600",
+      concept:
+        "The kind of stores we're built for: nearby branches trading surplus against shortage. No invented customers — a real mechanism the paid pilot delivers.",
+      sampleNote: "Sample store data. Matching runs on your own branches and stock lines.",
+      cta: "See how approval works",
+    },
+    whatsapp: {
+      badge: "Owner approval",
+      title: "Your decision, from your pocket.",
+      body:
+        "When a recovery action is ready, it arrives as an owner approval on WhatsApp — open, review, approve. No dashboard required to say yes.",
+      contact: "NazmOS",
+      profile: "WhatsApp Business",
+      time: "09:41",
+      message: "Money Audit — 3 findings ready",
+      summary:
+        "Cash trapped: SAR 27,400 estimated (Sample). Recommendation: transfer Arabic coffee from Riyadh to Jeddah.",
+      question: "Approve recovery of SAR 8,600?",
+      approve: "Approve",
+      later: "Not now",
+      confirmed: "Approved — the result feeds business memory.",
+      note: "Sample thread — in the paid pilot, approvals arrive to your own WhatsApp.",
     },
     trust: {
       badge: "Product truth",

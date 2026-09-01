@@ -86,7 +86,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" dir="ltr" className={`${serif.variable} ${arabic.variable}`}>
+    <html lang="en" dir="ltr" className={`${serif.variable} ${arabic.variable}`} suppressHydrationWarning>
       <head>
         <StructuredData />
         <ThemeScript />

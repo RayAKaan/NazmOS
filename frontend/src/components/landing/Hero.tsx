@@ -3,109 +3,16 @@
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowLeft, ShieldCheck } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { useAudit } from "@/components/landing/audit-context";
 import { SplitText } from "@/components/ui/SplitText";
 import { AmbientBackground } from "@/components/ui/AmbientBackground";
 import { ShineBorder } from "@/components/ui/ShineBorder";
-import { cn } from "@/lib/utils";
-import { formatCurrency } from "@/lib/utils";
+import { HeroOS } from "@/components/landing/viz/HeroOS";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
 };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } };
-
-const SAMPLE_ROWS = [
-  { label: "Dead stock", value: 41000, tone: "text-destructive" },
-  { label: "Overstock", value: 27000, tone: "text-warning" },
-  { label: "Stockout risk", value: 143000, tone: "text-destructive" },
-  { label: "Margin leakage", value: 12000, tone: "text-success" },
-] as const;
-
-function Money({ value }: { value: number }) {
-  return <span className="tabular-nums">{formatCurrency(value).replace(/SAR\s?/, "SAR ")}</span>;
-}
-
-function AuditVisual() {
-  const { t, dir } = useI18n();
-  const { result } = useAudit();
-  const live = result !== null;
-  const Arrow = dir === "rtl" ? ArrowLeft : ArrowRight;
-
-  const rows = live
-    ? [
-        { label: "Dead stock", value: result.summary.dead_stock_value_sar, tone: "text-destructive" },
-        { label: "Overstock", value: result.summary.overstock_value_sar, tone: "text-warning" },
-        { label: "Stockout risk", value: result.summary.stockout_risk_value_sar, tone: "text-destructive" },
-        { label: "Margin leakage", value: result.summary.margin_leakage_sar, tone: "text-success" },
-      ]
-    : [...SAMPLE_ROWS];
-
-  const headline = live
-    ? formatCurrency(result.summary.money_at_risk_sar || 0)
-    : formatCurrency(SAMPLE_ROWS.reduce((s, r) => s + r.value, 0));
-
-  return (
-    <div className="relative">
-      <div className="rounded-3xl border border-border bg-card shadow-elevation-2">
-        <div className="border-b border-border p-6">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                {live ? t.landing.hero.liveBadge : "Money Audit"}
-              </p>
-              <p className="mt-1 font-serif text-3xl font-black tracking-[-0.02em] text-foreground tabular-nums">
-                {headline}
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {live
-                  ? "could be tied up in your store"
-                  : t.landing.hero.sampleTitle}
-              </p>
-            </div>
-            <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
-              {t.landing.hero.sampleLabel}
-            </span>
-          </div>
-        </div>
-        <div className="grid gap-3 p-6">
-          {rows.map((r) => (
-            <div
-              key={r.label}
-              className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-muted/30 px-4 py-3"
-            >
-              <span className="text-sm text-muted-foreground">{r.label}</span>
-              <span className={cn("font-serif text-xl font-black tabular-nums", r.tone)}>
-                <Money value={r.value} />
-              </span>
-            </div>
-          ))}
-        </div>
-        {!live && (
-          <div className="border-t border-border p-6">
-            <p className="text-xs leading-5 text-muted-foreground">{t.landing.hero.sampleNote}</p>
-            <a
-              href="#free-audit"
-              className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:underline"
-            >
-              {t.landing.hero.idle.cta} <Arrow className="h-4 w-4" aria-hidden="true" />
-            </a>
-          </div>
-        )}
-        {live && (
-          <div className="flex items-center gap-3 border-t border-border p-6">
-            <ShieldCheck className="h-5 w-5 shrink-0 text-success" aria-hidden="true" />
-            <p className="text-xs leading-5 text-muted-foreground">
-              {Intl.NumberFormat("en-SA").format(result.summary.row_count)} rows · confidence{" "}
-              {Math.round(result.summary.confidence_score)}%
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 export function Hero() {
   const { t, dir } = useI18n();
@@ -166,7 +73,7 @@ export function Hero() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}
         >
-          <AuditVisual />
+          <HeroOS />
         </motion.div>
       </div>
     </section>

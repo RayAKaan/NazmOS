@@ -4,6 +4,14 @@ import { AuditProvider } from '@/components/landing/audit-context';
 import { SiteHeader } from '@/components/landing/SiteHeader';
 import { Hero } from '@/components/landing/Hero';
 import { Problem } from '@/components/landing/Problem';
+import {
+  MemorySection,
+  GraphSection,
+  AgentsSection,
+  ReasoningSection,
+  DecisionSection,
+  OutcomeSection,
+} from '@/components/landing/StorySections';
 import { FreeAudit } from '@/components/landing/FreeAudit';
 import { HowItWorks } from '@/components/landing/HowItWorks';
 import { BusinessMemory } from '@/components/landing/BusinessMemory';
@@ -21,6 +29,12 @@ export default function LandingPage() {
       <main id="main">
         <Hero />
         <Problem />
+        <MemorySection />
+        <GraphSection />
+        <AgentsSection />
+        <ReasoningSection />
+        <DecisionSection />
+        <OutcomeSection />
         <FreeAudit />
         <HowItWorks />
         <BusinessMemory />

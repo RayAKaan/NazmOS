@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import api from "@/lib/api";
 import { useAudit } from "@/components/landing/audit-context";
+import { AuditProgress } from "@/components/landing/viz/AuditProgress";
 import type { GuestAuditResult } from "@/components/landing/audit-types";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -180,15 +181,15 @@ export function GuestAuditUploader() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="rounded-3xl border border-brand-cream/10 bg-brand-night p-10 text-center text-brand-cream"
+            className="text-brand-cream"
           >
-            <div className="mx-auto mb-5 flex h-16 w-16 animate-pulse items-center justify-center rounded-full bg-brand-amber/15">
-              <RefreshCw className="h-7 w-7 animate-spin text-brand-amber" />
+            <div className="mb-4 text-center">
+              <h3 className="text-xl font-bold">Finding trapped cash…</h3>
+              <p className="mt-2 text-sm text-brand-cream/55">
+                {[salesFile, inventoryFile].filter(Boolean).map((f) => f?.name).join(" + ")} · usually under 10 seconds
+              </p>
             </div>
-            <h3 className="text-xl font-bold">Finding trapped cash…</h3>
-            <p className="mt-2 text-sm text-brand-cream/55">
-              {[salesFile, inventoryFile].filter(Boolean).map((f) => f?.name).join(" + ")} · usually under 10 seconds
-            </p>
+            <AuditProgress />
           </motion.div>
         )}
 

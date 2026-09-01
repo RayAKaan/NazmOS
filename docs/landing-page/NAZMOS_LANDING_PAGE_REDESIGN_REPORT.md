@@ -45,6 +45,36 @@ Built from scratch to follow the approved plan (restrained Skiper/Vengeance patt
 ### Composition
 `src/app/page.tsx` rewritten as a thin composition wrapping all sections in `AuditProvider`.
 
+## Pass 2 — "Living-OS" visualization (window into the product)
+
+Redesigned the landing from "a product described" to **a product watched operating** (§4–6). No backend/AI/DB changes; all figures remain deterministic sample fixtures or the visitor's own live audit result.
+
+### New data-layer types (`src/components/landing/viz/types.ts`)
+Separated domain structures (graph nodes/edges, agent states, findings, decisions, outcomes, the signature loop, audit stages) from rendering so visuals can later consume live state without a rewrite. All demo fixtures are deterministic and clearly labeled Sample (§32).
+
+### New reusable primitives (`src/components/landing/viz/`)
+- `FlowLine` — animated directional data stream (dashed offset pulse) on an SVG path, reduced-motion aware (§25/§26).
+- `NodeChip` — accessible data-driven node; renders a `<div>` when not interactive, a `<button>` when it toggles selection (keyboard + `aria-pressed`).
+- `GraphDiagram` — sparse, deliberate relationship graph (§10): HTML chips over an SVG edge layer with semantic relationship labels. **Responsive fallback:** below `sm` it collapses to a compact vertical relationship list (a 6-column graph does not fit 375px and would overflow both languages).
+- `SignatureLoop` — the memorable OBSERVE→UNDERSTAND→ANALYZE→RECOMMEND→ACT→MEASURE→LEARN ring (§16) with a traveling pulse; collapses to a static ring under reduced motion.
+- `AgentPipeline` — dynamic specialization (§11): only the relevant agents activate; the rest are clearly Idle.
+- `DecisionGate` — the deterministic decision boundary (§13): a recommendation advances only when evidence/constraints/budget/risk all pass.
+- `OutcomeLoop` — approved action → business result → actual outcome → learning returns to memory (§15).
+- `AuditProgress` — staged free-audit processing (§8/§39): maps to the real guest-audit pipeline (read → columns → normalize → match → context → audit → findings) and advances deterministically while the single API request is in flight (never artificially delayed past the real response).
+
+### New story sections (`StorySections.tsx`)
+`MemorySection` (SignatureLoop + accumulating memory KPIs), `GraphSection` (GraphDiagram), `AgentsSection` (AgentPipeline), `ReasoningSection` (bounded reasoning), `DecisionSection` (DecisionGate), `OutcomeSection` (OutcomeLoop). Inserted into `page.tsx` between `Problem` and `FreeAudit` to tell the living-OS narrative; the existing HowItWorks/BusinessMemory/Integrations/Trust/Pricing/FAQ are retained.
+
+### Hero rewrite (`Hero.tsx` + `HeroOS.tsx`)
+The hero right column is now **HeroOS** — a live miniature of the OS operating: vertical pipeline (Your business → ingestion → business memory → specialist analysis → decision engine) plus an interactive finding (expandable evidence) and a mini graph. It reflects the visitor's own live audit result when present (labeled Live) and deterministic sample data otherwise (labeled Sample).
+
+### Engineering fixes required by QA
+- **Hydration stability:** rounded SVG trig/division coordinates (`SignatureLoop`, `GraphDiagram`) so server and client render identical DOM (fixed a real SSR hydration mismatch).
+- **Token guard:** replaced `border-primary`/`border-secondary` usages with canonical `border-border` (the CI guard flags `border-*` primary/secondary).
+- **Mobile overflow:** added `min-w-0` to grid children and `overflow-wrap:anywhere` on story headings; a single long word ("Recommendations") had forced the grid track to 460px → page overflow. Verified 0px horizontal overflow at 375/768/1280/1440 in **both** EN (LTR) and AR (RTL).
+- **i18n truth-in-copy parity:** reworded EN decision body so "nan" (false positive from "financials") is not present; the existing parity test now passes 17/17.
+- **Pre-existing corruption:** `en.ts` contained 5 broken em-dashes (`�?` + unescaped `"` → string-termination syntax errors). Repaired to real em-dashes (UTF-8 no-BOM).
+
 ## Validation (real commands + results)
 
 | Check | Command | Result |
@@ -59,9 +89,23 @@ Built from scratch to follow the approved plan (restrained Skiper/Vengeance patt
 | Axe a11y (statics) | `node scripts/check_a11y.mjs` | **30 pages, 0 serious violations** (fixed an `ol > div > li` nesting violation in HowItWorks) |
 | Route/link integrity | `node scripts/check_frontend_routes.mjs` | 29 pages, 87 links, 0 broken → PASS |
 | Token-guard self-test | `node scripts/check_legacy_tokens.mjs --self-test` | PASS (17 pos + 15 neg) |
+| Token-guard scan | `node scripts/check_legacy_tokens.mjs` | PASS, 199 files, no forbidden design tokens |
 | Playwright landing | `npx playwright test landing.spec.ts --config=playwright.public.config.ts` | **8 passed** (hero CTAs, Sample labeling, FAQ, mobile nav, AR→RTL switch, theme toggle, keyboard focus, reduced motion) |
 | Playwright navigation | `navigation.spec.ts` (public config) | 4 passed |
-| Visual baselines (public) | `visual-baseline.spec.ts -g public --update-snapshots` | 6 regenerated: `/`, `/product-demo`, `/login`, `/register`, `/terms`, `/privacy` |
+| Playwright full public | `npx playwright test --config=playwright.public.config.ts` | **34 passed** |
+| Visual baselines (public) | `visual-baseline.spec.ts -g public --update-snapshots` | 6 regenerated: `/` (regrown 8797px → 12388px after new sections), `/product-demo`, `/login`, `/register`, `/terms`, `/privacy` |
+| Responsive smoke (Playwright) | scripted 375/768/1280/1440 in EN **and** AR | 0px horizontal overflow all sizes, both languages; no console/page errors |
+
+### New test files / helpers (unchanged for Pass 2, listed for reference)
+- `frontend/e2e/landing.spec.ts` — public-only Playwright spec (runs with no session).
+- `frontend/src/lib/translations/__tests__/landing.parity.test.ts`
+- `frontend/src/components/ui/__tests__/ThemeToggle.test.tsx`
+- `frontend/playwright.public.config.ts` — dev-only config running public specs without the auth-setup dependency. Not referenced by CI.
+
+### New files (Pass 2)
+- `frontend/src/components/landing/viz/` — `types.ts`, `FlowLine.tsx`, `NodeChip.tsx`, `GraphDiagram.tsx`, `SignatureLoop.tsx`, `AgentPipeline.tsx`, `DecisionGate.tsx`, `OutcomeLoop.tsx`, `AuditProgress.tsx`, `HeroOS.tsx`
+- `frontend/src/components/landing/StorySections.tsx`
+- Updated: `Hero.tsx`, `GuestAuditUploader.tsx`, `page.tsx`, `src/lib/translations/en.ts`, `ar.ts`
 
 ### New test files
 - `frontend/e2e/landing.spec.ts` — public-only Playwright spec (runs with no session).

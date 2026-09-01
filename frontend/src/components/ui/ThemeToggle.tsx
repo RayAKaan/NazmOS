@@ -50,28 +50,42 @@ export function ThemeToggle() {
     }
   };
 
+  const next =
+    MODES[(MODES.findIndex((m) => m.value === mode) + 1) % MODES.length];
+
   return (
-    <div
-      role="group"
-      aria-label="Theme"
-      className="inline-flex items-center rounded-lg border border-border bg-muted/40 p-0.5"
-    >
-      {MODES.map(({ value, icon: Icon, label }) => (
-        <button
-          key={value}
-          type="button"
-          onClick={() => select(value)}
-          aria-pressed={mode === value}
-          aria-label={`${label} theme`}
-          title={`${label} theme`}
-          className={cn(
-            "p-2 rounded-md text-muted-foreground transition-colors",
-            mode === value ? "bg-background text-foreground shadow-subtle" : "hover:text-foreground"
-          )}
-        >
-          <Icon className="w-4 h-4" />
-        </button>
-      ))}
-    </div>
+    <>
+      <button
+        type="button"
+        onClick={() => select(next.value)}
+        aria-label="Toggle theme"
+        title={`${next.label} theme`}
+        className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-muted/40 text-muted-foreground transition-colors hover:text-foreground sm:hidden"
+      >
+        {mode === "light" ? <Sun className="h-4 w-4" /> : mode === "dark" ? <Moon className="h-4 w-4" /> : <Monitor className="h-4 w-4" />}
+      </button>
+      <div
+        role="group"
+        aria-label="Theme"
+        className="hidden items-center rounded-lg border border-border bg-muted/40 p-0.5 sm:inline-flex"
+      >
+        {MODES.map(({ value, icon: Icon, label }) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => select(value)}
+            aria-pressed={mode === value}
+            aria-label={`${label} theme`}
+            title={`${label} theme`}
+            className={cn(
+              "p-2 rounded-md text-muted-foreground transition-colors",
+              mode === value ? "bg-background text-foreground shadow-subtle" : "hover:text-foreground"
+            )}
+          >
+            <Icon className="w-4 h-4" />
+          </button>
+        ))}
+      </div>
+    </>
   );
 }

@@ -472,6 +472,81 @@ export const en = {
         body: "Drop your sales and inventory exports. We match them by product name and show where cash is stuck — usually in under 10 seconds.",
         cta: "Try the Free Money Audit",
       },
+      osLabel: "NazmOS in operation",
+      os: {
+        yourBusiness: "Your business",
+        ingest: "Ingestion",
+        ingestSub: "Normalizing sales + inventory",
+        memory: "Business memory",
+        memorySub: "Context from every outcome",
+        analyze: "Specialist analysis",
+        analyzeSub: "Only what is relevant",
+        decide: "Decision engine",
+        decideSub: "Deterministic gate",
+      },
+      finding: {
+        estValue: "Estimated value at risk",
+        liveNote: "Live result computed from your uploaded files",
+      },
+    },
+    audit: {
+      heading: "See what NazmOS can find in your business.",
+      sub:
+        "Drop a sales or inventory export — no sign-up. We match products and show where cash is stuck.",
+      stages: {
+        read: "Reading files",
+        columns: "Finding columns",
+        normalize: "Normalizing data",
+        match: "Matching products",
+        context: "Building business context",
+        audit: "Running audit",
+        findings: "Preparing findings",
+      },
+    },
+    story: {
+      memory: {
+        badge: "Business memory",
+        title: "Every outcome becomes context for the next decision.",
+        body:
+          "NazmOS accumulates a memory of your sales, inventory, and the outcomes you approve. It reasons with that memory — it never starts from a blank page, and it never acts alone.",
+        facts: [
+          { label: "Products tracked", value: 1240, tone: "secondary" },
+          { label: "Outcomes learned", value: 38, tone: "primary" },
+          { label: "Confidence shown", value: 100, suffix: "%", tone: "success" },
+        ],
+      },
+      graph: {
+        badge: "Knowledge graph",
+        title: "The store, seen as relationships.",
+        body:
+          "Products, branches, suppliers, and stock are a graph of relationships, not flat rows. NazmOS reasons across these links to find what a single table hides.",
+      },
+      agents: {
+        badge: "Dynamic specialists",
+        title: "Only the relevant agents wake up.",
+        body:
+          "A finding routes to the specialists that matter for it. Unneeded agents stay idle — so analysis is fast, focused, and cheap.",
+      },
+      reasoning: {
+        badge: "Bounded reasoning",
+        title: "Deterministic facts first, then bounded reasoning.",
+        body:
+          "NazmOS computes what it can compute from your data and labels it as such. Reasoning is bounded — every estimate shows its confidence and how it was reached.",
+        steps: ["Compute facts from your files", "Bound the claim to what is supported", "Show confidence, never certainty", "Mark what cannot be estimated"],
+      },
+      decision: {
+        badge: "Decision engine",
+        title: "Recommendations pass a gate, not a prompt.",
+        body:
+          "A recommendation only advances when evidence, constraints, budget, and risk all pass. Nothing reaches you as a vague guess.",
+      },
+      outcome: {
+        badge: "Outcome & learning",
+        title: "Approved actions return as memory.",
+        body:
+          "Approve an action, and the result is recorded and fed back into business memory — closing the loop that makes each week sharper than the last.",
+      },
+      loopNote: "A continuous loop",
     },
     problem: {
       badge: "The hidden cost",
@@ -573,6 +648,27 @@ export const en = {
       allRights: "All rights reserved.",
       systemsOperational: "All systems operational",
       madeIn: "Built for Saudi Arabia",
+    },
+    labels: {
+      finding: "Finding",
+      recommendation: "Recommendation",
+      decisionGate: "Decision gate",
+      approve: "Approve",
+      reject: "Reject",
+      allChecksPassed: "All checks passed — ready for your approval",
+      blocked: "Blocked by a failed check",
+      fromActionToMemory: "From action to memory",
+      expectedRecovery: "Expected recovery",
+      actualOutcome: "Actual outcome",
+      approved: "Approved",
+      inventoryTransfer: "inventory transfer executed",
+      outcomeRecorded: "Outcome recorded",
+      cashRecovered: "cash recovered, no stockout",
+      returnsToMemory: "returns to business memory",
+      analysisRouter: "Analysis router",
+      idle: "Idle",
+      specialists: "{active} of {total} specialists activated",
+      boundedByEvidence: "Bounded by evidence",
     },
     toggleLanguage: "Language",
   },

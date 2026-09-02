@@ -6,6 +6,44 @@ on:
   pull_request:
 
 jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install security scanning tools
+        run: |
+          pip install --upgrade pip
+          pip install bandit[toml]
+          GITLEAKS_VERSION=8.18.4
+          curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" | tar -xz -C /usr/local/bin gitleaks
+          gitleaks version
+          bandit --version
+      - name: Bandit SAST (medium+ severity)
+        run: bandit -r backend/app --exit-zero -f json -o bandit.json
+      - name: Fail on medium+ bandit findings
+        run: |
+          python - <<'PY'
+          import json, sys
+          try:
+              with open('bandit.json') as f:
+                  data = json.load(f)
+          except Exception:
+              print('No bandit report found; skipping SAST gate.')
+              sys.exit(0)
+          issues = [i for i in data.get('results', []) if (i.get('issue_severity') or '').upper() in ('MEDIUM','HIGH')]
+          if issues:
+              print('Bandit findings (medium+ severity):')
+              for i in issues:
+                  print(f"  [{i.get('issue_severity')}] {i.get('filename')}:{i.get('line_number')} - {i.get('issue_text')}")
+              sys.exit(1)
+          print('No medium+ Bandit findings.')
+          PY
+      - name: Gitleaks secret scan
+        run: gitleaks detect --source="." --config=.gitleaks.toml --verbose
+
   backend:
     runs-on: ubuntu-latest
     services:

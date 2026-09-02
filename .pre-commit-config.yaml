@@ -1,0 +1,14 @@
+repos:
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.9
+    hooks:
+      - id: bandit
+        args: ["-r", "backend/app", "-q", "--confidence-level", "medium", "--severity-level", "medium"]
+        exclude: "^backend/tests/"
+        additional_dependencies: ["bandit[toml]"]
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+      - id: gitleaks
+        args: ["--config=.gitleaks.toml", "--verbose"]

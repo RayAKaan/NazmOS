@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Boolean, DateTime, Numeric, ForeignKey, CheckConstraint, Index, UniqueConstraint, text, BigInteger, JSON, Enum, Time, LargeBinary, Date, Integer
 from app.database.types import UUID
+from app.database.encryption import EncryptedText
 from sqlalchemy.orm import relationship, DeclarativeBase, validates
 from sqlalchemy.sql import func
 from enum import Enum as PyEnum
@@ -170,7 +171,7 @@ class User(Base):
     phone_verified = Column(Boolean, default=False)
     email_verified = Column(Boolean, default=False)
     two_factor_enabled = Column(Boolean, default=False)
-    two_factor_secret = Column(String, nullable=True)
+    two_factor_secret = Column(EncryptedText(), nullable=True)
     last_password_change = Column(DateTime(timezone=True), nullable=True)
     failed_login_attempts = Column(Integer, default=0)
     locked_until = Column(DateTime(timezone=True), nullable=True)
@@ -487,6 +488,20 @@ class ForecastCache(Base):
     trend_strength = Column(Numeric(5, 2), nullable=True)
     trained_at = Column(DateTime(timezone=True), server_default=func.now())
     expires_at = Column(DateTime(timezone=True), nullable=False)
+
+    # ── Provenance (hardening) ─────────────────────────────────────────────
+    # Which provider produced the forecast ("prophet" | "baseline" | "legacy"),
+    # what data it saw, and how to interpret its intervals. Legacy rows get
+    # provider='legacy' from the migration backfill.
+    provider = Column(String(50), nullable=True)
+    data_start = Column(Date, nullable=True)
+    data_end = Column(Date, nullable=True)
+    context_days = Column(Integer, nullable=True)
+    horizon_days = Column(Integer, nullable=True)
+    interval_type = Column(String(50), nullable=True)  # "prophet_interval" | "heuristic"
+    fallback_reason = Column(String(100), nullable=True)
+    data_quality_json = Column(JSON, nullable=True)
+    generated_at = Column(DateTime(timezone=True), nullable=True)
 
     __table_args__ = (
         UniqueConstraint("business_id", "item_id", name="uq_forecast_cache_business_item"),
@@ -2526,4 +2541,55 @@ class GoalProgressHistory(Base):
     __table_args__ = (
         Index("idx_goal_history_goal_time", "goal_id", "measured_at"),
         UniqueConstraint("goal_id", "measured_at", name="uq_goal_history_goal_time"),
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PHASE A — AI isolation core: capsule request + security event audit tables.
+# ---------------------------------------------------------------------------
+# ai_reasoning_requests persists one row per AI reason/challenge/brain request
+# (capsule id, nonce, hash, capability, purpose, expiry, outcome) so replays
+# are detectable and every AI-informed decision is auditable. No prompt text is
+# stored, only the capsule fingerprint and the resulting decision.
+# security_events is the unified audit trail for ALLOW/DENY/DLP/kill-switch.
+# ═══════════════════════════════════════════════════════════════════════════
+
+class AIReasoningRequest(Base):
+    __tablename__ = "ai_reasoning_requests"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), nullable=True, index=True)
+    capsule_id = Column(String(64), nullable=False, index=True)
+    request_id = Column(String(64), nullable=False)
+    nonce = Column(String(64), nullable=False)
+    capsule_hash = Column(String(64), nullable=False)
+    capability = Column(String(40), nullable=False)
+    purpose = Column(String(120), nullable=True)
+    issued_at = Column(DateTime(timezone=True), nullable=False)
+    expires_at = Column(DateTime(timezone=True), nullable=False)
+    status = Column(String(20), nullable=False, default="requested")
+    decision = Column(String(30), nullable=True)
+    error = Column(String, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("idx_ai_req_capsule", "capsule_id"),
+        Index("idx_ai_req_nonce", "nonce", unique=True),
+    )
+
+
+class SecurityEvent(Base):
+    __tablename__ = "security_events"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), nullable=True, index=True)
+    event_type = Column(String(40), nullable=False, index=True)
+    actor = Column(String(80), nullable=True)
+    capsule_id = Column(String(64), nullable=True, index=True)
+    request_id = Column(String(64), nullable=True)
+    detail = Column(JSON, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("idx_security_events_type_time", "event_type", "created_at"),
     )

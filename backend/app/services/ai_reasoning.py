@@ -27,7 +27,14 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
+from app.security.ai_adapter import AITransportError, LLMTransport
+from app.security.capsule import ReasoningCapsule
+from app.security.privacy_firewall import build_reasoning_capsule
 from app.services.evidence_package import ItemEvidence, BusinessContext, AuditEvidencePackage
+from app.services.security_audit_service import (
+    record_ai_reasoning_request,
+    record_security_event,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -124,76 +131,23 @@ VALID_DECISIONS = {"DO_NOTHING", "REORDER", "TRANSFER", "DISCOUNT", "PRICE_CHANG
 
 
 def _build_reasoning_prompt(item: ItemEvidence, business: BusinessContext) -> str:
-    """Build the user prompt for AI reasoning about one item."""
-    prompt_parts = [
-        f"## Item Evidence: {item.sku} ({item.product_name})",
-        f"- Classification: {item.classification}",
-        f"- Current stock: {item.current_stock} units",
-        f"- Cost: SAR {item.cost_price_sar}/unit",
-        f"- Sell price: SAR {item.sell_price_sar}/unit",
-        f"- Inventory value: SAR {item.inventory_value_sar}",
-        f"- Daily velocity: {item.daily_velocity} units/day",
-        f"- Recent 30-day velocity: {item.recent_velocity_per_day} units/day",
-        f"- Prior 30-day velocity: {item.prior_velocity_per_day} units/day",
-    ]
+    """Build the user prompt for AI reasoning about one item.
 
-    if item.days_of_supply is not None:
-        prompt_parts.append(f"- Days of supply: {item.days_of_supply}")
-    if item.days_since_last_sale is not None:
-        prompt_parts.append(f"- Days since last sale: {item.days_since_last_sale}")
-    if item.inventory_age_days is not None:
-        prompt_parts.append(f"- Inventory age: {item.inventory_age_days} days")
-    if item.monthly_concentrations:
-        prompt_parts.append(f"- Monthly sales (recent months): {item.monthly_concentrations}")
-    if item.monthly_concentration_peak is not None:
-        prompt_parts.append(f"- Monthly concentration peak: {item.monthly_concentration_peak:.1%}")
-    if item.supplier_name:
-        prompt_parts.append(f"- Supplier: {item.supplier_name}")
-    if item.supplier_lead_time_days is not None:
-        prompt_parts.append(f"- Supplier lead time: {item.supplier_lead_time_days} days")
-    if item.supplier_moq is not None:
-        prompt_parts.append(f"- Supplier MOQ: SAR {item.supplier_moq}")
-    if item.confirmed_inbound_qty > 0:
-        prompt_parts.append(f"- Confirmed inbound: {item.confirmed_inbound_qty} units")
+    PRIVACY FIREWALL: the prompt is generated from a signed ReasoningCapsule
+    (banded derived signals only). No SKU, product/supplier name, exact SAR
+    amount, stock count, budget or margin value is included.
+    """
+    capsule = build_reasoning_capsule(
+        item,
+        business,
+        capability="counterfactual_audit",
+        purpose="resolve ambiguity in inventory decisions",
+    )
+    return _capsule_prompt_text(capsule)
 
-    prompt_parts.append(f"\n## Financial Exposure")
-    prompt_parts.append(f"- Capital at risk: SAR {item.capital_at_risk_sar}")
-    prompt_parts.append(f"- Revenue at risk: SAR {item.revenue_at_risk_sar}")
-    prompt_parts.append(f"- Gross profit at risk: SAR {item.gross_profit_at_risk_sar}")
-    prompt_parts.append(f"- Recoverable range: SAR {item.recoverable_low_sar} - SAR {item.recoverable_high_sar}")
 
-    if item.overstock_days:
-        prompt_parts.append(f"- OVERSTOCK: {item.overstock_days:.0f} days of supply (exceeds 60-day threshold)")
-    if item.stockout_days:
-        prompt_parts.append(f"- STOCKOUT RISK: {item.stockout_days:.0f} days of supply (below 7-day threshold)")
-    if item.margin_pct is not None:
-        prompt_parts.append(f"- Current margin: {item.margin_pct:.1%} (target: {item.target_margin_pct:.0%})")
-
-    prompt_parts.append(f"\n## Candidate Actions")
-    prompt_parts.append(f"- Actions considered: {', '.join(item.candidate_actions) if item.candidate_actions else 'none'}")
-
-    if item.is_strategic:
-        prompt_parts.append(f"- NOTE: This is a STRATEGIC product. Owner may have restrictions on discounting.")
-
-    # Business constraints
-    prompt_parts.append(f"\n## Business Context")
-    prompt_parts.append(f"- Cash budget: SAR {business.cash_budget}" if business.cash_budget else "- Cash budget: not specified")
-    if business.max_discount_pct is not None:
-        prompt_parts.append(f"- Max discount allowed: {business.max_discount_pct:.0f}%")
-    if business.blocked_discount_products:
-        prompt_parts.append(f"- Discount blocked for: {', '.join(business.blocked_discount_products)}")
-
-    # Historical outcomes (MODE C only)
-    if item.historical_outcomes:
-        prompt_parts.append(f"\n## Historical Outcomes (similar actions)")
-        for outcome in item.historical_outcomes[-5:]:
-            prompt_parts.append(f"- {outcome.get('action_type', '?')}: recovered SAR {outcome.get('actual_recovery_sar', 0)} (predicted SAR {outcome.get('expected_recovery_sar', 0)})")
-
-    prompt_parts.append(f"\n## Question")
-    prompt_parts.append(f"What is the best action for this item? Consider the classification, financial exposure, and any ambiguity.")
-    prompt_parts.append(f"Return ONLY the JSON response.")
-
-    return "\n".join(prompt_parts)
+def _capsule_prompt_text(capsule: ReasoningCapsule) -> str:
+    return json.dumps(capsule.for_prompt(), indent=2, default=str)
 
 
 async def reason_about_item(
@@ -216,12 +170,32 @@ async def reason_about_item(
     """
     start = time.monotonic()
 
-    prompt = _build_reasoning_prompt(item, business)
+    capsule = build_reasoning_capsule(
+        item,
+        business,
+        capability="counterfactual_audit",
+        purpose="resolve ambiguity in inventory decisions",
+    )
+    prompt = _capsule_prompt_text(capsule)
 
     try:
-        response_text = await llm_caller(SYSTEM_PROMPT, prompt)
-    except Exception as e:
+        transport = LLMTransport(llm_caller)
+        response_text = await transport.complete(SYSTEM_PROMPT, prompt)
+    except AITransportError as e:
         logger.warning("AI reasoning call failed for %s: %s", item.sku, e)
+        await record_ai_reasoning_request(
+            capsule_id=capsule.capsule_id,
+            request_id=capsule.request_id,
+            nonce=capsule.nonce,
+            capsule_hash=capsule.capsule_hash,
+            capability=capsule.capability,
+            purpose=capsule.purpose,
+            business_id=business.business_id,
+            issued_at=capsule.issued_at,
+            expires_at=capsule.expires_at,
+            status="errored",
+            error="AITransportError",
+        )
         return AIReasoningResult(
             decision="MANUAL_REVIEW",
             confidence=0.0,
@@ -239,6 +213,30 @@ async def reason_about_item(
 
     # Parse and validate
     result = _parse_ai_response(response_text, latency_ms)
+    await record_ai_reasoning_request(
+        capsule_id=capsule.capsule_id,
+        request_id=capsule.request_id,
+        nonce=capsule.nonce,
+        capsule_hash=capsule.capsule_hash,
+        capability=capsule.capability,
+        purpose=capsule.purpose,
+        business_id=business.business_id,
+        issued_at=capsule.issued_at,
+        expires_at=capsule.expires_at,
+        status="completed" if result.is_valid else "invalid",
+        decision=result.decision,
+        error="ValidationError" if not result.is_valid else None,
+    )
+    await record_security_event(
+        event_type="ai.reason.completed",
+        capsule_id=capsule.capsule_id,
+        request_id=capsule.request_id,
+        detail={
+            "capability": capsule.capability,
+            "is_valid": result.is_valid,
+            "decision": result.decision,
+        },
+    )
     return result
 
 

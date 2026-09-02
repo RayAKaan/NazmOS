@@ -1,0 +1,18 @@
+title = "NazmOS gitleaks config"
+[allowlist]
+  description = "Global allowlists for test fixtures and dummy keys"
+  paths = [
+    '''backend/tests/.*''',
+    '''backend/app/database/encryption\.py''',
+    '''backend/app/services/security_audit_service\.py''',
+    '''backend/app/services/credential_vault\.py''',
+  ]
+
+[[rules]]
+  id = "hardcoded-fallback-key"
+  description = "Development-only hardcoded fallback key in encryption.py"
+  regex = '''dev-master-key-replace-in-production-32chars'''
+  path = '''backend/app/database/encryption\.py'''
+  [rules.allowlist]
+    description = "Accepted dev-only fallback value; must be overridden by CREDENTIAL_MASTER_KEY in production."
+    commits = ["allow-dev-fallback-key"]

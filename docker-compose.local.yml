@@ -43,6 +43,10 @@ services:
       GROQ_MODEL: ${GROQ_MODEL:-openai/gpt-oss-120b}
       LLM_PROVIDER_ORDER: ${LLM_PROVIDER_ORDER:-google,mock}
       AI_CALL_LEDGER_PATH: /app/tmp/v12_ai_calls.jsonl
+      # Phase A isolation core: route OpenCode brain calls to the dedicated
+      # runner container; sign ReasoningCapsules.
+      OPENCODE_RUNNER_URL: http://opencode_runner:8010
+      NAZMOS_CAPSULE_SIGNING_KEY: ${NAZMOS_CAPSULE_SIGNING_KEY:-}
       WHATSAPP_ENABLED: ${WHATSAPP_ENABLED:-mock}
       AUTH_LOGIN_LIMIT_PER_5MIN: ${AUTH_LOGIN_LIMIT_PER_5MIN:-200}
       UPLOAD_LIMIT_PER_5MIN: ${UPLOAD_LIMIT_PER_5MIN:-200}
@@ -57,6 +61,10 @@ services:
     environment: *runtime_env
     depends_on:
       migrate: {condition: service_completed_successfully}
+      opencode_runner: {condition: service_healthy}
+    networks:
+      - default
+      - opencode_net
     volumes:
       - nazmos_uploads_local:/app/uploads
       - ./backend/tmp:/app/tmp
@@ -82,6 +90,39 @@ services:
       migrate: {condition: service_completed_successfully}
       redis: {condition: service_healthy}
     command: ["celery", "-A", "app.celery_app", "beat", "--loglevel=info"]
+  # Phase A isolation core: dedicated OpenCode runner.
+  # - internal network only (opencode_net): cannot reach postgres/redis or the
+  #   default-network services; no published host ports.
+  # - read-only rootfs, ALL caps dropped, no-new-privileges, resource limits.
+  # - never mounted merchant data; its only job is the OpenCode CLI.
+  opencode_runner:
+    build: {context: ./backend, dockerfile: Dockerfile.opencode-runner}
+    environment:
+      PORT: "8010"
+      ENVIRONMENT: runtime_test
+      NAZMOS_OPENCODE_MODEL: ${NAZMOS_OPENCODE_MODEL:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+    networks: [opencode_net]
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /run
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 64
+    mem_limit: 512m
+    cpus: 1.0
+    stop_grace_period: 2s
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8010/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
   frontend:
     build:
       context: ./frontend
@@ -113,3 +154,12 @@ volumes:
   nazmos_pgdata_local:
   nazmos_redisdata_local:
   nazmos_uploads_local:
+
+networks:
+  default:
+    name: nazmos_default_net
+  # Internal-only network for the OpenCode runner: no host ingress, and the
+  # runner cannot reach services on the default network.
+  opencode_net:
+    name: nazmos_opencode_net
+    internal: true

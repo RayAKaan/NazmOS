@@ -61,5 +61,7 @@ async def restock(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    # RestockRequest should include business_id – verify via item lookup in service
+    # Tenant gate: the request body's business_id is client-supplied and must
+    # not be trusted for DB scoping until the caller proves access to it.
+    await _verify_business_access(db, data.business_id, current_user)
     return await restock_item(db, data)

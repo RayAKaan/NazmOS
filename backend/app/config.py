@@ -77,6 +77,25 @@ class Settings(BaseSettings):
     # appends one JSONL record (provider, outcome, latency, token usage,
     # prompt fingerprint) so AI cost and traceability can be audited.
     AI_CALL_LEDGER_PATH: str = ""
+
+    # --- Phase A: AI isolation core ---------------------------------------
+    # Global kill switch for AI (reasoning/challenge/brain). When False the
+    # deterministic engine's decision is used and no LLM/OpenCode is consulted.
+    AI_ENABLED: bool = True
+    # HMAC key that signs ReasoningCapsules. Production requires >= 32 chars;
+    # dev falls back to a value derived from SECRET_KEY so no new env var is
+    # required locally.
+    NAZMOS_CAPSULE_SIGNING_KEY: str = ""
+    NAZMOS_CAPSULE_TTL_SECONDS: int = 90
+    # URL of the dedicated isolated OpenCode runner container. When set, the
+    # OpenCode brain path posts capsule prompts there instead of spawning a
+    # subprocess in the backend container.
+    OPENCODE_RUNNER_URL: str = ""
+    OPENCODE_RUNNER_TIMEOUT_SECONDS: int = 45
+    # Max chars an AI response may be before the output gate rejects it.
+    AI_OUTPUT_MAX_CHARS: int = 8000
+    # Outbound/inbound DLP is fail-closed. Keep True.
+    DLP_STRICT: bool = True
     
     # File Upload
     UPLOAD_DIR: str = "uploads"
@@ -106,6 +125,11 @@ class Settings(BaseSettings):
     ENABLE_ANOMALY_DETECTION: bool = True
     FORECAST_CACHE_TTL_HOURS: int = 24
     MIN_DAYS_FOR_FORECAST: int = 14
+    # Prophet already receives SAUDI_HOLIDAYS_DF as the `holidays` table, which
+    # models holiday effects within the fit. Manually multiplying interval rows
+    # afterwards double-counts those effects (bug found in hardening audit), so
+    # the manual event uplift is OFF by default.
+    FORECAST_EVENT_UPLIFT_ENABLED: bool = False
     
     # Localization – KSA defaults
     DEFAULT_CURRENCY: str = "SAR"
@@ -213,6 +237,17 @@ class Settings(BaseSettings):
             raise ValueError(
                 "CREDENTIAL_MASTER_KEY is required in production and must be >= 32 chars. "
                 "It encrypts POS and integration credentials."
+            )
+        return v
+
+    @field_validator("NAZMOS_CAPSULE_SIGNING_KEY")
+    @classmethod
+    def validate_capsule_signing_key(cls, v: str, info: ValidationInfo) -> str:
+        env = info.data.get("ENVIRONMENT", "development")
+        if env == "production" and v and len(v) < 32:
+            raise ValueError(
+                "NAZMOS_CAPSULE_SIGNING_KEY must be >= 32 chars. Generate with: "
+                "python -c 'import secrets; print(secrets.token_urlsafe(48))'"
             )
         return v
 

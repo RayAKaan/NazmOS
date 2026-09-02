@@ -80,6 +80,7 @@ _REDACTED = "[REDACTED]"
 _EMAIL_RE = re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}")
 _PHONE_RE = re.compile(r"\b(?:\+?966|0)?5\d{8}\b")
 _SAUSSI_ID_RE = re.compile(r"\b1\d{9}\b")
+_TOKEN_RE = re.compile(r"\b(?:sk-|tok_|key_|secret_)[A-Za-z0-9]{2,}\b")
 
 
 def _redact_scalar(value: Any) -> Any:
@@ -100,6 +101,7 @@ def _redact_string(value: str) -> str:
     value = _EMAIL_RE.sub(_REDACTED, value)
     value = _PHONE_RE.sub(_REDACTED, value)
     value = _SAUSSI_ID_RE.sub(_REDACTED, value)
+    value = _TOKEN_RE.sub(_REDACTED, value)
     return value
 
 
@@ -173,6 +175,90 @@ def setup_logger(name: str) -> logging.Logger:
         logger.addHandler(handler)
 
     return logger
+
+
+class _UvicornQueryRedact(logging.Filter):
+    """Strip query strings from uvicorn access log lines so tokens/ids in
+    query parameters never reach the logs."""
+
+    _RE = re.compile(r"\s(\S+)\sHTTP/\S+")
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        try:
+            msg = record.getMessage()
+            m = self._RE.search(msg)
+            if m:
+                request_line = m.group(1)
+                if "?" in request_line:
+                    path = request_line.split("?")[0]
+                    record.msg = msg.replace(request_line, path + "?[REDACTED_QUERY]")
+                    record.args = ()
+        except Exception:
+            pass
+        return True
+
+
+def _structlog_redact(_logger: Any, _method: str, event_dict: dict[str, Any]) -> dict[str, Any]:
+    """structlog processor applying the same PII redaction as JSONFormatter."""
+    if "event" in event_dict and isinstance(event_dict["event"], str):
+        event_dict["event"] = _redact_string(event_dict["event"])
+    return redact_pii(event_dict)
+
+
+def configure_global() -> None:
+    """Install PII redaction on EVERY logger path.
+
+    Modules that use bare ``logging.getLogger(__name__)`` bypass setup_logger()
+    and otherwise emit unredacted through the last-resort handler. This attaches
+    the JSONFormatter to the root logger (inherited by all loggers), strips
+    query strings from uvicorn access lines, and configures structlog (used by
+    app.services.credential_vault) to JSON with the same redaction.
+    """
+    level = getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO)
+
+    root = logging.getLogger()
+    root.setLevel(level)
+    if not any(
+        isinstance(h, logging.StreamHandler) and isinstance(h.formatter, JSONFormatter)
+        for h in root.handlers
+    ):
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setFormatter(JSONFormatter())
+        root.addHandler(handler)
+
+    for name in ("uvicorn", "uvicorn.error"):
+        lg = logging.getLogger(name)
+        lg.handlers.clear()
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setFormatter(JSONFormatter())
+        lg.addHandler(handler)
+        lg.propagate = False
+
+    access = logging.getLogger("uvicorn.access")
+    access.handlers.clear()
+    handler = logging.StreamHandler(sys.stdout)
+    handler.addFilter(_UvicornQueryRedact())
+    handler.setFormatter(JSONFormatter())
+    access.addHandler(handler)
+    access.propagate = False
+
+    try:
+        import structlog
+
+        structlog.configure(
+            processors=[
+                structlog.contextvars.merge_contextvars,
+                structlog.processors.add_log_level,
+                structlog.processors.TimeStamper(fmt="iso", utc=True),
+                _structlog_redact,
+                structlog.processors.JSONRenderer(default=str),
+            ],
+            wrapper_class=structlog.make_filtering_bound_logger(level),
+            logger_factory=structlog.WriteLoggerFactory(file=sys.stdout),
+            cache_logger_on_first_use=True,
+        )
+    except ImportError:
+        pass
 
 
 def log_request(

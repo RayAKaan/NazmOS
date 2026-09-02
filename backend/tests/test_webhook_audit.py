@@ -34,12 +34,49 @@ async def test_foodics_webhook_requires_authentication(client: AsyncClient):
     assert response.status_code == 401
 
 
+async def test_webhook_rejected_when_business_not_registered_for_provider(
+    authenticated_client: dict, monkeypatch, db_session
+):
+    """Phase B: a business_id alone must never authorize a webhook target.
+
+    Without an active POSConnection for the claimed provider the webhook is
+    rejected (401) even with a valid signature token.
+    """
+    ctx = authenticated_client
+    client: AsyncClient = ctx["client"]
+
+    settings = get_settings()
+    monkeypatch.setattr(settings, "FOODICS_WEBHOOK_TOKEN", "test-webhook-token")
+
+    from app.database.models import POSConnection
+
+    # No POSConnection for the business -> registration check fails.
+    url = f"/api/v1/pos/foodics/webhook?business_id={ctx['business_id']}"
+    headers = {"x-webhook-token": "test-webhook-token"}
+    response = await client.post(url, headers=headers, content=_foodics_payload("evt-unregistered"))
+    assert response.status_code == 401, response.text
+
+
 async def test_foodics_webhook_dedupes_by_external_event_id(
     authenticated_client: dict, monkeypatch, db_session
 ):
     ctx = authenticated_client
     client: AsyncClient = ctx["client"]
     business_id = ctx["business_id"]
+
+    from app.database.models import POSConnection
+
+    # Phase B contract: the target business must be registered with an active
+    # POS connection for the provider before webhooks are honored.
+    connection = POSConnection(
+        business_id=business_id,
+        adapter_type="foodics",
+        connection_name="Foodics Test",
+        credentials_encrypted=b"test-creds",
+        is_active=True,
+    )
+    db_session.add(connection)
+    await db_session.commit()
 
     settings = get_settings()
     monkeypatch.setattr(settings, "FOODICS_WEBHOOK_TOKEN", "test-webhook-token")

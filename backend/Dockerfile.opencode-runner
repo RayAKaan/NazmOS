@@ -1,0 +1,34 @@
+# Phase A isolation core: dedicated OpenCode runner container.
+#
+# This image only hosts the OpenCode CLI + a tiny HTTP bridge. The backend
+# never spawns opencode itself when OPENCODE_RUNNER_URL is configured. Hardened
+# at runtime by docker-compose (read-only rootfs, dropped capabilities,
+# no-new-privileges, internal network, resource limits). See also
+# app/security/ai_adapter.py OpenCodeRunnerClient for the matching client.
+FROM node:22-alpine
+
+# The opencode CLI (npm package opencode-ai -> `opencode` binary). Installed at
+# build time so the binary lands in the read-only image.
+RUN npm install -g opencode-ai@latest \
+    && npm cache clean --force
+
+ENV NODE_ENV=production \
+    NPM_CONFIG_CACHE=/tmp/npmcache \
+    NAZMOS_OPENCODE_BIN=opencode \
+    PORT=8010
+
+# Non-privileged runtime user. HOME points into the tmpfs (/tmp) mount so
+# opencode can write its config there despite the read-only rootfs.
+RUN mkdir -p /app /tmp/opencode-home /tmp/npmcache \
+    && adduser -D -H opencode \
+    && chown -R opencode:opencode /tmp/opencode-home /tmp/npmcache
+
+ENV HOME=/tmp/opencode-home
+
+COPY opencode_runner/server.mjs /app/server.mjs
+COPY opencode_runner/agents/nazmos-brain.md /app/agents/nazmos-brain.md
+
+USER opencode
+EXPOSE 8010
+
+CMD ["node", "/app/server.mjs"]

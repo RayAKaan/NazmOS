@@ -30,6 +30,9 @@ python-dotenv>=1.2.2
 # Forecasting
 # Prophet is optional for Python 3.13+ test environments; core Money Audit does not depend on it.
 prophet==1.1.5; python_version < "3.13"
+# Pin cmdstanpy <1.2: cmdstanpy 1.2+ refactored the STAN backend and breaks
+# prophet 1.1.5 at init ('Prophet' object has no attribute 'stan_backend').
+cmdstanpy==1.1.0; python_version < "3.13"
 scikit-learn==1.5.1; python_version < "3.13"
 scikit-learn>=1.6,<2; python_version >= "3.13"
 statsmodels==0.14.2; python_version < "3.13"

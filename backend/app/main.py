@@ -27,7 +27,7 @@ from app.database.seed import seed_demo_data
 from app.services.feature_flags import seed_default_flags
 from app.utils.problem_details import problem_response
 from app.utils.openapi_helpers import COMMON_ERROR_RESPONSES
-from app.utils.logger import setup_logger
+from app.utils.logger import configure_global, setup_logger
 from app.utils.tracing import init_tracing, instrument_fastapi, instrument_sqlalchemy
 from app.utils.startup_checks import run_startup_checks
 from app.utils.exceptions import (
@@ -40,6 +40,7 @@ from app.utils.exceptions import (
 )
 
 settings = get_settings()
+configure_global()
 logger = setup_logger("app")
 
 

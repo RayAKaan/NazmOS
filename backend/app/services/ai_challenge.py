@@ -15,7 +15,14 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable, Awaitable
 
+from app.security.ai_adapter import AITransportError, LLMTransport
+from app.security.capsule import ReasoningCapsule
+from app.security.privacy_firewall import build_challenge_capsule
 from app.services.business_context import StructuredContext
+from app.services.security_audit_service import (
+    record_ai_reasoning_request,
+    record_security_event,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -121,16 +128,21 @@ Example NO_CHALLENGE response:
 
 
 def _build_challenge_prompt(context: StructuredContext) -> str:
-    """Build the challenge prompt from structured context."""
-    ctx_dict = context.to_dict()
-    prompt = f"""DETERMINISTIC DECISION: {context.deterministic_decision}
-DECISION CONFIDENCE: {context.deterministic_confidence}
+    """Build the challenge prompt from a signed ReasoningCapsule.
 
-CONTEXT:
-{json.dumps(ctx_dict, indent=2, default=str)}
+    PRIVACY FIREWALL: only banded derived signals from the capsule are
+    included. No product/supplier names, SKUs, exact SAR values or budgets.
+    """
+    capsule = build_challenge_capsule(
+        context,
+        capability="challenge",
+        purpose="challenge the deterministic decision",
+    )
+    return _capsule_prompt_text(capsule)
 
-Try to find evidence that the deterministic decision is wrong. Return your response as JSON."""
-    return prompt
+
+def _capsule_prompt_text(capsule: ReasoningCapsule) -> str:
+    return json.dumps(capsule.for_prompt(), indent=2, default=str)
 
 
 def _parse_challenge_response(response_text: str) -> dict:
@@ -164,6 +176,8 @@ def _parse_challenge_response(response_text: str) -> dict:
 def _validate_challenge(
     response: dict,
     context: StructuredContext,
+    *,
+    allowed_evidence: set[str] | None = None,
 ) -> AIChallengeResponse:
     """Validate AI challenge against deterministic facts."""
     errors = []
@@ -196,8 +210,10 @@ def _validate_challenge(
         if confidence < 0.5:
             errors.append(f"CHALLENGE confidence {confidence} below minimum 0.5")
 
-    # Validate evidence IDs exist in context
+    # Validate evidence IDs exist in context (capsule signal names + legacy names)
     valid_evidence_ids = _get_valid_evidence_ids(context)
+    if allowed_evidence:
+        valid_evidence_ids |= set(allowed_evidence)
     for eid in evidence_ids:
         if eid not in valid_evidence_ids:
             errors.append(f"Invalid evidence_id: {eid}")
@@ -323,15 +339,71 @@ async def challenge_deterministic(
     start_time = time.time()
 
     try:
-        prompt = _build_challenge_prompt(context)
-        response_text = await llm_caller(CHALLENGE_SYSTEM_PROMPT, prompt)
+        capsule = build_challenge_capsule(
+            context,
+            capability="challenge",
+            purpose="challenge the deterministic decision",
+        )
+        prompt = _capsule_prompt_text(capsule)
+        transport = LLMTransport(llm_caller)
+        response_text = await transport.complete(CHALLENGE_SYSTEM_PROMPT, prompt)
         parsed = _parse_challenge_response(response_text)
-        validated = _validate_challenge(parsed, context)
+        validated = _validate_challenge(
+            parsed,
+            context,
+            allowed_evidence=set(capsule.allowed_evidence()),
+        )
         validated.latency_ms = (time.time() - start_time) * 1000
+
+        await record_ai_reasoning_request(
+            capsule_id=capsule.capsule_id,
+            request_id=capsule.request_id,
+            nonce=capsule.nonce,
+            capsule_hash=capsule.capsule_hash,
+            capability=capsule.capability,
+            purpose=capsule.purpose,
+            business_id=None,
+            issued_at=capsule.issued_at,
+            expires_at=capsule.expires_at,
+            status="completed" if validated.is_valid else "invalid",
+            decision=validated.status.value if hasattr(validated.status, "value") else str(validated.status),
+            error="ValidationError" if not validated.is_valid else None,
+        )
+        await record_security_event(
+            event_type="ai.challenge.completed",
+            capsule_id=capsule.capsule_id,
+            request_id=capsule.request_id,
+            detail={
+                "capability": capsule.capability,
+                "is_valid": validated.is_valid,
+                "status": validated.status.value if hasattr(validated.status, "value") else str(validated.status),
+            },
+        )
         return validated
 
     except Exception as e:
         logger.error("AI challenge failed for %s: %s", context.product.sku, e)
+        try:
+            capsule = build_challenge_capsule(
+                context,
+                capability="challenge",
+                purpose="challenge the deterministic decision",
+            )
+            await record_ai_reasoning_request(
+                capsule_id=capsule.capsule_id,
+                request_id=capsule.request_id,
+                nonce=capsule.nonce,
+                capsule_hash=capsule.capsule_hash,
+                capability=capsule.capability,
+                purpose=capsule.purpose,
+                business_id=None,
+                issued_at=capsule.issued_at,
+                expires_at=capsule.expires_at,
+                status="errored",
+                error=type(e).__name__[:200],
+            )
+        except Exception:
+            logger.exception("ai_challenge_audit_failed")
         return AIChallengeResponse(
             status=ChallengeStatus.INSUFFICIENT_EVIDENCE,
             reason=f"AI challenge failed: {str(e)}",

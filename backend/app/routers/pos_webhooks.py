@@ -1,10 +1,17 @@
 """
 POS Webhook Router: Real-Time Order Sync for Foodics & Salla
 HMAC signature verification enforced on all inbound webhooks.
+
+Tenant binding: the target ``business_id`` is NEVER trusted from the request
+alone. It is accepted only when the referenced business has an active,
+registered POS connection for the claimed provider (see
+``resolve_webhook_business``). Whoever holds a valid provider HMAC cannot
+inject events into a business that never configured that provider.
 """
 import hashlib
 import hmac
 import json
+from contextvars import Token as CtxToken
 from uuid import UUID
 from fastapi import APIRouter, Request, Depends, HTTPException, Query, Header, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,7 +19,8 @@ from sqlalchemy import select
 from typing import Optional
 
 from app.database import get_db
-from app.database.models import Business, WebhookEvent
+from app.database.connection import clear_rls_tenant_id, set_rls_tenant_id, _rls_tenant_id
+from app.database.models import Business, POSConnection, WebhookEvent
 from app.adapters.foodics import handle_foodics_order_created
 from app.adapters.salla import handle_salla_order_created
 from app.config import get_settings
@@ -80,6 +88,47 @@ async def verify_pos_webhook_auth(
         raise HTTPException(401, "Invalid webhook token")
 
     raise HTTPException(401, "Missing webhook authentication")
+
+
+async def resolve_webhook_business(
+    verified: tuple[str, bytes] = Depends(verify_pos_webhook_auth),
+    business_id: UUID = Query(...),
+    db: AsyncSession = Depends(get_db),
+):
+    """Resolve and authorize the webhook's target tenant. Fail-closed.
+
+    A client-supplied ``business_id`` must never authorize tenant access on its
+    own. This dependency accepts it only when an active POS connection for the
+    claimed provider is registered for that business. RLS scoping is applied
+    AFTER this positive identification and torn down after the response.
+    """
+    provider, _ = verified
+    token: CtxToken | None = None
+    try:
+        connection = await db.execute(
+            select(POSConnection.id)
+            .where(
+                POSConnection.business_id == business_id,
+                POSConnection.adapter_type == provider,
+                POSConnection.is_active == True,
+            )
+            .limit(1)
+        )
+        if not connection.first():
+            raise HTTPException(
+                401, f"Business is not registered for POS webhooks (provider: {provider})"
+            )
+        biz = await db.get(Business, business_id)
+        if not biz:
+            raise HTTPException(401, "Webhook target business not found")
+        token = set_rls_tenant_id(str(business_id))
+        yield business_id
+    finally:
+        if token is not None:
+            try:
+                _rls_tenant_id.reset(token)
+            except Exception:
+                clear_rls_tenant_id()
 
 
 def _extract_external_event_id(provider: str, payload: dict) -> Optional[str]:
@@ -159,7 +208,7 @@ def _summarize_payload(provider: str, payload: dict) -> dict:
 
 @router.post("/foodics/webhook")
 async def receive_foodics_webhook(
-    business_id: UUID = Query(...),
+    business_id: UUID = Depends(resolve_webhook_business),
     request: Request = None,
     verified: tuple[str, bytes] = Depends(verify_pos_webhook_auth),
     db: AsyncSession = Depends(get_db),
@@ -197,7 +246,7 @@ async def receive_foodics_webhook(
 
 @router.post("/salla/webhook")
 async def receive_salla_webhook(
-    business_id: UUID = Query(...),
+    business_id: UUID = Depends(resolve_webhook_business),
     request: Request = None,
     verified: tuple[str, bytes] = Depends(verify_pos_webhook_auth),
     db: AsyncSession = Depends(get_db),

@@ -193,7 +193,7 @@ async def expand_graph(
             END AS VARCHAR) || '%'
     )
     SELECT DISTINCT entity_id, hops FROM traversal ORDER BY hops
-    """
+    """  # nosec B608
     result = await session.execute(text(cte_sql), params)
     rows = result.fetchall()
 

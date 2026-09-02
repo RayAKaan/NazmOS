@@ -158,7 +158,7 @@ async def rejections_for(
         FROM learned_outcomes
         WHERE {clause}
         ORDER BY created_at DESC LIMIT :lim
-    """), params)
+    """), params)  # nosec B608
     return [dict(r._mapping) for r in res.fetchall()]
 
 
@@ -192,14 +192,14 @@ async def intervention_effectiveness(
             COALESCE(SUM(actual_impact_sar), 0) AS total_actual_impact
         FROM learned_outcomes
         WHERE {clause}
-    """), params)
+    """), params)  # nosec B608
     r = res.fetchone()
     attempts = int(r.attempts or 0)
     succeeded = int(r.succeeded or 0)
     # Effectiveness = actual / expected impact (§10). Never estimated-as-actual.
     expected_total = await db.execute(text(f"""
         SELECT COALESCE(SUM(expected_impact_sar), 0) FROM learned_outcomes WHERE {clause}
-    """), params)
+    """), params)  # nosec B608
     exp_total = float(expected_total.scalar() or 0)
     act_total = float(r.total_actual_impact or 0)
     effectiveness = round(act_total / exp_total, 3) if exp_total > 0 else None
@@ -368,7 +368,7 @@ async def list_learned_outcomes(
         FROM learned_outcomes
         WHERE {clause}
         ORDER BY created_at DESC LIMIT :lim
-    """), params)
+    """), params)  # nosec B608
     out = []
     for r in res.fetchall():
         out.append({

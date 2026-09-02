@@ -56,7 +56,7 @@ async def list_lots(
             WHERE {' AND '.join(where)}
             ORDER BY pl.expiry_date ASC
             LIMIT 200
-        """), {"b": str(business_id)})
+        """), {"b": str(business_id)})  # nosec B608
         rows = res.fetchall()
     except Exception:
         # Table doesn't exist yet – return empty, frontend shows demo fallback

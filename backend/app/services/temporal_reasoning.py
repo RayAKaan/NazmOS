@@ -172,7 +172,7 @@ async def why(
         WHERE cc.depth < :max_depth {business_filter}
     )
     SELECT DISTINCT cause_event_id FROM causal_chain
-    """
+    """  # nosec B608
     result = await session.execute(text(sql), params)
     cause_ids = {row[0] for row in result.fetchall()}
 

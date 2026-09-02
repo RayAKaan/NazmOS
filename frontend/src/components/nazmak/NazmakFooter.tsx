@@ -44,6 +44,14 @@ export function NazmakFooter() {
 
         <div className="flex flex-col items-start gap-4 md:items-end">
           <p className="text-xs text-muted-foreground">{c.madeFor}</p>
+          <div className="flex items-center gap-4">
+            <Link href="/privacy" className="text-xs text-muted-foreground hover:text-foreground">
+              {c.privacy}
+            </Link>
+            <Link href="/terms" className="text-xs text-muted-foreground hover:text-foreground">
+              {c.terms}
+            </Link>
+          </div>
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Nazmak. {c.rights}
           </p>

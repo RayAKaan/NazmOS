@@ -69,7 +69,7 @@ class RedisRateLimiter:
         auth_header = request.headers.get("Authorization", "")
         if isinstance(auth_header, str) and auth_header.startswith("Bearer "):
             token = auth_header[7:]
-            identifier = f"user:{hashlib.md5(token.encode()).hexdigest()[:16]}"
+            identifier = f"user:{hashlib.md5(token.encode(), usedforsecurity=False).hexdigest()[:16]}"
         else:
             identifier = f"ip:{ip}"
 
@@ -131,7 +131,7 @@ class RedisRateLimiter:
                 }
 
             await self.redis.zadd(
-                key, {f"{now}:{hashlib.md5(str(now).encode()).hexdigest()[:8]}": now}
+                key, {f"{now}:{hashlib.md5(str(now).encode(), usedforsecurity=False).hexdigest()[:8]}": now}
             )
             await self.redis.expire(key, window)
 
@@ -214,7 +214,7 @@ class InMemoryRateLimiter:
         auth_header = request.headers.get("Authorization", "")
         if isinstance(auth_header, str) and auth_header.startswith("Bearer "):
             token = auth_header[7:]
-            identifier = f"user:{hashlib.md5(token.encode()).hexdigest()[:16]}"
+            identifier = f"user:{hashlib.md5(token.encode(), usedforsecurity=False).hexdigest()[:16]}"
         else:
             identifier = f"ip:{ip}"
 

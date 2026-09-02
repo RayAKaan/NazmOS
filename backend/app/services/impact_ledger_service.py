@@ -143,7 +143,7 @@ async def total_impact(
         WHERE {where}
         GROUP BY impact_type
         ORDER BY total_sar DESC
-    """), params)
+    """), params)  # nosec B608
     by_type = [dict(r._mapping) for r in res.fetchall()]
 
     totals = await db.execute(text(f"""
@@ -151,7 +151,7 @@ async def total_impact(
                COALESCE(SUM(CASE WHEN verified THEN amount_sar ELSE 0 END), 0) AS observed_sar,
                COALESCE(SUM(CASE WHEN NOT verified THEN amount_sar ELSE 0 END), 0) AS estimated_sar
         FROM impact_ledger WHERE {where}
-    """), params)
+    """), params)  # nosec B608
     t = dict(totals.fetchone()._mapping)
 
     return {

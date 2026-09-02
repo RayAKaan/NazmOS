@@ -823,6 +823,8 @@ export const ar = {
       product: "نزموس",
       productDesc: "نظام استرداد التجزئة",
       freeAudit: "التدقيق المجاني",
+      privacy: "الخصوصية",
+      terms: "الشروط",
       rights: "جميع الحقوق محفوظة.",
       madeFor: "صُنع للسعودية",
     },

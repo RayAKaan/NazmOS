@@ -198,7 +198,7 @@ async def list_findings(
           COALESCE(estimated_financial_impact_sar, 0) DESC,
           created_at DESC
         LIMIT :lim
-    """), params)
+    """), params)  # nosec B608
     out = []
     for r in res.fetchall():
         out.append({

@@ -114,6 +114,8 @@ async def reason(
     )
 
     # Durable audit trail (Phase D): fingerprint only, never prompt/payload.
+    # The capsule deliberately carries no business_id (see capsule.py); the
+    # tenant column is resolved from the request's RLS tenant context.
     await record_ai_reasoning_request(
         capsule_id=capsule.capsule_id,
         request_id=capsule.request_id,
@@ -121,7 +123,7 @@ async def reason(
         capsule_hash=capsule.capsule_hash,
         capability=capability,
         purpose=purpose,
-        business_id=capsule.business.business_id if capsule.business else None,
+        business_id=None,
         issued_at=capsule.issued_at,
         expires_at=capsule.expires_at,
         status="completed",

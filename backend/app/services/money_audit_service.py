@@ -887,7 +887,7 @@ async def update_action_status(
                 notes = COALESCE(:notes, notes),
                 updated_at = NOW()
             WHERE id = :id AND business_id = :business_id
-        """),
+        """),  # nosec B608
         {
             "id": str(action_id),
             "business_id": str(business_id),

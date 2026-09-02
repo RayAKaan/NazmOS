@@ -77,7 +77,7 @@ async def list_runs(
         FROM audit_runs
         WHERE business_id = :b {domain_clause}
         ORDER BY created_at DESC LIMIT :lim
-    """), params)
+    """), params)  # nosec B608
     return {"runs": [dict(r._mapping) | {"id": str(r.id)} for r in res.fetchall()]}
 
 

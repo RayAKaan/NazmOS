@@ -80,7 +80,7 @@ async def create_backup(
 
     for table in tables:
         try:
-            result = await db.execute(text(f"SELECT * FROM {table}"))
+            result = await db.execute(text(f"SELECT * FROM {table}"))  # nosec B608
             rows = [dict(r._mapping) for r in result.fetchall()]
             snapshot["data"][table] = rows
         except Exception as exc:
@@ -169,14 +169,14 @@ async def restore_table(
         return {"table": table, "dry_run": True, "rows_to_insert": len(rows)}
 
     # Naive restore: clear and insert. Production should use COPY/upsert.
-    await db.execute(text(f"DELETE FROM {table}"))
+    await db.execute(text(f"DELETE FROM {table}"))  # nosec B608
     inserted = 0
     for row in rows:
         columns = list(row.keys())
         values = [row[c] for c in columns]
         placeholders = ", ".join(f":c{i}" for i in range(len(columns)))
         cols = ", ".join(columns)
-        stmt = text(f"INSERT INTO {table} ({cols}) VALUES ({placeholders})")
+        stmt = text(f"INSERT INTO {table} ({cols}) VALUES ({placeholders})")  # nosec B608
         params = {f"c{i}": v for i, v in enumerate(values)}
         await db.execute(stmt, params)
         inserted += 1

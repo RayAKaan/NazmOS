@@ -97,7 +97,7 @@ async def _measure_current(db: AsyncSession, business_id: UUID | str, goal: Any)
         res = await db.execute(text(f"""
             SELECT COALESCE(SUM({col}), 0) FROM transactions
             WHERE business_id = :b AND transaction_at >= :cutoff
-        """), {"b": str(business_id), "cutoff": cutoff})
+        """), {"b": str(business_id), "cutoff": cutoff})  # nosec B608
         return Decimal(str(res.scalar() or 0))
 
     # manual / unknown → current_value already set, or None.

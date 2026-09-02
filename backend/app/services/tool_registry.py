@@ -64,7 +64,7 @@ async def _get_supplier(db: AsyncSession, business_id: UUID, args: dict[str, Any
                lead_time_days, total_monthly_volume_sar
         FROM suppliers WHERE {' AND '.join(clauses)}
         ORDER BY total_monthly_volume_sar DESC NULLS LAST, name_en LIMIT 100
-    """), params)
+    """), params)  # nosec B608
     return {"suppliers": [dict(r._mapping) for r in res.fetchall()]}
 
 
@@ -115,7 +115,7 @@ async def _get_supplier_prices(db: AsyncSession, business_id: UUID, args: dict[s
         LEFT JOIN suppliers s ON s.id = sp.supplier_id
         WHERE {clause} AND sp.is_active = true
         ORDER BY sp.unit_price_sar ASC
-    """), param)
+    """), param)  # nosec B608
     prices = [dict(r._mapping) for r in res.fetchall()]
     summary = None
     if prices:

@@ -19,6 +19,7 @@ from app.database.models import Base
 TENANT_TABLES = [
     "agent_actions",
     "agent_runs",
+    "ai_reasoning_requests",
     "analytics_cache",
     "audit_log",
     "audit_runs",
@@ -52,6 +53,7 @@ TENANT_TABLES = [
     "recipes",
     "recovery_match_settings",
     "reports",
+    "security_events",
     "subscriptions",
     "transactions",
     "uploaded_files",

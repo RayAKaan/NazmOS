@@ -17977,7 +17977,7 @@
     },
     "/api/v1/forecast/": {
       "post": {
-        "description": "Generate a fresh Prophet forecast \u2013 KSA edition, with Saudi holidays",
+        "description": "Generate a fresh Prophet forecast \u2013 KSA edition, with Saudi holidays.\n\nUses the canonical forecasting pipeline: daily demand builder \u2192 quality\ngate \u2192 ProphetProvider (SQL timezone-safe date aggregation included).",
         "operationId": "generate_forecast_api_v1_forecast__post",
         "parameters": [
           {

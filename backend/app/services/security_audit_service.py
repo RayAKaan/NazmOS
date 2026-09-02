@@ -22,6 +22,23 @@ def _none_aware_iso(value: Any) -> str:
     return str(value)
 
 
+def _resolve_business_id(business_id: str | UUID | None) -> str | None:
+    """Default tenant column to the active RLS tenant when not supplied.
+
+    Audit rows are tenant-scoped in Postgres via RLS, so a row must carry the
+    business_id matching the current request's ``app.current_tenant_id`` to be
+    written legally.  Context-less writes (background jobs, platform events)
+    fall back to None, which the audit RLS policy treats as a world-invisible
+    global event.
+    """
+    if business_id:
+        return str(business_id)
+    from app.database.connection import get_rls_tenant_id
+
+    tenant = get_rls_tenant_id()
+    return tenant if tenant else None
+
+
 # Only these bounded, non-sensitive keys may be persisted in audit ``detail``.
 # Free-form text (reasoning, prompts, notes) is never allowed into the table.
 _ALLOWED_DETAIL_KEYS = frozenset(
@@ -78,7 +95,7 @@ async def record_security_event(
         async with async_session_scope() as session:
             session.add(
                 SecurityEvent(
-                    business_id=str(business_id) if business_id else None,
+                    business_id=_resolve_business_id(business_id),
                     event_type=str(event_type)[:40],
                     actor=str(actor)[:80] if actor else None,
                     capsule_id=str(capsule_id)[:64] if capsule_id else None,
@@ -120,7 +137,7 @@ async def record_ai_reasoning_request(
         async with async_session_scope() as session:
             session.add(
                 AIReasoningRequest(
-                    business_id=str(business_id) if business_id else None,
+                    business_id=_resolve_business_id(business_id),
                     capsule_id=str(capsule_id)[:64],
                     request_id=str(request_id)[:64],
                     nonce=str(nonce)[:64],

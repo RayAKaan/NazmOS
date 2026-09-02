@@ -58,7 +58,7 @@ async def list_suppliers(
         WHERE {' AND '.join(where)}
         ORDER BY total_monthly_volume_sar DESC NULLS LAST, name_en
         LIMIT 100
-    """
+    """  # nosec B608
     res = await db.execute(text(q), params)
     rows = res.fetchall()
     

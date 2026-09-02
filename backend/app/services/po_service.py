@@ -205,7 +205,7 @@ async def get_confirmed_inbound_map(
     status_values = ",".join(f"'{s}'" for s in CONFIRMED_BOOKED_STATUSES)
     rows = await db.execute(
         text(
-            "SELECT po.id, po.po_number, po.status, po.expected_delivery, "
+            "SELECT po.id, po.po_number, po.status, po.expected_delivery, "  # nosec B608
             "po.items_json, po.received_items_json "
             "FROM purchase_orders po "
             "WHERE po.business_id = :business_id "

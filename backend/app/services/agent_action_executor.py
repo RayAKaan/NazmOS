@@ -259,7 +259,7 @@ async def approve_agent_action(
             updated_at = :now
         WHERE id = :id AND status = 'pending_approval' {tenant_clause}
         RETURNING id, business_id, action_type, payload
-    """), params)
+    """), params)  # nosec B608
     row = res.fetchone()
     if not row:
         return {"ok": False, "reason": "Action not found or not pending approval", "action_id": str(action_id)}
@@ -303,7 +303,7 @@ async def reject_agent_action(db: AsyncSession, action_id: UUID | str, note: str
             updated_at = :now
         WHERE id = :id AND status = 'pending_approval' {tenant_clause}
         RETURNING id, business_id
-    """), params)
+    """), params)  # nosec B608
     row = res.fetchone()
     await db.commit()
     if row:

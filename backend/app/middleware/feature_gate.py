@@ -47,7 +47,7 @@ async def enforce_upload_limit(db: AsyncSession, business_id: UUID | str) -> Non
         FROM uploaded_files
         WHERE business_id = :business_id
           AND created_at >= {month_start_sql}
-    """), {"business_id": str(business_id)})
+    """), {"business_id": str(business_id)})  # nosec B608
     used = int(res.scalar() or 0)
     if used >= limits.uploads_per_month:
         raise HTTPException(

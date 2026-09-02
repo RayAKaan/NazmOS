@@ -830,6 +830,8 @@ export const en = {
       product: "NazmOS",
       productDesc: "Retail recovery system",
       freeAudit: "Free Audit",
+      privacy: "Privacy",
+      terms: "Terms",
       rights: "All rights reserved.",
       madeFor: "Built for Saudi Arabia",
     },

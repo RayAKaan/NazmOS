@@ -1,50 +1,55 @@
-'use client';
+"use client";
 
-import { AuditProvider } from '@/components/landing/audit-context';
-import { SiteHeader } from '@/components/landing/SiteHeader';
-import { Hero } from '@/components/landing/Hero';
-import { Problem } from '@/components/landing/Problem';
+import { AuditProvider } from "@/components/landing/audit-context";
 import {
-  MemorySection,
-  GraphSection,
-  AgentsSection,
-  ReasoningSection,
-  DecisionSection,
-  OutcomeSection,
-} from '@/components/landing/StorySections';
-import { FreeAudit } from '@/components/landing/FreeAudit';
-import { HowItWorks } from '@/components/landing/HowItWorks';
-import { BusinessMemory } from '@/components/landing/BusinessMemory';
-import { Integrations } from '@/components/landing/Integrations';
-import { RecoveryMatch } from '@/components/landing/RecoveryMatch';
-import { Pricing } from '@/components/landing/Pricing';
-import { FAQ } from '@/components/landing/FAQ';
-import { FinalCTA } from '@/components/landing/FinalCTA';
-import { SiteFooter } from '@/components/landing/SiteFooter';
+  NazmakNav,
+  NazmakHero,
+  NazmakBuilding,
+  CurrentCapabilities,
+  NazmosIntro,
+  NazmosHowItWorks,
+  FutureScaleVisual,
+  NazmakPrinciples,
+  NazmakStatement,
+  NazmakFreeAudit,
+  NazmakFooter,
+} from "@/components/nazmak";
+import { SectionTransition } from "@/components/motion/SectionTransition";
 
-export default function LandingPage() {
+/**
+ * Nazmak — the company homepage.
+ *
+ * Establishes the parent brand, then introduces NazmOS as its first product.
+ * The sequence: who Nazmak is → what it builds → current capability →
+ * NazmOS → how it works → future scale → principles → final statement.
+ */
+export default function NazmakHome() {
   return (
     <AuditProvider>
-      <SiteHeader />
+      <NazmakNav />
       <main id="main">
-        <Hero />
-        <Problem />
-        <MemorySection />
-        <GraphSection />
-        <AgentsSection />
-        <ReasoningSection />
-        <DecisionSection />
-        <OutcomeSection />
-        <FreeAudit />
-        <HowItWorks />
-        <BusinessMemory />
-        <Integrations />
-        <RecoveryMatch />
-        <Pricing />
-        <FAQ />
-        <FinalCTA />
+        <NazmakHero />
+
+        <SectionTransition className="mx-auto max-w-7xl px-5 md:px-8" />
+        <NazmakBuilding />
+
+        <SectionTransition className="mx-auto max-w-7xl px-5 md:px-8" />
+        <CurrentCapabilities />
+
+        <NazmosIntro />
+
+        <SectionTransition className="mx-auto max-w-7xl px-5 md:px-8" />
+        <NazmosHowItWorks />
+
+        <FutureScaleVisual />
+
+        <NazmakPrinciples />
+
+        <NazmakFreeAudit />
+
+        <NazmakStatement />
       </main>
-      <SiteFooter />
+      <NazmakFooter />
     </AuditProvider>
   );
 }

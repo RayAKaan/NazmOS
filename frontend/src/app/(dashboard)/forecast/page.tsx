@@ -12,8 +12,12 @@ interface CachedForecast {
   item_id: string;
   item_name: string | null;
   model_version: string | null;
+  provider: string | null;
+  interval_type: string | null;
   trend_direction: "up" | "down" | "stable" | null;
   trend_strength: number;
+  mape_score: number | null;
+  rmse_score: number | null;
   trained_at: string | null;
   expires_at: string | null;
 }
@@ -44,7 +48,15 @@ export default function ForecastPage() {
   const [forecasts, setForecasts] = useState<CachedForecast[] | null>(null);
   const [summary, setSummary] = useState<SummaryResponse | null>(null);
   const [selected, setSelected] = useState<CachedForecast | null>(null);
-  const [detail, setDetail] = useState<{ forecast_7d?: Array<{ date: string; predicted_qty: number }>; from_cache?: boolean } | null>(null);
+  const [detail, setDetail] = useState<{
+    forecast_7d?: Array<{ date: string; predicted_qty: number; lower?: number; upper?: number }>;
+    from_cache?: boolean;
+    provider?: string | null;
+    interval_type?: string | null;
+    fallback_reason?: string | null;
+    mape_score?: number | null;
+    rmse_score?: number | null;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [working, setWorking] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -176,6 +188,8 @@ export default function ForecastPage() {
                       <p className="truncate font-medium text-foreground">{forecast.item_name || "Unnamed item"}</p>
                       <p className="text-sm text-muted-foreground">
                         {forecast.trained_at ? new Date(forecast.trained_at).toLocaleDateString() : "Not trained"}
+                        {forecast.provider ? ` · ${forecast.provider}` : ""}
+                        {typeof forecast.mape_score === "number" ? ` · MAPE ${Math.round(forecast.mape_score)}%` : ""}
                       </p>
                     </div>
                     <span className={cn("rounded-full border px-3 py-1 text-xs font-semibold", trendTone(forecast.trend_direction))}>
@@ -213,6 +227,34 @@ export default function ForecastPage() {
                       </span>
                     )}
                   </div>
+
+                  {detail.provider && (
+                    <div className="mt-4 flex flex-wrap gap-2 text-xs">
+                      <span className="rounded-full border border-brand-cream/10 bg-brand-cream/5 px-3 py-1 font-semibold text-muted-foreground">
+                        Model: {detail.provider}
+                      </span>
+                      {detail.interval_type && (
+                        <span className="rounded-full border border-brand-cream/10 bg-brand-cream/5 px-3 py-1 font-semibold text-muted-foreground">
+                          Interval: {detail.interval_type}
+                        </span>
+                      )}
+                      {typeof detail.mape_score === "number" && (
+                        <span className="rounded-full border border-brand-green/25 bg-brand-green/10 px-3 py-1 font-semibold text-brand-green">
+                          MAPE {Math.round(detail.mape_score)}%
+                        </span>
+                      )}
+                      {typeof detail.rmse_score === "number" && (
+                        <span className="rounded-full border border-brand-cream/10 bg-brand-cream/5 px-3 py-1 font-semibold text-muted-foreground">
+                          RMSE {Math.round(detail.rmse_score * 100) / 100}
+                        </span>
+                      )}
+                      {detail.fallback_reason && (
+                        <span className="rounded-full border border-brand-amber/30 bg-brand-amber/10 px-3 py-1 font-semibold text-brand-amber">
+                          Fallback: {detail.fallback_reason}
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                   {detail.forecast_7d && detail.forecast_7d.length > 0 ? (
                     <div className="mt-6 space-y-2">

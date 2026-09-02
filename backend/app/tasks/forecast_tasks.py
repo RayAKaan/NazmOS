@@ -1,13 +1,40 @@
-from datetime import datetime, timedelta
-import pandas as pd
+import logging
 from sqlalchemy import text
 
 from app.config import get_settings
 from app.database.connection import get_sync_session
-from app.services.prophet_service import ProphetService
+from app.services.forecasting.prophet_provider import ProphetProvider
+from app.services.forecasting.sync_runner import run_provider_forecast_sync
 
 settings = get_settings()
-prophet_service = ProphetService()
+logger = logging.getLogger("forecast_tasks")
+
+
+def _run_for_items(pairs):
+    """Run item-level forecasts, isolating per-item failures.
+
+    A single bad item must not abort the batch: failures are logged and
+    skipped, and the batch continues with the remaining items.
+    """
+    results = {"completed": 0, "failed": 0, "no_data": 0}
+    provider = ProphetProvider()
+    for (item_id, business_id) in pairs:
+        try:
+            legacy = run_provider_forecast_sync(
+                provider, business_id, item_id, horizon_days=30
+            )
+        except Exception as exc:
+            logger.exception("Item forecast failed item=%s", item_id)
+            results["failed"] += 1
+            continue
+        if not legacy:
+            results["failed"] += 1
+            logger.warning("Item forecast failed item=%s", item_id)
+        elif legacy.get("fallback_reason") == "no_transactions":
+            results["no_data"] += 1
+        else:
+            results["completed"] += 1
+    return results
 
 
 def run_refresh_all_forecasts():
@@ -27,13 +54,10 @@ def run_refresh_all_forecasts():
         )
         top_items = result.fetchall()
 
-        for item in top_items:
-            try:
-                run_train_forecast_for_item(str(item[0]), str(item[1]))
-            except Exception:
-                pass
+        pairs = [(str(r[0]), str(r[1])) for r in top_items]
+        results = _run_for_items(pairs)
 
-    return {"status": "completed", "items_queued": len(top_items)}
+    return {"status": "completed", "items_queued": len(top_items), **results}
 
 
 def run_refresh_forecasts_for_business(business_id: str):
@@ -43,74 +67,16 @@ def run_refresh_forecasts_for_business(business_id: str):
             {"business_id": business_id}
         )
         items = result.fetchall()
+        pairs = [(str(r[0]), business_id) for r in items]
 
-        for item in items:
-            try:
-                run_train_forecast_for_item(str(item[0]), business_id)
-            except Exception:
-                pass
+        results = _run_for_items(pairs)
 
-    return {"status": "completed", "business_id": business_id}
+    return {"status": "completed", "business_id": business_id, **results}
 
 
 def run_train_forecast_for_item(item_id: str, business_id: str):
-    with get_sync_session() as session:
-        result = session.execute(
-            text("""
-                SELECT DATE(transaction_at) as ds, SUM(quantity) as y
-                FROM transactions
-                WHERE item_id = :item_id AND business_id = :business_id
-                GROUP BY DATE(transaction_at)
-                ORDER BY ds
-            """),
-            {"item_id": item_id, "business_id": business_id}
-        )
-        rows = result.fetchall()
-
-        if not rows:
-            return {"status": "no_data", "item_id": item_id}
-
-        df = pd.DataFrame(rows, columns=["ds", "y"])
-        df["ds"] = pd.to_datetime(df["ds"])
-
-        result = prophet_service.train_and_forecast(item_id, "", df, forecast_days=30)
-
-        if not result:
-            return {"status": "failed", "item_id": item_id}
-
-        expires_at = datetime.utcnow() + timedelta(hours=settings.FORECAST_CACHE_TTL_HOURS)
-
-        session.execute(
-            text("""
-                INSERT INTO forecast_cache
-                    (business_id, item_id, model_version, training_rows, forecast_7d, forecast_30d,
-                     weekly_pattern, trend_direction, trend_strength, trained_at, expires_at)
-                VALUES (:business_id, :item_id, 'prophet_v1', :training_rows, :forecast_7d, :forecast_30d,
-                        :weekly_pattern, :trend_direction, :trend_strength, NOW(), :expires_at)
-                ON CONFLICT (business_id, item_id) DO UPDATE SET
-                    forecast_7d = EXCLUDED.forecast_7d,
-                    forecast_30d = EXCLUDED.forecast_30d,
-                    weekly_pattern = EXCLUDED.weekly_pattern,
-                    trend_direction = EXCLUDED.trend_direction,
-                    trend_strength = EXCLUDED.trend_strength,
-                    trained_at = NOW(),
-                    expires_at = EXCLUDED.expires_at
-            """),
-            {
-                "business_id": business_id,
-                "item_id": item_id,
-                "training_rows": result.get("training_rows", 0),
-                "forecast_7d": str(result["forecast_7d"]),
-                "forecast_30d": str(result["forecast_30d"]),
-                "weekly_pattern": str(result["weekly_pattern"]),
-                "trend_direction": result["trend_direction"],
-                "trend_strength": result["trend_strength"],
-                "expires_at": expires_at,
-            }
-        )
-        session.commit()
-
-        return {"status": "completed", "item_id": item_id}
+    provider = ProphetProvider()
+    return run_provider_forecast_sync(provider, business_id, item_id, horizon_days=30)
 
 
 if settings.USE_CELERY:

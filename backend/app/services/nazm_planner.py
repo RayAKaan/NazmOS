@@ -181,20 +181,27 @@ class NazmPlanner:
 
     # ── AGENT: RESTOCK ──────────────────────────────────────
     async def _agent_restock(self, business_id: UUID) -> int:
-        """Restock agent – Prophet + inventory – $0 LLM"""
-        # Find items where stock_days < 3 AND forecast available
+        """Restock agent – Prophet + inventory – $0 LLM
+
+        Demand signal comes from the canonical forecast cache (same numbers the
+        forecasting pipeline and agents read). Items without a usable forecast
+        are skipped rather than guessed.
+        """
         rows = await self.db.execute(text("""
             SELECT 
                 i.id, i.name,
                 inv.current_stock,
-                COALESCE(fc.forecast_7d::jsonb->0->>'predicted_qty','1')::float as pred_qty,
                 inv.reorder_level,
                 i.sell_price
             FROM items i
             JOIN inventory inv ON inv.item_id = i.id
-            LEFT JOIN forecast_cache fc ON fc.item_id = i.id AND fc.expires_at > NOW()
             WHERE i.business_id = :b AND inv.current_stock >= 0
         """), {"b": str(business_id)})
+        items = rows.fetchall()
+
+        from app.services.forecasting.cache import read_forecasts_batch
+        from app.services.forecasting.agent_helpers import days_of_supply, forecast_daily_demand
+        cached = await read_forecasts_batch(self.db, business_id, [str(r.id) for r in items])
 
         # Phase 1 (P0-A): make the restock agent PO-aware. Only confirmed inbound
         # that arrives strictly BEFORE the projected stockout may count toward
@@ -205,12 +212,16 @@ class NazmPlanner:
         inbound_map = await get_confirmed_inbound_map(self.db, business_id=business_id, as_of=utcnow().date())
 
         created = 0
-        for r in rows.fetchall():
+        for r in items:
             try:
-                daily_demand = float(r.pred_qty or 1.0)
-                if daily_demand < 0.1:
-                    daily_demand = 1.0
-                stock_days = float(r.current_stock) / daily_demand if daily_demand > 0 else 999
+                fc = cached.get(str(r.id))
+                daily_demand = forecast_daily_demand(fc) if fc else 0.0
+                if daily_demand <= 0:
+                    # No usable forecasting signal – refuse to guess a restock.
+                    continue
+                stock_days = days_of_supply(float(r.current_stock), daily_demand)
+                if stock_days == float("inf"):
+                    continue
 
                 # Time-aware confirmed inbound for this item (usable-before-stockout only).
                 so = projected_stockout_date(

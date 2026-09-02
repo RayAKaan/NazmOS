@@ -900,17 +900,18 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
         for row in sales_30d_result.all()
     ]
     
-    # Use live Prophet service with KSA Ramadan/Eid holiday calibration instead of static 0.95 multiplier
-    from app.services.prophet_service import ProphetService
-    prophet = ProphetService(db)
+    # Use the canonical forecasting pipeline (Prophet, or the KSA-aware
+    # baseline fallback) instead of a bespoke per-call ProphetService.
+    from app.services.forecasting.retrieval import get_forecast
     try:
-        live_forecast = await prophet.predict_item_demand(business_id, item_id, horizon_days=7)
+        live_forecast = await get_forecast(db, business_id, item_id, horizon_days=7)
+        series = live_forecast.get("forecast_7d") or live_forecast.get("forecast_30d") or []
         forecast_7d = [
             ForecastItem(date=f["date"], predicted_qty=round(float(f["predicted_qty"]), 2))
-            for f in live_forecast.get("forecast", [])
+            for f in series[:7]
         ]
-    except Exception as e:
-        # Fallback if historical data is under 14 days minimum threshold for Prophet
+    except Exception:
+        # Fallback if there is not enough history to train any provider.
         forecast_7d = []
         avg_daily_sales = sum(h.quantity for h in sales_history) / max(1, len(sales_history))
         for i in range(1, 8):

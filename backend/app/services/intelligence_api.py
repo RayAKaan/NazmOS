@@ -186,6 +186,37 @@ async def predict(
             "basis": ["current_state.inventory"],
         }
 
+    # Canonical path for item-level sales/demand predictions: plan reads and
+    # generation both go through the forecasting pipeline (Prophet or the
+    # KSA-aware baseline fallback), never ad-hoc weighted averages.
+    if target in ("sales", "demand") and item_id:
+        from app.services.forecasting.retrieval import get_forecast
+
+        cached = await get_forecast(session, business_id, item_id, horizon_days=horizon_days)
+        series = cached.get("forecast_7d") or cached.get("forecast_30d") or []
+        predicted = round(sum(
+            _safe_float(p.get("predicted_qty"), 0.0)
+            for p in series[:horizon_days]
+        ), 2)
+        confidence = 0.3
+        if series and all(p.get("upper") for p in series[:5]):
+            spread = (sum(p.get("upper", 0) for p in series[:5]) - sum(p.get("lower", 0) for p in series[:5]))
+            if predicted > 0:
+                confidence = min(0.95, max(0.3, round(1 - spread / (2 * predicted / horizon_days) / horizon_days, 2)))
+        provider = cached.get("provider") or "unknown"
+        basis = [f"forecasting.{provider}", "forecast_cache"] if not cached.get("from_cache") else ["forecast_cache"]
+        return {
+            "target": target,
+            "horizon_days": horizon_days,
+            "item_id": item_id,
+            "predicted_value": predicted,
+            "unit": "units",
+            "confidence": confidence,
+            "provider": provider,
+            "from_cache": cached.get("from_cache", False),
+            "basis": basis,
+        }
+
     daily_sales = current_state.get("sales", {}).get("daily", {})
     values: list[float] = []
     if daily_sales:

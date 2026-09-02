@@ -67,11 +67,44 @@ class ProcurementAgent(BaseAgent):
                     f"Recommend ordering ~{qty} units for owner review."
                 ),
                 "item_id": str(r.item_id),
+                "current_stock": float(r.current_stock or 0),
+                "unit_price_sar": unit_cost,
                 "recommended_qty": qty,
                 "estimated_value_sar": round(qty * unit_cost, 2),
                 "confidence": 0.7,
                 "urgency": 0.7 if days < 5 else 0.4,
             })
+
+        # Overlay canonical forecast demand (same numbers NazmPlanner reads)
+        # onto the recommended quantity, replacing the raw velocity surrogate.
+        candidate_ids = [str(p["item_id"]) for p in proposals if p.get("item_id")]
+        if candidate_ids:
+            from app.services.forecasting.cache import read_forecasts_batch
+            from app.services.forecasting.agent_helpers import days_of_supply, forecast_daily_demand
+
+            cached = await read_forecasts_batch(self.session, self.business_id, candidate_ids)
+            for p in proposals:
+                fc = cached.get(p["item_id"])
+                if not fc:
+                    continue
+                daily = forecast_daily_demand(fc)
+                if daily <= 0:
+                    continue
+                days = days_of_supply(float(p.get("current_stock") or 0), daily)
+                if days == float("inf"):
+                    continue
+                qty = max(20, int((14 - days) * daily))
+                total = round(qty * float(p.get("unit_price_sar") or 0), 2)
+                p["demand_basis"] = "forecast"
+                p["forecasted_daily_demand"] = round(daily, 2)
+                p["recommended_qty"] = qty
+                p["estimated_value_sar"] = total
+                p["urgency"] = 0.7 if days < 5 else 0.4
+                p["reason"] = (
+                    f"{p['title'].replace('Procurement: ', '')} has ~{days:.1f} days of supply at "
+                    f"forecasted daily demand {daily:.1f}/day. Recommend ordering ~{qty} units "
+                    f"(SAR {float(p.get('unit_price_sar') or 0):.2f}/unit)."
+                )
 
         # §8: consume learning + supplier reliability. Repeatedly-failed restocks are
         # replaced by their alternative; rejection history for restocking is surfaced as an

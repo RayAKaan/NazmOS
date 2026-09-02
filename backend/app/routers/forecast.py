@@ -1,23 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import text
-from datetime import datetime, timedelta, timezone
-from uuid import UUID, uuid4
-import json
-import pandas as pd
+from datetime import timedelta
 
 from app.middleware.auth_middleware import get_current_user
 from app.middleware.business_access import assert_business_access
 from app.database import get_db, User
-from app.services.prophet_service import ProphetService
+from app.services.forecasting.cache import write_forecast
+from app.services.forecasting.prophet_provider import ProphetProvider
+from app.utils.timezone import now_utc
 
 router = APIRouter(prefix="/api/v1/forecast", tags=["forecast"])
-
-R_RIYADH = timezone(timedelta(hours=3))
-
-def _now_riyadh():
-    return datetime.now(R_RIYADH)
-
-prophet_service = ProphetService()
 
 
 @router.post("/")
@@ -28,56 +20,27 @@ async def generate_forecast(
     current_user: User = Depends(get_current_user),
     db=Depends(get_db),
 ):
-    """Generate a fresh Prophet forecast – KSA edition, with Saudi holidays"""
+    """Generate a fresh Prophet forecast – KSA edition, with Saudi holidays.
+
+    Uses the canonical forecasting pipeline: daily demand builder → quality
+    gate → ProphetProvider (SQL timezone-safe date aggregation included).
+    """
     await assert_business_access(db, business_id, current_user)
-    
-    # Get transaction history
-    if item_id:
-        tx = await db.execute(text("""
-            SELECT transaction_at as ds, SUM(quantity) as y
-            FROM transactions
-            WHERE business_id = :bid AND item_id = :iid
-            GROUP BY transaction_at ORDER BY transaction_at
-        """), {"bid": business_id, "iid": item_id})
-        rows = tx.fetchall()
-        if len(rows) < 7:
-            raise HTTPException(422, "Need at least 7 days of sales history for forecasting")
-        df = pd.DataFrame(rows, columns=["ds","y"])
-        item_name_r = await db.execute(text("SELECT name FROM items WHERE id = :id"), {"id": item_id})
-        iname = item_name_r.fetchone()
-        item_name = iname[0] if iname else "Item"
-        
-        result = prophet_service.train_and_forecast(item_id, item_name, df, forecast_days=days)
-        
-        # Cache it
-        from datetime import datetime as dt
-        expires = _now_riyadh() + timedelta(hours=24)
-        await db.execute(text("""
-            INSERT INTO forecast_cache 
-            (id, business_id, item_id, model_version, training_rows, forecast_7d, forecast_30d, weekly_pattern, trend_direction, trend_strength, expires_at)
-            VALUES (:id, :bid, :iid, 'prophet_v1_ksa', :rows, :f7, :f30, :wp, :td, :ts, :exp)
-            ON CONFLICT (business_id, item_id) DO UPDATE SET
-            forecast_7d = EXCLUDED.forecast_7d,
-            forecast_30d = EXCLUDED.forecast_30d,
-            weekly_pattern = EXCLUDED.weekly_pattern,
-            trend_direction = EXCLUDED.trend_direction,
-            trend_strength = EXCLUDED.trend_strength,
-            trained_at = NOW(),
-            expires_at = EXCLUDED.expires_at
-        """), {
-            "id": str(uuid4()), "bid": business_id, "iid": item_id,
-            "rows": result["training_rows"],
-            "f7": json.dumps(result["forecast_7d"]),
-            "f30": json.dumps(result["forecast_30d"]),
-            "wp": json.dumps(result["weekly_pattern"]),
-            "td": result["trend_direction"],
-            "ts": result["trend_strength"],
-            "exp": expires
-        })
-        await db.commit()
-        return {"item_id": item_id, "forecast": result, "cached": True}
-    
-    raise HTTPException(422, "item_id required")
+
+    if not item_id:
+        raise HTTPException(422, "item_id required")
+
+    provider = ProphetProvider()
+    forecast = await provider.forecast(
+        db, business_id, item_id, horizon_days=days
+    )
+
+    # Existing API contract: refuse to train on almost no history.
+    if forecast.context_days < 7:
+        raise HTTPException(422, "Need at least 7 days of sales history for forecasting")
+
+    await write_forecast(db, forecast, ttl_hours=24)
+    return {"item_id": item_id, "forecast": forecast.as_legacy_dict(), "cached": True}
 
 
 @router.get("/summary")
@@ -125,8 +88,9 @@ async def get_cached_forecasts(
     await assert_business_access(db, business_id, current_user)
     result = await db.execute(
         text("""
-            SELECT fc.item_id, i.name AS item_name, fc.model_version,
-                   fc.trend_direction, fc.trend_strength, fc.trained_at, fc.expires_at
+            SELECT fc.item_id, i.name AS item_name, fc.model_version, fc.provider, fc.interval_type,
+                   fc.trend_direction, fc.trend_strength, fc.trained_at, fc.expires_at,
+                   fc.mape_score, fc.rmse_score
             FROM forecast_cache fc
             LEFT JOIN items i ON i.id = fc.item_id
             WHERE fc.business_id = :business_id
@@ -143,8 +107,12 @@ async def get_cached_forecasts(
                 "item_id": str(r.item_id),
                 "item_name": r.item_name,
                 "model_version": r.model_version,
+                "provider": r.provider,
+                "interval_type": r.interval_type,
                 "trend_direction": r.trend_direction,
                 "trend_strength": float(r.trend_strength) if r.trend_strength else 0,
+                "mape_score": float(r.mape_score) if r.mape_score else None,
+                "rmse_score": float(r.rmse_score) if r.rmse_score else None,
                 "trained_at": r.trained_at.isoformat() if r.trained_at else None,
                 "expires_at": r.expires_at.isoformat() if r.expires_at else None,
             }
@@ -185,7 +153,7 @@ async def get_forecast(
         if not item:
             raise HTTPException(404, detail="Item not found")
 
-        today = _now_riyadh().date()
+        today = now_utc().date()
         return {
             "item_id": item_id,
             "item_name": item.name,
@@ -225,7 +193,11 @@ async def get_forecast(
         "trend_direction": cache.trend_direction,
         "trend_strength": float(cache.trend_strength) if cache.trend_strength else 0,
         "model_version": cache.model_version,
+        "provider": cache.provider,
+        "interval_type": cache.interval_type,
+        "fallback_reason": cache.fallback_reason,
         "mape_score": float(cache.mape_score) if cache.mape_score else None,
+        "rmse_score": float(cache.rmse_score) if cache.rmse_score else None,
         "trained_at": cache.trained_at.isoformat() if cache.trained_at else None,
         "forecast_7d": forecast_data[:7] if horizon == 7 else forecast_data[:30],
         "weekly_pattern": weekly_pattern,

@@ -131,10 +131,37 @@ class InventoryAgent(BaseAgent):
                 "title": f"Stockout risk: {r.name}",
                 "reason": f"{r.name} has ~{days:.1f} days of supply left at current velocity.",
                 "item_id": str(r.item_id),
+                "current_stock": float(r.current_stock or 0),
                 "recommended_qty": max(20, int((7 - days) * float(r.velocity))),
                 "confidence": 0.85,
                 "urgency": 0.9 if days < 3 else 0.6,
             })
+
+        # Overlay canonical forecast demand on candidate items: when the
+        # forecasting pipeline has a cached prediction, use it as the demand
+        # signal (same numbers NazmPlanner reads) instead of raw 30-day velocity.
+        candidate_ids = [str(p["item_id"]) for p in proposals if p.get("item_id")]
+        if candidate_ids:
+            from app.services.forecasting.cache import read_forecasts_batch
+            from app.services.forecasting.agent_helpers import days_of_supply, forecast_daily_demand
+
+            cached = await read_forecasts_batch(self.session, self.business_id, candidate_ids)
+            for p in proposals:
+                fc = cached.get(p["item_id"])
+                if not fc:
+                    continue
+                daily = forecast_daily_demand(fc)
+                if daily <= 0:
+                    continue
+                days = days_of_supply(float(p.get("current_stock") or 0), daily)
+                p["demand_basis"] = "forecast"
+                p["forecasted_daily_demand"] = round(daily, 2)
+                p["recommended_qty"] = max(20, int((7 - days) * daily)) if days != float("inf") else p["recommended_qty"]
+                p["urgency"] = 0.9 if days < 3 else 0.6
+                p["reason"] = (
+                    f"{p['title']}: {p.get('current_stock')} units at forecasted daily demand "
+                    f"{daily:.1f}/day = ~{days:.1f} days of supply."
+                )
 
         dead = await self.session.execute(text("""
             WITH sales_30d AS (

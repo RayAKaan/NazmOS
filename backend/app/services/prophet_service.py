@@ -9,7 +9,8 @@ try:
 except ImportError:
     PROPHET_AVAILABLE = False
 
-from app.utils.saudi_holidays import SAUDI_HOLIDAYS_DF as INDIAN_HOLIDAYS_DF
+from app.config import get_settings
+from app.utils.saudi_holidays import SAUDI_HOLIDAYS_DF
 
 
 class ProphetService:
@@ -25,7 +26,7 @@ class ProphetService:
             yearly_seasonality=False,
             weekly_seasonality=False,
             daily_seasonality=False,
-            holidays=INDIAN_HOLIDAYS_DF,
+            holidays=SAUDI_HOLIDAYS_DF,
         )
         model.add_seasonality(
             name="monthly",
@@ -40,8 +41,10 @@ class ProphetService:
         Thin passthrough kept for callers that only need a fitted model
         (e.g. exploratory forecasting and tests).
         """
-        if df.empty or PROPHET_AVAILABLE is False:
+        if PROPHET_AVAILABLE is False:
             raise ImportError("Prophet is not installed")
+        if df.empty:
+            raise ValueError("Cannot fit Prophet on an empty dataframe")
         model = self._build_prophet()
         series = df.copy()
         if not series["ds"].is_monotonic_increasing:
@@ -155,7 +158,7 @@ class ProphetService:
                 seasonality_mode="multiplicative",
                 changepoint_prior_scale=0.05,
                 seasonality_prior_scale=10.0,
-                holidays=INDIAN_HOLIDAYS_DF,
+                holidays=SAUDI_HOLIDAYS_DF,
                 interval_width=0.80,
             )
 
@@ -191,8 +194,8 @@ class ProphetService:
                 }
                 for _, row in future_rows.head(30).iterrows()
             ]
-            forecast_7d = self._apply_event_uplift(forecast_7d, item_name)
-            forecast_30d = self._apply_event_uplift(forecast_30d, item_name)
+            forecast_7d = self._maybe_apply_event_uplift(forecast_7d, item_name)
+            forecast_30d = self._maybe_apply_event_uplift(forecast_30d, item_name)
 
             weekday_names = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
             weekly_avgs = daily.groupby(daily["ds"].dt.dayofweek)["y"].mean()
@@ -228,7 +231,7 @@ class ProphetService:
         """
         text_name = (item_name or "").lower()
         try:
-            rows = INDIAN_HOLIDAYS_DF.copy()
+            rows = SAUDI_HOLIDAYS_DF.copy()
             rows["window_start"] = rows["ds"] + pd.to_timedelta(rows["lower_window"], unit="D")
             rows["window_end"] = rows["ds"] + pd.to_timedelta(rows["upper_window"], unit="D")
             ts = pd.Timestamp(forecast_date)
@@ -251,6 +254,18 @@ class ProphetService:
                 return 1.80
             return 1.40
         return 1.0
+
+    def _maybe_apply_event_uplift(self, forecast_rows: list[dict], item_name: str) -> list[dict]:
+        """Apply manual event uplift only when explicitly enabled.
+
+        Prophet already models SAUDI_HOLIDAYS_DF inside the fit; multiplying the
+        interval rows afterwards double-counts the holiday effect. Uplift is the
+        OM exception, permanently OFF by default (config FORECAST_EVENT_UPLIFT_ENABLED).
+        """
+        settings = get_settings()
+        if not settings.FORECAST_EVENT_UPLIFT_ENABLED:
+            return forecast_rows
+        return self._apply_event_uplift(forecast_rows, item_name)
 
     def _apply_event_uplift(self, forecast_rows: list[dict], item_name: str) -> list[dict]:
         adjusted = []
@@ -310,8 +325,8 @@ class ProphetService:
                 forecast_7d.append(entry)
             forecast_30d.append(entry)
 
-        forecast_7d = self._apply_event_uplift(forecast_7d, item_name)
-        forecast_30d = self._apply_event_uplift(forecast_30d, item_name)
+        forecast_7d = self._maybe_apply_event_uplift(forecast_7d, item_name)
+        forecast_30d = self._maybe_apply_event_uplift(forecast_30d, item_name)
 
         return {
             "forecast_7d": forecast_7d,

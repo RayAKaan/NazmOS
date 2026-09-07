@@ -14,7 +14,7 @@ from app.database import get_db, User
 from app.middleware.auth_middleware import get_current_user
 from app.middleware.business_access import assert_business_access
 from app.middleware.rbac import require_capability
-from app.services.agent_action_executor import approve_agent_action, reject_agent_action
+from app.orchestration.runner import run_agent_approval, run_agent_rejection
 from app.services.autonomy_service import execute_if_autonomous, dry_run_action
 from app.services.feature_flags import require_feature_enabled
 from app.services.intelligence_api_client import IntelligenceAPIClient
@@ -104,12 +104,12 @@ async def approve_action(
 
     await require_feature_enabled(db, "agent_enabled", business_id=business_id)
 
-    result = await approve_agent_action(
+    result = await run_agent_approval(
         db,
-        action_id,
+        business_id=business_id,
+        action_id=action_id,
         note=note or "Approved via NazmOS web dashboard",
         decided_by=current_user.id,
-        business_id=business_id,
     )
     return {"ok": result.get("ok", False), "action_id": str(action_id), "status": "approved", "outcome": result.get("outcome")}
 
@@ -131,8 +131,8 @@ async def reject_action(
 
     await require_feature_enabled(db, "agent_enabled", business_id=business_id)
 
-    result = await reject_agent_action(db, action_id, note=reason or "Rejected via NazmOS web dashboard",
-                                        business_id=business_id)
+    result = await run_agent_rejection(db, business_id=business_id, action_id=action_id,
+                                        note=reason or "Rejected via NazmOS web dashboard")
     return {"ok": result.get("ok", False), "status": "rejected"}
 
 

@@ -135,46 +135,55 @@ class TestETLPipeline:
         assert "rows_processed" in result or "rows_imported" in result
 
 
-class TestProphetService:
-    def test_prophet_installed(self):
+class TestStatsForecastProvider:
+    def test_statsforecast_installed(self):
         try:
-            from prophet import Prophet
-            assert True
+            from statsforecast import StatsForecast
+            assert StatsForecast is not None
         except ImportError:
-            pytest.skip("Prophet not installed")
+            pytest.skip("statsforecast not installed")
 
     def test_create_forecast_dataframe(self):
-        try:
-            from prophet import Prophet
-        except ImportError:
-            pytest.skip("Prophet not installed")
-            
-        from app.services.prophet_service import ProphetService
-        
-        service = ProphetService()
-        
-        df = pd.DataFrame({
-            "ds": pd.date_range("2024-01-01", periods=10),
-            "y": range(10)
-        })
-        
-        model = service.create_model(df)
-        assert model is not None
+        from app.services.forecasting.schemas import DailyDemandPoint, DailyDemandSeries
+        from app.services.forecasting.statsforecast_provider import StatsForecastProvider
+
+        provider = StatsForecastProvider()
+        assert provider.provider_name == "statsforecast"
+
+        # A 40-day nonzero series passes the quality gate and produces a full
+        # horizon with data_start / data_end provenance.
+        points = [
+            DailyDemandPoint(ds=pd.Timestamp("2026-01-01").date() + pd.Timedelta(days=i),
+                             y=float(5 + (i % 7)))
+            for i in range(40)
+        ]
+        series = DailyDemandSeries(
+            business_id="b", item_id="i", timezone="Asia/Riyadh", points=points,
+            date_range_days=len(points), observation_count=len(points),
+            nonzero_days=len(points),
+        )
+        result = provider._fit_and_predict(series, 30)
+        assert len(result.predictions) == 30
+        assert result.data_start == points[0].ds
+        assert result.data_end == points[-1].ds
+        assert result.interval_type == "statsforecast_interval"
 
     def test_make_future_dataframe(self):
-        try:
-            from prophet import Prophet
-        except ImportError:
-            pytest.skip("Prophet not installed")
-            
-        from app.services.prophet_service import ProphetService
-        
-        service = ProphetService()
-        
-        future = service.make_future_dataframe(30)
-        
-        assert len(future) >= 30
-        assert "ds" in future.columns
+        from app.services.forecasting.baseline_provider import baseline_from_series
+        from app.services.forecasting.schemas import DailyDemandPoint, DailyDemandSeries
+
+        points = [
+            DailyDemandPoint(ds=pd.Timestamp("2026-01-01").date() + pd.Timedelta(days=i), y=10.0)
+            for i in range(30)
+        ]
+        series = DailyDemandSeries(
+            business_id="b", item_id="i", timezone="Asia/Riyadh", points=points,
+            date_range_days=len(points), observation_count=len(points),
+            nonzero_days=len(points),
+        )
+        result = baseline_from_series(series, horizon_days=30)
+        assert len(result.predictions) >= 30
+        assert result.predictions[0].ds is not None
 
 
 class TestDecisionEngine:

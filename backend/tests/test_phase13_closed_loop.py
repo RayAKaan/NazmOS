@@ -97,7 +97,7 @@ async def test_day1_to_day14_simulation_runs_immediately(db):
     assert ranking["ranking"]  # deterministic ranking produced
 
     # ── DAY 3: execute a transfer → learning ───────────────────────────────
-    from app.services.agent_action_executor import _record_terminal_outcome
+    from app.orchestration.record import record_terminal_outcome
     aid = str(uuid4())
     await db.execute(text("""
         INSERT INTO agent_actions (id, business_id, action_type, status, confidence, priority,
@@ -106,7 +106,7 @@ async def test_day1_to_day14_simulation_runs_immediately(db):
         VALUES (:id, :b, 'transfer_inventory', 'approved', 0.9, 3, 'transfer', 's', '{}', 50, false, :out, :at, :at)
     """), {"id": aid, "b": bid, "out": json.dumps({"executed": True}), "at": _at(3)})
     await db.commit()
-    await _record_terminal_outcome(db, bid, aid)
+    await record_terminal_outcome(db, bid, aid)
 
     # learning recorded
     lo = await db.execute(text("SELECT COUNT(*) FROM learned_outcomes WHERE business_id = :b"), {"b": bid})

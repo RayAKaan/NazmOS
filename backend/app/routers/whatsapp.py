@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.services.whatsapp_bridge import send_notification
-from app.services.agent_action_executor import approve_agent_action, reject_agent_action
+from app.orchestration.runner import run_agent_approval, run_agent_rejection
 from app.config import get_settings
 from app.middleware.auth_middleware import get_current_user
 
@@ -78,7 +78,7 @@ async def receive_webhook(
                 
                 if button_id.startswith("approve_price_shield_"):
                     action_id = button_id.replace("approve_price_shield_", "")
-                    result = await approve_agent_action(db, action_id, note="Approved Price Shield via WhatsApp interactive button")
+                    result = await run_agent_approval(db, action_id=UUID(action_id), note="Approved Price Shield via WhatsApp interactive button")
                     outcome = result.get("outcome") or {}
                     await send_notification(
                         to_number=from_number,
@@ -86,14 +86,14 @@ async def receive_webhook(
                     )
                 elif button_id.startswith("approve_transfer_"):
                     action_id = button_id.replace("approve_transfer_", "")
-                    result = await approve_agent_action(db, action_id, note="Approved transfer via WhatsApp interactive button")
+                    result = await run_agent_approval(db, action_id=UUID(action_id), note="Approved transfer via WhatsApp interactive button")
                     await send_notification(
                         to_number=from_number,
                         text="✅ Transfer approved and recorded in NazmOS."
                     )
                 elif button_id.startswith("approve_"):
                     action_id = button_id.replace("approve_", "")
-                    result = await approve_agent_action(db, action_id, note="Approved via WhatsApp interactive button")
+                    result = await run_agent_approval(db, action_id=UUID(action_id), note="Approved via WhatsApp interactive button")
                     outcome = result.get("outcome") or {}
                     await send_notification(
                         to_number=from_number,
@@ -101,7 +101,7 @@ async def receive_webhook(
                     )
                 elif button_id.startswith("reject_"):
                     action_id = button_id.replace("reject_", "")
-                    await reject_agent_action(db, action_id, note="Rejected via WhatsApp interactive button")
+                    await run_agent_rejection(db, action_id=UUID(action_id), note="Rejected via WhatsApp interactive button")
                     await send_notification(
                         to_number=from_number,
                         text="❌ Action rejected. It has been dismissed from your NazmOS priority queue."
@@ -132,7 +132,7 @@ async def test_approve(
     if settings.ENVIRONMENT == "production":
         raise HTTPException(404, "Not found")
     try:
-        result = await approve_agent_action(db, action_id, note="Simulated Test Approval")
+        result = await run_agent_approval(db, action_id=UUID(action_id), note="Simulated Test Approval")
     except Exception as exc:
         logger.warning(f"WhatsApp test approval could not run: {exc}")
         raise HTTPException(503, "WhatsApp approval simulation requires a reachable database")

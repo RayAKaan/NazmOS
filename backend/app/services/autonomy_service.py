@@ -23,7 +23,7 @@ from app.utils.clock import utcnow as _clock_utcnow
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.services.agent_action_executor import execute_agent_action
+from app.orchestration.apply import apply_agent_action
 from app.utils.money import sar, decimal_value
 
 
@@ -257,7 +257,7 @@ async def execute_if_autonomous(
         }
 
     # Execute deterministically.
-    outcome = await execute_agent_action(db, row.business_id, row.id, row.action_type, payload)
+    outcome = await apply_agent_action(db, row.business_id, row.id, row.action_type, payload)
 
     executed = bool(outcome.get("executed"))
     new_status = "auto_executed" if executed else "failed"

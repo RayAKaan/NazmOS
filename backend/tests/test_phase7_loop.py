@@ -114,12 +114,12 @@ async def test_learning_reconciliation_repairs_missing_feedback(db):
 async def test_finding_timeline_reconstructs_chain(db):
     """§7: timeline includes found → approved/executed → learned events."""
     from app.services.finding_timeline import build_finding_timeline
-    from app.services.agent_action_executor import _record_terminal_outcome
+    from app.orchestration.record import record_terminal_outcome
 
     bid = await _seed_business(db)
     fid = await _make_finding(db, bid, "dead_stock", 5000)
     aid = await _make_action(db, bid, "discount", fid, executed=True)
-    await _record_terminal_outcome(db, bid, aid)
+    await record_terminal_outcome(db, bid, aid)
 
     timeline = await build_finding_timeline(db, fid, bid)
     steps = [e["step"] for e in timeline]

@@ -195,8 +195,8 @@ async def _materialize_action(
         """), {"aid": action_id, "fid": str(finding_id), "now": utcnow()})
 
     if disposition.decision == "auto":
-        from app.services.agent_action_executor import execute_agent_action
-        outcome = await execute_agent_action(db, agent.business_id, action_id, action_type, candidate)
+        from app.orchestration.apply import apply_agent_action
+        outcome = await apply_agent_action(db, agent.business_id, UUID(action_id), action_type, candidate)
         await db.execute(text("""
             UPDATE agent_actions
             SET applied_at = CASE WHEN :executed THEN NOW() ELSE applied_at END,

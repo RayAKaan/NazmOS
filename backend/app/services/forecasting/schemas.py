@@ -43,7 +43,7 @@ class ForecastResult(BaseModel):
     predictions: list[ForecastPrediction]
     provider: str
     model_version: str
-    interval_type: str = "heuristic"  # "prophet_interval" | "heuristic"
+    interval_type: str = "heuristic"  # "statsforecast_interval" | "heuristic"
     fallback_reason: Optional[str] = None
     generated_at: datetime
     data_start: Optional[date] = None
@@ -94,4 +94,5 @@ class ForecastResult(BaseModel):
 class FallbackReason(str, Enum):
     INSUFFICIENT_DATA = "insufficient_data"
     PROPHET_FAILED = "prophet_failed"
+    STATSFORECAST_FAILED = "statsforecast_failed"
     NO_TRANSACTIONS = "no_transactions"

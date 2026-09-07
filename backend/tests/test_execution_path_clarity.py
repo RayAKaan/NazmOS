@@ -1,8 +1,8 @@
 """WS4 — execution-path clarity (EXECUTION_PATH_ADR.md).
 
 The ADR defines two intentional paths:
-  Simulated:  execution_engine.execute_from_request  → must NOT mutate business data
-  Real:       agent_action_executor.execute_agent_action → DOES mutate business data
+  Simulated:  app.orchestration.runner.run_simulated  → must NOT mutate business data
+  Real:       app.orchestration.apply.apply_agent_action → DOES mutate business data
 
 These tests lock that boundary so it cannot silently blur:
   1. behavioral — the simulated path never touches items/inventory and emits
@@ -62,7 +62,7 @@ def _imports(module: "pathlib.Path") -> set[str]:
 
 
 async def test_simulated_path_never_mutates_business_data(db):
-    from app.services.execution_engine import execute_from_request
+    from app.orchestration.runner import run_simulated
 
     info = await seed_recurring_stockout_merchant(db)
     bid = info["business_id"]
@@ -75,8 +75,9 @@ async def test_simulated_path_never_mutates_business_data(db):
         text("SELECT current_stock FROM inventory WHERE item_id = :i"), {"i": item_id}
     )).scalar_one()
 
-    job = await execute_from_request(
-        db, bid, "restock", "item", item_id, {"recommended_qty": 50}
+    job = await run_simulated(
+        db, business_id=bid, action_type="restock", entity_type="item",
+        entity_id=item_id, payload={"recommended_qty": 50},
     )
     await db.commit()
 
@@ -96,15 +97,15 @@ async def test_simulated_path_never_mutates_business_data(db):
         text("SELECT event_type, source FROM events WHERE business_id = :b AND event_type = 'execution.completed'"),
         {"b": bid},
     )).fetchall()
-    assert len(ev) == 1 and ev[0].source == "execution_engine"
+    assert len(ev) == 1 and ev[0].source == "orchestration"
 
 
 async def test_same_action_both_paths_contract(db_session):
     """ADR §7 gap: the SAME action type must differ — simulate vs real mutate."""
     from uuid import uuid4
 
-    from app.services.agent_action_executor import execute_agent_action
-    from app.services.execution_engine import execute_from_request
+    from app.orchestration.apply import apply_agent_action
+    from app.orchestration.runner import run_simulated
 
     info = await seed_recurring_stockout_merchant(db_session)
     bid = info["business_id"]
@@ -114,7 +115,7 @@ async def test_same_action_both_paths_contract(db_session):
     )).scalar_one())
 
     # Real path first: reprices the item.
-    outcome = await execute_agent_action(
+    outcome = await apply_agent_action(
         db_session, bid, str(uuid4()), "pricing_decrease",
         {"item_id": item_id, "suggested_price": 2.5},
     )
@@ -126,8 +127,9 @@ async def test_same_action_both_paths_contract(db_session):
 
     # Simulated path: same action type must NOT reprice again.
     item_b = info["item_id"]
-    job = await execute_from_request(
-        db_session, bid, "pricing_decrease", "item", item_b, {"suggested_price": 1.0}
+    job = await run_simulated(
+        db_session, business_id=bid, action_type="pricing_decrease", entity_type="item",
+        entity_id=item_b, payload={"suggested_price": 1.0},
     )
     await db_session.commit()
     assert job.result.get("simulated") is True
@@ -140,26 +142,27 @@ async def test_same_action_both_paths_contract(db_session):
 
 def test_production_router_wiring_matches_adr():
     intel_imports = _imports(APP_DIR / "routers" / "intelligence.py")
-    assert "app.services.execution_engine" in intel_imports
+    assert "app.orchestration.runner" in intel_imports, \
+        "simulated entry point must route through app.orchestration"
     assert "app.services.agent_action_executor" not in intel_imports, \
         "simulated entry point must not import the real executor"
 
     for name in ("agent.py", "whatsapp.py"):
         imports = _imports(APP_DIR / "routers" / name)
-        assert "app.services.agent_action_executor" in imports, f"{name} must use the real executor"
+        assert "app.orchestration.runner" in imports, f"{name} must route through app.orchestration"
         assert "app.services.execution_engine" not in imports, \
             f"{name} approval path must not bypass via the simulated engine"
 
     api_imports = _imports(APP_DIR / "services" / "intelligence_api.py")
-    assert "app.services.execution_engine" in api_imports
+    assert "app.orchestration.runner" in api_imports
     assert "app.services.agent_action_executor" not in api_imports
 
 
 def test_shared_registry_is_only_real_path_bridge():
-    """runtime/autonomy bridge to the executor is deliberate and singular."""
+    """runtime/autonomy bridge to the orchestration apply layer is deliberate."""
     runtime = _imports(APP_DIR / "services" / "runtime.py")
     autonomy = _imports(APP_DIR / "services" / "autonomy_service.py")
-    assert "app.services.agent_action_executor" in runtime
-    assert "app.services.agent_action_executor" in autonomy
+    assert "app.orchestration.apply" in runtime
+    assert "app.orchestration.apply" in autonomy
     assert "app.services.execution_engine" not in runtime, \
         "runtime must not simulate real actions"

@@ -28,11 +28,9 @@ python-dotenv>=1.2.2
 # LLM & AI
 
 # Forecasting
-# Prophet is optional for Python 3.13+ test environments; core Money Audit does not depend on it.
-prophet==1.1.5; python_version < "3.13"
-# Pin cmdstanpy <1.2: cmdstanpy 1.2+ refactored the STAN backend and breaks
-# prophet 1.1.5 at init ('Prophet' object has no attribute 'stan_backend').
-cmdstanpy==1.1.0; python_version < "3.13"
+# StatsForecast (Apache-2.0) is the canonical statistical forecaster; the
+# legacy Prophet path was removed in Phase 1 so no branch depends on Prophet.
+statsforecast==2.1.1
 scikit-learn==1.5.1; python_version < "3.13"
 scikit-learn>=1.6,<2; python_version >= "3.13"
 statsmodels==0.14.2; python_version < "3.13"
@@ -44,6 +42,13 @@ numpy>=2.2,<3; python_version >= "3.13"
 pandas==2.2.2; python_version < "3.13"
 pandas>=2.2.3,<3; python_version >= "3.13"
 
+# Analytics execution
+# DuckDB (MIT) is the analytical execution engine for the inventory money-critical
+# surface (app.analytics). It computes raw aggregates only; every semantic is
+# computed in the NazmOS layer on top of tenant-scoped rows streamed through the
+# caller's session.
+duckdb==1.5.5
+
 # File Parsing & Validation
 openpyxl==3.1.5
 python-magic==0.4.27
@@ -54,6 +59,13 @@ rapidfuzz>=3.9,<4
 # Background Tasks
 celery==5.4.0
 redis==5.0.7
+
+# Durable orchestration
+# Temporal (MIT) is the durable-orchestration engine for execution paths
+# (app.orchestration). Workflows are deterministic skeletons; all business
+# rules stay in the NazmOS layer. Gated by USE_TEMPORAL; the local
+# deterministic runner is used when the flag is off (CI / SQLite).
+temporalio==1.32.0
 
 # Caching
 hiredis==3.0.0

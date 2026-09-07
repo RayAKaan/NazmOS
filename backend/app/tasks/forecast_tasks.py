@@ -3,7 +3,7 @@ from sqlalchemy import text
 
 from app.config import get_settings
 from app.database.connection import get_sync_session, sync_rls_tenant_context
-from app.services.forecasting.prophet_provider import ProphetProvider
+from app.services.forecasting.statsforecast_provider import StatsForecastProvider
 from app.services.forecasting.sync_runner import run_provider_forecast_sync
 
 settings = get_settings()
@@ -21,7 +21,7 @@ def _run_for_items(pairs):
     supervisor (``refresh_all_forecasts``).
     """
     results = {"completed": 0, "failed": 0, "no_data": 0}
-    provider = ProphetProvider()
+    provider = StatsForecastProvider()
     for (item_id, business_id) in pairs:
         try:
             with sync_rls_tenant_context(str(business_id)):
@@ -84,7 +84,7 @@ def run_refresh_forecasts_for_business(business_id: str):
 
 def run_train_forecast_for_item(item_id: str, business_id: str):
     with sync_rls_tenant_context(str(business_id)):
-        provider = ProphetProvider()
+        provider = StatsForecastProvider()
         return run_provider_forecast_sync(provider, business_id, item_id, horizon_days=30)
 
 

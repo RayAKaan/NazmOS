@@ -64,7 +64,7 @@ async def test_day1_audit_produces_finding_with_root_cause(db):
 
 async def test_learning_recorded_and_strategy_ranked(db):
     """Day 2 + 3–4: an executed action produces a learned outcome; strategy ranking reflects it."""
-    from app.services.agent_action_executor import _record_terminal_outcome
+    from app.orchestration.record import record_terminal_outcome
     from app.services.strategy_performance import strategy_summary, best_strategy_for_finding
 
     bid = (await seed_recurring_stockout_merchant(db))["business_id"]
@@ -80,7 +80,7 @@ async def test_learning_recorded_and_strategy_ranked(db):
             VALUES (:id, :b, 'transfer_inventory', 'approved', 0.9, 3, 'transfer', 's', '{}', 50, false, :out, datetime('now'), datetime('now'))
         """), {"id": aid, "b": bid, "out": json.dumps({"executed": True})})
         await db.commit()
-        await _record_terminal_outcome(db, bid, aid)
+        await record_terminal_outcome(db, bid, aid)
 
     s = await strategy_summary(db, bid, "transfer_inventory")
     assert s["attempts"] == 3

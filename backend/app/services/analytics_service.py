@@ -18,6 +18,24 @@ from app.schemas.dashboard import AlertsResponse, AlertResponse
 from app.services.intelligence_api_client import IntelligenceAPIClient
 from typing import List, Optional, Tuple
 
+# Phase 1: the inventory money-critical surface reads its per-item facts from
+# the scoped DuckDB analytical engine (app.analytics). The engine computes raw
+# aggregates; every semantic (velocity, valuation basis, status, dead stock)
+# is computed in the NazmOS layer below.
+from app.analytics import ValueBasis, inventory_feed
+from app.analytics.metrics import (
+    classify_status,
+    daily_velocity,
+    days_until_stockout,
+    dead_stock_rows,
+    dead_stock_total,
+    stock_value,
+    trend_7d,
+)
+import logging
+
+logger = logging.getLogger("analytics_service")
+
 
 async def get_dashboard_summary(db: AsyncSession, business_id: UUID) -> DashboardSummaryResponse:
     from app.database.connection import enforce_tenant_filter
@@ -130,95 +148,61 @@ async def get_dashboard_summary(db: AsyncSession, business_id: UUID) -> Dashboar
 
 
 async def calculate_health_score(db: AsyncSession, business_id: UUID) -> int:
-    inventory_result = await db.execute(
-        select(Inventory).where(Inventory.business_id == business_id)
-    )
-    inventories = inventory_result.scalars().all()
-    
-    if not inventories:
+    # Phase 1: per-item facts (velocity/coverage/qty/values, including dead
+    # stock and total value) all come from one scoped DuckDB feed instead of
+    # three PG queries (grouped qty, dead-stock scan, total value).
+    feed = await inventory_feed(db, business_id)
+    if not feed.facts:
         return 50
-    
-    item_ids = [inv.item_id for inv in inventories]
-    items_result = await db.execute(
-        select(Item).where(Item.id.in_(item_ids))
-    )
-    items = {item.id: item for item in items_result.scalars().all()}
-    
-    # Single grouped aggregation replaces one query per item (N+1 fix).
-    qty_result = await db.execute(
-        select(
-            Transaction.item_id,
-            func.coalesce(func.sum(Transaction.quantity), 0).label("total_qty"),
-        )
-        .where(
-            and_(
-                Transaction.business_id == business_id,
-                Transaction.transaction_at >= utcnow() - timedelta(days=30),
-            )
-        )
-        .group_by(Transaction.item_id)
-    )
-    qty_map = {row.item_id: float(row.total_qty) for row in qty_result}
-    
+
     critical_count = 0
     low_count = 0
-    total_count = len(inventories)
-    
-    for inv in inventories:
-        item = items.get(inv.item_id)
-        if not item:
-            continue
-        
-        daily_avg = qty_map.get(inv.item_id, 0) / 30
-        
-        if daily_avg <= 0:
+    total_count = len(feed.facts)
+    dead_stock_value = Decimal("0")
+    total_value = Decimal("0")
+
+    for fact in feed.facts:
+        velocity = daily_velocity(fact)
+        remaining = days_until_stockout(fact.current_stock, velocity)
+
+        if velocity <= 0:
             status = "dead"
-        elif float(inv.current_stock) / daily_avg < 2:
+        elif remaining is not None and remaining < 2:
             status = "critical"
-        elif float(inv.current_stock) / daily_avg < 5:
+        elif remaining is not None and remaining < 5:
             status = "low"
         else:
             status = "healthy"
-        
+
         if status == "critical":
             critical_count += 1
         elif status == "low":
             low_count += 1
-    
+
+        if fact.dead_by_scan:
+            dead_stock_value += stock_value(fact.current_stock, fact.cost_price, ValueBasis.COST)
+        total_value += stock_value(fact.current_stock, fact.sell_price, ValueBasis.SELL)
+
     inventory_score = ((total_count - critical_count - low_count) / total_count) * 40
-    
-    dead_stock_value = await calculate_dead_stock_value(db, business_id)
-    total_value_result = await db.execute(
-        select(func.sum(Inventory.current_stock * Item.sell_price))
-        .join(Item, Inventory.item_id == Item.id)
-        .where(Inventory.business_id == business_id)
-    )
-    total_value = total_result = total_value_result.scalar() or Decimal("0")
-    
+
     stock_health_score = 30 if dead_stock_value == 0 else max(0, 30 - (float(dead_stock_value) / float(total_value) * 30)) if total_value > 0 else 15
-    
+
     trend_score = 20
-    
+
     data_score = 10
-    
-    return min(100, int(inventory_score + stock_health_score + trend_score + data_score))
 
-
-async def get_item_daily_avg(db: AsyncSession, business_id: UUID, item_id: UUID, days: int = 30) -> float:
-    start_date = utcnow() - timedelta(days=days)
-    
-    result = await db.execute(
-        select(func.coalesce(func.sum(Transaction.quantity), 0))
-        .where(
-            and_(
-                Transaction.business_id == business_id,
-                Transaction.item_id == item_id,
-                Transaction.transaction_at >= start_date,
-            )
-        )
+    logger.info(
+        "analytics_health_score",
+        extra={
+            "engine": feed.provenance.engine,
+            "tenant_scoped": feed.provenance.tenant_scoped,
+            "window_days": feed.provenance.window_days,
+            "observed_days": feed.provenance.observed_days,
+            "items": total_count,
+        },
     )
-    total_qty = result.scalar() or 0
-    return float(total_qty) / days
+
+    return min(100, int(inventory_score + stock_health_score + trend_score + data_score))
 
 
 async def calculate_dead_stock_value(db: AsyncSession, business_id: UUID) -> Decimal:
@@ -227,38 +211,10 @@ async def calculate_dead_stock_value(db: AsyncSession, business_id: UUID) -> Dec
     Canonical rule (shared with ``get_dead_stock_summary`` and the dashboard
     ``get_dead_stock``): an item is dead when it has fewer than one unit of
     sales in the last 30 days and still holds stock; stuck value is
-    ``current_stock * cost_price``.  Items with NO sales at all count as dead
-    (LEFT JOIN from inventory, not an inner sweep of transactions).
+    ``current_stock * cost_price``. Computed over the scoped DuckDB feed.
     """
-    thirty_days_ago = utcnow() - timedelta(days=30)
-
-    recent_sales = (
-        select(
-            Transaction.item_id.label("item_id"),
-            func.sum(Transaction.quantity).label("qty_30d"),
-        )
-        .where(
-            Transaction.business_id == business_id,
-            Transaction.transaction_at >= thirty_days_ago,
-        )
-        .group_by(Transaction.item_id)
-        .subquery()
-    )
-
-    result = await db.execute(
-        select(func.sum(Inventory.current_stock * Item.cost_price))
-        .join(Item, Item.id == Inventory.item_id)
-        .outerjoin(recent_sales, recent_sales.c.item_id == Inventory.item_id)
-        .where(
-            and_(
-                Inventory.business_id == business_id,
-                Inventory.current_stock > 0,
-                func.coalesce(recent_sales.c.qty_30d, 0) < 1,
-            )
-        )
-    )
-
-    return result.scalar() or Decimal("0")
+    feed = await inventory_feed(db, business_id)
+    return dead_stock_total(feed, ValueBasis.COST)
 
 
 async def get_sales_trend(db: AsyncSession, business_id: UUID, period: int = 30) -> SalesTrendResponse:
@@ -426,76 +382,14 @@ async def get_top_products(db: AsyncSession, business_id: UUID, period: int = 7,
 
 
 async def get_dead_stock(db: AsyncSession, business_id: UUID) -> DeadStockResponse:
-    thirty_days_ago = utcnow() - timedelta(days=30)
-    
-    result = await db.execute(
-        select(
-            Item.id,
-            Item.name,
-            Inventory.current_stock.label("current_stock"),
-            Item.cost_price.label("cost_price"),
-            Category.name.label("category_name"),
-            func.max(Transaction.transaction_at).label("last_sold"),
-            func.coalesce(func.sum(Transaction.quantity), 0).label("total_qty"),
-        )
-        .join(Transaction, Transaction.item_id == Item.id, isouter=True)
-        .join(Inventory, Inventory.item_id == Item.id)
-        .outerjoin(Category, Category.id == Item.category_id)
-        .where(
-            and_(
-                Item.business_id == business_id,
-                Inventory.current_stock > 0,
-            )
-        )
-        .group_by(
-            Item.id,
-            Item.name,
-            Inventory.current_stock,
-            Item.cost_price,
-            Category.name,
-        )
-    )
-    
-    items = []
-    total_stuck = Decimal("0")
-    
-    for row in result.all():
-        total_qty = float(row.total_qty) if row.total_qty else 0
-        
-        if total_qty < 1:
-            days_since = 30
-            last_sold = thirty_days_ago - timedelta(days=30)
-        else:
-            days_since = 0
-            last_sold = row.last_sold
-        
-        days_since_last_sale = (utcnow().date() - last_sold.date()).days if last_sold else days_since
-        
-        if days_since_last_sale >= 30:
-            stock_value = row.current_stock * (row.cost_price or Decimal("0"))
-            total_stuck += stock_value
-            category_name = row.category_name if row.category_name else "Uncategorized"
-            
-            if days_since_last_sale > 60:
-                recommendation = "remove"
-            elif days_since_last_sale > 45:
-                recommendation = "discount"
-            else:
-                recommendation = "bundle"
-            
-            items.append(DeadStockItem(
-                item_id=row.id,
-                name=row.name,
-                category=category_name,
-                current_stock=float(row.current_stock),
-                stock_value=float(stock_value),
-                last_sold_at=last_sold.strftime("%Y-%m-%d") if last_sold else None,
-                days_since_last_sale=days_since_last_sale,
-                recommendation=recommendation,
-            ))
-    
+    # Phase 1: stream the business's full sales history into the scoped DuckDB
+    # engine once; the scan (rule + recommendation thresholds) is applied in
+    # the NazmOS layer over the returned facts.
+    feed = await inventory_feed(db, business_id, window_days=None)
+    rows, total_stuck = dead_stock_rows(feed, utcnow().date())
+
     return DeadStockResponse(
-        items=items,
+        items=[DeadStockItem(**row) for row in rows],
         total_stuck_value=float(total_stuck),
     )
 
@@ -655,76 +549,30 @@ async def get_inventory_list(
     from app.database.connection import enforce_tenant_filter
     enforce_tenant_filter(business_id)
 
-    query = (
-        select(Item, Inventory, Category.name.label("category_name"))
-        .join(Inventory, Inventory.item_id == Item.id)
-        .outerjoin(Category, Category.id == Item.category_id)
-        .where(Item.business_id == business_id, Item.is_active == True)
-    )
-    
-    if status != "all":
-        pass
-    
-    if category != "all":
-        query = query.where(Category.name == category)
-    
-    if search:
-        query = query.where(Item.name.ilike(f"%{search}%"))
-    
-    count_query = select(func.count()).select_from(query.subquery())
-    total_result = await db.execute(count_query)
-    total = total_result.scalar() or 0
-    
-    if sort == "days_left":
-        sort_col = Inventory.current_stock
-    elif sort == "name":
-        sort_col = Item.name
-    elif sort == "stock":
-        sort_col = Inventory.current_stock
+    # Phase 1: per-item sales/velocity facts come from the scoped DuckDB
+    # analytical engine (one tenant-scoped load), not a hand-rolled PG batch
+    # with a /30 ratio. Filtering / sorting / valuation happen in the NazmOS
+    # layer; the engine supplies raw aggregates only.
+    feed = await inventory_feed(db, business_id)
+
+    filtered = [
+        fact for fact in feed.facts
+        if fact.is_active
+        and (category == "all" or fact.category_name == category)
+        and (not search or (search.lower() in (fact.name or "").lower()))
+    ]
+
+    if sort == "name":
+        def _key(fact):
+            return (fact.name or "").lower()
     else:
-        sort_col = Inventory.current_stock
-    
-    if order == "desc":
-        query = query.order_by(sort_col.desc())
-    else:
-        query = query.order_by(sort_col.asc())
-    
-    query = query.offset((page - 1) * limit).limit(limit)
-    
-    result = await db.execute(query)
-    rows = result.all()
-    
-    thirty_days_ago = utcnow() - timedelta(days=30)
-    fourteen_days_ago = utcnow() - timedelta(days=14)
-    seven_days_ago = utcnow() - timedelta(days=7)
-    
-    # Batch aggregate transactions for all page items to eliminate N+1 query hell
-    item_ids = [row[0].id for row in rows]
-    sales_map = {}
-    if item_ids:
-        batch_sales_query = text("""
-            SELECT item_id,
-                   COALESCE(SUM(CASE WHEN transaction_at >= :thirty_days THEN quantity ELSE 0 END), 0) as sales_30d,
-                   COALESCE(SUM(CASE WHEN transaction_at >= :seven_days THEN quantity ELSE 0 END), 0) as sales_7d,
-                   COALESCE(SUM(CASE WHEN transaction_at >= :fourteen_days AND transaction_at < :seven_days THEN quantity ELSE 0 END), 0) as sales_7d_prev
-            FROM transactions
-            WHERE business_id = :bid AND item_id IN :item_ids AND transaction_at >= :thirty_days
-            GROUP BY item_id
-        """).bindparams(bindparam("item_ids", expanding=True))
-        batch_res = await db.execute(batch_sales_query, {
-            "bid": str(business_id),
-            "item_ids": item_ids,
-            "thirty_days": thirty_days_ago,
-            "fourteen_days": fourteen_days_ago,
-            "seven_days": seven_days_ago
-        })
-        for r in batch_res.fetchall():
-            sales_map[str(r.item_id)] = {
-                "sales_30d": float(r.sales_30d or 0),
-                "sales_7d": float(r.sales_7d or 0),
-                "sales_7d_prev": float(r.sales_7d_prev or 0)
-            }
-    
+        def _key(fact):
+            return fact.current_stock
+    filtered.sort(key=_key, reverse=(order == "desc"))
+    total = len(filtered)
+
+    page_rows = filtered[(page - 1) * limit : page * limit]
+
     items = []
     summary = {
         "total_items": 0,
@@ -735,76 +583,41 @@ async def get_inventory_list(
         "overstock_count": 0,
         "dead_count": 0,
     }
-    
-    for row in rows:
-        item, inventory, category_name = row
-        item_sales = sales_map.get(str(item.id), {"sales_30d": 0.0, "sales_7d": 0.0, "sales_7d_prev": 0.0})
-        sales_30d = item_sales["sales_30d"]
-        daily_avg = sales_30d / 30.0
-        sales_7d = item_sales["sales_7d"]
-        sales_7d_prev = item_sales["sales_7d_prev"]
-        
-        if sales_7d_prev > 0:
-            change = (sales_7d - sales_7d_prev) / sales_7d_prev
-            if change > 0.1:
-                trend = "up"
-            elif change < -0.1:
-                trend = "down"
-            else:
-                trend = "stable"
-        else:
-            trend = "stable"
-        
-        days_until_stockout = float(inventory.current_stock) / daily_avg if daily_avg > 0 else None
-        
-        if daily_avg < 0.1:
-            computed_status = "dead"
-        elif days_until_stockout is not None and days_until_stockout < 2:
-            computed_status = "critical"
-        elif days_until_stockout is not None and days_until_stockout < 5:
-            computed_status = "low"
-        elif days_until_stockout is not None and days_until_stockout > 20:
-            computed_status = "overstock"
-        else:
-            computed_status = "healthy"
+
+    for fact in page_rows:
+        vel = daily_velocity(fact)
+        remaining = days_until_stockout(fact.current_stock, vel)
+        computed_status = classify_status(fact.current_stock, vel)
 
         if status != "all" and computed_status != status:
             continue
-        
-        stock_value = inventory.current_stock * item.sell_price
-        
+
+        sell_value = stock_value(fact.current_stock, fact.sell_price, ValueBasis.SELL)
+
         summary["total_items"] += 1
-        summary["total_stock_value"] += stock_value
-        
-        if computed_status == "critical":
-            summary["critical_count"] += 1
-        elif computed_status == "low":
-            summary["low_count"] += 1
-        elif computed_status == "healthy":
-            summary["healthy_count"] += 1
-        elif computed_status == "overstock":
-            summary["overstock_count"] += 1
-        elif computed_status == "dead":
-            summary["dead_count"] += 1
-        
+        summary["total_stock_value"] += sell_value
+
+        status_key = f"{'critical' if computed_status == 'critical' else 'low' if computed_status == 'low' else 'healthy' if computed_status == 'healthy' else 'overstock' if computed_status == 'overstock' else 'dead'}_count"
+        summary[status_key] += 1
+
         items.append(InventoryItem(
-            item_id=item.id,
-            name=item.name,
-            sku=item.sku,
-            category=category_name,
-            current_stock=float(inventory.current_stock),
-            unit=item.unit,
-            daily_avg_sale=round(daily_avg, 2),
-            days_until_stockout=round(days_until_stockout, 1) if days_until_stockout else None,
-            cost_price=float(item.cost_price),
-            sell_price=float(item.sell_price),
-            stock_value=float(stock_value),
+            item_id=UUID(fact.item_id),
+            name=fact.name,
+            sku=fact.sku,
+            category=fact.category_name,
+            current_stock=float(fact.current_stock),
+            unit=fact.unit,
+            daily_avg_sale=round(float(vel), 2),
+            days_until_stockout=round(float(remaining), 1) if remaining is not None else None,
+            cost_price=float(fact.cost_price),
+            sell_price=float(fact.sell_price),
+            stock_value=float(sell_value),
             status=computed_status,
-            last_restocked=inventory.last_restocked,
-            reorder_level=float(inventory.reorder_level),
-            trend_7d=trend,
+            last_restocked=fact.last_restocked,
+            reorder_level=float(fact.reorder_level),
+            trend_7d=trend_7d(fact.qty_7d, fact.qty_prev7d),
         ))
-    
+
     response = InventoryResponse(
         items=items,
         pagination=PaginationInfo(
@@ -875,34 +688,25 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
     
     item, inventory, category_name = row
     
-    thirty_days_ago = utcnow() - timedelta(days=30)
-    seven_days_ago = utcnow() - timedelta(days=7)
-    fourteen_days_ago = utcnow() - timedelta(days=14)
-    
-    sales_30d_result = await db.execute(
-        select(
-            func.date(Transaction.transaction_at).label("date"),
-            func.coalesce(func.sum(Transaction.quantity), 0).label("qty")
-        )
-        .where(
-            and_(
-                Transaction.business_id == business_id,
-                Transaction.item_id == item.id,
-                Transaction.transaction_at >= thirty_days_ago,
-            )
-        )
-        .group_by(func.date(Transaction.transaction_at))
-        .order_by(func.date(Transaction.transaction_at))
-    )
-    
+    # Phase 1: sales history + coverage-aware daily demand come from the scoped
+    # DuckDB feed (one engine, one tenant-scoped load).
+    from app.analytics import inventory_feed
+
+    feed = await inventory_feed(db, business_id, series_item_ids=(str(item_id),))
+    fact = feed.by_item_id(str(item_id))
+    if fact is None:
+        return None
+
     sales_history = [
-        SalesHistoryItem(date=str(row.date), quantity=float(row.qty))
-        for row in sales_30d_result.all()
+        SalesHistoryItem(date=p["date"], quantity=float(p["qty"]))
+        for p in feed.sales_series.get(str(item_id), [])
     ]
     
-    # Use the canonical forecasting pipeline (Prophet, or the KSA-aware
-    # baseline fallback) instead of a bespoke per-call ProphetService.
+    # Use the canonical forecasting pipeline (StatsForecast, or the KSA-aware
+    # baseline fallback) instead of a bespoke per-call forecast service.
     from app.services.forecasting.retrieval import get_forecast
+    from app.services.forecasting.baseline_provider import baseline_from_series
+    from app.services.forecasting.schemas import DailyDemandSeries, DailyDemandPoint
     try:
         live_forecast = await get_forecast(db, business_id, item_id, horizon_days=7)
         series = live_forecast.get("forecast_7d") or live_forecast.get("forecast_30d") or []
@@ -911,32 +715,26 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
             for f in series[:7]
         ]
     except Exception:
-        # Fallback if there is not enough history to train any provider.
-        forecast_7d = []
-        avg_daily_sales = sum(h.quantity for h in sales_history) / max(1, len(sales_history))
-        for i in range(1, 8):
-            forecast_date = utcnow().date() + timedelta(days=i)
-            # Apply Saudi Friday weekend uplift
-            day_mult = 1.35 if forecast_date.weekday() in [3, 4] else 1.0
-            forecast_7d.append(ForecastItem(
-                date=forecast_date.strftime("%Y-%m-%d"),
-                predicted_qty=round(avg_daily_sales * day_mult, 2)
-            ))
-    
-    daily_avg_result = await db.execute(
-        select(func.coalesce(func.sum(Transaction.quantity), 0))
-        .where(
-            and_(
-                Transaction.business_id == business_id,
-                Transaction.item_id == item.id,
-                Transaction.transaction_at >= thirty_days_ago,
-            )
+        # Fallback if even the canonical pipeline raises (e.g. infra failure):
+        # use the deterministic KSA weekday-adjusted baseline rather than a
+        # bespoke 1.35 multiplier.
+        from datetime import date as _date
+        baseline_series = DailyDemandSeries(
+            business_id=str(business_id),
+            item_id=str(item_id),
+            points=[
+                DailyDemandPoint(ds=_date.fromisoformat(h.date), y=float(h.quantity))
+                for h in sales_history
+            ],
+            timezone="Asia/Riyadh",
         )
-    )
-    sales_30d = float(daily_avg_result.scalar() or 0)
-    daily_avg = sales_30d / 30
+        baseline_result = baseline_from_series(baseline_series, horizon_days=7)
+        forecast_7d = [
+            ForecastItem(date=p.ds.isoformat(), predicted_qty=p.predicted_qty)
+            for p in baseline_result.predictions[:7]
+        ]
     
-    days_until_stockout = float(inventory.current_stock) / daily_avg if daily_avg > 0 else None
+    daily_avg = daily_velocity(fact)
 
     # Phase 1 (P0-A): PO-aware reorder decision. Only confirmed inbound that
     # arrives strictly BEFORE the projected stockout (%usable%) covers the gap;
@@ -953,7 +751,7 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
     usable_inbound = float(_timing.usable_qty) if _timing else 0.0
     total_inbound = float(_timing.total_qty) if _timing else 0.0
     late_inbound = float(_timing.late_qty) if _timing else 0.0
-    effective_days = (float(inventory.current_stock) + usable_inbound) / daily_avg if daily_avg > 0 else None
+    effective_days = (float(inventory.current_stock) + usable_inbound) / float(daily_avg) if daily_avg > 0 else None
 
     if daily_avg < 0.1 or (effective_days and effective_days < 3):
         should_reorder = True
@@ -987,35 +785,7 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
     else:
         computed_status = "healthy"
     
-    trend_7d_result = await db.execute(
-        select(func.coalesce(func.sum(Transaction.quantity), 0))
-        .where(
-            and_(
-                Transaction.business_id == business_id,
-                Transaction.item_id == item.id,
-                Transaction.transaction_at >= seven_days_ago,
-            )
-        )
-    )
-    trend_7d_prev_result = await db.execute(
-        select(func.coalesce(func.sum(Transaction.quantity), 0))
-        .where(
-            and_(
-                Transaction.business_id == business_id,
-                Transaction.item_id == item.id,
-                Transaction.transaction_at >= fourteen_days_ago,
-                Transaction.transaction_at < seven_days_ago,
-            )
-        )
-    )
-    sales_7d = float(trend_7d_result.scalar() or 0)
-    sales_7d_prev = float(trend_7d_prev_result.scalar() or 0)
-    
-    if sales_7d_prev > 0:
-        change = (sales_7d - sales_7d_prev) / sales_7d_prev
-        trend = "up" if change > 0.1 else "down" if change < -0.1 else "stable"
-    else:
-        trend = "stable"
+    trend = trend_7d(fact.qty_7d, fact.qty_prev7d)
     
     response = ItemDetailResponse(
         item=InventoryItem(
@@ -1081,81 +851,60 @@ async def get_dashboard_alerts(db: AsyncSession, business_id: UUID) -> AlertsRes
     enforce_tenant_filter(business_id)
 
     alerts = []
-    
-    inventory_result = await db.execute(
-        select(Item, Inventory, Category.name.label("category_name"))
-        .join(Inventory, Inventory.item_id == Item.id)
-        .outerjoin(Category, Category.id == Item.category_id)
-        .where(Item.business_id == business_id, Item.is_active == True)
-    )
-    inventory_rows = inventory_result.all()
 
-    thirty_days_ago = utcnow() - timedelta(days=30)
-    item_ids = [row[0].id for row in inventory_rows]
-    sales_map = {}
-    if item_ids:
-        sales_query = text("""
-            SELECT item_id, COALESCE(SUM(quantity), 0) AS sales_30d
-            FROM transactions
-            WHERE business_id = :business_id
-              AND item_id IN :item_ids
-              AND transaction_at >= :thirty_days_ago
-            GROUP BY item_id
-        """).bindparams(bindparam("item_ids", expanding=True))
-        sales_res = await db.execute(sales_query, {
-            "business_id": str(business_id),
-            "item_ids": item_ids,
-            "thirty_days_ago": thirty_days_ago,
-        })
-        sales_map = {str(r.item_id): float(r.sales_30d or 0) for r in sales_res.fetchall()}
-    
-    for row in inventory_rows:
-        item, inventory, category_name = row
-        sales_30d = sales_map.get(str(item.id), 0.0)
-        daily_avg = sales_30d / 30
-        
-        days_until_stockout = float(inventory.current_stock) / daily_avg if daily_avg > 0 else float('inf')
-        
-        if days_until_stockout < 2 and daily_avg > 0:
+    # Phase 1: per-item velocity/value/status from the scoped DuckDB feed
+    # (one tenant-scoped engine). Alert content rules stay here in the NazmOS
+    # layer.
+    feed = await inventory_feed(db, business_id)
+
+    for fact in feed.facts:
+        if not fact.is_active:
+            continue
+        vel = daily_velocity(fact)
+        remaining = days_until_stockout(fact.current_stock, vel)
+        days_until_stockout = float(remaining) if remaining is not None else float("inf")
+
+        if days_until_stockout < 2 and vel > 0:
             alerts.append(AlertResponse(
-                id=item.id,
+                id=UUID(fact.item_id),
                 type="critical",
                 icon="alert-triangle",
-                title=f"{item.name} - Critical Stock",
-                message=f"Only {round(float(inventory.current_stock), 0)} {item.unit} left",
-                detail=f"Avg daily sales: {round(daily_avg, 1)} {item.unit}/day",
-                action_text=f"Reorder {max(50, int(daily_avg * 14))} units NOW",
+                title=f"{fact.name} - Critical Stock",
+                message=f"Only {round(fact.current_stock, 0)} {fact.unit} left",
+                detail=f"Avg daily sales: {round(float(vel), 1)} {fact.unit}/day",
+                action_text=f"Reorder {max(50, int(float(vel) * 14))} units NOW",
                 action_type="reorder",
-                item_id=item.id,
+                item_id=UUID(fact.item_id),
                 priority=1,
                 created_at=utcnow(),
             ))
-        elif days_until_stockout < 5 and daily_avg > 0:
+        elif days_until_stockout < 5 and vel > 0:
             alerts.append(AlertResponse(
-                id=item.id,
+                id=UUID(fact.item_id),
                 type="warning",
                 icon="alert-circle",
-                title=f"{item.name} - Low Stock",
+                title=f"{fact.name} - Low Stock",
                 message=f"{round(days_until_stockout, 1)} days until stockout",
-                detail=f"Current: {round(float(inventory.current_stock), 0)} {item.unit} | Daily avg: {round(daily_avg, 1)}",
+                detail=f"Current: {round(fact.current_stock, 0)} {fact.unit} | Daily avg: {round(float(vel), 1)}",
                 action_text="Restock Soon",
                 action_type="restock",
-                item_id=item.id,
+                item_id=UUID(fact.item_id),
                 priority=2,
                 created_at=utcnow(),
             ))
-        
-        if daily_avg < 0.1 and float(inventory.current_stock) > 0:
+
+        if vel < 0.1 and fact.current_stock > 0:
+            stuck = stock_value(fact.current_stock, fact.cost_price, ValueBasis.COST)
             alerts.append(AlertResponse(
-                id=item.id,
+                id=UUID(fact.item_id),
                 type="warning",
                 icon="package-x",
-                title=f"{item.name} - Dead Stock",
+                title=f"{fact.name} - Dead Stock",
                 message="No sales in 30 days",
-                detail=f"Capital stuck: ﷼ {round(float(inventory.current_stock) * float(item.cost_price), 2)}",
+                detail=f"Capital stuck: ﷼ {round(float(stuck), 2)}",
                 action_text="Consider discount or removal",
                 action_type="dead_stock",
-                item_id=item.id,
+                item_id=UUID(fact.item_id),
                 priority=3,
                 created_at=utcnow(),
             ))

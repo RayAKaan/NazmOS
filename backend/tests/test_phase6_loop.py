@@ -65,7 +65,7 @@ async def _make_action(db: AsyncSession, bid: str, action_type: str, *, finding_
 async def test_full_chain_finding_to_learned_outcome_and_graph(db):
     """Scenario: finding → action (finding_id populated) → terminal outcome → learned
     outcome + outcome_feedback + graph edges, all linked."""
-    from app.services.agent_action_executor import _record_terminal_outcome
+    from app.orchestration.record import record_terminal_outcome
     from app.services.outcome_learning import learning_adjusted_action, intervention_effectiveness
 
     bid = await _seed_business(db)
@@ -78,7 +78,7 @@ async def test_full_chain_finding_to_learned_outcome_and_graph(db):
     await db.commit()
 
     aid = await _make_action(db, bid, "discount", finding_id=fid, executed=True, status="approved")
-    await _record_terminal_outcome(db, bid, aid)
+    await record_terminal_outcome(db, bid, aid)
 
     # Learned outcome recorded + linked to finding + action.
     lo = await db.execute(text("SELECT id FROM learned_outcomes WHERE agent_action_id = :a"), {"a": aid})
@@ -101,12 +101,12 @@ async def test_full_chain_finding_to_learned_outcome_and_graph(db):
 
 async def test_replayed_action_does_not_duplicate_outcome(db):
     """§29: replaying the terminal-state hook must not duplicate learned outcomes."""
-    from app.services.agent_action_executor import _record_terminal_outcome
+    from app.orchestration.record import record_terminal_outcome
 
     bid = await _seed_business(db)
     aid = await _make_action(db, bid, "discount", executed=True, status="approved")
-    await _record_terminal_outcome(db, bid, aid)
-    await _record_terminal_outcome(db, bid, aid)  # replay/retry
+    await record_terminal_outcome(db, bid, aid)
+    await record_terminal_outcome(db, bid, aid)  # replay/retry
 
     count = await db.execute(text("SELECT COUNT(*) FROM learned_outcomes WHERE agent_action_id = :a"), {"a": aid})
     assert count.scalar() == 1
@@ -122,8 +122,8 @@ async def test_rejection_recorded_and_changes_recommendation(db):
         aid = await _make_action(db, bid, "discount", executed=False, status="rejected")
         await db.execute(text("UPDATE agent_actions SET decision_note = 'seasonal product' WHERE id = :a"), {"a": aid})
         await db.commit()
-        from app.services.agent_action_executor import _record_terminal_outcome
-        await _record_terminal_outcome(db, bid, aid)
+        from app.orchestration.record import record_terminal_outcome
+        await record_terminal_outcome(db, bid, aid)
 
     adj = await learning_adjusted_action(db, bid, "discount")
     assert adj["adjusted"] is True
@@ -134,13 +134,13 @@ async def test_rejection_recorded_and_changes_recommendation(db):
 async def test_cross_tenant_isolation(db):
     """§29/§30: business A can never see business B's learned outcomes."""
     from app.services.outcome_learning import list_learned_outcomes
-    from app.services.agent_action_executor import _record_terminal_outcome
+    from app.orchestration.record import record_terminal_outcome
 
     bid_a = await _seed_business(db, "A")
     bid_b = await _seed_business(db, "B")
 
     aid = await _make_action(db, bid_a, "discount", executed=True, status="approved")
-    await _record_terminal_outcome(db, bid_a, aid)
+    await record_terminal_outcome(db, bid_a, aid)
 
     a_outcomes = await list_learned_outcomes(db, bid_a)
     b_outcomes = await list_learned_outcomes(db, bid_b)

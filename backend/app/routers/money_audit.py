@@ -28,7 +28,7 @@ from app.services.money_audit_service import (
 )
 from app.services.intelligence_api_client import IntelligenceAPIClient
 from app.utils.clock import utcnow
-from app.services.action_executor import ActionExecutor
+from app.orchestration.runner import run_manual_action
 from app.services.evidence_package import AuditEvidencePackage
 from app.services.llm_orchestrator import LLMOrchestrator
 
@@ -482,12 +482,13 @@ async def execute_action(
         previous_state = {"sell_price": sell_price}
         new_state = {"sell_price": sell_price}
 
-    executor = ActionExecutor(db)
-    exec_result = await executor.execute_action(
+    exec_result = await run_manual_action(
+        db,
         business_id=UUID(str(payload.business_id)),
         action_type=executor_type,
         entity_type="item",
         entity_id=UUID(str(action.item_id)),
+        payload=new_state,
         previous_state=previous_state,
         new_state=new_state,
         user_id=current_user.id,

@@ -95,11 +95,11 @@ async def test_runtime_terminal_outcome_wiring(db):
     """The runtime's canonical terminal-state hook (_record_terminal_outcome) records a
     learned outcome + graph edge for an action (SQLite-safe; approve_agent_action's full
     path uses Postgres-only NOW()/gen_random_uuid())."""
-    from app.services.agent_action_executor import _record_terminal_outcome
+    from app.orchestration.record import record_terminal_outcome
 
     bid = await _seed_business(db)
     aid = await _create_action(db, bid, "discount", status="approved", executed=True)
-    await _record_terminal_outcome(db, bid, aid)
+    await record_terminal_outcome(db, bid, aid)
 
     count = await db.execute(text("SELECT COUNT(*) FROM learned_outcomes WHERE agent_action_id = :a"),
                              {"a": aid})

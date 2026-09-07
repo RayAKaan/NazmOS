@@ -103,9 +103,9 @@ async def test_happy_path_full_loop(db_session):
         assert 0 < float(expected) <= float(dead_action["recoverable_value_high_sar"])
 
     # --- simulated execution of the dead-stock discount ---------------------
-    from app.services.execution_engine import execute_from_request
+    from app.orchestration.runner import run_simulated
 
-    job = await execute_from_request(
+    job = await run_simulated(
         db_session,
         business_id=bid,
         action_type="discount",

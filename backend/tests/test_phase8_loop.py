@@ -120,8 +120,8 @@ async def test_no_double_count_business_vs_direct(db):
 
 
 async def _learn(db: AsyncSession, bid: str, aid: str):
-    from app.services.agent_action_executor import _record_terminal_outcome
-    await _record_terminal_outcome(db, bid, aid)
+    from app.orchestration.record import record_terminal_outcome
+    await record_terminal_outcome(db, bid, aid)
 
 
 async def test_strategy_performance_ranks_higher_effectiveness_first(db):

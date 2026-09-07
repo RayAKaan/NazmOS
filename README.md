@@ -200,8 +200,8 @@ GDPR / PDPL data export (`GET /api/v1/compliance/export/{id}`) and erasure (`DEL
 - Partner program (accountants / Monshaat advisors) with application, dashboard, and public directory.
 - Subscriptions, plans, usage metering, checkout; multi-store **organizations** with chain dashboards, teams, roles, and invite flows.
 
-### Forecasting & operations (`routers/forecast.py`, `services/prophet_service.py`, `anomaly_detector.py`)
-Prophet-backed demand forecast with TTL cache, plus rule-based anomaly detection; health/readiness/live probes (`routers/health.py`), startup checks, backup service, and an ops/pilot console.
+### Forecasting & operations (`routers/forecast.py`, `services/forecasting/`, `anomaly_detector.py`)
+StatsForecast-backed demand forecast with validated TTL cache and explicit provenance (provider/model/interval/fallback reason), plus rule-based anomaly detection; health/readiness/live probes (`routers/health.py`), startup checks, backup service, and an ops/pilot console.
 
 > **Feature gating:** several routers are only registered when their flag is on — `BILLING_ENABLED` (subscriptions, organizations, adapters, actions), `CHAT_ENABLED` (chat), `AGENT_ENABLED` (agent), `VERTICAL_PHARMACY` (pharmacy). With `BILLING_ENABLED=false` the API boots in "KSA Implementation mode".
 

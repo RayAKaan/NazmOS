@@ -80,12 +80,12 @@ async def test_concurrent_transfers_cannot_overdraw_inventory(db):
     """), {"ia": str(uuid4()), "ib": str(uuid4()), "ba": branch_a, "bb": branch_b, "i": item_id})
     await db.commit()
 
-    from app.services.agent_action_executor import _execute_transfer
+    from app.orchestration.apply import apply_agent_transfer
 
     # Two transfers of 8 units each from branch_a (only 10 available) — one must fail.
     async def transfer(qty: int):
         async with async_sessionmaker(db.bind, class_=AsyncSession, expire_on_commit=False)() as s:
-            result = await _execute_transfer(s, bid, {
+            result = await apply_agent_transfer(s, bid, {
                 "item_id": item_id, "from_business_id": branch_a, "to_business_id": branch_b,
                 "recommended_transfer_qty": qty,
             })
@@ -104,7 +104,7 @@ async def test_concurrent_transfers_cannot_overdraw_inventory(db):
 async def test_same_action_duplicate_execution_prevented(db):
     """§2/§5: the approval path is idempotent — a second approve of an already-approved
     action does nothing."""
-    from app.services.agent_action_executor import approve_agent_action, reject_agent_action
+    from app.orchestration.runner import run_agent_approval, run_agent_rejection
 
     bid = await _seed(db)
     aid = str(uuid4())
@@ -116,7 +116,7 @@ async def test_same_action_duplicate_execution_prevented(db):
     """), {"id": aid, "b": bid})
     await db.commit()
 
-    r1 = await approve_agent_action(db, aid, note="first")
-    r2 = await approve_agent_action(db, aid, note="second")  # already approved → no-op
+    r1 = await run_agent_approval(db, action_id=aid, note="first")
+    r2 = await run_agent_approval(db, action_id=aid, note="second")  # already approved → no-op
     assert r1["ok"] is True
     assert r2["ok"] is False  # idempotent: second approval rejected

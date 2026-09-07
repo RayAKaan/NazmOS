@@ -65,7 +65,7 @@ async def _make_action(db: AsyncSession, bid: str, action_type: str, executed: b
 async def test_concurrent_terminal_outcome_writes_converge(db):
     """§2/§5: two workers writing the same action's outcome converge to one LearnedOutcome
     and one OutcomeFeedback (unique constraints + ON CONFLICT)."""
-    from app.services.agent_action_executor import _record_terminal_outcome
+    from app.orchestration.record import record_terminal_outcome
 
     bid = await _seed_business(db)
     aid = await _make_action(db, bid, "transfer_inventory")
@@ -74,7 +74,7 @@ async def test_concurrent_terminal_outcome_writes_converge(db):
     engine = db.bind
     async def worker():
         async with async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)() as s:
-            await _record_terminal_outcome(s, bid, aid)
+            await record_terminal_outcome(s, bid, aid)
 
     await asyncio.gather(worker(), worker())
 

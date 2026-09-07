@@ -44,6 +44,7 @@ PROTECTED_CANONICAL = {
     "action_registry",
     "agent_tools",
     "action_executor",
+    "orchestration",
     "money_audit_service",
     "recovery_intelligence",
     "recovery_match_matcher",

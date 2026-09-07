@@ -3,7 +3,7 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install system dependencies required by pandas, prophet, and python-magic.
+# Install system dependencies required by pandas, statsforecast, and python-magic.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libmagic1 \

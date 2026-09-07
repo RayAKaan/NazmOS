@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.forecasting.cache import read_forecast, write_forecast
 from app.services.forecasting.provider import ForecastProvider
-from app.services.forecasting.prophet_provider import ProphetProvider
+from app.services.forecasting.statsforecast_provider import StatsForecastProvider
 
 
 async def get_forecast(
@@ -37,7 +37,7 @@ async def get_forecast(
     if cached:
         return cached
 
-    provider = provider or ProphetProvider()
+    provider = provider or StatsForecastProvider()
     result = await provider.forecast(
         db,
         business_id,

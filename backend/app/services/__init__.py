@@ -17,8 +17,7 @@ from app.services.analytics_service import (
     calculate_health_score,
 )
 from app.services.inventory_service import restock_item
-# Forecast – use ProphetService directly
-# from app.services.prophet_service import ProphetService
+# Forecasting is served by app.services.forecasting (StatsForecastProvider).
 
 __all__ = [
     "register_user",

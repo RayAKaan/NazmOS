@@ -900,9 +900,11 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
         for row in sales_30d_result.all()
     ]
     
-    # Use the canonical forecasting pipeline (Prophet, or the KSA-aware
-    # baseline fallback) instead of a bespoke per-call ProphetService.
+    # Use the canonical forecasting pipeline (StatsForecast, or the KSA-aware
+    # baseline fallback) instead of a bespoke per-call forecast service.
     from app.services.forecasting.retrieval import get_forecast
+    from app.services.forecasting.baseline_provider import baseline_from_series
+    from app.services.forecasting.schemas import DailyDemandSeries, DailyDemandPoint
     try:
         live_forecast = await get_forecast(db, business_id, item_id, horizon_days=7)
         series = live_forecast.get("forecast_7d") or live_forecast.get("forecast_30d") or []
@@ -911,17 +913,24 @@ async def get_item_detail(db: AsyncSession, business_id: UUID, item_id: UUID) ->
             for f in series[:7]
         ]
     except Exception:
-        # Fallback if there is not enough history to train any provider.
-        forecast_7d = []
-        avg_daily_sales = sum(h.quantity for h in sales_history) / max(1, len(sales_history))
-        for i in range(1, 8):
-            forecast_date = utcnow().date() + timedelta(days=i)
-            # Apply Saudi Friday weekend uplift
-            day_mult = 1.35 if forecast_date.weekday() in [3, 4] else 1.0
-            forecast_7d.append(ForecastItem(
-                date=forecast_date.strftime("%Y-%m-%d"),
-                predicted_qty=round(avg_daily_sales * day_mult, 2)
-            ))
+        # Fallback if even the canonical pipeline raises (e.g. infra failure):
+        # use the deterministic KSA weekday-adjusted baseline rather than a
+        # bespoke 1.35 multiplier.
+        from datetime import date as _date
+        baseline_series = DailyDemandSeries(
+            business_id=str(business_id),
+            item_id=str(item_id),
+            points=[
+                DailyDemandPoint(ds=_date.fromisoformat(h.date), y=float(h.quantity))
+                for h in sales_history
+            ],
+            timezone="Asia/Riyadh",
+        )
+        baseline_result = baseline_from_series(baseline_series, horizon_days=7)
+        forecast_7d = [
+            ForecastItem(date=p.ds.isoformat(), predicted_qty=p.predicted_qty)
+            for p in baseline_result.predictions[:7]
+        ]
     
     daily_avg_result = await db.execute(
         select(func.coalesce(func.sum(Transaction.quantity), 0))

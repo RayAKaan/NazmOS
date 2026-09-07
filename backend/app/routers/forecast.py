@@ -6,7 +6,7 @@ from app.middleware.auth_middleware import get_current_user
 from app.middleware.business_access import assert_business_access
 from app.database import get_db, User
 from app.services.forecasting.cache import write_forecast
-from app.services.forecasting.prophet_provider import ProphetProvider
+from app.services.forecasting.statsforecast_provider import StatsForecastProvider
 from app.utils.timezone import now_utc
 
 router = APIRouter(prefix="/api/v1/forecast", tags=["forecast"])
@@ -20,17 +20,15 @@ async def generate_forecast(
     current_user: User = Depends(get_current_user),
     db=Depends(get_db),
 ):
-    """Generate a fresh Prophet forecast – KSA edition, with Saudi holidays.
-
-    Uses the canonical forecasting pipeline: daily demand builder → quality
-    gate → ProphetProvider (SQL timezone-safe date aggregation included).
+    """Generate a fresh StatsForecast forecast - KSA edition, with Saudi
+    holidays via the canonical daily-demand builder and quality gate.
     """
     await assert_business_access(db, business_id, current_user)
 
     if not item_id:
         raise HTTPException(422, "item_id required")
 
-    provider = ProphetProvider()
+    provider = StatsForecastProvider()
     forecast = await provider.forecast(
         db, business_id, item_id, horizon_days=days
     )

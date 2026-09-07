@@ -6,9 +6,10 @@ through :class:`ForecastProvider` so the whole product agrees on:
   - the quality gate (quality),
   - the interval semantics and provenance.
 
-Producers that only need a deterministic forecast use :class:`BaselineProvider`;
-producers that can pay Prophets cost use :class:`ProphetProvider`, which falls
-back to the baseline when data is poor.
+Producers that need a deterministic forecast use :class:`BaselineProvider`;
+producers that can pay the cost of statistical fitting use
+:class:`StatsForecastProvider`, which falls back to the baseline when data is
+poor.
 """
 from __future__ import annotations
 

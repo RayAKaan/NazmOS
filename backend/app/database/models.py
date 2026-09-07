@@ -520,7 +520,7 @@ class ForecastCache(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
     item_id = Column(UUID(as_uuid=True), ForeignKey("items.id", ondelete="CASCADE"), nullable=False)
-    model_version = Column(String(20), default="prophet_v1")
+    model_version = Column(String(50), default="statsforecast_ensemble_v1")
     training_rows = Column(Numeric(10, 0), nullable=True)
     training_from = Column(DateTime(timezone=True), nullable=True)
     training_to = Column(DateTime(timezone=True), nullable=True)
@@ -535,15 +535,14 @@ class ForecastCache(Base):
     expires_at = Column(DateTime(timezone=True), nullable=False)
 
     # ── Provenance (hardening) ─────────────────────────────────────────────
-    # Which provider produced the forecast ("prophet" | "baseline" | "legacy"),
-    # what data it saw, and how to interpret its intervals. Legacy rows get
-    # provider='legacy' from the migration backfill.
+    # Which provider produced the forecast ("statsforecast" | "baseline" |
+    # "legacy"), what data it saw, and how to interpret its intervals.
     provider = Column(String(50), nullable=True)
     data_start = Column(Date, nullable=True)
     data_end = Column(Date, nullable=True)
     context_days = Column(Integer, nullable=True)
     horizon_days = Column(Integer, nullable=True)
-    interval_type = Column(String(50), nullable=True)  # "prophet_interval" | "heuristic"
+    interval_type = Column(String(50), nullable=True)  # "statsforecast_interval" | "heuristic"
     fallback_reason = Column(String(100), nullable=True)
     data_quality_json = Column(JSON, nullable=True)
     generated_at = Column(DateTime(timezone=True), nullable=True)

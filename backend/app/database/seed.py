@@ -123,7 +123,7 @@ async def seed_demo_data(session: AsyncSession):
             text("""
                 INSERT INTO inventory (business_id, item_id, current_stock, reorder_level, max_stock, last_restocked, updated_at)
                 VALUES (:bid, :iid, :stock, :reorder, :max_s, NOW(), NOW())
-                ON CONFLICT (business_id, item_id) DO UPDATE SET
+                ON CONFLICT (business_id, item_id) WHERE location_id IS NULL DO UPDATE SET
                     current_stock = EXCLUDED.current_stock,
                     reorder_level = EXCLUDED.reorder_level
             """),

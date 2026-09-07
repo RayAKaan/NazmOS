@@ -5,7 +5,7 @@ from decimal import Decimal
 from typing import Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Body, Depends, HTTPException, Query
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, PlainTextResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import text
@@ -15,8 +15,10 @@ from app.database import User, get_db
 from app.config import get_settings
 from app.middleware.auth_middleware import get_current_user
 from app.middleware.business_access import assert_business_access
+from app.middleware.rbac import assert_capability_for_business
 from app.services.recovery_intelligence import money, simulate_action_options
 from app.services.money_audit_service import (
+    coverage_aware_daily_velocity,
     generate_money_audit,
     get_latest_money_audit,
     get_money_audit,
@@ -227,10 +229,12 @@ async def simulate_action(
 async def approve_action(
     action_id: UUID,
     payload: ActionStatusRequest,
+    request: Request,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     await assert_business_access(db, str(payload.business_id), current_user)
+    await assert_capability_for_business(request, current_user, db, str(payload.business_id), "can_approve_actions")
     try:
         return await update_action_status(
             db,
@@ -248,10 +252,12 @@ async def approve_action(
 async def reject_action(
     action_id: UUID,
     payload: ActionStatusRequest,
+    request: Request,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     await assert_business_access(db, str(payload.business_id), current_user)
+    await assert_capability_for_business(request, current_user, db, str(payload.business_id), "can_approve_actions")
     try:
         return await update_action_status(
             db,
@@ -269,10 +275,12 @@ async def reject_action(
 async def complete_action(
     action_id: UUID,
     payload: ActionStatusRequest,
+    request: Request,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     await assert_business_access(db, str(payload.business_id), current_user)
+    await assert_capability_for_business(request, current_user, db, str(payload.business_id), "can_approve_actions")
     try:
         result = await update_action_status(
             db,
@@ -381,6 +389,7 @@ class ExecuteActionRequest(BaseModel):
 async def execute_action(
     action_id: UUID,
     payload: ExecuteActionRequest,
+    request: Request,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -396,6 +405,7 @@ async def execute_action(
     recovery is measured through the complete endpoint.
     """
     await assert_business_access(db, str(payload.business_id), current_user)
+    await assert_capability_for_business(request, current_user, db, str(payload.business_id), "can_approve_actions")
 
     # Fetch the action and validate status
     result = await db.execute(text("""
@@ -464,7 +474,7 @@ async def execute_action(
 
     if executor_type == "RESTOCK":
         previous_state = {"current_stock": current_stock}
-        new_state = {"current_stock": round(current_stock + quantity, 2)}
+        new_state = {"restock_qty": round(quantity, 2)}
     elif executor_type == "PRICE_CHANGE":
         previous_state = {"sell_price": sell_price}
         new_state = {"sell_price": sell_price}
@@ -608,6 +618,7 @@ async def get_audit_evidence(
             supplier_name=row.supplier_name,
             candidate_actions=[row.action_type] if row.action_type else [],
             historical_outcomes=historical_outcomes[:5],
+            coverage_days_30d=int(evidence_data["coverage_days_30d"]) if evidence_data.get("coverage_days_30d") else None,
         )
         items.append(item_evidence.to_dict())
 
@@ -724,6 +735,7 @@ async def ab_compare_audit(
             supplier_lead_time=row.supplier_lead_time_days,
             supplier_moq=Decimal(str(row.supplier_moq)) if row.supplier_moq else None,
             supplier_name=row.supplier_name,
+            coverage_days_30d=int(evidence_data["coverage_days_30d"]) if evidence_data.get("coverage_days_30d") else None,
         )
         items.append(item_evidence)
 
@@ -863,7 +875,14 @@ async def time_machine(
     items = []
     for row in rows:
         evidence_data = row.evidence if isinstance(row.evidence, dict) else {}
-        daily_velocity = float(evidence_data.get("qty_30d", 0)) / 30 if evidence_data.get("qty_30d") else 0
+        # Coverage-aware velocity: demand is normalised by the DISTINCT days it
+        # was actually observed over (same rule as money_audit_service). A
+        # merchant who supplied 6 days of sales must never be simulated as a
+        # 30-day dataset, so the audit and its time-machine agree.
+        daily_velocity = float(coverage_aware_daily_velocity(
+            evidence_data.get("qty_30d", 0),
+            evidence_data.get("coverage_days_30d", 0),
+        ))
 
         items.append({
             "sku": row.sku or "",

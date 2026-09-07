@@ -40,6 +40,7 @@ TENANT_TABLES = [
     "inventory",
     "items",
     "learned_outcomes",
+    "locations",
     "money_audit_actions",
     "money_audits",
     "notification_preferences",

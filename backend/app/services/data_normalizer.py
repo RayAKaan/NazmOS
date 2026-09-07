@@ -44,6 +44,8 @@ FIELD_TARGETS = [
     "customer_id",
     "supplier",
     "transaction_type",
+    "location_name",
+    "source_transaction_id",
 ]
 
 NUMERIC_COLUMNS = {

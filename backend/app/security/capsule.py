@@ -205,8 +205,15 @@ class CapsuleSigner:
         return capsule
 
     def verify(self, capsule: ReasoningCapsule) -> bool:
+        """Verify capsule HMAC signature.
+
+        Security boundary (fail-closed): an unsigned capsule is NEVER trusted,
+        regardless of whether a hash is present.  The hash alone does not prove
+        provenance — it only proves content integrity between signer and
+        verifier, so without a signature the entire chain is broken.
+        """
         if not capsule.signature:
-            return bool(capsule.capsule_hash)
+            return False
         try:
             expected = hmac.new(self._key, capsule.canonical_bytes(), hashlib.sha256).hexdigest()
         except Exception:

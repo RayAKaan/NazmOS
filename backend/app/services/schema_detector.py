@@ -128,6 +128,24 @@ FIELD_PATTERNS = {
         "name_hints": ["batch", "batch_no", "batch_number", "lot", "lot_no", "lot_number", "تشغيلة", "دفعة"],
         "sample_validator": lambda x: len(str(x).strip()) > 0,
     },
+    "location_name": {
+        "name_hints": [
+            "location", "location_name", "branch", "branch_name", "warehouse", "store",
+            "store_name", "outlet", "shop", "site_name", "branch_code",
+            "فرع", "الفرع", "مخزن", "نقطة البيع",
+        ],
+        "sample_validator": is_text,
+    },
+    "source_transaction_id": {
+        "name_hints": [
+            "invoice", "invoice_no", "invoice_number", "invoice_id", "order", "order_id",
+            "order_no", "order_number", "transaction_id", "receipt", "receipt_no",
+            "bill_no", "bill_number", "sale_ref", "reference_no",
+            "رقم_الفاتورة", "فاتورة", "الفاتورة", "رقم_الطلب", "رقم الطلب",
+        ],
+        # Invoice/order ids are often pure numeric strings; accept any non-empty value.
+        "sample_validator": lambda x: len(str(x).strip()) > 0,
+    },
 }
 
 

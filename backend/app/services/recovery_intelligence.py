@@ -112,6 +112,7 @@ def classify_inventory(
     seasonal_index: D | None = None,
     product_age_days: int | None = None,
     monthly_concentrations: list[D] | None = None,
+    coverage_days: D | None = None,
 ) -> str:
     """Conservative classification with velocity-first logic.
 
@@ -119,11 +120,26 @@ def classify_inventory(
     - Velocity-based classification runs BEFORE stock check (fixes slow items with stock=0)
     - Monthly concentration detects seasonal demand spikes (replaces inverted seasonal_index)
     - FAST label added for high-velocity items
+
+    ``coverage_days`` is the number of DISTINCT days the recent demand was
+    actually observed over (e.g. a newly uploaded 6-day file covers 6 days, not
+    30).  Velocity normalizes against observed coverage so a short history is
+    never silently presented as a 30-day rate.  ``None`` keeps the legacy /30
+    convention for callers without coverage information.
     """
     if product_age_days is not None and product_age_days < 30:
         return "NEW"
 
-    daily = recent_qty_30 / D("30") if recent_qty_30 > 0 else D("0")
+    coverage = D("30")
+    if coverage_days is not None:
+        try:
+            coverage = D(str(coverage_days))
+        except Exception:
+            coverage = D("30")
+        if coverage <= 0:
+            coverage = D("1")
+
+    daily = recent_qty_30 / coverage if recent_qty_30 > 0 else D("0")
 
     # Seasonal: detect demand spike via monthly concentration variance.
     # If one month dominates (>=60% of total sales across all months), it's seasonal.

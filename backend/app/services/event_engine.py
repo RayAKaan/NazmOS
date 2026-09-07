@@ -140,7 +140,7 @@ async def ingest_event(
 
     if settings.USE_CELERY:
         from app.tasks.event_tasks import process_event
-        process_event.delay(str(event_record.id))
+        process_event.delay(str(event_record.id), str(business_id))
     else:
         from app.services.event_processor import process_event_sync
         await process_event_sync(session, event_record)

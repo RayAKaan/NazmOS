@@ -111,6 +111,7 @@ async def add_lot(
 ):
     """Add a pharmacy stock lot – FEFO tracked"""
     _require_pharmacy()
+    await assert_business_access(db, business_id, current_user)
     await db.execute(text("""
         INSERT INTO pharmacy_lots
         (id, business_id, item_id, batch_number, expiry_date, quantity, cost_per_unit,

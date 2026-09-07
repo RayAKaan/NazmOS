@@ -41,6 +41,26 @@ def money(value: Any) -> Decimal:
         return ZERO
 
 
+def coverage_aware_daily_velocity(recent_qty_30: Any, coverage_days_30d: Any) -> Decimal:
+    """Demand per day, normalised by the DISTINCT days actually observed.
+
+    A merchant who supplied 6 days of sales must never be treated as a 30-day
+    dataset (e.g. 16 units / 6 days = 2.67/day, not 0.53/day).  Unobserved days
+    are absent, not zero: when quantity exists but coverage is unknown the
+    legacy /30 convention applies; when coverage is explicitly present but
+    zero/empty, a minimal one-day coverage is used so the rule never divides by
+    zero and never silently downgrades a known 6-day window to 30 days.
+    """
+    qty = money(recent_qty_30)
+    if coverage_days_30d is None:
+        coverage = D("30")
+    else:
+        coverage = money(coverage_days_30d)
+        if qty > 0 and coverage <= 0:
+            coverage = D("1")
+    return qty / coverage if qty > 0 and coverage > 0 else ZERO
+
+
 @dataclass
 class ProductMetrics:
     """Every signal the audit math needs about one product.
@@ -63,6 +83,10 @@ class ProductMetrics:
     projected_stock: D | None = None
     lead_time_days: int | None = None
     safety_stock: D | None = None
+    # Number of DISTINCT days the recent demand was actually observed over.
+    # ``None`` means the caller has no coverage signal and the legacy /30
+    # convention applies. Never present 6 days of data as a 30-day metric.
+    recent_coverage_days: D | None = None
 
 
 @dataclass
@@ -97,6 +121,9 @@ class ProductAudit:
     has_margin_leakage: bool
     recovery: FinancialEstimate | None = None
     stockout: FinancialEstimate | None = None
+    # Days of sales history actually observed for this product's demand window.
+    # Exposes grain so callers can state coverage before concluding.
+    observed_coverage_days: D = D("30")
 
     @property
     def needs_attention(self) -> bool:
@@ -123,7 +150,12 @@ def analyze_product(metrics: ProductMetrics) -> ProductAudit:
     sell = money(metrics.sell)
     recent_qty_30 = money(metrics.recent_qty_30)
     prior_qty_30 = money(metrics.prior_qty_30)
-    daily_velocity = recent_qty_30 / D("30") if recent_qty_30 > 0 else ZERO
+    coverage_days = D("30")
+    if metrics.recent_coverage_days is not None:
+        parsed = money(metrics.recent_coverage_days)
+        if parsed > 0:
+            coverage_days = parsed
+    daily_velocity = coverage_aware_daily_velocity(recent_qty_30, coverage_days)
     projected_stock = money(metrics.projected_stock if metrics.projected_stock is not None else stock)
 
     stock_value = stock * cost
@@ -134,6 +166,7 @@ def analyze_product(metrics: ProductMetrics) -> ProductAudit:
         days_since_last_sale=metrics.last_sold_days,
         inventory_age_days=metrics.inventory_age_days,
         monthly_concentrations=metrics.monthly_concentrations,
+        coverage_days=coverage_days,
     )
 
     recovery = estimate_recovery(
@@ -249,4 +282,5 @@ def analyze_product(metrics: ProductMetrics) -> ProductAudit:
         has_margin_leakage=has_margin_leakage,
         recovery=recovery,
         stockout=stockout,
+        observed_coverage_days=coverage_days,
     )

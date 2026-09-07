@@ -4,6 +4,13 @@ normalization for guest uploads.
 Deterministic, no AI. Every Arabic label maps to the same canonical field the
 English labels do, so a merchant's exported spreadsheet drives the same audit
 regardless of the language of its headers.
+
+Column resolution uses the semantic mapping engine (``semantic_mapping``)
+which combines header token semantics, value-shape profiling, cross-column
+relationships, and role competition — NOT a finite alias dictionary.  The
+legacy alias set is kept as a fast-exact-match first pass and fallback, but
+the semantic engine is the primary inference path for any header it does not
+recognize via exact alias match.
 """
 from __future__ import annotations
 
@@ -251,14 +258,11 @@ class ColumnResolution:
     is_arabic: bool = False
     detected_fields: list[str] = field(default_factory=list)
     missing: list[str] = field(default_factory=list)
+    ingestion_result: Any = None  # IngestionResult from semantic engine (privacy-safe diagnostics)
 
 
-def resolve_columns(df: pd.DataFrame) -> ColumnResolution:
-    """Map actual columns to canonical ledger fields.
-
-    Deterministic: each canonical field takes the first best alias found,
-    scanning exact normalized matches first, then substring containment.
-    """
+def _resolve_legacy(df: pd.DataFrame) -> ColumnResolution:
+    """Legacy alias-based column resolution (kept as fast-exact-match fallback)."""
     columns = [normalize_header(c) for c in df.columns]
     by_key: dict[str, list[str]] = {key: list(aliases) for key, aliases in NORMALIZED_ALIASES.items()}
 
@@ -305,6 +309,101 @@ def resolve_columns(df: pd.DataFrame) -> ColumnResolution:
         is_arabic=arabic,
         detected_fields=detected,
         missing=needed,
+    )
+
+
+# Semantic-role names the legacy ledger expects.
+_LEDGER_ROLES = ("product_name", "quantity", "price", "cost", "stock", "date")
+
+
+def _load_semantic_engine() -> Any:
+    """Lazily import the semantic mapping engine.
+
+    Imported inside a function (not at module top) to break the import cycle:
+    ``semantic_mapping`` itself imports ``coerce_numeric``/``normalize_header``
+    from this module, so the cycle can only be resolved once this module is fully
+    loaded. Returns None if the engine is unavailable.
+    """
+    try:
+        from app.services.semantic_mapping import infer_schema as _infer_schema
+        return _infer_schema
+    except Exception:
+        return None
+
+
+def resolve_columns(df: pd.DataFrame) -> ColumnResolution:
+    """Map actual columns to canonical ledger fields.
+
+    The semantic mapping engine is authoritative: it combines header tokens with
+    value-shape profiling, cross-column relationships, and role competition, and
+    guarantees each source column maps to exactly one role.
+
+    The legacy alias pass is used only as a fallback when the semantic engine is
+    unavailable, or to fill genuinely-absent roles from columns the semantic
+    engine did not confidently classify.
+
+    A single column is NEVER assigned to more than one role. Ambiguous / weak
+    columns are left unmapped so the caller reports ambiguity instead of
+    guessing (never a silent zero).
+
+    Deterministic, no AI.
+    """
+    if df.empty or len(df.columns) == 0:
+        return _resolve_legacy(df)
+
+    legacy = _resolve_legacy(df)
+
+    _infer_schema = _load_semantic_engine()
+    if _infer_schema is None:
+        return legacy
+
+    try:
+        semantic = _infer_schema(df)
+    except Exception:
+        return legacy
+
+    role_map = {m.role: m.source_column for m in semantic.mappings}
+    used: set[str] = set()
+
+    # Start from the semantic engine's one-role-per-column mapping.
+    mapping: dict[str, str] = {}
+    for role in _LEDGER_ROLES:
+        src = role_map.get(role)
+        if src is None:
+            continue
+        # Protect a different role that already claimed this column.
+        if src in used:
+            continue
+        mapping[role] = src
+        used.add(src)
+
+    # For ledger roles the semantic engine left unmapped, fall back to the
+    # legacy alias pass, but only with a column that is not already used.
+    for role in _LEDGER_ROLES:
+        if role in mapping:
+            continue
+        src = legacy.mapping.get(role)
+        if src is None or src in used or src not in df.columns:
+            continue
+        mapping[role] = src
+        used.add(src)
+
+    detected = [r for r in _LEDGER_ROLES if r in mapping]
+    needed = [r for r in _LEDGER_ROLES if r not in mapping]
+
+    # Confidence: semantic is 0-1 (scaled to 0-100); legacy is already 0-100.
+    semantic_conf = round(semantic.confidence * 100, 1)
+    conf = max(legacy.confidence, semantic_conf)
+
+    arabic = any(is_arabic(c) for c in df.columns)
+
+    return ColumnResolution(
+        mapping=mapping,
+        confidence=round(conf, 1),
+        is_arabic=arabic,
+        detected_fields=detected,
+        missing=needed,
+        ingestion_result=semantic,
     )
 
 

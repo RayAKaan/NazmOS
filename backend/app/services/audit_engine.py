@@ -146,12 +146,17 @@ async def _run_inventory_domain(db: AsyncSession, business_id: UUID) -> list[dic
 
     # Stockout-risk scan (dialect-safe, Phase 12): items with < 7 days of supply.
     # days_of_supply computed in Python (SQLite lacks GREATEST/NULLIF).
+    # Velocity is coverage-aware: demand is normalized by the DISTINCT days it
+    # was actually observed over, so 6 days of sales are never presented as a
+    # 30-day dataset (2.67/day, not 0.53/day).
     try:
         cutoff = utcnow() - timedelta(days=30)
         stockout = await db.execute(text("""
             SELECT i.id AS item_id, i.name, inv.current_stock,
                    COALESCE((SELECT SUM(t.quantity) FROM transactions t
-                             WHERE t.item_id = i.id AND t.business_id = :b AND t.transaction_at >= :cutoff AND t.transaction_type = 'sale'), 0) AS qty_30d
+                             WHERE t.item_id = i.id AND t.business_id = :b AND t.transaction_at >= :cutoff AND t.transaction_type = 'sale'), 0) AS qty_30d,
+                   COALESCE((SELECT COUNT(DISTINCT DATE(t.transaction_at)) FROM transactions t
+                             WHERE t.item_id = i.id AND t.business_id = :b AND t.transaction_at >= :cutoff AND t.transaction_type = 'sale'), 0) AS coverage_days_30d
             FROM items i
             JOIN inventory inv ON inv.item_id = i.id AND inv.business_id = :b
             WHERE i.business_id = :b AND i.is_active = true AND inv.current_stock > 0
@@ -162,10 +167,14 @@ async def _run_inventory_domain(db: AsyncSession, business_id: UUID) -> list[dic
         for r in stockout.fetchall():
             stock = float(r.current_stock or 0)
             qty_30d = float(r.qty_30d or 0)
+            coverage_days = float(r.coverage_days_30d or 0)
+            if qty_30d > 0 and coverage_days <= 0:
+                coverage_days = 1.0
+            velocity = qty_30d / coverage_days if qty_30d > 0 and coverage_days > 0 else 0.0
+            velocity = max(velocity, 0.01)
             _inb = _inbound_map.get(str(r.item_id))
             inbound = float(_inb.confirmed_inbound_qty) if _inb else 0.0
             ghost_po = bool(_inb and _inb.ghost_po_risk)
-            velocity = max(qty_30d / 30.0, 0.01)
             projected_stock = stock + inbound
             days = projected_stock / velocity if velocity > 0 else 999.0
             if days >= 7:

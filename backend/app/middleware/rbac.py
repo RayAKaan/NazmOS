@@ -153,3 +153,34 @@ def require_capability(capability: str, business_id: str | None = None):
             )
         return current_user
     return dependency
+
+
+async def assert_capability_for_business(
+    request: Request,
+    current_user: User,
+    db: AsyncSession,
+    business_id: str | None,
+    capability: str,
+) -> None:
+    """Inline capability check for business ids that arrive in the request body.
+
+    ``require_capability`` reads the id from path/query params; endpoints whose
+    business_id is inside the JSON body (e.g. money-audit status updates) use
+    this helper instead. Records the denial and raises 403 when missing.
+    """
+    caps = await build_capabilities(db, current_user, business_id)
+    if not caps.has(capability):
+        await record_access_denial(
+            business_id=business_id or (caps.business_id if caps.business_id else None),
+            user_id=current_user.id,
+            user_email=current_user.email,
+            user_role=caps.role,
+            capability=capability,
+            reason=f"missing capability: {capability}",
+            path=request.url.path,
+            ip_address=request.client.host if request.client else None,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"Missing capability: {capability}",
+        )

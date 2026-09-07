@@ -108,7 +108,7 @@ async def advance_finding_status(
     current_user: User = Depends(get_current_user),
 ):
     await assert_business_access(db, business_id, current_user)
-    result = await finding_service.advance_status(db, request.finding_id, request.to_status)
+    result = await finding_service.advance_status(db, request.finding_id, request.to_status, business_id=business_id)
     if not result.get("ok"):
         raise HTTPException(400, result.get("reason", "Status advance failed"))
     return result
@@ -130,7 +130,8 @@ async def verify_finding_endpoint(
 ):
     await assert_business_access(db, business_id, current_user)
     result = await finding_service.verify_finding(
-        db, request.finding_id, request.verified, request.actual_impact_sar, request.note
+        db, request.finding_id, request.verified, request.actual_impact_sar, request.note,
+        business_id=business_id,
     )
     if not result.get("ok"):
         raise HTTPException(404, result.get("reason", "Verification failed"))

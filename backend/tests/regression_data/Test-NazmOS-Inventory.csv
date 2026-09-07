@@ -1,0 +1,101 @@
+business_id,sku,product_name,location_id,warehouse,city,quantity_on_hand,unit_cost_sar,reorder_point,active
+BIZ-NAZMOS-001,SKU-1001,Mineral Water 500ml,LOC-RYD,Riyadh Main,Riyadh,9,0.85,10,true
+BIZ-NAZMOS-001,SKU-1001,Mineral Water 500ml,LOC-JED,Jeddah Branch,Jeddah,64,0.85,13,true
+BIZ-NAZMOS-001,SKU-1001,Mineral Water 500ml,LOC-DMM,Dammam Branch,Dammam,4,0.85,5,true
+BIZ-NAZMOS-001,SKU-1001,Mineral Water 500ml,LOC-MED,Madinah Branch,Madinah,54,0.85,11,true
+BIZ-NAZMOS-001,SKU-1001,Mineral Water 500ml,LOC-KHB,Khobar Branch,Khobar,83,0.85,17,true
+BIZ-NAZMOS-001,SKU-1002,Basmati Rice 5kg,LOC-RYD,Riyadh Main,Riyadh,71,27.00,14,true
+BIZ-NAZMOS-001,SKU-1002,Basmati Rice 5kg,LOC-JED,Jeddah Branch,Jeddah,53,27.00,11,true
+BIZ-NAZMOS-001,SKU-1002,Basmati Rice 5kg,LOC-DMM,Dammam Branch,Dammam,96,27.00,19,true
+BIZ-NAZMOS-001,SKU-1002,Basmati Rice 5kg,LOC-MED,Madinah Branch,Madinah,35,27.00,7,true
+BIZ-NAZMOS-001,SKU-1002,Basmati Rice 5kg,LOC-KHB,Khobar Branch,Khobar,70,27.00,14,true
+BIZ-NAZMOS-001,SKU-1003,Cooking Oil 1.5L,LOC-RYD,Riyadh Main,Riyadh,81,12.00,16,true
+BIZ-NAZMOS-001,SKU-1003,Cooking Oil 1.5L,LOC-JED,Jeddah Branch,Jeddah,63,12.00,13,true
+BIZ-NAZMOS-001,SKU-1003,Cooking Oil 1.5L,LOC-DMM,Dammam Branch,Dammam,105,12.00,21,true
+BIZ-NAZMOS-001,SKU-1003,Cooking Oil 1.5L,LOC-MED,Madinah Branch,Madinah,47,12.00,9,true
+BIZ-NAZMOS-001,SKU-1003,Cooking Oil 1.5L,LOC-KHB,Khobar Branch,Khobar,82,12.00,16,true
+BIZ-NAZMOS-001,SKU-1004,Arabica Coffee 250g,LOC-RYD,Riyadh Main,Riyadh,98,19.00,20,true
+BIZ-NAZMOS-001,SKU-1004,Arabica Coffee 250g,LOC-JED,Jeddah Branch,Jeddah,75,19.00,15,true
+BIZ-NAZMOS-001,SKU-1004,Arabica Coffee 250g,LOC-DMM,Dammam Branch,Dammam,117,19.00,23,true
+BIZ-NAZMOS-001,SKU-1004,Arabica Coffee 250g,LOC-MED,Madinah Branch,Madinah,59,19.00,12,true
+BIZ-NAZMOS-001,SKU-1004,Arabica Coffee 250g,LOC-KHB,Khobar Branch,Khobar,94,19.00,19,true
+BIZ-NAZMOS-001,SKU-1005,Black Tea 100 Bags,LOC-RYD,Riyadh Main,Riyadh,60,11.50,12,true
+BIZ-NAZMOS-001,SKU-1005,Black Tea 100 Bags,LOC-JED,Jeddah Branch,Jeddah,42,11.50,8,true
+BIZ-NAZMOS-001,SKU-1005,Black Tea 100 Bags,LOC-DMM,Dammam Branch,Dammam,84,11.50,17,true
+BIZ-NAZMOS-001,SKU-1005,Black Tea 100 Bags,LOC-MED,Madinah Branch,Madinah,28,11.50,6,true
+BIZ-NAZMOS-001,SKU-1005,Black Tea 100 Bags,LOC-KHB,Khobar Branch,Khobar,61,11.50,12,true
+BIZ-NAZMOS-001,SKU-1006,White Sugar 2kg,LOC-RYD,Riyadh Main,Riyadh,79,5.25,16,true
+BIZ-NAZMOS-001,SKU-1006,White Sugar 2kg,LOC-JED,Jeddah Branch,Jeddah,56,5.25,11,true
+BIZ-NAZMOS-001,SKU-1006,White Sugar 2kg,LOC-DMM,Dammam Branch,Dammam,109,5.25,22,true
+BIZ-NAZMOS-001,SKU-1006,White Sugar 2kg,LOC-MED,Madinah Branch,Madinah,44,5.25,9,true
+BIZ-NAZMOS-001,SKU-1006,White Sugar 2kg,LOC-KHB,Khobar Branch,Khobar,68,5.25,14,true
+BIZ-NAZMOS-001,SKU-1007,Flour 2kg,LOC-RYD,Riyadh Main,Riyadh,74,4.60,15,true
+BIZ-NAZMOS-001,SKU-1007,Flour 2kg,LOC-JED,Jeddah Branch,Jeddah,48,4.60,10,true
+BIZ-NAZMOS-001,SKU-1007,Flour 2kg,LOC-DMM,Dammam Branch,Dammam,88,4.60,18,true
+BIZ-NAZMOS-001,SKU-1007,Flour 2kg,LOC-MED,Madinah Branch,Madinah,0,4.60,5,true
+BIZ-NAZMOS-001,SKU-1007,Flour 2kg,LOC-KHB,Khobar Branch,Khobar,63,4.60,13,true
+BIZ-NAZMOS-001,SKU-1008,Tomato Paste 400g,LOC-RYD,Riyadh Main,Riyadh,91,3.50,18,true
+BIZ-NAZMOS-001,SKU-1008,Tomato Paste 400g,LOC-JED,Jeddah Branch,Jeddah,67,3.50,13,true
+BIZ-NAZMOS-001,SKU-1008,Tomato Paste 400g,LOC-DMM,Dammam Branch,Dammam,121,3.50,24,true
+BIZ-NAZMOS-001,SKU-1008,Tomato Paste 400g,LOC-MED,Madinah Branch,Madinah,37,3.50,7,true
+BIZ-NAZMOS-001,SKU-1008,Tomato Paste 400g,LOC-KHB,Khobar Branch,Khobar,76,3.50,15,true
+BIZ-NAZMOS-001,SKU-1009,Long Grain Rice 5kg,LOC-RYD,Riyadh Main,Riyadh,69,22.00,14,true
+BIZ-NAZMOS-001,SKU-1009,Long Grain Rice 5kg,LOC-JED,Jeddah Branch,Jeddah,51,22.00,10,true
+BIZ-NAZMOS-001,SKU-1009,Long Grain Rice 5kg,LOC-DMM,Dammam Branch,Dammam,103,22.00,21,true
+BIZ-NAZMOS-001,SKU-1009,Long Grain Rice 5kg,LOC-MED,Madinah Branch,Madinah,32,22.00,6,true
+BIZ-NAZMOS-001,SKU-1009,Long Grain Rice 5kg,LOC-KHB,Khobar Branch,Khobar,65,22.00,13,true
+BIZ-NAZMOS-001,SKU-1010,Pasta 500g,LOC-RYD,Riyadh Main,Riyadh,87,3.10,17,true
+BIZ-NAZMOS-001,SKU-1010,Pasta 500g,LOC-JED,Jeddah Branch,Jeddah,58,3.10,12,true
+BIZ-NAZMOS-001,SKU-1010,Pasta 500g,LOC-DMM,Dammam Branch,Dammam,114,3.10,23,true
+BIZ-NAZMOS-001,SKU-1010,Pasta 500g,LOC-MED,Madinah Branch,Madinah,41,3.10,8,true
+BIZ-NAZMOS-001,SKU-1010,Pasta 500g,LOC-KHB,Khobar Branch,Khobar,72,3.10,14,true
+BIZ-NAZMOS-001,SKU-1011,Olive Oil 750ml,LOC-RYD,Riyadh Main,Riyadh,53,25.00,11,true
+BIZ-NAZMOS-001,SKU-1011,Olive Oil 750ml,LOC-JED,Jeddah Branch,Jeddah,39,25.00,8,true
+BIZ-NAZMOS-001,SKU-1011,Olive Oil 750ml,LOC-DMM,Dammam Branch,Dammam,76,25.00,15,true
+BIZ-NAZMOS-001,SKU-1011,Olive Oil 750ml,LOC-MED,Madinah Branch,Madinah,24,25.00,5,true
+BIZ-NAZMOS-001,SKU-1011,Olive Oil 750ml,LOC-KHB,Khobar Branch,Khobar,47,25.00,9,true
+BIZ-NAZMOS-001,SKU-1012,Dates 1kg,LOC-RYD,Riyadh Main,Riyadh,82,16.00,16,true
+BIZ-NAZMOS-001,SKU-1012,Dates 1kg,LOC-JED,Jeddah Branch,Jeddah,61,16.00,12,true
+BIZ-NAZMOS-001,SKU-1012,Dates 1kg,LOC-DMM,Dammam Branch,Dammam,112,16.00,22,true
+BIZ-NAZMOS-001,SKU-1012,Dates 1kg,LOC-MED,Madinah Branch,Madinah,46,16.00,9,true
+BIZ-NAZMOS-001,SKU-1012,Dates 1kg,LOC-KHB,Khobar Branch,Khobar,73,16.00,15,true
+BIZ-NAZMOS-001,SKU-1013,Milk Powder 900g,LOC-RYD,Riyadh Main,Riyadh,66,18.50,13,true
+BIZ-NAZMOS-001,SKU-1013,Milk Powder 900g,LOC-JED,Jeddah Branch,Jeddah,45,18.50,9,true
+BIZ-NAZMOS-001,SKU-1013,Milk Powder 900g,LOC-DMM,Dammam Branch,Dammam,97,18.50,19,true
+BIZ-NAZMOS-001,SKU-1013,Milk Powder 900g,LOC-MED,Madinah Branch,Madinah,29,18.50,6,true
+BIZ-NAZMOS-001,SKU-1013,Milk Powder 900g,LOC-KHB,Khobar Branch,Khobar,58,18.50,12,true
+BIZ-NAZMOS-001,SKU-1014,Tuna 4 Pack,LOC-RYD,Riyadh Main,Riyadh,57,15.00,11,true
+BIZ-NAZMOS-001,SKU-1014,Tuna 4 Pack,LOC-JED,Jeddah Branch,Jeddah,43,15.00,9,true
+BIZ-NAZMOS-001,SKU-1014,Tuna 4 Pack,LOC-DMM,Dammam Branch,Dammam,91,15.00,18,true
+BIZ-NAZMOS-001,SKU-1014,Tuna 4 Pack,LOC-MED,Madinah Branch,Madinah,33,15.00,7,true
+BIZ-NAZMOS-001,SKU-1014,Tuna 4 Pack,LOC-KHB,Khobar Branch,Khobar,52,,10,true
+BIZ-NAZMOS-001,SKU-1015,Dish Soap 750ml,LOC-RYD,Riyadh Main,Riyadh,75,5.80,15,true
+BIZ-NAZMOS-001,SKU-1015,Dish Soap 750ml,LOC-JED,Jeddah Branch,Jeddah,55,5.80,11,true
+BIZ-NAZMOS-001,SKU-1015,Dish Soap 750ml,LOC-DMM,Dammam Branch,Dammam,101,5.80,20,true
+BIZ-NAZMOS-001,SKU-1015,Dish Soap 750ml,LOC-MED,Madinah Branch,Madinah,38,5.80,8,true
+BIZ-NAZMOS-001,SKU-1015,Dish Soap 750ml,LOC-KHB,Khobar Branch,Khobar,69,5.80,14,true
+BIZ-NAZMOS-001,SKU-1016,Laundry Detergent 2kg,LOC-RYD,Riyadh Main,Riyadh,3,17.50,5,true
+BIZ-NAZMOS-001,SKU-1016,Laundry Detergent 2kg,LOC-JED,Jeddah Branch,Jeddah,52,17.50,10,true
+BIZ-NAZMOS-001,SKU-1016,Laundry Detergent 2kg,LOC-DMM,Dammam Branch,Dammam,93,17.50,19,true
+BIZ-NAZMOS-001,SKU-1016,Laundry Detergent 2kg,LOC-MED,Madinah Branch,Madinah,31,17.50,6,true
+BIZ-NAZMOS-001,SKU-1016,Laundry Detergent 2kg,LOC-KHB,Khobar Branch,Khobar,64,17.50,13,true
+BIZ-NAZMOS-001,SKU-1017,Paper Towels 6 Roll,LOC-RYD,Riyadh Main,Riyadh,88,12.50,18,true
+BIZ-NAZMOS-001,SKU-1017,Paper Towels 6 Roll,LOC-JED,Jeddah Branch,Jeddah,49,12.50,,true
+BIZ-NAZMOS-001,SKU-1017,Paper Towels 6 Roll,LOC-DMM,Dammam Branch,Dammam,107,12.50,21,true
+BIZ-NAZMOS-001,SKU-1017,Paper Towels 6 Roll,LOC-MED,Madinah Branch,Madinah,35,12.50,7,true
+BIZ-NAZMOS-001,SKU-1017,Paper Towels 6 Roll,LOC-KHB,Khobar Branch,Khobar,71,12.50,14,true
+BIZ-NAZMOS-001,SKU-1018,Tissue Box 200 Sheets,LOC-RYD,Riyadh Main,Riyadh,62,3.80,12,true
+BIZ-NAZMOS-001,SKU-1018,Tissue Box 200 Sheets,LOC-JED,Jeddah Branch,Jeddah,44,3.80,9,true
+BIZ-NAZMOS-001,SKU-1018,Tissue Box 200 Sheets,LOC-DMM,Dammam Branch,Dammam,86,3.80,17,true
+BIZ-NAZMOS-001,SKU-1018,Tissue Box 200 Sheets,LOC-MED,Madinah Branch,Madinah,27,3.80,5,true
+BIZ-NAZMOS-001,SKU-1018,Tissue Box 200 Sheets,LOC-KHB,Khobar Branch,Khobar,59,3.80,12,true
+BIZ-NAZMOS-001,SKU-1019,Orange Juice 1L,LOC-RYD,Riyadh Main,Riyadh,48,5.10,10,true
+BIZ-NAZMOS-001,SKU-1019,Orange Juice 1L,LOC-JED,Jeddah Branch,Jeddah,36,5.10,7,true
+BIZ-NAZMOS-001,SKU-1019,Orange Juice 1L,LOC-DMM,Dammam Branch,Dammam,79,5.10,16,true
+BIZ-NAZMOS-001,SKU-1019,Orange Juice 1L,LOC-MED,Madinah Branch,Madinah,22,5.10,5,true
+BIZ-NAZMOS-001,SKU-1019,Orange Juice 1L,LOC-KHB,Khobar Branch,Khobar,7,5.10,8,true
+BIZ-NAZMOS-001,SKU-1020,Chocolate Biscuits 300g,LOC-RYD,Riyadh Main,Riyadh,56,4.20,11,true
+BIZ-NAZMOS-001,SKU-1020,Chocolate Biscuits 300g,LOC-JED,Jeddah Branch,Jeddah,41,4.20,8,true
+BIZ-NAZMOS-001,SKU-1020,Chocolate Biscuits 300g,LOC-DMM,Dammam Branch,Dammam,94,4.20,19,true
+BIZ-NAZMOS-001,SKU-1020,Chocolate Biscuits 300g,LOC-MED,Madinah Branch,Madinah,30,4.20,6,true
+BIZ-NAZMOS-001,SKU-1020,Chocolate Biscuits 300g,LOC-KHB,Khobar Branch,Khobar,65,4.20,13,false

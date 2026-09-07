@@ -8,6 +8,7 @@ from app.database.models import ExecutedAction, DecisionLog
 from app.services.action_executor import ActionExecutor
 from app.services.audit_service import AuditService
 from app.services.multi_tenant import TenantContext
+from app.middleware.rbac import require_capability
 from app.schemas.action import (
     ActionExecuteRequest, ActionResponse, ActionReverseRequest,
     ActionHistoryItem, ActionDetailResponse, DecisionApplyRequest, DecisionApplyResponse,
@@ -22,7 +23,7 @@ def get_current_tenant(request: Request) -> TenantContext:
     return request.state.tenant_context
 
 
-@router.post("/execute", response_model=ActionResponse)
+@router.post("/execute", response_model=ActionResponse, dependencies=[Depends(require_capability("can_approve_actions"))])
 async def execute_action(
     data: ActionExecuteRequest,
     db: AsyncSession = Depends(get_db),
@@ -31,7 +32,10 @@ async def execute_action(
     executor = ActionExecutor(db)
     
     item_result = await db.execute(
-        select(DecisionLog).where(DecisionLog.id == data.entity_id)
+        select(DecisionLog).where(
+            DecisionLog.id == data.entity_id,
+            DecisionLog.business_id == tenant.business_id,
+        )
     )
     item = item_result.scalar_one_or_none()
     
@@ -74,7 +78,7 @@ async def execute_action(
     return result
 
 
-@router.post("/{action_id}/reverse", response_model=ActionResponse)
+@router.post("/{action_id}/reverse", response_model=ActionResponse, dependencies=[Depends(require_capability("can_approve_actions"))])
 async def reverse_action(
     action_id: UUID,
     data: ActionReverseRequest,
@@ -146,7 +150,7 @@ async def get_action_detail(
     return action
 
 
-@router.post("/decisions/{decision_id}/apply", response_model=DecisionApplyResponse)
+@router.post("/decisions/{decision_id}/apply", response_model=DecisionApplyResponse, dependencies=[Depends(require_capability("can_approve_actions"))])
 async def apply_decision(
     decision_id: UUID,
     data: DecisionApplyRequest,
@@ -169,7 +173,7 @@ async def apply_decision(
     new_state = {}
     if decision.action_type == "RESTOCK":
         new_state = {
-            "current_stock": float(decision.quantity) if decision.quantity else 0,
+            "restock_qty": float(decision.quantity) if decision.quantity else 0,
             "item_name": decision.item_name,
         }
     

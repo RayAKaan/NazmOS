@@ -209,8 +209,21 @@ def _confidence(ledger: dict[str, dict[str, Any]]) -> Decimal:
     return confidence
 
 
+def _build_ingestion_diagnostics(resolution: ColumnResolution) -> dict[str, Any] | None:
+    """Extract structured ingestion diagnostics from the semantic engine result."""
+    ir = resolution.ingestion_result
+    if ir is None:
+        return None
+    try:
+        return ir.as_dict()
+    except Exception:
+        return None
+
+
 def _summary(ledger: dict[str, dict[str, Any]], actions: list[dict[str, Any]], aggregates: dict[str, Any],
-             file_kind: str, row_count: int, detected_columns: dict[str, str | None], extra: dict[str, Any] | None = None) -> dict[str, Any]:
+             file_kind: str, row_count: int, detected_columns: dict[str, str | None],
+             resolution: ColumnResolution | None = None,
+             extra: dict[str, Any] | None = None) -> dict[str, Any]:
     rev_risk = aggregates["revenue_at_risk"]
     summary = {
         "financial_model_version": "v2",
@@ -237,6 +250,10 @@ def _summary(ledger: dict[str, dict[str, Any]], actions: list[dict[str, Any]], a
         "generated_at": datetime.utcnow().isoformat(),
         "guest_session_id": str(uuid4()),
     }
+    if resolution is not None:
+        diag = _build_ingestion_diagnostics(resolution)
+        if diag:
+            summary["ingestion"] = diag
     if extra:
         summary.update(extra)
     return summary
@@ -267,7 +284,7 @@ async def run_guest_audit(rows: list[dict[str, Any]]) -> dict[str, Any]:
     today = datetime.utcnow()
     actions, aggregates = _audit_ledger(ledger, today)
     detected = _detected_column_indices(resolution)
-    summary = _summary(ledger, actions, aggregates, file_kind, len(df), detected)
+    summary = _summary(ledger, actions, aggregates, file_kind, len(df), detected, resolution=resolution)
     return {"summary": summary, "actions": actions, "missing_data": []}
 
 
@@ -432,7 +449,13 @@ def run_two_file_audit(
         "column_confidence_inventory": inventory_resolution.confidence,
         "is_arabic": sales_resolution.is_arabic or inventory_resolution.is_arabic,
     }
-    summary = _summary(merged, actions, aggregates, "paired_two_file", pairing_extra["row_count"], detected, extra=pairing_extra)
+    summary = _summary(merged, actions, aggregates, "paired_two_file", pairing_extra["row_count"], detected, resolution=sales_resolution, extra=pairing_extra)
+    if inventory_resolution.ingestion_result is not None:
+        diag = _build_ingestion_diagnostics(inventory_resolution)
+        if diag:
+            if "ingestion" not in summary:
+                summary["ingestion"] = {}
+            summary["ingestion"]["inventory"] = diag
     return {"summary": summary, "actions": actions, "missing_data": []}
 
 

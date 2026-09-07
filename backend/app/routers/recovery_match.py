@@ -6,7 +6,7 @@ not escrow, not delivery, and not payment processing.
 """
 from uuid import UUID
 from typing import Optional, List, Any
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db, User
 from app.middleware.auth_middleware import get_current_user
 from app.middleware.business_access import assert_business_access
+from app.middleware.rbac import assert_capability_for_business
 from app.middleware.feature_gate import require_feature
 from app.services.recovery_match_service import (
     get_or_create_settings,
@@ -254,10 +255,12 @@ async def reveal_match_contact(
 async def complete_recovery_match(
     match_id: UUID,
     req: MatchActionRequest,
+    request: Request,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     await assert_business_access(db, req.business_id, current_user)
+    await assert_capability_for_business(request, current_user, db, str(req.business_id), "can_approve_actions")
     await require_feature(db, req.business_id, "recovery_match", required_plan="Growing Retail")
     if req.recovered_value_sar is None:
         raise HTTPException(422, "recovered_value_sar is required")
@@ -272,10 +275,12 @@ async def complete_recovery_match(
 async def reject_recovery_match(
     match_id: UUID,
     req: MatchActionRequest,
+    request: Request,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     await assert_business_access(db, req.business_id, current_user)
+    await assert_capability_for_business(request, current_user, db, str(req.business_id), "can_approve_actions")
     await require_feature(db, req.business_id, "recovery_match", required_plan="Growing Retail")
     try:
         return await reject_match(db, match_id, req.business_id, req.notes)

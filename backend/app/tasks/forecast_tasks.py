@@ -2,7 +2,7 @@ import logging
 from sqlalchemy import text
 
 from app.config import get_settings
-from app.database.connection import get_sync_session
+from app.database.connection import get_sync_session, sync_rls_tenant_context
 from app.services.forecasting.prophet_provider import ProphetProvider
 from app.services.forecasting.sync_runner import run_provider_forecast_sync
 
@@ -15,14 +15,19 @@ def _run_for_items(pairs):
 
     A single bad item must not abort the batch: failures are logged and
     skipped, and the batch continues with the remaining items.
+
+    Each (item_id, business_id) pair runs under its own tenant RLS context so
+    the batch never loses isolation even when the caller is a cross-tenant
+    supervisor (``refresh_all_forecasts``).
     """
     results = {"completed": 0, "failed": 0, "no_data": 0}
     provider = ProphetProvider()
     for (item_id, business_id) in pairs:
         try:
-            legacy = run_provider_forecast_sync(
-                provider, business_id, item_id, horizon_days=30
-            )
+            with sync_rls_tenant_context(str(business_id)):
+                legacy = run_provider_forecast_sync(
+                    provider, business_id, item_id, horizon_days=30
+                )
         except Exception as exc:
             logger.exception("Item forecast failed item=%s", item_id)
             results["failed"] += 1
@@ -38,6 +43,9 @@ def _run_for_items(pairs):
 
 
 def run_refresh_all_forecasts():
+    # Supervisor scope: selecting the top-volume items across ALL active
+    # businesses is cross-tenant scheduler work.  Each forecast is then run
+    # under its own tenant context inside ``_run_for_items``.
     with get_sync_session() as session:
         # Top 10 items by transaction volume get full Prophet forecasting.
         # The rest use the fast KSA-aware fallback (no Prophet dependency).
@@ -61,7 +69,7 @@ def run_refresh_all_forecasts():
 
 
 def run_refresh_forecasts_for_business(business_id: str):
-    with get_sync_session() as session:
+    with get_sync_session(tenant_id=business_id) as session:
         result = session.execute(
             text("SELECT id FROM items WHERE business_id = :business_id AND is_active = true"),
             {"business_id": business_id}
@@ -75,8 +83,9 @@ def run_refresh_forecasts_for_business(business_id: str):
 
 
 def run_train_forecast_for_item(item_id: str, business_id: str):
-    provider = ProphetProvider()
-    return run_provider_forecast_sync(provider, business_id, item_id, horizon_days=30)
+    with sync_rls_tenant_context(str(business_id)):
+        provider = ProphetProvider()
+        return run_provider_forecast_sync(provider, business_id, item_id, horizon_days=30)
 
 
 if settings.USE_CELERY:

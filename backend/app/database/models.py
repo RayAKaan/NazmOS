@@ -241,6 +241,32 @@ class Category(Base):
     )
 
 
+class Location(Base):
+    """A physical location (shop/branch/warehouse) within a business.
+
+    Locations are a first-class dimension of the canonical data model so that
+    inventory and sales retain their (business, location, item) grain.  Before
+    this table existed, locations were modelled as separate ``businesses`` rows
+    sharing an ``organization_id``, which made SKU x location counts collapse.
+    """
+
+    __tablename__ = "locations"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    name = Column(String(120), nullable=False)
+    code = Column(String(30), nullable=True)  # canonical ingestion role "warehouse"/"branch" value
+    is_headquarters = Column(Boolean, default=False)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("business_id", "name", name="uq_location_business_name"),
+        Index("idx_location_business", "business_id"),
+    )
+
+
 class Item(Base):
     __tablename__ = "items"
 
@@ -294,6 +320,7 @@ class Inventory(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
     item_id = Column(UUID(as_uuid=True), ForeignKey("items.id", ondelete="CASCADE"), nullable=False)
+    location_id = Column(UUID(as_uuid=True), ForeignKey("locations.id", ondelete="CASCADE"), nullable=True)
     current_stock = Column(Numeric(12, 2), nullable=False, default=0)
     reorder_level = Column(Numeric(12, 2), default=10)
     max_stock = Column(Numeric(12, 2), default=100)
@@ -314,10 +341,18 @@ class Inventory(Base):
     stockout_count_90d = Column(Integer, default=0)
 
     __table_args__ = (
-        UniqueConstraint("business_id", "item_id", name="uq_inventory_business_item"),
+        UniqueConstraint("business_id", "item_id", "location_id", name="uq_inventory_business_item_location"),
         CheckConstraint("current_stock >= 0", name="inventory_stock_check"),
         Index("idx_inventory_business", "business_id"),
         Index("idx_inventory_item", "item_id"),
+        Index("idx_inventory_location", "location_id"),
+        Index(
+            "uq_inventory_business_item_legacy",
+            "business_id",
+            "item_id",
+            unique=True,
+            postgresql_where=text("location_id IS NULL"),
+        ),
     )
 
 
@@ -327,6 +362,7 @@ class Transaction(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
     item_id = Column(UUID(as_uuid=True), ForeignKey("items.id", ondelete="SET NULL"), nullable=True)
+    location_id = Column(UUID(as_uuid=True), ForeignKey("locations.id", ondelete="SET NULL"), nullable=True)
     quantity = Column(Numeric(12, 2), nullable=False)
     unit_price = Column(Numeric(12, 2), nullable=False)
     cost_price = Column(Numeric(12, 2), nullable=False)
@@ -335,6 +371,7 @@ class Transaction(Base):
     transaction_type = Column(String(20), default="sale")
     payment_method = Column(String(20), default="cash")
     reference_id = Column(String(100), nullable=True, index=True)  # External POS webhook reference ID
+    source_transaction_id = Column(String(120), nullable=True)  # Merchant/POS-supplied transaction_id (provenance; folded into row_hash)
     row_hash = Column(String(64), nullable=True)
     transaction_at = Column(DateTime(timezone=True), nullable=False, default=func.now())
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -344,13 +381,21 @@ class Transaction(Base):
         CheckConstraint("transaction_type IN ('sale', 'return', 'refund', 'waste', 'adjustment', 'transfer')", name="transaction_type_check"),
         Index("idx_transaction_business", "business_id"),
         Index("idx_transaction_item", "item_id"),
+        Index("idx_transaction_location", "location_id"),
         Index("idx_transaction_business_date", "business_id", "transaction_at"),
         Index("idx_transaction_date", "transaction_at"),
-        # Dedup: one row_hash per tenant; NULL row_hash (legacy/webhook rows)
-        # is exempt so those rows are not blocked by the uniqueness.
+        # Dedup identity: content hashing over the row's identifying business
+        # facts, INCLUDING the merchant/POS-supplied source_transaction_id and
+        # location. A hard unique index on source_transaction_id alone would
+        # wrongly collapse a multi-line invoice (many SKUs, one invoice id), so
+        # the id is stored for provenance and participates in the hash instead.
+        # Content-equal rows from different locations/transactions must NOT
+        # collapse; NULL-hash rows (legacy/webhook) are exempt.
         Index(
             "uq_transactions_row_hash",
             "business_id",
+            "location_id",
+            "item_id",
             "row_hash",
             unique=True,
             postgresql_where=text("row_hash IS NOT NULL"),

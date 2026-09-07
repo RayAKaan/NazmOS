@@ -1,3 +1,22 @@
+export interface IngestionMappingEntry {
+  source_column: string;
+  role: string;
+  confidence: number;
+  evidence: string[];
+  alternatives: { role: string; confidence: number }[];
+}
+
+export interface IngestionDiagnostics {
+  status: string;
+  confidence: number;
+  version: string;
+  mapping: IngestionMappingEntry[];
+  missing_required_fields: string[];
+  ambiguous_fields: string[];
+  file_classification: string[];
+  error_code?: string | null;
+}
+
 export interface GuestAuditSummary {
   money_at_risk_sar: number;
   inventory_value_sar: number;
@@ -20,6 +39,10 @@ export interface GuestAuditSummary {
   guest_session_id: string;
   is_two_file?: boolean;
   is_arabic?: boolean;
+  ingestion?: {
+    sales?: IngestionDiagnostics;
+    inventory?: IngestionDiagnostics;
+  } & IngestionDiagnostics;
   pairing?: {
     attempted: number;
     paired: number;

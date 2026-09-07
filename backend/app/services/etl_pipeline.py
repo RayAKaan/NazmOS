@@ -31,6 +31,7 @@ class ETLPipeline:
         self.normalization_report = (self.df.attrs.get("data_quality_report", {}) if self.df is not None else {})
         self.redis = None
         self.progress_channel = f"etl_progress:{upload_id or 'legacy'}"
+        self._location_cache: dict = {}
         self._stats = {
             "imported": 0,
             "skipped": 0,
@@ -220,6 +221,39 @@ class ETLPipeline:
         except (TypeError, ValueError):
             return default
 
+    async def _get_or_create_location(self, session: AsyncSession, name) -> str | None:
+        """Resolve a merchant location (branch/warehouse/store) to its id.
+
+        Locations are first-class rows in the canonical model.  The first
+        distinct location seen for a business becomes its headquarters, which
+        keeps default-location resolution deterministic across re-uploads.
+        Returns ``None`` when the row carries no location (legacy single-site
+        data attaches to a NULL-location inventory row).
+        """
+        name = self._clean_text(name)
+        if not name:
+            return None
+        if name in self._location_cache:
+            return self._location_cache[name]
+
+        result = await session.execute(
+            text("""
+                INSERT INTO locations
+                    (id, business_id, name, is_headquarters, is_active, created_at)
+                VALUES
+                    (:id, :business_id, :name,
+                     NOT EXISTS (SELECT 1 FROM locations WHERE business_id = :business_id),
+                     true, NOW())
+                ON CONFLICT (business_id, name) DO UPDATE SET name = EXCLUDED.name
+                RETURNING id
+            """),
+            {"id": str(_uuid.uuid4()), "business_id": self.business_id, "name": name},
+        )
+        row = result.fetchone()
+        location_id = str(row[0]) if row else None
+        self._location_cache[name] = location_id
+        return location_id
+
     async def _get_or_create_category(self, session: AsyncSession, category_name: str | None) -> str | None:
         category_name = self._clean_text(category_name)
         if not category_name:
@@ -341,6 +375,13 @@ class ETLPipeline:
         return {str(row[1]): str(row[0]) for row in result}
 
     async def _ensure_inventory(self, session: AsyncSession, item_map: dict):
+        # Location-aware uploads create their per-location rows in
+        # _apply_inventory_snapshot.  Creating a business-wide NULL-location row
+        # here as well would leave misleading zero-stock residue for a
+        # multi-location merchant, so it is skipped when the file is
+        # location-grained.
+        if self.df is not None and "location_name" in self.df.columns:
+            return
         for item_name_lower in item_map.keys():
             await session.execute(
                 text("""
@@ -361,6 +402,23 @@ class ETLPipeline:
         if "current_stock" not in self.df.columns:
             return {"inventory_updated": 0, "failed": 0}
 
+        # Fail-closed grain guard: a file without a location column can only be
+        # ingested when each item appears once (genuine single-site legacy).
+        # If the same item appears on multiple rows with no location, writing
+        # them all under the NULL-location partial index would silently
+        # last-write-wins collapse the (SKU x location) grain -- exactly the
+        # bug that turned a business-wide SAR 28,892 into a Dammam-only subset
+        # of SAR 17,366.  Refuse instead of silently fabricating a total.
+        if "location_name" not in self.df.columns:
+            key = self.df["item_name"].astype(str).str.strip().str.lower()
+            ambiguous = int(key.duplicated(keep=False).sum())
+            if ambiguous:
+                raise ValueError(
+                    f"Refusing inventory import: {ambiguous} rows carry no location "
+                    "yet duplicate the same item. Multi-location grain would collapse; "
+                    "re-upload with a warehouse/branch column."
+                )
+
         for _, row in self.df.iterrows():
             item_name = self._clean_text(row.get("item_name"))
             if not item_name:
@@ -371,19 +429,27 @@ class ETLPipeline:
                 failed += 1
                 continue
 
+            location_id = await self._get_or_create_location(session, row.get("location_name"))
             current_stock = max(0.0, self._as_float(row.get("current_stock"), 0.0))
             reorder_level = self._as_float(row.get("reorder_level"), None) if "reorder_level" in self.df.columns else None
             max_stock = self._as_float(row.get("max_stock"), None) if "max_stock" in self.df.columns else None
             if max_stock is None or max_stock <= 0:
                 max_stock = max(current_stock, 100.0)
 
+            if location_id:
+                conflict_clause = "ON CONFLICT (business_id, item_id, location_id) DO UPDATE SET"
+            else:
+                # Legacy single-site rows live under the NULL-location partial
+                # unique index, so the conflict target must carry its predicate.
+                conflict_clause = "ON CONFLICT (business_id, item_id) WHERE location_id IS NULL DO UPDATE SET"
+
             await session.execute(
-                text("""
+                text(f"""
                     INSERT INTO inventory
-                        (id, business_id, item_id, current_stock, reorder_level, max_stock, last_restocked, updated_at, created_at)
+                        (id, business_id, item_id, location_id, current_stock, reorder_level, max_stock, last_restocked, updated_at, created_at)
                     VALUES
-                        (:id, :business_id, :item_id, :current_stock, COALESCE(:reorder_level, 10), :max_stock, NOW(), NOW(), NOW())
-                    ON CONFLICT (business_id, item_id) DO UPDATE SET
+                        (:id, :business_id, :item_id, :location_id, :current_stock, COALESCE(:reorder_level, 10), :max_stock, NOW(), NOW(), NOW())
+                    {conflict_clause}
                         current_stock = EXCLUDED.current_stock,
                         reorder_level = COALESCE(:reorder_level, inventory.reorder_level),
                         max_stock = COALESCE(:max_stock, inventory.max_stock),
@@ -397,6 +463,7 @@ class ETLPipeline:
                     "id": str(_uuid.uuid4()),
                     "business_id": self.business_id,
                     "item_id": item_id,
+                    "location_id": location_id,
                     "current_stock": current_stock,
                     "reorder_level": reorder_level,
                     "max_stock": max_stock,
@@ -438,15 +505,22 @@ class ETLPipeline:
             if transaction_type in {"return", "refund", "waste", "adjustment"}:
                 total_amount = -abs(total_amount)
 
-            # Dedup hash over the row's identifying business facts. Deterministic
-            # across re-uploads (no per-upload salt) so a re-import of the same
-            # file never double-counts sales. The partial unique index
-            # (business_id, row_hash) WHERE row_hash IS NOT NULL makes the
-            # ON CONFLICT DO NOTHING below idempotent.
+            location_id = await self._get_or_create_location(session, row.get("location_name"))
+            source_transaction_id = self._clean_text(row.get("source_transaction_id")) if "source_transaction_id" in self.df.columns else None
+
+            # Dedup hash over the row's identifying business facts, INCLUDING
+            # the branch and the merchant/POS-supplied source transaction id.
+            # Deterministic across re-uploads (no per-upload salt) so a
+            # re-import of the same file never double-counts sales, while
+            # identical content sold at different branches stays distinct.
+            # The hash never relies on a hard source_transaction_id unique key:
+            # one invoice may legitimately span multiple SKU rows.
             row_hash = hashlib.sha256(
                 json.dumps({
                     "business_id": self.business_id,
                     "item_id": item_id,
+                    "location_id": location_id,
+                    "source_transaction_id": source_transaction_id,
                     "transaction_at": str(transaction_at),
                     "quantity": quantity,
                     "total_amount": total_amount,
@@ -456,6 +530,8 @@ class ETLPipeline:
             rows.append({
                 "business_id": self.business_id,
                 "item_id": item_id,
+                "location_id": location_id,
+                "source_transaction_id": source_transaction_id,
                 "quantity": quantity,
                 "unit_price": unit_price,
                 "cost_price": cost_price,
@@ -476,11 +552,13 @@ class ETLPipeline:
                 result = await session.execute(
                     text("""
                         INSERT INTO transactions
-                            (id, business_id, item_id, quantity, unit_price, cost_price,
-                             total_amount, profit, transaction_at, transaction_type, row_hash, created_at)
-                        VALUES (:id, :business_id, :item_id, :quantity, :unit_price, :cost_price,
-                                :total_amount, :profit, :transaction_at, :transaction_type, :row_hash, NOW())
-                        ON CONFLICT (business_id, row_hash) WHERE row_hash IS NOT NULL
+                            (id, business_id, item_id, location_id, quantity, unit_price, cost_price,
+                             total_amount, profit, transaction_at, transaction_type,
+                             source_transaction_id, row_hash, created_at)
+                        VALUES (:id, :business_id, :item_id, :location_id, :quantity, :unit_price, :cost_price,
+                                :total_amount, :profit, :transaction_at, :transaction_type,
+                                :source_transaction_id, :row_hash, NOW())
+                        ON CONFLICT (business_id, location_id, item_id, row_hash) WHERE row_hash IS NOT NULL
                         DO NOTHING
                     """),
                     {**row_data, "id": str(_uuid.uuid4())}

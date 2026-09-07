@@ -64,13 +64,7 @@ class ContextBuilder:
             ] if inventory_items else [],
             "dead_stock": dead_stock[:10] if dead_stock else [],
             "forecasts": forecasts,
-            "patterns": patterns or {
-                "best_day_of_week": "Friday (Jumu'ah)",
-                "worst_day_of_week": "Tuesday",
-                "tuesday_dip_pct": 28,
-                "peak_hours": [10, 21],
-                "weekend_uplift_pct": 42,
-            },
+            "patterns": patterns or {},
             "upcoming": {
                 "is_weekend_approaching": today.weekday() in [2, 3],
                 "next_festival": next_festival,

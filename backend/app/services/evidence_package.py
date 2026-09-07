@@ -174,10 +174,18 @@ def build_item_evidence(
     branch_b_stock: float | None = None,
     branch_a_demand: float | None = None,
     branch_b_demand: float | None = None,
+    coverage_days_30d: int | None = None,
 ) -> ItemEvidence:
     """Build evidence for one item from deterministic financial data."""
+    from app.services.money_audit_service import coverage_aware_daily_velocity
     inventory_value = float(stock * cost)
-    daily_velocity = float(qty_30d / Decimal("30")) if qty_30d > 0 else 0.0
+    # Use coverage-aware velocity when the caller supplies observed-day counts;
+    # fall back to the legacy /30 convention only for synthetic simulators where
+    # qty_30d = daily_rate * 30 (closed-loop experiment).
+    if coverage_days_30d is not None and coverage_days_30d > 0:
+        daily_velocity = float(coverage_aware_daily_velocity(qty_30d, coverage_days_30d))
+    else:
+        daily_velocity = float(qty_30d / Decimal("30")) if qty_30d > 0 else 0.0
     days_supply = float(stock / Decimal(str(daily_velocity))) if daily_velocity > 0 and stock > 0 else None
 
     # Monthly concentration peak

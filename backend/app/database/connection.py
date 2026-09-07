@@ -25,6 +25,54 @@ def clear_rls_tenant_id() -> None:
     _rls_tenant_id.set(None)
 
 
+def _sanitize_tenant_id(tenant_id: str | None) -> str | None:
+    """Validate a tenant id for safe use inside a ``SET LOCAL`` literal.
+
+    ``SET LOCAL app.current_tenant_id = '<tenant_id>'`` cannot use bound
+    parameters with asyncpg, so the value is inlined.  Rejecting quote /
+    comment / control characters prevents anything other than a clean
+    identifier (a UUID in practice) from reaching the SQL text.
+    """
+    if tenant_id is None:
+        return None
+    value = str(tenant_id).strip()
+    if not value:
+        return None
+    for ch in ("'", '"', "\\", ";", "--", "\n", "\r", "/*", "*/"):
+        if ch in value:
+            raise ValueError(f"Invalid tenant identifier {value!r}")
+    return value
+
+
+@contextmanager
+def sync_rls_tenant_context(tenant_id: str | None):
+    """Scope background/sync execution to a single tenant via RLS.
+
+    Celery tasks, thread-pool executors, and CLI jobs have no HTTP request, so
+    nothing sets the tenant ContextVar.  Wrapping a task body in this context
+    makes every session created inside (``get_sync_session`` and
+    ``AsyncSessionLocal`` alike) inherit the tenant: the sync engine begin
+    listener and the async ``_set_rls_context`` both apply
+    ``SET LOCAL app.current_tenant_id`` at the start of every transaction.
+
+    ``None`` is a no-op (supervisor / cross-tenant sections keep whatever
+    context was active).
+    """
+    if tenant_id is None:
+        yield
+        return
+    from uuid import UUID
+    try:
+        UUID(str(tenant_id))
+    except (TypeError, ValueError):
+        raise ValueError(f"Tenant context requires a UUID business id, got {tenant_id!r}")
+    token = _rls_tenant_id.set(str(tenant_id))
+    try:
+        yield
+    finally:
+        _rls_tenant_id.reset(token)
+
+
 def enforce_tenant_filter(business_id: str | None) -> str:
     """Validate and normalize a tenant (business_id) scope for a bulk operation.
 
@@ -73,7 +121,7 @@ if not _is_sqlite:
         restricted app role) active for the whole request regardless of commit
         points.
         """
-        tenant_id = get_rls_tenant_id()
+        tenant_id = _sanitize_tenant_id(get_rls_tenant_id())
         if tenant_id:
             conn.exec_driver_sql(
                 f"SET LOCAL app.current_tenant_id = '{tenant_id}'"
@@ -98,7 +146,7 @@ _sync_engine = None
 def _get_sync_engine():
     global _sync_engine
     if _sync_engine is None:
-        from sqlalchemy import create_engine
+        from sqlalchemy import create_engine, event
         if _is_sqlite:
             sync_database_url = settings.DATABASE_URL.replace("+aiosqlite", "")
         else:
@@ -107,16 +155,34 @@ def _get_sync_engine():
         if not _is_sqlite:
             sync_kwargs.update({"pool_pre_ping": True, "pool_size": 5})
         _sync_engine = create_engine(sync_database_url, **sync_kwargs)
+        if not _is_sqlite:
+            @event.listens_for(_sync_engine, "begin")
+            def _after_sync_begin(conn):
+                """Re-apply RLS tenant context on every sync transaction begin.
+
+                Mirrors the async engine listener so Celery/background sessions
+                opened without an explicit ``_set_rls_context`` still inherit
+                the tenant context set by ``sync_rls_tenant_context``.
+                """
+                tenant_id = _sanitize_tenant_id(get_rls_tenant_id())
+                if tenant_id:
+                    conn.exec_driver_sql(
+                        f"SET LOCAL app.current_tenant_id = '{tenant_id}'"
+                    )
+                if settings.DATABASE_APP_ROLE:
+                    conn.exec_driver_sql(
+                        f'SET LOCAL ROLE "{settings.DATABASE_APP_ROLE}"'
+                    )
     return _sync_engine
 
 
 async def _set_rls_context(session: AsyncSession) -> None:
     """Set tenant context and optionally switch to the restricted app role."""
-    tenant_id = get_rls_tenant_id()
+    tenant_id = _sanitize_tenant_id(get_rls_tenant_id())
     if tenant_id:
         # SET LOCAL cannot use bound parameters with asyncpg, so we inline the
-        # validated UUID string.  This is safe because the value is either a
-        # trusted UUID or None.
+        # validated tenant string.  _sanitize_tenant_id rejects every character
+        # that could break out of the literal.
         await session.execute(
             __import__("sqlalchemy").text(
                 f"SET LOCAL app.current_tenant_id = '{tenant_id}'"
@@ -170,18 +236,25 @@ async def async_session_scope():
 
 
 @contextmanager
-def get_sync_session():
-    """Synchronous session for Celery background tasks."""
+def get_sync_session(tenant_id: str | None = None):
+    """Synchronous session for Celery background tasks.
+
+    Pass ``tenant_id`` (a business UUID) to scope the session AND any sibling
+    sessions created while the context is active (e.g. the fresh async engine
+    used by the ETL pipeline) to that tenant via Postgres RLS.  Omit it to run
+    as a supervisor (cross-tenant scheduled work).
+    """
     from sqlalchemy.orm import Session
     session = Session(_get_sync_engine())
-    try:
-        yield session
-        session.commit()
-    except Exception:
-        session.rollback()
-        raise
-    finally:
-        session.close()
+    with sync_rls_tenant_context(tenant_id):
+        try:
+            yield session
+            session.commit()
+        except Exception:
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
 
 class DatabaseManager:

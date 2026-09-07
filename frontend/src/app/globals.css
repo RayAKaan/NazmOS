@@ -273,7 +273,8 @@
 
   /* ── Convergence-specific utilities ──────────────────────── */
   .obsidian-bg {
-    background-color: oklch(8.0% 0.010 168);
+    background-color: var(--u-canvas);
+    transition: background-color 500ms ease;
   }
 
   .teal-glow {
@@ -282,6 +283,199 @@
 
   .gold-glow {
     box-shadow: 0 0 32px oklch(78.0% 0.14 82 / 0.2), 0 0 8px oklch(78.0% 0.14 82 / 0.1);
+  }
+
+  /* ── Business Universe theme tokens ───────────────────────────
+     The universe is one visual system rendered twice (dark world / light
+     world, spec §02 §16). Every .u-* utility below is a variable alias so the
+     same classes flip with the `.dark` class — gold stays a real material in
+     both modes (spec §22 §66), never an inverted grayscale. */
+  :root {
+    --u-canvas: oklch(95.5% 0.006 85);          /* Warm Ivory #F3EFE5 */
+    --u-ink: oklch(20% 0.01 30);                /* Deep warm ink */
+    --u-ink-dim: oklch(20% 0.01 30 / 0.7);
+    --u-ink-mute: oklch(20% 0.01 30 / 0.5);
+    --u-ink-faint: oklch(20% 0.01 30 / 0.32);
+    --u-teal: oklch(50% 0.085 187);             /* Soft teal #2D7770 */
+    --u-teal-deep: oklch(40% 0.08 185);         /* Deep teal #15504C */
+    --u-teal-ink: oklch(97% 0.008 85);
+    --u-teal-bg: oklch(50% 0.085 187);
+    --u-teal-soft: oklch(50% 0.085 187 / 0.1);
+    --u-teal-border: oklch(50% 0.085 187 / 0.42);
+    --u-teal-ring: 0 0 0 5px oklch(50% 0.085 187 / 0.22), 0 0 16px oklch(50% 0.085 187 / 0.25);
+    --u-teal-glow: 0 0 0 6px oklch(50% 0.085 187 / 0.18), 0 0 18px oklch(50% 0.085 187 / 0.25);
+    --u-gold: oklch(55% 0.1 72);                /* Antique gold #B97D1F */
+    --u-gold-bright: oklch(70% 0.12 76);        /* Warm gold #C99432 */
+    --u-gold-ink: oklch(97% 0.008 85);
+    --u-gold-soft: oklch(70% 0.12 76 / 0.16);
+    --u-gold-border: oklch(55% 0.1 72 / 0.5);
+    --u-gold-glow: 0 0 0 5px oklch(70% 0.12 76 / 0.22), 0 0 18px oklch(70% 0.12 76 / 0.26);
+    --u-node-0-bg: oklch(20% 0.01 30 / 0.52);
+    --u-node-1-bg: oklch(50% 0.085 187 / 0.85);
+    --u-node-2-bg: oklch(50% 0.085 187);
+    --u-edge-0: oklch(20% 0.01 30 / 0.16);
+    --u-edge-1: oklch(47% 0.075 187 / 0.45);
+    --u-edge-2: oklch(50% 0.085 187 / 0.9);
+    --u-edge-gold: oklch(66% 0.11 74 / 0.75);
+    --u-panel-bg: oklch(98% 0.004 85 / 0.9);
+    --u-panel-border: oklch(40% 0.01 60 / 0.16);
+    --u-panel-side-bg: oklch(96.5% 0.005 85 / 0.84);
+    --u-scrim-bg: oklch(95% 0.006 85 / 0.94);
+  }
+  .dark {
+    --u-canvas: oklch(2% 0.006 168);            /* Obsidian #020909 */
+    --u-ink: oklch(88% 0.008 80);               /* Warm ivory #E8E0CF */
+    --u-ink-dim: oklch(88% 0.008 80 / 0.72);
+    --u-ink-mute: oklch(88% 0.008 80 / 0.5);
+    --u-ink-faint: oklch(88% 0.008 80 / 0.32);
+    --u-teal: oklch(72% 0.13 172);              /* Luminous teal #159B8D */
+    --u-teal-deep: oklch(62% 0.11 177);
+    --u-teal-ink: oklch(8% 0.01 168);
+    --u-teal-bg: oklch(72% 0.13 172);
+    --u-teal-soft: oklch(72% 0.13 172 / 0.1);
+    --u-teal-border: oklch(72% 0.13 172 / 0.4);
+    --u-teal-ring: 0 0 0 5px oklch(72% 0.13 172 / 0.28), 0 0 18px oklch(72% 0.13 172 / 0.35);
+    --u-teal-glow: 0 0 0 6px oklch(72% 0.13 172 / 0.22), 0 0 20px oklch(72% 0.13 172 / 0.3);
+    --u-gold: oklch(74% 0.13 78);               /* Warm gold #B57B20 */
+    --u-gold-bright: oklch(81% 0.13 82);        /* Bright gold #D6A23A */
+    --u-gold-ink: oklch(8% 0.01 168);
+    --u-gold-soft: oklch(81% 0.13 82 / 0.14);
+    --u-gold-border: oklch(74% 0.13 78 / 0.5);
+    --u-gold-glow: 0 0 0 5px oklch(74% 0.13 78 / 0.26), 0 0 20px oklch(74% 0.13 78 / 0.34);
+    --u-node-0-bg: oklch(88% 0.008 80 / 0.5);
+    --u-node-1-bg: oklch(72% 0.13 172 / 0.85);
+    --u-node-2-bg: oklch(72% 0.13 172);
+    --u-edge-0: oklch(88% 0.008 80 / 0.14);
+    --u-edge-1: oklch(68% 0.11 175 / 0.38);
+    --u-edge-2: oklch(72% 0.13 172 / 0.9);
+    --u-edge-gold: oklch(78% 0.13 82 / 0.8);
+    --u-panel-bg: oklch(10% 0.01 168 / 0.9);
+    --u-panel-border: oklch(22% 0.01 170 / 0.65);
+    --u-panel-side-bg: oklch(8% 0.01 168 / 0.86);
+    --u-scrim-bg: oklch(8% 0.01 168 / 0.94);
+  }
+
+  /* Warm design-system text ramp. */
+  .u-ink {
+    color: var(--u-ink);
+  }
+  .u-ink-dim {
+    color: var(--u-ink-dim);
+  }
+  .u-ink-mute {
+    color: var(--u-ink-mute);
+  }
+  .u-ink-faint {
+    color: var(--u-ink-faint);
+  }
+
+  /* Teal system accents (relationships / intelligence). */
+  .u-teal {
+    color: var(--u-teal);
+  }
+  .u-teal-deep {
+    color: var(--u-teal-deep);
+  }
+  .u-teal-ink {
+    color: var(--u-teal-ink);
+  }
+  .u-teal-bg {
+    background-color: var(--u-teal-bg);
+  }
+  .u-teal-bg-soft {
+    background-color: var(--u-teal-soft);
+  }
+  .u-teal-border {
+    border-color: var(--u-teal-border);
+  }
+  .u-teal-ring {
+    box-shadow: var(--u-teal-ring);
+  }
+  .u-teal-glow {
+    box-shadow: var(--u-teal-glow);
+  }
+
+  /* Gold material (value / decision / capital) — a first-class accent in both
+     modes, used for filaments, value nodes, audit and financial emphasis. */
+  .u-gold {
+    color: var(--u-gold);
+  }
+  .u-gold-bright {
+    color: var(--u-gold-bright);
+  }
+  .u-gold-ink {
+    color: var(--u-gold-ink);
+  }
+  .u-gold-bg {
+    background-color: var(--u-gold-bright);
+  }
+  .u-gold-bg-soft {
+    background-color: var(--u-gold-soft);
+  }
+  .u-gold-border {
+    border-color: var(--u-gold-border);
+  }
+  .u-gold-glow {
+    box-shadow: var(--u-gold-glow);
+  }
+
+  /* Node dot weights (level 0 = receded, 2 = dominant). */
+  .u-node-0 {
+    background-color: var(--u-node-0-bg);
+  }
+  .u-node-1 {
+    background-color: var(--u-node-1-bg);
+  }
+  .u-node-2 {
+    background-color: var(--u-node-2-bg);
+  }
+  .u-node-gold {
+    background-color: var(--u-gold-bright);
+  }
+
+  /* Edge hairline weights. */
+  .u-edge-0 {
+    stroke: var(--u-edge-0);
+  }
+  .u-edge-1 {
+    stroke: var(--u-edge-1);
+  }
+  .u-edge-2 {
+    stroke: var(--u-edge-2);
+  }
+  .u-edge-gold {
+    stroke: var(--u-edge-gold);
+  }
+
+  /* Panel surfaces over the canvas. */
+  .u-panel {
+    background-color: var(--u-panel-bg);
+    border-color: var(--u-panel-border);
+  }
+  .u-panel-side {
+    background-color: var(--u-panel-side-bg);
+    border-color: var(--u-panel-border);
+  }
+  .u-scrim {
+    background-color: var(--u-scrim-bg);
+  }
+
+  /* Theme morph: the atmosphere shifts between the two worlds instead of
+     flashing (spec §39). Canvas env is transitioned by the component root. */
+  .u-ink,
+  .u-ink-dim,
+  .u-ink-mute,
+  .u-ink-faint,
+  .u-teal,
+  .u-teal-deep,
+  .u-gold,
+  .u-gold-bright,
+  .u-teal-bg,
+  .u-teal-bg-soft,
+  .u-gold-bg,
+  .u-gold-bg-soft {
+    transition: color 450ms ease, background-color 450ms ease,
+      border-color 450ms ease;
   }
 }
 

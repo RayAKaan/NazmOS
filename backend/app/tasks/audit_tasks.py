@@ -26,30 +26,40 @@ ALL_DOMAINS = ["money_audit", "inventory", "recovery_match", "compliance"]
 
 
 def run_audits_for_business(business_id: str, domains: list[str] | None = None) -> dict:
-    """Run one or more audit domains for a business (sync wrapper over the async engine)."""
+    """Run one or more audit domains for a business (sync wrapper over the async engine).
+
+    The whole run is scoped to ``business_id`` via RLS; every session opened by
+    the audit engine inherits the tenant context.
+    """
     from app.services.audit_engine import run_audit
-    from app.database.connection import AsyncSessionLocal
+    from app.database.connection import AsyncSessionLocal, sync_rls_tenant_context
 
     async def _run() -> dict:
         results = []
-        async with AsyncSessionLocal() as session:
-            for domain in (domains or ALL_DOMAINS):
-                try:
-                    r = await run_audit(session, business_id, domain, trigger="scheduled", commit=False)
-                    results.append(r)
-                except Exception as exc:
-                    logger.warning("scheduled audit %s for %s failed: %s", domain, business_id, exc)
-                    results.append({"domain": domain, "status": "failed", "error": str(exc)[:500]})
-            await session.commit()
+        with sync_rls_tenant_context(str(business_id)):
+            async with AsyncSessionLocal() as session:
+                for domain in (domains or ALL_DOMAINS):
+                    try:
+                        r = await run_audit(session, business_id, domain, trigger="scheduled", commit=False)
+                        results.append(r)
+                    except Exception as exc:
+                        logger.warning("scheduled audit %s for %s failed: %s", domain, business_id, exc)
+                        results.append({"domain": domain, "status": "failed", "error": str(exc)[:500]})
+                await session.commit()
         return {"business_id": business_id, "audits": results}
 
     return asyncio.run(_run())
 
 
 def run_goal_progress_snapshot() -> dict:
-    """Snapshot goal progress for all active businesses (Phase 5 §9, daily)."""
+    """Snapshot goal progress for all active businesses (Phase 5 §9, daily).
+
+    Supervisor query lists every active business; each snapshot then runs under
+    its own transaction + tenant context so RLS scopes every read to one
+    business at a time.
+    """
     import asyncio
-    from app.database.connection import AsyncSessionLocal
+    from app.database.connection import AsyncSessionLocal, sync_rls_tenant_context
     from app.services.goal_service import snapshot_goal_progress
 
     async def _run() -> dict:
@@ -58,14 +68,15 @@ def run_goal_progress_snapshot() -> dict:
                 text("SELECT id FROM businesses WHERE is_active = true ORDER BY created_at")
             ).fetchall()]
         total = 0
-        async with AsyncSessionLocal() as session:
-            for business_id in ids:
-                try:
-                    r = await snapshot_goal_progress(session, business_id, source="scheduled", commit=False)
-                    total += r.get("snapshots", 0)
-                except Exception as exc:
-                    logger.warning("goal snapshot failed for %s: %s", business_id, exc)
-            await session.commit()
+        for business_id in ids:
+            try:
+                with sync_rls_tenant_context(str(business_id)):
+                    async with AsyncSessionLocal() as session:
+                        r = await snapshot_goal_progress(session, business_id, source="scheduled", commit=False)
+                        await session.commit()
+                        total += r.get("snapshots", 0)
+            except Exception as exc:
+                logger.warning("goal snapshot failed for %s: %s", business_id, exc)
         return {"status": "completed", "snapshots": total, "businesses": len(ids)}
 
     return asyncio.run(_run())

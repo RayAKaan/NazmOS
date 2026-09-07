@@ -122,6 +122,41 @@ async def get_cached_forecasts(
     }
 
 
+@router.get("/all/{business_id}")
+async def get_all_forecasts(
+    business_id: str,
+    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    await assert_business_access(db, business_id, current_user)
+    result = await db.execute(
+        text("""
+            SELECT fc.*, i.name as item_name
+            FROM forecast_cache fc
+            JOIN items i ON i.id = fc.item_id
+            WHERE fc.business_id = :business_id
+            AND fc.expires_at > NOW()
+            ORDER BY fc.trained_at DESC
+        """),
+        {"business_id": business_id}
+    )
+    forecasts = result.fetchall()
+
+    return {
+        "forecasts": [
+            {
+                "item_id": str(f.item_id),
+                "item_name": f.item_name,
+                "trend_direction": f.trend_direction,
+                "trend_strength": float(f.trend_strength) if f.trend_strength else 0,
+                "trained_at": f.trained_at.isoformat() if f.trained_at else None,
+            }
+            for f in forecasts
+        ],
+        "total": len(forecasts),
+    }
+
+
 @router.get("/{item_id}")
 async def get_forecast(
     item_id: str,

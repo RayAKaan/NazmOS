@@ -148,3 +148,23 @@ async def build_capabilities(
         role=role,
         business_id=resolved_business_id,
     )
+
+
+async def user_has_capability(
+    db: AsyncSession,
+    user_id: UUID | str,
+    business_id: UUID | str,
+    capability: str,
+) -> bool:
+    """Resolve whether ``user_id`` holds ``capability`` within ``business_id``.
+
+    Used at the service/execution boundary so that an internal caller cannot
+    bypass the router-level ``require_capability`` gate. The user must actually
+    be a member (or owner) of the business — a user with no relationship to the
+    business always resolves to False.
+    """
+    user = await db.get(User, UUID(str(user_id)))
+    if user is None:
+        return False
+    caps = await build_capabilities(db, user, business_id)
+    return caps.has(capability)

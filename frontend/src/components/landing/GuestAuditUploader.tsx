@@ -13,7 +13,8 @@ import { cn } from "@/lib/utils";
 import api from "@/lib/api";
 import { useAudit } from "@/components/landing/audit-context";
 import { AuditProgress } from "@/components/landing/viz/AuditProgress";
-import type { GuestAuditResult } from "@/components/landing/audit-types";
+import type { GuestAuditResult, IngestionDiagnostics } from "@/components/landing/audit-types";
+import { extractGuestAuditError } from "@/lib/guest-audit-error";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ACCEPT = ".csv,.xlsx,.xls,.xlsm,.json";
@@ -88,9 +89,8 @@ export function GuestAuditUploader() {
       setResult(response.data);
       setAuditResult(response.data);
       setStatus("done");
-    } catch (err: any) {
-      const detail = err?.response?.data?.detail;
-      setError(typeof detail === "string" ? detail : "Could not run the free audit. Try different files.");
+    } catch (err) {
+      setError(extractGuestAuditError(err));
       setStatus("error");
     }
   }, [salesFile, inventoryFile, setAuditResult]);
@@ -211,6 +211,12 @@ export function GuestAuditUploader() {
                     Based on {result.summary.row_count.toLocaleString()} rows · confidence{" "}
                     {Math.round(result.summary.confidence_score)}%
                   </p>
+                  {result.summary.ingestion && !result.summary.is_two_file && (
+                    <IngestionBadge diag={result.summary.ingestion} />
+                  )}
+                  {result.summary.ingestion?.sales && result.summary.is_two_file && (
+                    <IngestionBadge diag={result.summary.ingestion.sales} label="sales" />
+                  )}
                 </div>
                 <div className="text-left md:text-right" dir="ltr">
                   <p className="text-xs text-brand-cream/45">
@@ -394,6 +400,31 @@ function Kpi({ label, value, tone }: { label: string; value: string; tone: "red"
     <div className="rounded-2xl border border-brand-cream/10 bg-brand-cream/[0.04] p-4">
       <p className="text-xs uppercase tracking-wider text-brand-cream/45">{label}</p>
       <p className={cn("mt-1 font-serif text-2xl font-black", colors[tone])}>{value}</p>
+    </div>
+  );
+}
+
+function IngestionBadge({ diag, label }: { diag: IngestionDiagnostics; label?: string }) {
+  if (!diag || diag.status === "error") return null;
+  const pct = Math.round(diag.confidence * 100);
+  const tone = diag.status === "ready" ? "green" : "gold";
+  const colors = { green: "border-brand-green/30 bg-brand-green/10 text-brand-green", gold: "border-brand-amber/30 bg-brand-amber/10 text-brand-amber" };
+  return (
+    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+      <span className={cn("rounded-full border px-2 py-0.5 font-mono font-bold", colors[tone])}>
+        {label ? `${label} ` : ""}mapping {pct}%
+      </span>
+      {diag.file_classification.map((c, i) => (
+        <span key={i} className="rounded-full border border-brand-cream/20 bg-brand-cream/[0.06] px-2 py-0.5 text-brand-cream/60">
+          {c}
+        </span>
+      ))}
+      {diag.missing_required_fields.length > 0 && (
+        <span className="text-brand-amber/70">missing: {diag.missing_required_fields.join(", ")}</span>
+      )}
+      {diag.ambiguous_fields.length > 0 && (
+        <span className="text-brand-red-light">needs review</span>
+      )}
     </div>
   );
 }

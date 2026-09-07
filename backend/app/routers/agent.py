@@ -13,6 +13,7 @@ from uuid import UUID
 from app.database import get_db, User
 from app.middleware.auth_middleware import get_current_user
 from app.middleware.business_access import assert_business_access
+from app.middleware.rbac import require_capability
 from app.services.agent_action_executor import approve_agent_action, reject_agent_action
 from app.services.autonomy_service import execute_if_autonomous, dry_run_action
 from app.services.feature_flags import require_feature_enabled
@@ -82,7 +83,7 @@ async def get_feed(
     return {"items": items, "count": len(items), "has_more": len(items) == limit}
 
 
-@router.post("/actions/{action_id}/approve")
+@router.post("/actions/{action_id}/approve", dependencies=[Depends(require_capability("can_approve_actions", "business_id"))])
 async def approve_action(
     action_id: UUID,
     business_id: UUID,
@@ -100,10 +101,6 @@ async def approve_action(
         raise HTTPException(404, "Action not found")
     if str(row.business_id) != str(business_id):
         raise HTTPException(403, "Business mismatch")
-    
-    # Simple owner check
-    if str(row.owner_id) != str(current_user.id):
-        raise HTTPException(403, "Only the business owner can approve actions")
 
     await require_feature_enabled(db, "agent_enabled", business_id=business_id)
 
@@ -117,7 +114,7 @@ async def approve_action(
     return {"ok": result.get("ok", False), "action_id": str(action_id), "status": "approved", "outcome": result.get("outcome")}
 
 
-@router.post("/actions/{action_id}/reject")
+@router.post("/actions/{action_id}/reject", dependencies=[Depends(require_capability("can_approve_actions", "business_id"))])
 async def reject_action(
     action_id: UUID,
     business_id: UUID,
@@ -126,9 +123,9 @@ async def reject_action(
     current_user: User = Depends(get_current_user),
 ):
     ownership = await db.execute(text(
-        "SELECT a.id FROM agent_actions a JOIN businesses b ON b.id = a.business_id "
-        "WHERE a.id = :id AND b.owner_id = :uid"
-    ), {"id": str(action_id), "uid": str(current_user.id)})
+        "SELECT a.id FROM agent_actions a "
+        "WHERE a.id = :id AND a.business_id = :b"
+    ), {"id": str(action_id), "b": str(business_id)})
     if not ownership.fetchone():
         raise HTTPException(404, "Action not found or access denied")
 
@@ -195,7 +192,7 @@ class SetAutonomyRequest(BaseModel):
     policies: list[AutonomyPolicyIn]
 
 
-@router.put("/autonomy")
+@router.put("/autonomy", dependencies=[Depends(require_capability("can_approve_actions", "business_id"))])
 async def set_autonomy(
     business_id: UUID,
     body: SetAutonomyRequest,
@@ -296,7 +293,7 @@ async def agent_reason(
     }
 
 
-@router.post("/autonomy/evaluate")
+@router.post("/autonomy/evaluate", dependencies=[Depends(require_capability("can_approve_actions", "business_id"))])
 async def evaluate_autonomy(
     request: AutonomyEvaluateRequest,
     db: AsyncSession = Depends(get_db),

@@ -86,18 +86,19 @@ async def get_recommendations(
 @router.post("/apply/{decision_id}")
 async def apply_decision(
     decision_id: str,
+    business_id: str,
     current_user: User = Depends(get_current_user),
     db=Depends(get_db),
 ):
-    from app.services.cache_service import CacheService
+    await assert_business_access(db, business_id, current_user)
 
     await db.execute(
         text("""
             UPDATE decision_log
             SET was_applied = true, applied_at = NOW()
-            WHERE id = :id
+            WHERE id = :id AND business_id = :business_id
         """),
-        {"id": decision_id}
+        {"id": decision_id, "business_id": business_id}
     )
     await db.commit()
 

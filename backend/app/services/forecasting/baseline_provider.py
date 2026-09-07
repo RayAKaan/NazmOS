@@ -71,9 +71,15 @@ def baseline_from_series(
     base = sum(p.y for p in tail) / len(tail)
     base = max(base, 0.0)
 
-    today = date.today()
+    # Forecast origin is the last observed data point, NOT today.  Using
+    # ``date.today()`` creates a gap when the last transaction precedes the
+    # current date, which silently shifts predictions forward by the missing
+    # period and makes the baseline diverge from Prophet for the same input.
+    forecast_origin = series.points[-1].ds if hasattr(series.points[-1].ds, 'date') else series.points[-1].ds
+    if hasattr(forecast_origin, 'date'):
+        forecast_origin = forecast_origin.date()
     preds: list[ForecastPrediction] = []
-    start = max(series.points[-1].ds, today)
+    start = forecast_origin
     for i in range(1, horizon_days + 1):
         d = start + timedelta(days=i)
         mult = WEEKDAY_MULTIPLIERS.get(d.weekday(), 1.0)

@@ -250,6 +250,26 @@ async def approve_agent_action(
     }
     if business_id:
         params["business_id"] = str(business_id)
+
+    # Authorization at the service boundary: an attested human decision-maker
+    # must be owner/admin (can_approve_actions). Deferring this to the router
+    # alone would let an internal caller approve without capability.
+    if decided_by is not None:
+        from app.services.capabilities_service import user_has_capability
+        action_ctx = await db.execute(text(
+            "SELECT business_id FROM agent_actions WHERE id = :id"
+        ), {"id": str(action_id)})
+        action_row = action_ctx.fetchone()
+        ctx_business = str(action_row.business_id) if action_row else (str(business_id) if business_id else None)
+        if ctx_business is None:
+            return {"ok": False, "reason": "Action not found", "action_id": str(action_id)}
+        if not await user_has_capability(db, decided_by, ctx_business, "can_approve_actions"):
+            return {
+                "ok": False,
+                "reason": "User lacks can_approve_actions capability for this business",
+                "action_id": str(action_id),
+            }
+
     res = await db.execute(text(f"""
         UPDATE agent_actions
         SET status = 'approved',
@@ -289,12 +309,31 @@ async def approve_agent_action(
 
 
 async def reject_agent_action(db: AsyncSession, action_id: UUID | str, note: str = "Rejected",
+                               decided_by: Optional[UUID | str] = None,
                                business_id: Optional[UUID | str] = None) -> dict:
     # §10 Tenant Safety: when business_id is provided, enforce it in the WHERE clause.
     tenant_clause = "AND business_id = :business_id" if business_id else ""
     params: dict = {"id": str(action_id), "note": note, "now": utcnow()}
     if business_id:
         params["business_id"] = str(business_id)
+
+    # Service-boundary authorization for the decision-maker, mirroring approve.
+    if decided_by is not None:
+        from app.services.capabilities_service import user_has_capability
+        action_ctx = await db.execute(text(
+            "SELECT business_id FROM agent_actions WHERE id = :id"
+        ), {"id": str(action_id)})
+        action_row = action_ctx.fetchone()
+        ctx_business = str(action_row.business_id) if action_row else (str(business_id) if business_id else None)
+        if ctx_business is None:
+            return {"ok": False, "reason": "Action not found", "action_id": str(action_id)}
+        if not await user_has_capability(db, decided_by, ctx_business, "can_approve_actions"):
+            return {
+                "ok": False,
+                "reason": "User lacks can_approve_actions capability for this business",
+                "action_id": str(action_id),
+            }
+
     res = await db.execute(text(f"""
         UPDATE agent_actions
         SET status = 'rejected',

@@ -14,10 +14,9 @@ if settings.USE_CELERY:
     from app.celery_app import celery_app
 
     @celery_app.task(name="app.tasks.event_tasks.process_event")
-    def process_event(event_id: str) -> dict:
-        from sqlalchemy.orm import Session
-        engine = _get_sync_engine()
-        with Session(engine) as session:
+    def process_event(event_id: str, business_id: str | None = None) -> dict:
+        # Scoped to the owning business so RLS applies to event reads/writes.
+        with get_sync_session(tenant_id=business_id) as session:
             event = session.get(Event, event_id)
             if not event:
                 return {"status": "not_found", "event_id": event_id}
@@ -31,6 +30,7 @@ if settings.USE_CELERY:
 
     @celery_app.task(name="app.tasks.event_tasks.process_unprocessed_events")
     def process_unprocessed_events_task(limit: int = 1000) -> dict:
+        # Supervisor scope: drains the cross-tenant event queue by design.
         from sqlalchemy.orm import Session
         engine = _get_sync_engine()
         with Session(engine) as session:

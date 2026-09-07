@@ -67,6 +67,11 @@ test.describe("Visual baseline: PUBLIC routes", () => {
   test.use({ viewport: VIEWPORT, storageState: { cookies: [], origins: [] } });
   for (const route of PUBLIC_ROUTES) {
     test(`public ${route}`, async ({ page }) => {
+      // The universe home animates a WebGL field continuously; freeze it to the
+      // deterministic static layer so the baseline is stable across runs.
+      if (route === "/") {
+        await page.emulateMedia({ reducedMotion: "reduce" });
+      }
       await page.goto(route);
       await settle(page);
       await expect(page).toHaveScreenshot(`${safeFile(route)}.png`, {

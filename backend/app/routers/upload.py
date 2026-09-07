@@ -48,14 +48,14 @@ async def _resolve_local_parse_path(stored_filename: str, upload_id: str) -> tup
     local_path = UPLOAD_DIR / tmp_name
     try:
         retrieved = await storage.retrieve(stored_filename)
-    except Exception as exc:
-        raise HTTPException(500, detail=f"Failed to retrieve uploaded file for parsing: {exc}")
+    except Exception:
+        raise HTTPException(500, detail="Failed to retrieve uploaded file for parsing")
 
     try:
         async with aiofiles.open(local_path, "wb") as f:
             await f.write(retrieved)
-    except Exception as exc:
-        raise HTTPException(500, detail=f"Failed to write temporary parse file: {exc}")
+    except Exception:
+        raise HTTPException(500, detail="Failed to write temporary parse file")
 
     return local_path, True
 
@@ -89,8 +89,8 @@ async def upload_file(
     # it uploads to the configured bucket and returns a URI.
     try:
         storage_uri = await storage.store(safe_filename, content, content_type=file.content_type or "application/octet-stream")
-    except Exception as exc:
-        raise HTTPException(500, detail=f"Failed to store uploaded file: {exc}")
+    except Exception:
+        raise HTTPException(500, detail="Failed to store uploaded file")
 
     # Build a local path for parsing through the storage abstraction. Object
     # storage backends download to a temporary file; local backends use the
@@ -99,8 +99,8 @@ async def upload_file(
         local_parse_path, cleanup_after_parse = await _resolve_local_parse_path(
             storage_uri, upload_id
         )
-    except Exception as exc:
-        raise HTTPException(500, detail=f"Failed to resolve uploaded file for parsing: {exc}")
+    except Exception:
+        raise HTTPException(500, detail="Failed to resolve uploaded file for parsing")
 
     try:
         validation = FileValidator.validate(
@@ -322,7 +322,20 @@ async def confirm_mapping(
 async def stream_progress(
     upload_id: str,
     current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
 ):
+    result = await db.execute(
+        text("""
+            SELECT u.business_id FROM uploaded_files u
+            JOIN businesses b ON b.id = u.business_id
+            LEFT JOIN team_members tm ON tm.business_id = u.business_id AND tm.user_id = :uid AND tm.is_active = true
+            WHERE u.id = :id AND (u.uploaded_by = :uid OR b.owner_id = :uid OR tm.user_id IS NOT NULL)
+        """),
+        {"id": upload_id, "uid": str(current_user.id)}
+    )
+    if not result.fetchone():
+        raise HTTPException(404, detail="Upload not found")
+
     async def progress_stream():
         import redis.asyncio as aioredis
         r = None
@@ -650,4 +663,4 @@ async def ingest_json(
             {"id": upload_id, "status": status, "error": str(e)}
         )
         await db.commit()
-        raise HTTPException(500, detail=str(e))
+        raise HTTPException(500, detail="Ingest failed")

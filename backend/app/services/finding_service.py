@@ -70,9 +70,11 @@ def _new_uuid() -> UUID:
     return uuid.uuid4()
 
 
-async def advance_status(db: AsyncSession, finding_id: UUID | str, to_status: str, commit: bool = True) -> dict[str, Any]:
+async def advance_status(db: AsyncSession, finding_id: UUID | str, to_status: str, business_id: UUID | str | None = None, commit: bool = True) -> dict[str, Any]:
     """Move a finding along the lifecycle (or to a terminal rejected/failed state)."""
-    res = await db.execute(text("SELECT status FROM findings WHERE id = :id"), {"id": str(finding_id)})
+    scope = " AND business_id = :b" if business_id is not None else ""
+    params: dict[str, Any] = {"id": str(finding_id), "b": str(business_id)} if business_id is not None else {"id": str(finding_id)}
+    res = await db.execute(text(f"SELECT status FROM findings WHERE id = :id{scope}"), params)
     row = res.fetchone()
     if not row:
         return {"ok": False, "reason": "Finding not found"}
@@ -84,13 +86,13 @@ async def advance_status(db: AsyncSession, finding_id: UUID | str, to_status: st
         return {"ok": False, "reason": f"Cannot move {current} -> {to_status}; expected {allowed_next}"}
 
     now = datetime.now(timezone.utc)
-    await db.execute(text("""
+    await db.execute(text(f"""
         UPDATE findings
         SET status = :s,
             resolved_at = CASE WHEN :s IN ('verified', 'rejected', 'failed') THEN :now ELSE resolved_at END,
             updated_at = :now
-        WHERE id = :id
-    """), {"id": str(finding_id), "s": to_status, "now": now})
+        WHERE id = :id{scope}
+    """), {**params, "s": to_status, "now": now})
     if commit:
         await db.commit()
     return {"ok": True, "finding_id": str(finding_id), "status": to_status}
@@ -102,23 +104,26 @@ async def verify_finding(
     verified: bool,
     actual_impact_sar: float | None = None,
     note: str | None = None,
+    business_id: UUID | str | None = None,
     commit: bool = True,
 ) -> dict[str, Any]:
     """Record the verification result + actual (revised) financial impact (brief §10)."""
-    res = await db.execute(text("SELECT id FROM findings WHERE id = :id"), {"id": str(finding_id)})
+    scope = " AND business_id = :b" if business_id is not None else ""
+    params: dict[str, Any] = {"id": str(finding_id), "b": str(business_id)} if business_id is not None else {"id": str(finding_id)}
+    res = await db.execute(text(f"SELECT id FROM findings WHERE id = :id{scope}"), params)
     if not res.fetchone():
         return {"ok": False, "reason": "Finding not found"}
 
     now = datetime.now(timezone.utc)
-    await db.execute(text("""
+    await db.execute(text(f"""
         UPDATE findings
         SET verification_result = CAST(:vr AS JSON),
             status = CASE WHEN :verified THEN 'verified' ELSE 'failed' END,
             resolved_at = :now,
             updated_at = :now
-        WHERE id = :id
+        WHERE id = :id{scope}
     """), {
-        "id": str(finding_id),
+        **params,
         "verified": bool(verified),
         "vr": _json({"verified": bool(verified), "actual_impact_sar": actual_impact_sar, "note": note}),
         "now": now,

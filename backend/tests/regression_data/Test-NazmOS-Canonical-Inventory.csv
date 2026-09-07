@@ -1,0 +1,46 @@
+business_id,sku,product_name,location_id,warehouse,city,quantity_on_hand,unit_cost_sar,reorder_point,active
+BIZ-NAZMOS-001,SKU-CAN-01,Mineral Water 500ml,LOC-RYD,Riyadh Main,Riyadh,60,1.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-02,Basmati Rice 5kg,LOC-RYD,Riyadh Main,Riyadh,20,38.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-03,Flour 1kg,LOC-RYD,Riyadh Main,Riyadh,50,4.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-04,Cooking Oil 2.5L,LOC-RYD,Riyadh Main,Riyadh,22,27.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-05,Tea 100 Bags,LOC-RYD,Riyadh Main,Riyadh,44,12.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-06,Coffee 250g,LOC-RYD,Riyadh Main,Riyadh,25,24.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-07,Sugar 1kg,LOC-RYD,Riyadh Main,Riyadh,45,6.75,10,true
+BIZ-NAZMOS-001,SKU-CAN-08,Milk Powder 900g,LOC-RYD,Riyadh Main,Riyadh,32,16.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-09,Dish Soap 750ml,LOC-RYD,Riyadh Main,Riyadh,55,9.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-10,Tuna Can 185g,LOC-RYD,Riyadh Main,Riyadh,18,28.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-11,Bread Loaf,LOC-RYD,Riyadh Main,Riyadh,40,5.80,10,true
+BIZ-NAZMOS-001,SKU-CAN-12,Eggs 30 Pack,LOC-RYD,Riyadh Main,Riyadh,60,4.20,10,true
+BIZ-NAZMOS-001,SKU-CAN-13,Chicken 1kg,LOC-RYD,Riyadh Main,Riyadh,70,3.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-14,Yoghurt 1kg,LOC-RYD,Riyadh Main,Riyadh,20,21.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-15,Tomato Paste 140g,LOC-RYD,Riyadh Main,Riyadh,1115,0.25,10,true
+BIZ-NAZMOS-001,SKU-CAN-01,Mineral Water 500ml,LOC-JED,Jeddah Branch,Jeddah,55,1.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-02,Basmati Rice 5kg,LOC-JED,Jeddah Branch,Jeddah,16,38.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-03,Flour 1kg,LOC-JED,Jeddah Branch,Jeddah,48,4.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-04,Cooking Oil 2.5L,LOC-JED,Jeddah Branch,Jeddah,16,27.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-05,Tea 100 Bags,LOC-JED,Jeddah Branch,Jeddah,42,12.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-06,Coffee 250g,LOC-JED,Jeddah Branch,Jeddah,26,24.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-07,Sugar 1kg,LOC-JED,Jeddah Branch,Jeddah,46,6.75,10,true
+BIZ-NAZMOS-001,SKU-CAN-08,Milk Powder 900g,LOC-JED,Jeddah Branch,Jeddah,34,16.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-09,Dish Soap 750ml,LOC-JED,Jeddah Branch,Jeddah,50,9.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-10,Tuna Can 185g,LOC-JED,Jeddah Branch,Jeddah,13,28.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-11,Bread Loaf,LOC-JED,Jeddah Branch,Jeddah,38,5.80,10,true
+BIZ-NAZMOS-001,SKU-CAN-12,Eggs 30 Pack,LOC-JED,Jeddah Branch,Jeddah,58,4.20,10,true
+BIZ-NAZMOS-001,SKU-CAN-13,Chicken 1kg,LOC-JED,Jeddah Branch,Jeddah,68,3.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-14,Yoghurt 1kg,LOC-JED,Jeddah Branch,Jeddah,22,21.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-15,Tomato Paste 140g,LOC-JED,Jeddah Branch,Jeddah,368,0.25,10,true
+BIZ-NAZMOS-001,SKU-CAN-01,Mineral Water 500ml,LOC-DMM,Dammam Branch,Dammam,200,1.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-02,Basmati Rice 5kg,LOC-DMM,Dammam Branch,Dammam,80,38.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-03,Flour 1kg,LOC-DMM,Dammam Branch,Dammam,140,4.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-04,Cooking Oil 2.5L,LOC-DMM,Dammam Branch,Dammam,55,27.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-05,Tea 100 Bags,LOC-DMM,Dammam Branch,Dammam,110,12.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-06,Coffee 250g,LOC-DMM,Dammam Branch,Dammam,60,24.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-07,Sugar 1kg,LOC-DMM,Dammam Branch,Dammam,150,6.75,10,true
+BIZ-NAZMOS-001,SKU-CAN-08,Milk Powder 900g,LOC-DMM,Dammam Branch,Dammam,95,16.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-09,Dish Soap 750ml,LOC-DMM,Dammam Branch,Dammam,170,9.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-10,Tuna Can 185g,LOC-DMM,Dammam Branch,Dammam,45,28.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-11,Bread Loaf,LOC-DMM,Dammam Branch,Dammam,130,5.80,10,true
+BIZ-NAZMOS-001,SKU-CAN-12,Eggs 30 Pack,LOC-DMM,Dammam Branch,Dammam,190,4.20,10,true
+BIZ-NAZMOS-001,SKU-CAN-13,Chicken 1kg,LOC-DMM,Dammam Branch,Dammam,210,3.50,10,true
+BIZ-NAZMOS-001,SKU-CAN-14,Yoghurt 1kg,LOC-DMM,Dammam Branch,Dammam,55,21.00,10,true
+BIZ-NAZMOS-001,SKU-CAN-15,Tomato Paste 140g,LOC-DMM,Dammam Branch,Dammam,986,0.25,10,true

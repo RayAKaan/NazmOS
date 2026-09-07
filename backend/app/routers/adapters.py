@@ -172,13 +172,18 @@ async def trigger_sync(
 
     if settings.USE_CELERY:
         from app.tasks.pos_sync_tasks import sync_pos_connection
-        sync_pos_connection.delay(str(connection_id))
+        sync_pos_connection.delay(str(connection_id), str(connection.business_id))
     else:
         import asyncio
 
         async def _run_sync():
             loop = asyncio.get_event_loop()
-            await loop.run_in_executor(None, run_sync_pos_connection, str(connection_id))
+            await loop.run_in_executor(
+                None,
+                run_sync_pos_connection,
+                str(connection_id),
+                str(connection.business_id),
+            )
 
         background_tasks.add_task(_run_sync)
     

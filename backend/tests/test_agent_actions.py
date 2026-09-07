@@ -22,8 +22,11 @@ async def test_approve_restock_action_writes_outcome(db_session):
         {"id": user_id, "email": f"agent_owner_{uuid.uuid4().hex[:8]}@example.com"},
     )
     await db_session.execute(
-        text("INSERT INTO businesses (id, name, type, currency) VALUES (:id, 'Agent Test', 'retail', 'SAR')"),
-        {"id": business_id},
+        text(
+            "INSERT INTO businesses (id, name, type, currency, owner_id) "
+            "VALUES (:id, 'Agent Test', 'retail', 'SAR', :owner_id)"
+        ),
+        {"id": business_id, "owner_id": user_id},
     )
     await db_session.execute(
         text("""

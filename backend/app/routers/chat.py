@@ -25,6 +25,137 @@ settings = get_settings()
 router = APIRouter(prefix="/api/v1/chat", tags=["chat"])
 llm_orchestrator = LLMOrchestrator()
 
+_UNKNOWN = "unavailable"
+
+KPI_QUERY = text("""
+    WITH today_txns AS (
+        SELECT
+            COALESCE(SUM(t.quantity * t.unit_price), 0) AS sales,
+            COALESCE(SUM(t.quantity * (t.unit_price - COALESCE(t.cost_price, i.cost_price, 0))), 0) AS profit,
+            COUNT(*) AS transactions
+        FROM transactions t
+        LEFT JOIN items i ON i.id = t.item_id
+        WHERE t.business_id = :b
+          AND DATE(t.transaction_at) = CURRENT_DATE
+          AND t.transaction_type = 'sale'
+    ),
+    inventory_val AS (
+        SELECT COALESCE(SUM(inv.current_stock * i.cost_price), 0) AS stock_value
+        FROM inventory inv
+        JOIN items i ON i.id = inv.item_id
+        WHERE i.business_id = :b
+    )
+    SELECT
+        t.sales, t.profit, t.transactions,
+        iv.stock_value
+    FROM today_txns t, inventory_val iv
+""")
+
+WEEKDAY_QUERY = text("""
+    WITH daily AS (
+        SELECT
+            DATE(transaction_at) AS day,
+            EXTRACT(ISODOW FROM transaction_at) AS dow,
+            SUM(quantity * unit_price) AS sales
+        FROM transactions
+        WHERE business_id = :b
+          AND transaction_type = 'sale'
+          AND transaction_at >= NOW() - INTERVAL '90 days'
+        GROUP BY 1, 2
+    ),
+    by_dow AS (
+        SELECT dow, AVG(sales) AS avg_sales
+        FROM daily
+        GROUP BY dow
+    ),
+    totals AS (
+        SELECT
+            MAX(avg_sales) AS best_avg,
+            MIN(avg_sales) AS worst_avg,
+            MAX(avg_sales) FILTER (WHERE dow = 6) AS sat_avg,
+            MAX(avg_sales) FILTER (WHERE dow = 3) AS wed_avg
+            -- dow 6 = Saturday, dow 3 = Wednesday in ISODOW
+        FROM by_dow
+    )
+    SELECT
+        (SELECT dow FROM by_dow ORDER BY avg_sales DESC LIMIT 1) AS best_dow,
+        (SELECT dow FROM by_dow ORDER BY avg_sales ASC LIMIT 1) AS worst_dow,
+        CASE WHEN sat_avg > 0 AND wed_avg > 0
+             THEN ROUND(((sat_avg - wed_avg) / sat_avg * 100)::numeric, 1)
+             ELSE NULL END AS sat_wed_gap_pct,
+        (SELECT ARRAY_AGG(dow ORDER BY avg_sales DESC) FROM by_dow) AS dow_rank
+    FROM totals
+""")
+
+
+DOW_LABELS = {
+    1: "Monday", 2: "Tuesday", 3: "Wednesday", 4: "Thursday",
+    5: "Friday", 6: "Saturday", 7: "Sunday",
+}
+
+
+async def _compute_chat_kpis(db: Any, business_id: str) -> dict:
+    """Compute today's real KPIs from the ledger. Never fabricate."""
+    try:
+        res = await db.execute(KPI_QUERY, {"b": business_id})
+        row = res.fetchone()
+        if not row:
+            return {"today": {"sales": _UNKNOWN, "profit": _UNKNOWN,
+                              "transactions": _UNKNOWN},
+                    "stock_value": _UNKNOWN}
+        return {
+            "today": {
+                "sales": float(row.sales) if row.sales else _UNKNOWN,
+                "profit": float(row.profit) if row.profit else _UNKNOWN,
+                "transactions": int(row.transactions) if row.transactions else _UNKNOWN,
+            },
+            "stock_value": float(row.stock_value) if row.stock_value else _UNKNOWN,
+        }
+    except Exception:
+        return {"today": {"sales": _UNKNOWN, "profit": _UNKNOWN,
+                          "transactions": _UNKNOWN},
+                "stock_value": _UNKNOWN}
+
+
+async def _compute_weekday_patterns(db: Any, business_id: str) -> dict:
+    """Compute real weekday patterns from the ledger. Returns UNKNOWN for
+    insufficient data rather than fabricating patterns."""
+    try:
+        res = await db.execute(WEEKDAY_QUERY, {"b": business_id})
+        row = res.fetchone()
+        if not row or row.best_dow is None:
+            return {}
+        best = DOW_LABELS.get(int(row.best_dow), _UNKNOWN)
+        worst = DOW_LABELS.get(int(row.worst_dow), _UNKNOWN)
+        return {
+            "best_day_of_week": best,
+            "worst_day_of_week": worst,
+            "sat_wed_gap_pct": float(row.sat_wed_gap_pct) if row.sat_wed_gap_pct is not None else _UNKNOWN,
+        }
+    except Exception:
+        return {}
+
+
+async def _compute_chat_alerts(db: Any, business_id: str) -> dict:
+    """Compute real stock alerts for context_summary — no fabricated counts."""
+    try:
+        res = await db.execute(text("""
+            SELECT
+                COUNT(*) FILTER (WHERE inv.current_stock = 0) AS stockout_count,
+                COUNT(*) FILTER (WHERE inv.current_stock > 0
+                    AND inv.current_stock < COALESCE(inv.reorder_point, 5)) AS low_stock_count
+            FROM inventory inv
+            JOIN items i ON i.id = inv.item_id
+            WHERE i.business_id = :b
+        """), {"b": business_id})
+        row = res.fetchone()
+        if not row:
+            return {"stockouts": 0, "low_stock": 0}
+        return {"stockouts": row.stockout_count or 0,
+                "low_stock": row.low_stock_count or 0}
+    except Exception:
+        return {"stockouts": 0, "low_stock": 0}
+
 
 class ChatReasonRequest(BaseModel):
     message: str = Field(..., min_length=1, max_length=1000)
@@ -61,29 +192,29 @@ async def chat(
         )
         await db.commit()
     else:
-        await db.execute(
-            text("UPDATE chat_sessions SET last_message_at = NOW() WHERE id = :id"),
-            {"id": session_id}
+        result = await db.execute(
+            text("UPDATE chat_sessions SET last_message_at = NOW() "
+                 "WHERE id = :id AND user_id = :uid RETURNING id"),
+            {"id": session_id, "uid": str(current_user.id)}
         )
+        if not result.fetchone():
+            raise HTTPException(404, "Session not found")
         await db.commit()
 
     memory = ChatMemoryService(session_id)
     history = await memory.get_history()
 
     context_builder = ContextBuilder(business_id)
-    kpis = {"today": {"sales": 18450, "profit": 3200, "transactions": 145}}
+
+    # ── Deterministic KPIs: computed from the ledger, never fabricated ────
+    kpis = await _compute_chat_kpis(db, business_id)
+    patterns = await _compute_weekday_patterns(db, business_id)
     alerts = []
     top_items = []
     inventory_items = []
     dead_stock = []
     forecasts = {}
-    patterns = {
-        "best_day_of_week": "Saturday",
-        "worst_day_of_week": "Wednesday",
-        "wednesday_dip_pct": 31,
-        "weekend_uplift_pct": 38,
-    }
-    
+
     context = await context_builder.build(
         db, kpis, alerts, top_items, inventory_items, dead_stock, forecasts, patterns
     )
@@ -254,18 +385,20 @@ async def get_suggestions(
     db=Depends(get_db),
 ):
     await require_feature_enabled(db, "chat_enabled", business_id=business_id)
+    alerts = await _compute_chat_alerts(db, business_id)
     suggestions = [
         "What should I order urgently right now?",
-        "Why do Wednesday sales always dip by 31%?",
-        "What's my stock value tied up in dead items?",
-        "Forecast my weekend sales this Saturday and Sunday",
         "Which items are trending up this week?",
+        "What's my stock value tied up in slow-moving items?",
+        "Forecast my sales for next week",
         "Give me a full action plan to improve margins",
+        "Which items have the worst sell-through rate?",
     ]
 
     return {
         "suggestions": suggestions,
-        "context_summary": "3 critical stockouts, 4 dead stock items, weekend in 2 days",
+        "context_summary": f"{alerts['stockouts']} critical stockouts, "
+                           f"{alerts['low_stock']} low-stock items",
     }
 
 

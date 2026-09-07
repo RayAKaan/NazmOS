@@ -11,8 +11,8 @@ from app.adapters.registry import get_adapter
 settings = get_settings()
 
 
-def run_sync_pos_connection(connection_id: str):
-    with get_sync_session() as db:
+def run_sync_pos_connection(connection_id: str, business_id: str | None = None):
+    with get_sync_session(tenant_id=business_id) as db:
         connection = db.get(POSConnection, UUID(connection_id))
 
         if not connection:
@@ -124,6 +124,9 @@ def run_sync_pos_connection(connection_id: str):
 
 
 def run_schedule_syncs():
+    # Supervisor scope: enumerating every active POS connection is cross-tenant
+    # scheduler work.  Each sync is then dispatched with an explicit
+    # business_id so ``run_sync_pos_connection`` runs RLS-scoped.
     with get_sync_session() as db:
         result = db.execute(
             select(POSConnection).where(
@@ -139,9 +142,12 @@ def run_schedule_syncs():
                 if elapsed >= conn.sync_interval_minutes:
                     if settings.USE_CELERY:
                         from app.celery_app import celery_app
-                        celery_app.send_task("pos_sync_tasks.sync_pos_connection", args=[str(conn.id)])
+                        celery_app.send_task(
+                            "pos_sync_tasks.sync_pos_connection",
+                            args=[str(conn.id), str(conn.business_id)],
+                        )
                     else:
-                        run_sync_pos_connection(str(conn.id))
+                        run_sync_pos_connection(str(conn.id), str(conn.business_id))
 
 
 if settings.USE_CELERY:
@@ -149,8 +155,8 @@ if settings.USE_CELERY:
     from app.celery_app import celery_app as celery
 
     @celery.task(bind=True, name="pos_sync_tasks.sync_pos_connection")
-    def sync_pos_connection(self, connection_id: str):
-        return run_sync_pos_connection(connection_id)
+    def sync_pos_connection(self, connection_id: str, business_id: str | None = None):
+        return run_sync_pos_connection(connection_id, business_id)
 
     @celery.task(name="pos_sync_tasks.schedule_syncs")
     def schedule_syncs():

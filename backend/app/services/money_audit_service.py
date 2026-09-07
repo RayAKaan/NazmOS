@@ -11,7 +11,7 @@ from uuid import UUID
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.services.audit_core import ProductMetrics, analyze_product
+from app.services.audit_core import ProductMetrics, analyze_product, coverage_aware_daily_velocity
 from app.services.recovery_intelligence import (classify_inventory, estimate_recovery, stockout_financials, ZERO)
 from app.utils.clock import utcnow
 
@@ -78,17 +78,17 @@ async def _quality(db: AsyncSession, business_id: str) -> dict[str, Any]:
     result = await db.execute(
         text("""
             SELECT
-                COUNT(i.id) AS item_count,
+                COUNT(DISTINCT i.id) AS item_count,
                 COUNT(inv.id) AS inventory_count,
-                COALESCE(SUM(CASE WHEN inv.current_stock > 0 THEN 1 ELSE 0 END), 0) AS stocked_item_count,
-                COALESCE(SUM(CASE WHEN i.cost_price > 0 THEN 1 ELSE 0 END), 0) AS cost_count,
-                COALESCE(SUM(CASE WHEN i.sell_price > 0 THEN 1 ELSE 0 END), 0) AS price_count,
-                COALESCE(SUM(CASE WHEN i.barcode IS NOT NULL AND i.barcode <> '' THEN 1 ELSE 0 END), 0) AS barcode_count,
+                COUNT(DISTINCT CASE WHEN inv.current_stock > 0 THEN i.id END) AS stocked_item_count,
+                COUNT(DISTINCT CASE WHEN i.cost_price > 0 THEN i.id END) AS cost_count,
+                COUNT(DISTINCT CASE WHEN i.sell_price > 0 THEN i.id END) AS price_count,
+                COUNT(DISTINCT CASE WHEN i.barcode IS NOT NULL AND i.barcode <> '' THEN i.id END) AS barcode_count,
                 (SELECT COUNT(*) FROM transactions t WHERE t.business_id = :business_id) AS transaction_count,
                 (SELECT COUNT(*) FROM uploaded_files u WHERE u.business_id = :business_id AND u.status = 'completed') AS completed_uploads,
                 (SELECT COALESCE(SUM(COALESCE(u.row_count_received, u.row_count_raw, 0)), 0) FROM uploaded_files u WHERE u.business_id = :business_id) AS uploaded_rows,
                 (SELECT COALESCE(SUM(COALESCE(u.row_count_rejected, u.row_count_failed, 0)), 0) FROM uploaded_files u WHERE u.business_id = :business_id) AS rejected_rows,
-                (SELECT COALESCE(EXTRACT(DAY FROM (MAX(t.transaction_at) - MIN(t.transaction_at))), 0) FROM transactions t WHERE t.business_id = :business_id) AS sales_period_days
+                (SELECT COUNT(DISTINCT DATE(t.transaction_at)) FROM transactions t WHERE t.business_id = :business_id) AS sales_period_days
             FROM items i
             LEFT JOIN inventory inv ON inv.item_id = i.id AND inv.business_id = i.business_id
             WHERE i.business_id = :business_id AND i.is_active = true
@@ -189,34 +189,35 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
     result = await db.execute(
         text("""
             WITH sales_30 AS (
-                SELECT item_id,
+                SELECT item_id, location_id,
                        COALESCE(SUM(CASE WHEN transaction_type = 'sale' THEN quantity WHEN transaction_type IN ('return','refund') THEN -quantity ELSE 0 END), 0) AS qty_30d,
                        COALESCE(SUM(CASE WHEN transaction_type = 'sale' THEN total_amount WHEN transaction_type IN ('return','refund') THEN total_amount ELSE 0 END), 0) AS revenue_30d,
                        COALESCE(SUM(CASE WHEN transaction_type = 'sale' THEN profit WHEN transaction_type IN ('return','refund') THEN profit ELSE 0 END), 0) AS profit_30d,
+                       COUNT(DISTINCT DATE(transaction_at)) AS coverage_days_30d,
                        MAX(CASE WHEN transaction_type = 'sale' THEN transaction_at END) AS last_sold_at
                 FROM transactions
                 WHERE business_id = :business_id
                   AND transaction_at >= (:anchor)::date - INTERVAL '30 days'
-                GROUP BY item_id
+                GROUP BY item_id, location_id
             ),
             sales_prior AS (
-                SELECT item_id,
+                SELECT item_id, location_id,
                        COALESCE(SUM(CASE WHEN transaction_type = 'sale' THEN quantity WHEN transaction_type IN ('return','refund') THEN -quantity ELSE 0 END), 0) AS qty_prior_30d,
                        COALESCE(SUM(CASE WHEN transaction_type = 'sale' THEN quantity WHEN transaction_type IN ('return','refund') THEN -quantity ELSE 0 END), 0) AS demand_prior_30d
                 FROM transactions
                 WHERE business_id = :business_id
                   AND transaction_at < (:anchor)::date - INTERVAL '30 days'
                   AND transaction_at >= (:anchor)::date - INTERVAL '60 days'
-                GROUP BY item_id
+                GROUP BY item_id, location_id
             ),
             sales_90 AS (
-                SELECT item_id,
+                SELECT item_id, location_id,
                        COUNT(*) AS transaction_count_90d,
                        MAX(transaction_at) AS last_activity_at
                 FROM transactions
                 WHERE business_id = :business_id
                   AND transaction_at >= (:anchor)::date - INTERVAL '90 days'
-                GROUP BY item_id
+                GROUP BY item_id, location_id
             ),
             monthly_sales AS (
                 SELECT item_id, DATE_TRUNC('month', transaction_at) AS month_bucket,
@@ -236,10 +237,13 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
             )
             SELECT i.id AS item_id, i.name AS item_name, i.sku, i.barcode,
                    c.name AS category_name,
+                   inv.id AS inventory_id,
+                   inv.location_id AS location_id,
                    COALESCE(inv.current_stock, 0) AS current_stock,
                    COALESCE(i.cost_price, 0) AS cost_price,
                    COALESCE(i.sell_price, 0) AS sell_price,
                    COALESCE(s.qty_30d, 0) AS qty_30d,
+                   COALESCE(s.coverage_days_30d, 0) AS coverage_days_30d,
                    COALESCE(s.revenue_30d, 0) AS revenue_30d,
                    COALESCE(s.profit_30d, 0) AS profit_30d,
                    COALESCE(p.qty_prior_30d, 0) AS qty_prior_30d,
@@ -257,9 +261,9 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
             FROM items i
             LEFT JOIN inventory inv ON inv.item_id = i.id AND inv.business_id = i.business_id
             LEFT JOIN categories c ON c.id = i.category_id
-            LEFT JOIN sales_30 s ON s.item_id = i.id
-            LEFT JOIN sales_prior p ON p.item_id = i.id
-            LEFT JOIN sales_90 s90 ON s90.item_id = i.id
+            LEFT JOIN sales_30 s ON s.item_id = i.id AND (s.location_id IS NOT DISTINCT FROM inv.location_id)
+            LEFT JOIN sales_prior p ON p.item_id = i.id AND (p.location_id IS NOT DISTINCT FROM inv.location_id)
+            LEFT JOIN sales_90 s90 ON s90.item_id = i.id AND (s90.location_id IS NOT DISTINCT FROM inv.location_id)
             LEFT JOIN month_concentration mc ON mc.item_id = i.id
             LEFT JOIN suppliers sup ON sup.id = inv.supplier_id
             WHERE i.business_id = :business_id AND i.is_active = true
@@ -333,7 +337,12 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
         sell = _money(row.sell_price)
         qty_30d = _money(row.qty_30d)
         qty_prior = _money(row.qty_prior_30d)
-        daily_velocity = qty_30d / Decimal("30") if qty_30d > 0 else Decimal("0")
+        # Coverage-aware velocity: demand is normalized by the DISTINCT days it
+        # was actually observed over.  A merchant who supplied 6 days of sales
+        # must never be treated as a 30-day dataset (16 units/6 days = 2.67/day,
+        # not 0.53/day).  Unobserved days are UNKNOWN, never zero.
+        coverage_days = _money(row.coverage_days_30d)
+        daily_velocity = coverage_aware_daily_velocity(qty_30d, coverage_days)
         last_sold_days = None
         if row.last_sold_at:
             value = row.last_sold_at.date() if isinstance(row.last_sold_at, datetime) else row.last_sold_at
@@ -389,6 +398,7 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
             projected_stock=projected_stock,
             lead_time_days=lead_time,
             safety_stock=_money(row.safety_stock) if row.safety_stock is not None else None,
+            recent_coverage_days=Decimal(str(coverage_days)) if coverage_days > 0 else None,
         ))
         classification = audit.classification
         classifications[classification] = classifications.get(classification, 0) + 1
@@ -419,6 +429,8 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
                 "financial_model": {**recovery.json(), "financial_impact_type": "CAPITAL_AT_RISK"},
                 "evidence": {
                     "item_id": str(row.item_id), "sku": row.sku, "item_name": item_name, "current_stock": float(stock),
+                    "location_id": str(row.location_id) if row.location_id else None,
+                    "coverage_days_30d": coverage_days,
                     "cost_price_sar": float(cost), "sell_price_sar": float(sell),
                     "inventory_value_sar": float(stock_value), "qty_30d": float(qty_30d),
                     "qty_prior_30d": float(qty_prior), "last_sold_days": last_sold_days,
@@ -442,6 +454,8 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
                 "financial_model": {**recovery.json(), "financial_impact_type": "SEASONAL"},
                 "evidence": {
                     "item_id": str(row.item_id), "sku": row.sku, "item_name": item_name,
+                    "location_id": str(row.location_id) if row.location_id else None,
+                    "coverage_days_30d": coverage_days,
                     "current_stock": float(stock), "cost_price_sar": float(cost),
                     "sell_price_sar": float(sell), "qty_30d": float(qty_30d),
                     "qty_prior_30d": float(qty_prior), "last_sold_days": last_sold_days,
@@ -465,7 +479,9 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
                 "financial_model": {**recovery.json(), "financial_impact_type": "HEALTHY"},
                 "evidence": {
                     "item_id": str(row.item_id), "sku": row.sku, "item_name": item_name,
+                    "location_id": str(row.location_id) if row.location_id else None,
                     "current_stock": float(stock), "daily_velocity": float(audit.daily_velocity),
+                    "coverage_days_30d": coverage_days,
                     "classification": classification,
                 },
             })
@@ -508,7 +524,7 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
                 "recovery_confidence": stockout.confidence,
                 "quantity": order_qty.quantize(Decimal("1")), "recommended_discount_pct": None,
                 "reason": "stockout_risk", "financial_impact_type": "REVENUE_AT_RISK", "financial_model": {**stockout.json(), "financial_impact_type": "REVENUE_AT_RISK"},
-                "evidence": {"sku": row.sku, "item_name": item_name, **stockout.evidence, "confirmed_inbound_qty": float(inbound_total), "usable_inbound_qty": float(usable_inbound), "late_inbound_qty": float(late_inbound), "projected_stockout_date": stockout_dt.isoformat() if stockout_dt else None, "ghost_po_risk": bool(confirmed_inbound_ghost.get(str(row.item_id), False)), "supplier_name": row.supplier_name, "supplier_min_order_sar": float(row.supplier_min_order_sar) if row.supplier_min_order_sar is not None else None},
+                "evidence": {"sku": row.sku, "item_name": item_name, "location_id": str(row.location_id) if row.location_id else None, "coverage_days_30d": coverage_days, **stockout.evidence, "confirmed_inbound_qty": float(inbound_total), "usable_inbound_qty": float(usable_inbound), "late_inbound_qty": float(late_inbound), "projected_stockout_date": stockout_dt.isoformat() if stockout_dt else None, "ghost_po_risk": bool(confirmed_inbound_ghost.get(str(row.item_id), False)), "supplier_name": row.supplier_name, "supplier_min_order_sar": float(row.supplier_min_order_sar) if row.supplier_min_order_sar is not None else None},
             })
 
         if audit.has_margin_leakage:

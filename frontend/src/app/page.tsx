@@ -1,55 +1,21 @@
 "use client";
 
 import { AuditProvider } from "@/components/landing/audit-context";
-import {
-  NazmakNav,
-  NazmakHero,
-  NazmakBuilding,
-  CurrentCapabilities,
-  NazmosIntro,
-  NazmosHowItWorks,
-  FutureScaleVisual,
-  NazmakPrinciples,
-  NazmakStatement,
-  NazmakFreeAudit,
-  NazmakFooter,
-} from "@/components/nazmak";
-import { SectionTransition } from "@/components/motion/SectionTransition";
+import { BusinessUniverse } from "@/components/universe";
 
 /**
- * Nazmak — the company homepage.
+ * The public home — the Business Universe.
  *
- * Establishes the parent brand, then introduces NazmOS as its first product.
- * The sequence: who Nazmak is → what it builds → current capability →
- * NazmOS → how it works → future scale → principles → final statement.
+ * A spatial, navigable model of the business system: SALES, INVENTORY, DEMAND,
+ * SUPPLIERS, COST around central NAZMOS. Selecting a signal follows it through
+ * the system; EXPLORE NAZMOS converges the field; REQUEST A BUSINESS AUDIT
+ * embeds the live Money Audit (GuestAuditUploader). The `/` route is always
+ * Convergence-dark (enforced reversibly inside BusinessUniverse).
  */
 export default function NazmakHome() {
   return (
     <AuditProvider>
-      <NazmakNav />
-      <main id="main">
-        <NazmakHero />
-
-        <SectionTransition className="mx-auto max-w-7xl px-5 md:px-8" />
-        <NazmakBuilding />
-
-        <SectionTransition className="mx-auto max-w-7xl px-5 md:px-8" />
-        <CurrentCapabilities />
-
-        <NazmosIntro />
-
-        <SectionTransition className="mx-auto max-w-7xl px-5 md:px-8" />
-        <NazmosHowItWorks />
-
-        <FutureScaleVisual />
-
-        <NazmakPrinciples />
-
-        <NazmakFreeAudit />
-
-        <NazmakStatement />
-      </main>
-      <NazmakFooter />
+      <BusinessUniverse />
     </AuditProvider>
   );
 }

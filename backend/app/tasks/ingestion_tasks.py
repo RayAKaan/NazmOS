@@ -14,10 +14,14 @@ settings = get_settings()
 
 
 def run_process_upload(upload_id: str, business_id: str, column_mapping: dict):
-    """Core ingestion logic — called by both Celery task and BackgroundTasks fallback."""
+    """Core ingestion logic — called by both Celery task and BackgroundTasks fallback.
+
+    Scoped to ``business_id`` so every statement (including the fresh async
+    engine the ETL pipeline opens) runs under that tenant's RLS context.
+    """
     from app.services.cache_service import CacheService
 
-    with get_sync_session() as session:
+    with get_sync_session(tenant_id=business_id) as session:
         result = session.execute(
             text("SELECT * FROM uploaded_files WHERE id = :upload_id"),
             {"upload_id": upload_id}
@@ -122,6 +126,8 @@ def run_process_upload(upload_id: str, business_id: str, column_mapping: dict):
 
 
 def run_cleanup_stale_uploads():
+    # Supervisor scope: purging stale uploads is a cross-tenant maintenance
+    # job by design, so no tenant context is applied here.
     cutoff = datetime.utcnow() - timedelta(hours=48)
 
     with get_sync_session() as session:

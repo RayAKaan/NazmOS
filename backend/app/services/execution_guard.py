@@ -97,6 +97,10 @@ def _build_constraint_payload(
     }
 
     if action_type in {"RESTOCK", "restock", "reorder"}:
+        if cp["quantity"] is None and new_state is not None:
+            cp["quantity"] = new_state.get("restock_qty")
+            if cp["quantity"] is None:
+                cp["quantity"] = new_state.get("quantity")
         if cp["quantity"] is None and previous_state is not None and new_state is not None:
             cp["quantity"] = _to_float(new_state.get("current_stock")) - _to_float(previous_state.get("current_stock"))
         if cp["current_stock"] is None and previous_state is not None:

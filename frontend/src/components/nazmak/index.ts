@@ -1,11 +1,2 @@
 export { NazmakNav } from "./NazmakNav";
-export { NazmakHero } from "./NazmakHero";
-export { NazmakBuilding } from "./NazmakBuilding";
-export { CurrentCapabilities } from "./CurrentCapabilities";
-export { NazmosIntro } from "./NazmosIntro";
-export { NazmosHowItWorks } from "./NazmosHowItWorks";
-export { FutureScaleVisual } from "./FutureScaleVisual";
-export { NazmakPrinciples } from "./NazmakPrinciples";
-export { NazmakStatement } from "./NazmakStatement";
-export { NazmakFreeAudit } from "./NazmakFreeAudit";
 export { NazmakFooter } from "./NazmakFooter";

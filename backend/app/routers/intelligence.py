@@ -16,6 +16,7 @@ from app.database import get_db
 from app.database.models import Business, BusinessMemory, GraphRelationship, MemoryType, User
 from app.middleware.auth_middleware import get_current_user
 from app.middleware.business_access import assert_business_access
+from app.middleware.rbac import require_capability
 from app.schemas.business_memory import (
     BusinessMemoryOut,
     GoalSetRequest,
@@ -610,7 +611,8 @@ async def read_simulation(
     return simulation
 
 
-@router.post("/execute", response_model=ExecutionJobOut, status_code=status.HTTP_201_CREATED)
+@router.post("/execute", response_model=ExecutionJobOut, status_code=status.HTTP_201_CREATED,
+             dependencies=[Depends(require_capability("can_approve_actions", "business_id"))])
 async def execute_action(
     business_id: UUID,
     request: ExecutionRequest,

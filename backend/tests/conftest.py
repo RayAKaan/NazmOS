@@ -29,7 +29,7 @@ if not os.environ.get("DATABASE_URL"):
 
 from app.main import app
 from app.database.models import Base
-from app.database.connection import get_db
+from app.database.connection import engine, get_db
 
 
 def _postgres_available(host: str | None = None, port: int | None = None, timeout: float = 0.35) -> bool:
@@ -57,6 +57,23 @@ def event_loop():
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def _dispose_app_engine_after_each_test():
+    """Prevent stale asyncpg pool entries from crossing pytest-asyncio loops.
+
+    pytest-asyncio >= 0.24 (used on Python >= 3.13 in CI) runs each async test
+    in its own event loop. The app-level ``AsyncSessionLocal`` engine keeps a
+    ``QueuePool``; a connection checked out by test A on loop A and returned to
+    the pool is then handed to test B on a fresh loop, raising
+    ``RuntimeError: Task got Future attached to a different loop``. Disposing
+    the engine inside the current test's loop makes every subsequent test open
+    connections on its own loop. Mirrors the per-test ``NullPool`` engine used
+    by ``db_session`` below.
+    """
+    yield
+    await engine.dispose()
 
 
 @pytest_asyncio.fixture(scope="function")

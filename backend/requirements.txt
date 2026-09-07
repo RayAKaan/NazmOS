@@ -42,6 +42,13 @@ numpy>=2.2,<3; python_version >= "3.13"
 pandas==2.2.2; python_version < "3.13"
 pandas>=2.2.3,<3; python_version >= "3.13"
 
+# Analytics execution
+# DuckDB (MIT) is the analytical execution engine for the inventory money-critical
+# surface (app.analytics). It computes raw aggregates only; every semantic is
+# computed in the NazmOS layer on top of tenant-scoped rows streamed through the
+# caller's session.
+duckdb==1.5.5
+
 # File Parsing & Validation
 openpyxl==3.1.5
 python-magic==0.4.27

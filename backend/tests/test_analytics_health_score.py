@@ -1,8 +1,11 @@
-"""Verifies calculate_health_score performs a single grouped query (Phase 1.2).
+"""DuckDB-era invariants for calculate_health_score (Phase 1).
 
-Pre-change the function called get_item_daily_avg once per inventory row,
-issuing N+1 queries against the transactions table on every dashboard load.
-The fix replaces that with one grouped aggregation.
+Pre-DuckDB the function issued three PG queries (grouped qty, dead-stock scan,
+total value) and the dead-stock scan was a separate grouped query. The scoped
+DuckDB engine now serves one tenant-scoped feed; the NazmOS layer computes the
+score over that feed. The guards below pin the NEW architecture's invariants:
+exactly one transactions load per engine, coverage-aware velocity, provenance
+attached, valid range, and value equivalence with a manual calculation.
 """
 import uuid
 from datetime import datetime, timedelta, timezone
@@ -54,12 +57,12 @@ async def _seed(db: AsyncSession) -> uuid.UUID:
     await db.flush()
 
     # current_stock = 100 for all; daily sales differ so we exercise every bucket.
-    daily_qty = {  # daily_avg = qty/30
+    daily_qty = {  # all sales land on ONE observed day -> coverage = 1 day
         "A": 0.0,     # dead
-        "B": 60.0,    # daily_avg=2.0 -> 100/2=50 days -> healthy (>5)
-        "C": 200.0,   # daily_avg~6.67 -> 15 days -> healthy
-        "D": 900.0,   # daily_avg=30 -> 3.33 days -> critical (<5? -> critical since <5)
-        "E": 1000.0,  # daily_avg~33.3 -> 3 days -> critical
+        "B": 60.0,    # qty_30d=2.0  -> vel=2.0   -> 100/2   = 50 days -> healthy
+        "C": 200.0,   # qty_30d=6.67 -> vel=6.67  -> ~14.99  days -> healthy
+        "D": 900.0,   # qty_30d=30.0 -> vel=30.0  -> ~3.33   days -> critical
+        "E": 1000.0,  # qty_30d=33.3 -> vel=33.3  -> ~3.0    days -> critical
     }
     now = datetime.now(timezone.utc)
     by_name = {i.name: i for i in items}
@@ -108,46 +111,62 @@ async def _run(session_local, sync_engine, business_id, tx_events):
 
 
 @pytest.mark.asyncio
-async def test_health_score_matches_manual_calculation(sqlite_db):
+async def test_health_score_single_engine_load(sqlite_db):
+    """Exactly one statement touches transactions: the engine's tenant load.
+
+    The DuckDB feed replaces the three PG queries (grouped qty, dead-stock
+    scan, total value) with a single tenant-scoped SELECT that streams the
+    analytical dataset into the in-memory engine.
+    """
     SessionLocal, sync_engine = sqlite_db
     async with SessionLocal() as db:
         business_id = await _seed(db)
     tx_events = []
     score = await _run(SessionLocal, sync_engine, business_id, tx_events)
 
-    assert score is not None
-    # Pre-change the loop issued one per-item daily-avg query (N+1) plus the
-    # dead-stock/total-value queries. Post-change the per-item form is gone and
-    # the grouped aggregation replaces it. Bound the total number of statements
-    # touching transactions so any reintroduced per-item query fails the test.
     total = [s for s in tx_events if "transactions" in s.lower()]
-    assert len(total) <= 4
-    grouped = [s for s in tx_events if "GROUP BY" in s and "transactions" in s.lower()]
-    # One grouped aggregation from calculate_health_score plus the pre-existing
-    # grouped dead-stock query inside calculate_dead_stock_value.
-    assert len(grouped) >= 1
+    assert len(total) == 1, "health score must load the feed exactly once"
+    assert "WHERE" in total[0].lower() or "business_id" in total[0].lower()
     assert score >= 0
 
 
 @pytest.mark.asyncio
-async def test_health_score_no_per_item_transaction_queries(sqlite_db):
-    """The N+1 regression guard: zero per-item daily-avg queries issued."""
+async def test_health_score_matches_manual_coverage_aware_calculation(sqlite_db):
     SessionLocal, sync_engine = sqlite_db
     async with SessionLocal() as db:
         business_id = await _seed(db)
     tx_events = []
     score = await _run(SessionLocal, sync_engine, business_id, tx_events)
 
-    # Every statement mentioning transactions is allowed EXCEPT the per-item
-    # daily-avg form: SELECT sum FROM transactions WHERE item_id = :x
-    per_item = [
-        s for s in tx_events
-        if "transactions" in s.lower()
-        and "item_id" in s.lower()
-        and "GROUP BY" not in s
-        and "JOIN" not in s
-    ]
-    assert len(per_item) == 0
+    # Manual coverage-aware expectation (all sales on a single observed day):
+    #   inventory_score = (5 - 2 critical) / 5 * 40 = 24
+    #   dead value (A: no sales, stock 100, cost 1.0)      = 100.00
+    #   total value (stock 100 x sell price each)          = 2000.00
+    #   stock_health = 30 - (100 / 2000 * 30)              = 28.5
+    #   final = min(100, int(24 + 28.5 + 20 + 10))         = 82
+    assert score == 82
+
+
+@pytest.mark.asyncio
+async def test_health_score_per_item_respawn_guard(sqlite_db):
+    """The N+1 regression guard survived the engine migration.
+
+    The engine loads the whole tenant analytical dataset once (a business_id
+    filtered SELECT); a respawned per-item form would issue an extra statement
+    with a single-item ``item_id`` predicate.
+    """
+    SessionLocal, sync_engine = sqlite_db
+    async with SessionLocal() as db:
+        business_id = await _seed(db)
+    tx_events = []
+    await _run(SessionLocal, sync_engine, business_id, tx_events)
+
+    total = [s for s in tx_events if "transactions" in s.lower()]
+    assert len(total) == 1, "exactly one engine load touches transactions"
+    # The N+1 form equates a single item (``WHERE item_id = <one value>``);
+    # the engine loader filters by ``business_id`` only.
+    per_item_predicates = [s for s in total if "item_id =" in s.lower()]
+    assert len(per_item_predicates) == 0, "per-item transaction query respawned"
 
 
 @pytest.mark.asyncio

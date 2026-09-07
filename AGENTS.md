@@ -86,3 +86,29 @@ stores a Fernet token in a `bytea` column and transparently decrypts on read
   `docker compose exec -T postgres psql` verifies schema at rest.
 - Pre-commit / CI gates: `.pre-commit-config.yaml` (bandit + gitleaks) and
   `.gitleaks.toml`.
+
+## DuckDB analytical boundary (Phase 1)
+
+The inventory money-critical surface (velocity, dead-stock, valuation, alerts,
+item-detail, dashboard health) reads its per-item facts from an in-memory
+DuckDB engine (`app.analytics`). The engine computes raw aggregates only;
+every semantic lives in the NazmOS layer on top of `ItemFact` / `ItemKPI`.
+Each computation opens one scoped engine, streams tenant-scoped rows through
+the caller's session, and closes (fail-closed). Tests use SQLite in-memory.
+
+**Fast subset (SQLite, no Postgres):**
+```bash
+cd backend
+$env:PYTHONPATH="H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend"
+python -m pytest tests/test_analytics_health_score.py tests/test_analytics_duckdb_boundary.py tests/test_analytics_dead_stock.py tests/test_analytics_item_detail.py tests/test_scan_consolidation.py -q
+```
+
+**Postgres-backed integration (integration runner only):**
+```bash
+$env:TEST_DATABASE_URL="postgresql+asyncpg://nazmos:nazmos_v5_dev@localhost:5432/nazmos_test"
+python -m pytest tests/test_dashboard.py tests/test_e2e_happy_path.py -q
+```
+
+The `CAST(inv.business_id AS TEXT)` in the engine load queries keeps the
+engine database-agnostic (Postgres refuses `uuid = character varying`
+without an explicit cast).

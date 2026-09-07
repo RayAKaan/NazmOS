@@ -1,6 +1,6 @@
 """Tests for Phase 4: RLS code-prep.
 
-4.1 -- ``agent_action_executor.approve_agent_action`` must not commit partway
+4.1 -- ``app.orchestration.runner.run_agent_approval`` must not commit partway
        through a request.  A mid-function commit ends the transaction that
        carries ``SET LOCAL app.current_tenant_id``, so a later statement would
        run without RLS tenant context.  The function now commits exactly once.
@@ -14,7 +14,7 @@ import uuid
 import pytest
 from sqlalchemy import text
 
-from app.services.agent_action_executor import approve_agent_action
+from app.orchestration.runner import run_agent_approval
 
 
 class TestAgentActionExecutorSingleCommit:
@@ -36,16 +36,16 @@ class TestAgentActionExecutorSingleCommit:
             async def commit(self):
                 commits.append(True)
 
-        result = await approve_agent_action(
+        result = await run_agent_approval(
             FakeSession(),
-            uuid.uuid4(),
+            action_id=uuid.uuid4(),
             note="n/a",
             decided_by=uuid.uuid4(),
         )
 
         assert result["ok"] is False
         assert commits == [], "not-found path must not commit partway"
-        assert len(wrote) == 1, "only the lookup UPDATE should run on the not-found path"
+        assert len(wrote) == 1, "only the lookup SELECT should run on the not-found path"
 
 
 class TestConnectionReappliesRlsContext:

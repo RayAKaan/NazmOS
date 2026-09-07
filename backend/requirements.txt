@@ -60,6 +60,13 @@ rapidfuzz>=3.9,<4
 celery==5.4.0
 redis==5.0.7
 
+# Durable orchestration
+# Temporal (MIT) is the durable-orchestration engine for execution paths
+# (app.orchestration). Workflows are deterministic skeletons; all business
+# rules stay in the NazmOS layer. Gated by USE_TEMPORAL; the local
+# deterministic runner is used when the flag is off (CI / SQLite).
+temporalio==1.32.0
+
 # Caching
 hiredis==3.0.0
 aiocache==0.12.2

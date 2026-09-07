@@ -14,7 +14,7 @@ import uuid
 import pytest
 from sqlalchemy import text
 
-from app.services.action_executor import ActionExecutor
+from app.orchestration.runner import run_manual_action
 
 
 async def _stock(db, item_id):
@@ -60,8 +60,8 @@ async def test_normal_receipt_increases_stock(db_session):
     await _seed_item(db_session, biz, item, stock=20)
     await db_session.commit()
 
-    executor = ActionExecutor(db_session)
-    result = await executor.execute_action(
+    result = await run_manual_action(
+        db_session,
         business_id=biz,
         action_type="RESTOCK",
         entity_type="item",
@@ -82,8 +82,8 @@ async def test_zero_receipt_is_noop(db_session):
     await _seed_item(db_session, biz, item, stock=20)
     await db_session.commit()
 
-    executor = ActionExecutor(db_session)
-    result = await executor.execute_action(
+    result = await run_manual_action(
+        db_session,
         business_id=biz,
         action_type="RESTOCK",
         entity_type="item",
@@ -105,9 +105,9 @@ async def test_multiple_receipts_accumulate(db_session):
     await _seed_item(db_session, biz, item, stock=20)
     await db_session.commit()
 
-    executor = ActionExecutor(db_session)
     for qty in (50.0, 30.0):
-        r = await executor.execute_action(
+        r = await run_manual_action(
+            db_session,
             business_id=biz,
             action_type="RESTOCK",
             entity_type="item",
@@ -149,8 +149,8 @@ async def test_concurrent_receipts_are_not_lost(db_session):
 
     async def one_receipt(_):
         async with SessionLocal() as s:
-            executor = ActionExecutor(s)
-            await executor.execute_action(
+            await run_manual_action(
+                s,
                 business_id=biz,
                 action_type="RESTOCK",
                 entity_type="item",
@@ -177,8 +177,8 @@ async def test_tenant_isolation_restock(db_session):
     await _seed_item(db_session, biz_b, item_b, stock=5)
     await db_session.commit()
 
-    executor = ActionExecutor(db_session)
-    result = await executor.execute_action(
+    result = await run_manual_action(
+        db_session,
         business_id=biz_b,
         action_type="RESTOCK",
         entity_type="item",
@@ -201,8 +201,8 @@ async def test_restock_missing_quantity_fails_closed(db_session):
     await _seed_item(db_session, biz, item, stock=20)
     await db_session.commit()
 
-    executor = ActionExecutor(db_session)
-    result = await executor.execute_action(
+    result = await run_manual_action(
+        db_session,
         business_id=biz,
         action_type="RESTOCK",
         entity_type="item",
@@ -242,10 +242,10 @@ async def test_idempotent_receipt_does_not_double_count(db_session):
     db_session.add(decision)
     await db_session.commit()
 
-    executor = ActionExecutor(db_session)
     # First application: applied through executor
     new_state = {"restock_qty": float(decision.quantity)}
-    r1 = await executor.execute_action(
+    r1 = await run_manual_action(
+        db_session,
         business_id=biz,
         action_type="RESTOCK",
         entity_type="item",

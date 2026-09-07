@@ -5,7 +5,8 @@ from uuid import UUID
 
 from app.database.connection import get_db
 from app.database.models import ExecutedAction, DecisionLog
-from app.services.action_executor import ActionExecutor
+from app.orchestration.runner import run_manual_action
+from app.orchestration.manual_repo import get_action_history, reverse_action
 from app.services.audit_service import AuditService
 from app.services.multi_tenant import TenantContext
 from app.middleware.rbac import require_capability
@@ -29,8 +30,6 @@ async def execute_action(
     db: AsyncSession = Depends(get_db),
     tenant: TenantContext = Depends(get_current_tenant),
 ):
-    executor = ActionExecutor(db)
-    
     item_result = await db.execute(
         select(DecisionLog).where(
             DecisionLog.id == data.entity_id,
@@ -48,11 +47,13 @@ async def execute_action(
     elif data.entity_type == "inventory":
         previous_state = data.new_state
     
-    result = await executor.execute_action(
+    result = await run_manual_action(
+        db,
         business_id=tenant.business_id,
         action_type=data.action_type,
         entity_type=data.entity_type,
         entity_id=data.entity_id,
+        payload=data.new_state,
         previous_state=previous_state,
         new_state=data.new_state,
         user_id=tenant.user_id,
@@ -90,8 +91,8 @@ async def reverse_action(
     if not action or action.business_id != tenant.business_id:
         raise HTTPException(404, "Action not found")
     
-    executor = ActionExecutor(db)
-    result = await executor.reverse_action(
+    result = await reverse_action(
+        db,
         action_id=action_id,
         user_id=tenant.user_id,
         reason=data.reason,
@@ -125,8 +126,8 @@ async def get_action_history(
     db: AsyncSession = Depends(get_db),
     tenant: TenantContext = Depends(get_current_tenant),
 ):
-    executor = ActionExecutor(db)
-    actions = await executor.get_action_history(
+    actions = await get_action_history(
+        db,
         business_id=tenant.business_id,
         entity_type=entity_type,
         status=status,
@@ -168,8 +169,6 @@ async def apply_decision(
     if decision.was_applied:
         raise HTTPException(400, "Decision already applied")
     
-    executor = ActionExecutor(db)
-    
     new_state = {}
     if decision.action_type == "RESTOCK":
         new_state = {
@@ -177,11 +176,13 @@ async def apply_decision(
             "item_name": decision.item_name,
         }
     
-    result = await executor.execute_action(
+    result = await run_manual_action(
+        db,
         business_id=tenant.business_id,
         action_type=decision.action_type,
         entity_type="item",
         entity_id=decision.item_id,
+        payload=new_state,
         previous_state={},
         new_state=new_state,
         decision_id=decision_id,

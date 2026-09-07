@@ -72,14 +72,14 @@ async def _item_inventory(db: AsyncSession, bid: str, stock: float) -> tuple[str
 
 async def test_concurrent_transfers_stock_never_negative(db):
     """§C: two overlapping transfers of the same item — stock ≥ 0, exactly one succeeds."""
-    from app.services.agent_action_executor import _execute_transfer
+    from app.orchestration.apply import apply_agent_transfer
 
     bid = await _seed(db)
     item_id, src, dst = await _item_inventory(db, bid, 10.0)
 
     async def transfer(qty: int):
         async with async_sessionmaker(db.bind, class_=AsyncSession, expire_on_commit=False)() as s:
-            result = await _execute_transfer(s, bid, {
+            result = await apply_agent_transfer(s, bid, {
                 "item_id": item_id, "from_business_id": src, "to_business_id": dst,
                 "recommended_transfer_qty": qty,
             })
@@ -96,7 +96,7 @@ async def test_concurrent_transfers_stock_never_negative(db):
 
 async def test_duplicate_approval_is_idempotent(db):
     """§B: two concurrent approvals → one terminal transition, second is a no-op."""
-    from app.services.agent_action_executor import approve_agent_action
+    from app.orchestration.runner import run_agent_approval
 
     bid = await _seed(db)
     aid = str(uuid4())
@@ -109,7 +109,7 @@ async def test_duplicate_approval_is_idempotent(db):
 
     async def approve():
         async with async_sessionmaker(db.bind, class_=AsyncSession, expire_on_commit=False)() as s:
-            return await approve_agent_action(s, aid, note="approve")
+            return await run_agent_approval(s, action_id=aid, note="approve")
 
     r1, r2 = await asyncio.gather(approve(), approve())
     assert sorted([r1["ok"], r2["ok"]]) == [False, True]  # exactly one wins
@@ -117,7 +117,7 @@ async def test_duplicate_approval_is_idempotent(db):
 
 async def test_tenant_isolation_under_concurrency(db):
     """§F: business A and B run actions concurrently; A never sees B's learned outcomes."""
-    from app.services.agent_action_executor import _record_terminal_outcome
+    from app.orchestration.record import record_terminal_outcome
     from app.services.outcome_learning import list_learned_outcomes
 
     bid_a = await _seed(db, "A")
@@ -140,7 +140,7 @@ async def test_tenant_isolation_under_concurrency(db):
 
     async def record(bid: str, aid: str):
         async with async_sessionmaker(db.bind, class_=AsyncSession, expire_on_commit=False)() as s:
-            return await _record_terminal_outcome(s, bid, aid)
+            return await record_terminal_outcome(s, bid, aid)
 
     await asyncio.gather(
         record(bid_a, aid_a),

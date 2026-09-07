@@ -980,6 +980,7 @@ class ExecutedAction(Base):
     business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
     decision_id = Column(UUID(as_uuid=True), ForeignKey("decision_log.id", ondelete="SET NULL"), nullable=True)
     source = Column(String(20), nullable=False)
+    execution_key = Column(String(64), nullable=True, index=True)
     action_type = Column(String(30), nullable=False)
     entity_type = Column(String(30), nullable=False)
     entity_id = Column(UUID(as_uuid=True), nullable=False)
@@ -1130,6 +1131,7 @@ class AgentAction(Base):
     # is retained as a convenience pointer to the most recent action.
     finding_id = Column(UUID(as_uuid=True), ForeignKey("findings.id", ondelete="SET NULL"), nullable=True, index=True)
     action_type = Column(String(30), nullable=False)
+    execution_key = Column(String(64), nullable=True, index=True)
     status = Column(String(30), nullable=False, default="pending_approval")
     
     # Ranking
@@ -1795,6 +1797,7 @@ class ExecutionJob(Base):
     action_type = Column(String(50), nullable=False)
     entity_type = Column(String(50), nullable=False)
     entity_id = Column(UUID(as_uuid=True), nullable=False)
+    execution_key = Column(String(64), nullable=True, index=True)
     payload = Column(JSON, nullable=False, default=dict)
     external_reference = Column(String(255), nullable=True)
     status = Column(String(30), nullable=False, default="pending")

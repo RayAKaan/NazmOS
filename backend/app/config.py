@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     USE_CELERY: bool = False
     USE_REDIS: bool = False
     USE_CLIENT_ETL: bool = False  # When True, frontend parses CSV via PapaParse (no server-side pandas)
+    USE_TEMPORAL: bool = False  # Durable orchestration (temporalio); when False, local deterministic runner
     
     # --- NazmOS KSA Feature Flags ---
     # Nazm Agent – ON by default – $0 cost, rule-based
@@ -363,8 +364,9 @@ def get_settings() -> Settings:
             )
         if not s.CREDENTIAL_MASTER_KEY or len(s.CREDENTIAL_MASTER_KEY) < 32:
             raise RuntimeError("FATAL: CREDENTIAL_MASTER_KEY is required in production and must be >= 32 chars")
-    # Auto-detect SQLite mode: no Celery/Redis needed
+    # Auto-detect SQLite mode: no Celery/Redis/Temporal needed
     if s.DATABASE_URL.startswith("sqlite"):
         object.__setattr__(s, "USE_CELERY", False)
         object.__setattr__(s, "USE_REDIS", False)
+        object.__setattr__(s, "USE_TEMPORAL", False)
     return s

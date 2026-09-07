@@ -59,7 +59,7 @@ async def _seed(db, name="T") -> str:
 
 
 async def test_concurrent_transfers_stock_non_negative(db):
-    from app.services.agent_action_executor import _execute_transfer
+    from app.orchestration.apply import apply_agent_transfer
 
     bid = await _seed(db)
     item = str(uuid4())
@@ -74,7 +74,7 @@ async def test_concurrent_transfers_stock_non_negative(db):
 
     async def xfer(q):
         async with async_sessionmaker(db.bind, class_=AsyncSession, expire_on_commit=False)() as s:
-            result = await _execute_transfer(s, bid, {"item_id": item, "from_business_id": src,
+            result = await apply_agent_transfer(s, bid, {"item_id": item, "from_business_id": src,
                                                       "to_business_id": dst, "recommended_transfer_qty": q})
             await s.commit()
             return result
@@ -87,7 +87,7 @@ async def test_concurrent_transfers_stock_non_negative(db):
 
 
 async def test_duplicate_approval_idempotent(db):
-    from app.services.agent_action_executor import approve_agent_action
+    from app.orchestration.runner import run_agent_approval
 
     bid = await _seed(db)
     aid = str(uuid4())
@@ -100,7 +100,7 @@ async def test_duplicate_approval_idempotent(db):
 
     async def ap():
         async with async_sessionmaker(db.bind, class_=AsyncSession, expire_on_commit=False)() as s:
-            return await approve_agent_action(s, aid, note="x")
+            return await run_agent_approval(s, action_id=aid, note="x")
 
     a, b = await asyncio.gather(ap(), ap())
     assert sorted([a["ok"], b["ok"]]) == [False, True]

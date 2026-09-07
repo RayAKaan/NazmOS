@@ -46,8 +46,8 @@ from app.services.execution_guard import (
     CODE_ITEM_NOT_FOUND,
 )
 from app.services.po_service import usable_confirmed_inbound, projected_stockout_date
-from app.services.action_executor import ActionExecutor
-from app.services.agent_action_executor import execute_agent_action
+from app.orchestration.runner import run_manual_action
+from app.orchestration.apply import apply_agent_action
 from app.services.money_audit_service import generate_money_audit
 from app.services.decision_engine import DecisionEngine, ActionType
 from app.utils.clock import utcnow, set_virtual_now
@@ -387,8 +387,9 @@ async def test_c_legacy_action_executor_refuses_blocked_restock(db_session):
     from sqlalchemy import text as _t
     before = (await db_session.execute(_t("SELECT current_stock FROM inventory WHERE item_id=:i"), {"i": str(item)})).scalar()
 
-    executor = ActionExecutor(db_session)
-    result = await executor.execute_action(
+    executor = run_manual_action
+    result = await executor(
+        db_session,
         business_id=biz,
         action_type="RESTOCK",
         entity_type="item",
@@ -417,7 +418,7 @@ async def test_c_agent_executor_blocked_by_constraint_with_code(db_session):
     await _seed_item(db_session, biz, item)
     await db_session.commit()
 
-    outcome = await execute_agent_action(
+    outcome = await apply_agent_action(
         db_session,
         business_id=biz,
         action_id=str(uuid.uuid4()),

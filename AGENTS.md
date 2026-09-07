@@ -112,3 +112,37 @@ python -m pytest tests/test_dashboard.py tests/test_e2e_happy_path.py -q
 The `CAST(inv.business_id AS TEXT)` in the engine load queries keeps the
 engine database-agnostic (Postgres refuses `uuid = character varying`
 without an explicit cast).
+
+## Orchestration layer (Phase 1 — Temporal replacement)
+
+Every execution (manual, agent-approved, simulated) flows through the single
+canonical layer in `app/orchestration/`. Routers and services MUST import
+from here only — never from the deleted legacy executors.
+
+**Entry points** (`app/orchestration/runner.py`):
+- `run_manual_action` — actions.py / money_audit.py path (RESTOCK, PRICE_CHANGE, DISCOUNT, ALERT_DISMISS)
+- `run_agent_approval` — agent.py / whatsapp.py path (pending_approval → approved → executed)
+- `run_agent_rejection` — reject agent action
+- `run_simulated` — intelligence.py path (creates ExecutionJob, never mutates business data)
+
+**Workflow** (`app/orchestration/workflows.py`):
+Deterministic, composable steps (precheck → idempotency → apply → record).
+Same code runs under `USE_TEMPORAL=False` (CI, local runner) and `USE_TEMPORAL=True`
+(prod Temporal server with local fallback).
+
+**Idempotency**: `execution_key` = SHA-256 hex from `business_id+action_type+entity_type+entity_id+payload+source`
+(`app/orchestration/keys.py::derive_execution_key`). Stored in `executed_actions`,
+`agent_actions`, `execution_jobs` columns; checked before every apply.
+
+**Fast tests (SQLite, no Postgres):**
+```bash
+cd backend
+$env:PYTHONPATH="H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend"
+python -m pytest tests/test_orchestration.py tests/test_execution_path_clarity.py tests/test_phase5.py tests/test_phase5_learning_loop.py tests/test_phase6_loop.py tests/test_phase7_loop.py tests/test_phase8_loop.py -q
+```
+
+**Postgres-backed integration:**
+```bash
+$env:TEST_DATABASE_URL="postgresql+asyncpg://nazmos:nazmos_v5_dev@localhost:5432/nazmos_test"
+python -m pytest tests/test_restock_semantics.py tests/test_phase9_postgres.py tests/test_phase11_postgres.py tests/test_phase13_postgres.py tests/test_e2e_happy_path.py -q
+```

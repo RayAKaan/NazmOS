@@ -4,7 +4,7 @@ import uuid
 import pytest
 from sqlalchemy import text
 
-from app.services.agent_action_executor import approve_agent_action
+from app.orchestration.runner import run_agent_approval
 
 
 @pytest.mark.asyncio
@@ -52,7 +52,7 @@ async def test_approve_restock_action_writes_outcome(db_session):
     )
     await db_session.commit()
 
-    result = await approve_agent_action(db_session, action_id, note="Approved in test", decided_by=user_id)
+    result = await run_agent_approval(db_session, action_id=action_id, note="Approved in test", decided_by=user_id)
 
     assert result["ok"] is True
     assert result["outcome"]["executed"] is True

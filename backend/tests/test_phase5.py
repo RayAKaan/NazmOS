@@ -16,7 +16,7 @@ from sqlalchemy.pool import StaticPool
 from app.database.models import Base, BusinessMemory, GraphEntity, MemoryType
 from app.intelligence.agents.registry import dispatch_agent
 from app.services.business_memory import set_memory_path
-from app.services.execution_engine import execute_from_request, get_execution_job
+from app.orchestration.runner import run_simulated, get_execution_job
 from app.services.planning_engine import create_plan, get_plan
 from app.services.simulation_engine import create_simulation, get_simulation
 
@@ -98,23 +98,23 @@ async def test_execution_job_idempotency(sqlite_session: AsyncSession):
     business_id = uuid4()
     entity_id = uuid4()
 
-    job1 = await execute_from_request(
+    job1 = await run_simulated(
         sqlite_session,
-        business_id,
-        "restock",
-        "item",
-        entity_id,
-        {"quantity": 100},
+        business_id=business_id,
+        action_type="restock",
+        entity_type="item",
+        entity_id=entity_id,
+        payload={"quantity": 100},
     )
     await sqlite_session.commit()
 
-    job2 = await execute_from_request(
+    job2 = await run_simulated(
         sqlite_session,
-        business_id,
-        "restock",
-        "item",
-        entity_id,
-        {"quantity": 100},
+        business_id=business_id,
+        action_type="restock",
+        entity_type="item",
+        entity_id=entity_id,
+        payload={"quantity": 100},
     )
     await sqlite_session.commit()
 

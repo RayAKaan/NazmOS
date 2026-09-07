@@ -27,7 +27,6 @@ from app.services import business_memory
 from app.services import context_engine
 from app.services import decision_engine
 from app.services import event_engine
-from app.services import execution_engine
 from app.services import planning_engine
 from app.services import simulation_engine
 from app.utils.logger import setup_logger
@@ -309,18 +308,23 @@ async def execute(
     payload: dict[str, Any],
     decision_id: UUID | str | None = None,
     plan_id: UUID | str | None = None,
-) -> execution_engine.ExecutionJob:
-    """Execute an approved action."""
-    return await execution_engine.execute_from_request(
+) -> ExecutionJob:
+    """Execute an approved action (simulated path, ADR §7)."""
+    from app.orchestration.runner import run_simulated
+
+    result = await run_simulated(
         session,
-        business_id,
-        action_type,
-        entity_type,
-        entity_id,
-        payload,
+        business_id=business_id,
+        action_type=action_type,
+        entity_type=entity_type,
+        entity_id=entity_id,
+        payload=payload,
         decision_id=decision_id,
         plan_id=plan_id,
     )
+    from app.orchestration.runner import get_execution_job
+    job = await get_execution_job(session, UUID(result["job_id"]))
+    return job
 
 
 async def observe(

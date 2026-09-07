@@ -90,7 +90,7 @@ from app.services.business_memory import (
 from app.intelligence.agents.registry import dispatch_agent, list_agent_types
 from app.services.context_engine import create_context, get_active_context, refresh_context_for_business
 from app.services.decision_engine import explain_decision, generate_decision, get_decision
-from app.services.execution_engine import execute_from_request, get_execution_job
+from app.orchestration.runner import run_simulated, get_execution_job
 from app.services.learning_engine import (
     compute_model_performance,
     get_model_performance,
@@ -621,17 +621,20 @@ async def execute_action(
 ):
     """Execute an approved action through the Execution Engine."""
     await _verify_business_access(db, business_id, current_user)
-    job = await execute_from_request(
+    result = await run_simulated(
         db,
-        business_id,
-        request.action_type,
-        request.entity_type,
-        request.entity_id,
-        request.payload,
+        business_id=business_id,
+        action_type=request.action_type,
+        entity_type=request.entity_type,
+        entity_id=request.entity_id,
+        payload=request.payload,
         decision_id=request.decision_id,
         plan_id=request.plan_id,
     )
     await db.commit()
+    job = await get_execution_job(db, UUID(result["job_id"]))
+    if not job:
+        raise HTTPException(status_code=500, detail="Execution job not created")
     await db.refresh(job)
     return job
 

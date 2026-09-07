@@ -37,7 +37,7 @@ from app.database import connection as connection_mod
 
 TEST_DATABASE_URL = os.environ.get(
     "TEST_DATABASE_URL",
-    "postgresql+asyncpg://nazmos:nazmos_v5_dev@localhost:5432/nazmos_test",
+    "postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos_test",
 )
 
 REGRESSION_DIR = Path(__file__).resolve().parents[1] / "regression_data"

@@ -458,7 +458,7 @@ class ETLPipeline:
                             ELSE inventory.last_restocked
                         END,
                         updated_at = NOW()
-                """),
+                """),  # nosec B608
                 {
                     "id": str(_uuid.uuid4()),
                     "business_id": self.business_id,

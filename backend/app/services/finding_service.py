@@ -74,7 +74,7 @@ async def advance_status(db: AsyncSession, finding_id: UUID | str, to_status: st
     """Move a finding along the lifecycle (or to a terminal rejected/failed state)."""
     scope = " AND business_id = :b" if business_id is not None else ""
     params: dict[str, Any] = {"id": str(finding_id), "b": str(business_id)} if business_id is not None else {"id": str(finding_id)}
-    res = await db.execute(text(f"SELECT status FROM findings WHERE id = :id{scope}"), params)
+    res = await db.execute(text(f"SELECT status FROM findings WHERE id = :id{scope}"), params)  # nosec B608
     row = res.fetchone()
     if not row:
         return {"ok": False, "reason": "Finding not found"}
@@ -92,7 +92,7 @@ async def advance_status(db: AsyncSession, finding_id: UUID | str, to_status: st
             resolved_at = CASE WHEN :s IN ('verified', 'rejected', 'failed') THEN :now ELSE resolved_at END,
             updated_at = :now
         WHERE id = :id{scope}
-    """), {**params, "s": to_status, "now": now})
+    """), {**params, "s": to_status, "now": now})  # nosec B608
     if commit:
         await db.commit()
     return {"ok": True, "finding_id": str(finding_id), "status": to_status}
@@ -110,7 +110,7 @@ async def verify_finding(
     """Record the verification result + actual (revised) financial impact (brief §10)."""
     scope = " AND business_id = :b" if business_id is not None else ""
     params: dict[str, Any] = {"id": str(finding_id), "b": str(business_id)} if business_id is not None else {"id": str(finding_id)}
-    res = await db.execute(text(f"SELECT id FROM findings WHERE id = :id{scope}"), params)
+    res = await db.execute(text(f"SELECT id FROM findings WHERE id = :id{scope}"), params)  # nosec B608
     if not res.fetchone():
         return {"ok": False, "reason": "Finding not found"}
 
@@ -122,7 +122,7 @@ async def verify_finding(
             resolved_at = :now,
             updated_at = :now
         WHERE id = :id{scope}
-    """), {
+    """), {  # nosec B608
         **params,
         "verified": bool(verified),
         "vr": _json({"verified": bool(verified), "actual_impact_sar": actual_impact_sar, "note": note}),

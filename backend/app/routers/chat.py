@@ -5,7 +5,7 @@ from sqlalchemy import text
 from datetime import datetime
 import json
 import uuid
-from typing import Optional
+from typing import Any, Optional
 
 from app.middleware.auth_middleware import get_current_user
 from app.middleware.business_access import assert_business_access

@@ -40,7 +40,7 @@ from app.database.connection import (
 
 TEST_DATABASE_URL = os.environ.get(
     "TEST_DATABASE_URL",
-    "postgresql+asyncpg://nazmos:nazmos_v5_dev@localhost:5432/nazmos_test",
+    "postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos_test",
 )
 APP_ROLE = "nazmos_app"
 

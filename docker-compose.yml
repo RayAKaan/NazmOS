@@ -29,6 +29,15 @@ services:
       timeout: 5s
       retries: 5
 
+  # Real Temporal server (single-container dev server; file persistence).
+  # NazmOS execution routes through this substrate only — there is no local
+  # fallback, so the server + nazmos-worker must both be up.
+  temporal:
+    image: temporalio/temporal:latest
+    command: ["server", "start-dev", "--ip", "0.0.0.0", "--headless"]
+    ports:
+      - "7233:7233"
+
   api:
     build:
       context: ./backend
@@ -39,6 +48,10 @@ services:
       REDIS_URL: redis://redis:6379/0
       USE_CELERY: "true"
       USE_REDIS: "true"
+      USE_TEMPORAL: "true"
+      TEMPORAL_ADDRESS: temporal:7233
+      TEMPORAL_NAMESPACE: default
+      TEMPORAL_TASK_QUEUE: nazm-execution
       CORS_ORIGINS: "https://app.nazm.ai,https://nazm.ai,http://localhost:3000"
     ports:
       - "8000:8000"
@@ -47,6 +60,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      temporal:
+        condition: service_started
     volumes:
       - ./backend/uploads:/app/uploads
     command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
@@ -87,6 +102,31 @@ services:
       redis:
         condition: service_healthy
     command: ["celery", "-A", "app.celery_app", "beat", "-l", "info"]
+
+  # NazmOS execution worker: hosts workflows + activities against the real
+  # Temporal server. Required for all business execution; no local fallback.
+  nazmos-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      ENVIRONMENT: staging
+      DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@postgres:5432/nazmos
+      REDIS_URL: redis://redis:6379/0
+      USE_CELERY: "true"
+      USE_TEMPORAL: "true"
+      TEMPORAL_ADDRESS: temporal:7233
+      TEMPORAL_NAMESPACE: default
+      TEMPORAL_TASK_QUEUE: nazm-execution
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      temporal:
+        condition: service_started
+    restart: unless-stopped
+    command: ["python", "-m", "app.orchestration.temporal.worker"]
 
   nginx:
     image: nginx:alpine

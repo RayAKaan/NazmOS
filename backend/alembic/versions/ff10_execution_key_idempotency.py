@@ -10,7 +10,7 @@ an indexed nullable ``execution_key varchar(64)`` column:
   - execution_jobs
 
 Revision ID: ff10_execution_key_idempotency
-Revises: ff09_forecast_model_version_widen
+Revises: ff09_forecast_version_widen
 Create Date: 2026-09-07
 """
 from typing import Sequence, Union
@@ -20,7 +20,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = "ff10_execution_key_idempotency"
-down_revision: Union[str, None] = "ff09_forecast_model_version_widen"
+down_revision: Union[str, None] = "ff09_forecast_version_widen"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

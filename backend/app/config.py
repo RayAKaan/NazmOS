@@ -1,6 +1,7 @@
 from pydantic import field_validator, model_validator, ValidationInfo
 from pydantic_settings import BaseSettings
 from functools import lru_cache
+import os
 import secrets
 
 
@@ -26,7 +27,14 @@ class Settings(BaseSettings):
     USE_CELERY: bool = False
     USE_REDIS: bool = False
     USE_CLIENT_ETL: bool = False  # When True, frontend parses CSV via PapaParse (no server-side pandas)
-    USE_TEMPORAL: bool = False  # Durable orchestration (temporalio); when False, local deterministic runner
+    USE_TEMPORAL: bool = True  # Durable orchestration (temporalio); when True, Temporal server is required
+    # Temporal server connection (used only when USE_TEMPORAL=true). These are
+    # the ONLY connection knobs: there is no silent local fallback if the server
+    # is unreachable — Temporal unavailability is an explicit operational error.
+    TEMPORAL_ADDRESS: str = "localhost:7233"
+    TEMPORAL_NAMESPACE: str = "default"
+    TEMPORAL_TASK_QUEUE: str = "nazm-execution"
+    TEMPORAL_CONNECT_TIMEOUT_SECONDS: float = 10.0
     
     # --- NazmOS KSA Feature Flags ---
     # Nazm Agent – ON by default – $0 cost, rule-based
@@ -321,6 +329,15 @@ class Settings(BaseSettings):
                 "DATABASE_APP_ROLE SET ROLE model (aggressive tenant isolation) "
                 "have no meaning on a file-backed database"
             )
+        if not self.USE_TEMPORAL:
+            raise ValueError(
+                "USE_TEMPORAL must be true in production: NazmOS executes "
+                "through the Temporal substrate; the local deterministic "
+                "runner is only available when explicitly selected for "
+                "development/tests, never as a production downgrade path"
+            )
+        if not self.TEMPORAL_ADDRESS:
+            raise ValueError("TEMPORAL_ADDRESS is required in production")
         origins = [origin.strip() for origin in (self.CORS_ORIGINS or "").split(",") if origin.strip()]
         if origins:
             for origin in origins:
@@ -364,9 +381,14 @@ def get_settings() -> Settings:
             )
         if not s.CREDENTIAL_MASTER_KEY or len(s.CREDENTIAL_MASTER_KEY) < 32:
             raise RuntimeError("FATAL: CREDENTIAL_MASTER_KEY is required in production and must be >= 32 chars")
-    # Auto-detect SQLite mode: no Celery/Redis/Temporal needed
+    # Auto-detect SQLite mode: no Celery/Redis needed. USE_TEMPORAL is only
+    # auto-disabled for SQLite when the operator did not explicitly select it;
+    # an explicit USE_TEMPORAL=true is respected so that Temporal availability
+    # becomes a hard failure surface (never a silent local downgrade) even on a
+    # file-backed database.
     if s.DATABASE_URL.startswith("sqlite"):
         object.__setattr__(s, "USE_CELERY", False)
         object.__setattr__(s, "USE_REDIS", False)
-        object.__setattr__(s, "USE_TEMPORAL", False)
+        if os.getenv("USE_TEMPORAL") is None:
+            object.__setattr__(s, "USE_TEMPORAL", False)
     return s

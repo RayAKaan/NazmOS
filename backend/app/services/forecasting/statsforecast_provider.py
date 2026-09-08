@@ -39,12 +39,9 @@ from app.services.forecasting.quality import assess_quality
 from app.services.forecasting.schemas import FallbackReason, ForecastPrediction, ForecastResult
 from app.utils.timezone import now_utc
 
-try:
-    from statsforecast import StatsForecast
-    from statsforecast.models import AutoARIMA, AutoETS
-    STATSFORECAST_AVAILABLE = True
-except ImportError:  # pragma: no cover - install path
-    STATSFORECAST_AVAILABLE = False
+from statsforecast import StatsForecast
+from statsforecast.models import AutoARIMA, AutoETS
+STATSFORECAST_AVAILABLE = True
 
 logger = logging.getLogger("forecasting.statsforecast")
 
@@ -111,13 +108,6 @@ class StatsForecastProvider(ForecastProvider):
                 fallback_reason=quality.reason,
             )
 
-        if not STATSFORECAST_AVAILABLE:
-            return baseline_from_series(
-                series,
-                horizon_days=horizon_days,
-                provider=self,
-                fallback_reason=FallbackReason.STATSFORECAST_FAILED.value,
-            )
 
         try:
             # StatsForecast fit is CPU-bound; keep the event loop responsive.

@@ -22,6 +22,21 @@ from app.orchestration.contracts import ExecutionRequest, ActionResult
 
 logger = structlog.get_logger(__name__)
 
+# Canonical workflow identifiers
+WF_MANUAL_ACTION = "manual_action"
+WF_AGENT_APPROVAL = "agent_approval"
+WF_AGENT_REJECTION = "agent_rejection"
+WF_SIMULATED = "simulated"
+
+# Canonical mapping: workflow function name -> Temporal workflow type.
+# The Temporal client and the worker MUST agree on these names. Local runners
+# use the function reference; the Temporal substrate uses the type string.
+WORKFLOW_TYPE_BY_FN_NAME = {
+    "manual_action_workflow": WF_MANUAL_ACTION,
+    "agent_approval_workflow": WF_AGENT_APPROVAL,
+    "simulated_workflow": WF_SIMULATED,
+}
+
 
 async def manual_action_workflow(
     db: AsyncSession,

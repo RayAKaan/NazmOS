@@ -125,9 +125,12 @@ jobs:
           DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos_test
           REDIS_URL: redis://localhost:6379/0
           ENVIRONMENT: test
+          # The temporal suite (tests/temporal) runs in its own job against a
+          # real Temporal server; here execution stays on the local runner.
+          USE_TEMPORAL: "false"
         run: |
           python -m alembic upgrade head
-          pytest -q
+          pytest -q --ignore=tests/temporal
 
       - name: Backend runtime E2E smoke tests
         working-directory: backend
@@ -138,6 +141,7 @@ jobs:
           ENVIRONMENT: test
           USE_CELERY: false
           USE_REDIS: false
+          USE_TEMPORAL: "false"
           API_BASE_URL: http://localhost:8000
           FOUNDER_EMAILS: pilot-test@example.com,demo-retail@example.com
         run: |
@@ -148,6 +152,59 @@ jobs:
           python ../scripts/runtime_e2e_upload_money_audit.py
           python ../scripts/runtime_e2e_demo_ksa_retail.py
           kill $SERVER_PID
+
+  # Real-Temporal substrate gate: tests/temporal MUST execute every scenario
+  # against a real Temporal server (temporalio/temporal dev-server service)
+  # + real Postgres. Skips are forbidden here — a sqlite-only skip means the
+  # scenario never ran.
+  temporal-backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: nazmos
+          POSTGRES_PASSWORD: nazmos_dev
+          POSTGRES_DB: nazmos_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      temporal:
+        image: temporalio/temporal:latest
+        command: ["server", "start-dev", "--ip", "0.0.0.0", "--headless"]
+        ports:
+          - 7233:7233
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+      - name: Temporal integration suite (real server + Postgres)
+        working-directory: backend
+        env:
+          PYTHONPATH: .
+          USE_TEMPORAL: "true"
+          DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos_test
+          TEMPORAL_ADDRESS: localhost:7233
+          TEMPORAL_NAMESPACE: default
+        run: |
+          python -m compileall -q app tests
+          python -m pytest tests/temporal -q --tb=short 2>&1 | tee temporal-suite.log
+      - name: Fail if any temporal scenario was skipped
+        run: |
+          if grep -E "[0-9]+ skipped" temporal-suite.log; then
+            echo "::error::A tests/temporal scenario skipped — every scenario must run against the real server + Postgres."
+            exit 1
+          fi
+          echo "No skipped temporal scenarios."
 
   frontend:
     runs-on: ubuntu-latest

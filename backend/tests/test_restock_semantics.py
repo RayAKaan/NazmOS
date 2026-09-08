@@ -129,6 +129,12 @@ async def test_concurrent_receipts_are_not_lost(db_session):
     UPDATE (row-locked) so no receipt is lost in a read-modify-write race.
     Each receipt runs in its own connection/session, mimicking independent
     approved-execution workers.
+
+    Each receipt carries its own idempotency ticket in the payload (as a real
+    money_audit receipt's per-decision payload does), so the ten executions
+    derive distinct execution keys. Identical payloads would collapse onto one
+    deterministic key and be deduplicated as a replay by the exactly-once
+    layer — that is a REPLAY, not a second independent receipt.
     """
     from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
     from sqlalchemy.pool import NullPool
@@ -147,7 +153,7 @@ async def test_concurrent_receipts_are_not_lost(db_session):
     await _seed_item(db_session, biz, item, stock=20)
     await db_session.commit()
 
-    async def one_receipt(_):
+    async def one_receipt(i):
         async with SessionLocal() as s:
             await run_manual_action(
                 s,
@@ -156,7 +162,7 @@ async def test_concurrent_receipts_are_not_lost(db_session):
                 entity_type="item",
                 entity_id=item,
                 previous_state={"current_stock": 20.0},
-                new_state={"restock_qty": 10.0},
+                new_state={"restock_qty": 10.0, "ticket": f"receipt-{i}"},
                 user_id=None,
                 source="money_audit",
             )

@@ -695,10 +695,12 @@ async def test_normalizer_allows_negative_for_return():
         "item_name": ["Widget"],
         "transaction_at": ["2026-01-15"],
         "quantity": [-5],
+        "unit_price": [10],
         "transaction_type": ["return"],
     })
     mapping = {"item_name": "item_name", "transaction_at": "transaction_at",
-               "quantity": "quantity", "transaction_type": "transaction_type"}
+               "quantity": "quantity", "unit_price": "unit_price",
+               "transaction_type": "transaction_type"}
 
     result = normalize_dataframe(df, mapping, strict=True)
     assert len(result) == 1

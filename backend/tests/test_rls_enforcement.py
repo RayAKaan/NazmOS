@@ -229,3 +229,263 @@ async def test_app_role_new_policies_isolate_findings(
                 await restricted_session.commit()
         finally:
             connection_mod._rls_tenant_id.reset(token)
+
+
+@pytest.mark.asyncio
+async def test_app_role_join_policies_isolate_chat_messages(
+    rls_engine, app_role_enabled, monkeypatch
+):
+    """chat_messages (no business_id) isolate through chat_sessions.session_id.
+
+    The join-based policy must hide the other tenant's messages and reject a
+    message written into the other tenant's session under SET ROLE nazmos_app.
+    """
+    SessionLocal = async_sessionmaker(rls_engine, class_=AsyncSession, expire_on_commit=False)
+
+    async with SessionLocal() as owner_session:
+        bus_a = str(uuid.uuid4())
+        bus_b = str(uuid.uuid4())
+        user_id = str(uuid.uuid4())
+        await owner_session.execute(
+            text("""
+                INSERT INTO users (id, email, password_hash, full_name, role, is_active)
+                VALUES (:id, :email, 'hash', 'Owner', 'owner', true)
+            """),
+            {"id": user_id, "email": f"rls_chat_{uuid.uuid4().hex[:8]}@example.com"},
+        )
+        for bid in (bus_a, bus_b):
+            await owner_session.execute(
+                text("INSERT INTO businesses (id, name, type, currency) VALUES (:id, 'C', 'retail', 'SAR')"),
+                {"id": bid},
+            )
+        session_ids = {}
+        msg_ids = {}
+        for bid, tag in ((bus_a, "a"), (bus_b, "b")):
+            session_id = str(uuid.uuid4())
+            session_ids[tag] = session_id
+            await owner_session.execute(
+                text("""
+                    INSERT INTO chat_sessions (id, business_id, user_id, title)
+                    VALUES (:id, :b, :u, :title)
+                """),
+                {"id": session_id, "b": bid, "u": user_id, "title": f"session {tag}"},
+            )
+            msg_id = str(uuid.uuid4())
+            msg_ids[tag] = msg_id
+            await owner_session.execute(
+                text("""
+                    INSERT INTO chat_messages (id, session_id, role, content)
+                    VALUES (:id, :sid, 'user', :content)
+                """),
+                {"id": msg_id, "sid": session_id, "content": f"message {tag}"},
+            )
+        await owner_session.commit()
+
+    async with SessionLocal() as restricted_session:
+        from app.database.connection import set_rls_tenant_id
+        token = set_rls_tenant_id(bus_a)
+        try:
+            await connection_mod._set_rls_context(restricted_session)
+            rows = (await restricted_session.execute(
+                text("SELECT id FROM chat_messages")
+            )).fetchall()
+            assert {str(r.id) for r in rows} == {msg_ids["a"]}, (
+                f"Tenant A must only see its own chat message, got {rows}"
+            )
+
+            with pytest.raises(Exception):
+                await restricted_session.execute(
+                    text("""
+                        INSERT INTO chat_messages (id, session_id, role, content)
+                        VALUES (:id, :sid, 'user', 'cross-tenant')
+                    """),
+                    {"id": str(uuid.uuid4()), "sid": session_ids["b"]},
+                )
+                await restricted_session.commit()
+        finally:
+            connection_mod._rls_tenant_id.reset(token)
+
+
+@pytest.mark.asyncio
+async def test_app_role_join_policies_isolate_pos_sync_logs(
+    rls_engine, app_role_enabled, monkeypatch
+):
+    """pos_sync_logs (no business_id) isolate through pos_connections.connection_id."""
+    SessionLocal = async_sessionmaker(rls_engine, class_=AsyncSession, expire_on_commit=False)
+
+    async with SessionLocal() as owner_session:
+        bus_a = str(uuid.uuid4())
+        bus_b = str(uuid.uuid4())
+        for bid in (bus_a, bus_b):
+            await owner_session.execute(
+                text("INSERT INTO businesses (id, name, type, currency) VALUES (:id, 'P', 'retail', 'SAR')"),
+                {"id": bid},
+            )
+        connection_ids = {}
+        log_ids = {}
+        for bid, tag in ((bus_a, "a"), (bus_b, "b")):
+            conn_id = str(uuid.uuid4())
+            connection_ids[tag] = conn_id
+            await owner_session.execute(
+                text("""
+                    INSERT INTO pos_connections
+                        (id, business_id, adapter_type, connection_name, credentials_encrypted, credentials_version)
+                    VALUES (:id, :b, 'mock', :name, :cred, 1)
+                """),
+                {"id": conn_id, "b": bid, "name": f"conn {tag}", "cred": b"\x00secret"},
+            )
+            log_id = str(uuid.uuid4())
+            log_ids[tag] = log_id
+            await owner_session.execute(
+                text("""
+                    INSERT INTO pos_sync_logs (id, connection_id, started_at, status, records_fetched)
+                    VALUES (:id, :cid, NOW(), 'success', 1)
+                """),
+                {"id": log_id, "cid": conn_id},
+            )
+        await owner_session.commit()
+
+    async with SessionLocal() as restricted_session:
+        from app.database.connection import set_rls_tenant_id
+        token = set_rls_tenant_id(bus_a)
+        try:
+            await connection_mod._set_rls_context(restricted_session)
+            rows = (await restricted_session.execute(
+                text("SELECT id FROM pos_sync_logs")
+            )).fetchall()
+            assert {str(r.id) for r in rows} == {log_ids["a"]}, (
+                f"Tenant A must only see its own sync log, got {rows}"
+            )
+
+            with pytest.raises(Exception):
+                await restricted_session.execute(
+                    text("""
+                        INSERT INTO pos_sync_logs (id, connection_id, started_at, status)
+                        VALUES (:id, :cid, NOW(), 'success')
+                    """),
+                    {"id": str(uuid.uuid4()), "cid": connection_ids["b"]},
+                )
+                await restricted_session.commit()
+        finally:
+            connection_mod._rls_tenant_id.reset(token)
+
+
+@pytest.mark.asyncio
+async def test_whatsapp_webhook_approval_is_tenant_scoped_under_rls(
+    rls_engine, app_role_enabled, monkeypatch,
+):
+    """The unauthenticated WhatsApp webhook must fail closed under real RLS.
+
+    The webhook session assumes ``nazmos_app`` with a tenant resolved from the
+    button id.  A button for the correct business transitions the action; a
+    button whose tenant does not own the action must see zero rows (RLS) and
+    must NOT emit an approval confirmation.
+    """
+    import hashlib
+    import hmac
+    import json
+    import types
+
+    from httpx import AsyncClient, ASGITransport
+
+    from app.main import app
+    from app.database import get_db  # noqa: F401
+
+    SessionLocal = async_sessionmaker(rls_engine, class_=AsyncSession, expire_on_commit=False)
+
+    async with SessionLocal() as owner_session:
+        bus_a = str(uuid.uuid4())
+        bus_b = str(uuid.uuid4())
+        action_a = str(uuid.uuid4())
+        action_b = str(uuid.uuid4())
+        owner_row = await owner_session.execute(
+            text("""
+                INSERT INTO users (id, email, password_hash, full_name, role, is_active)
+                VALUES (:id, :email, 'hash', 'Owner', 'owner', true)
+            """),
+            {"id": str(uuid.uuid4()), "email": f"rls_wa_{uuid.uuid4().hex[:8]}@example.com"},
+        )
+        for bid in (bus_a, bus_b):
+            await owner_session.execute(
+                text("INSERT INTO businesses (id, name, type, currency) VALUES (:id, 'W', 'retail', 'SAR')"),
+                {"id": bid},
+            )
+        for bid, item_sku, action_id in (
+            (bus_a, "A-1", action_a),
+            (bus_b, "B-1", action_b),
+        ):
+            item_id = str(uuid.uuid4())
+            await owner_session.execute(
+                text("""
+                    INSERT INTO items (id, business_id, name, sku, unit, cost_price, sell_price, is_active)
+                    VALUES (:id, :business_id, 'I', :sku, 'piece', 10, 20, true)
+                """),
+                {"id": item_id, "business_id": bid, "sku": item_sku},
+            )
+            await owner_session.execute(
+                text("""
+                    INSERT INTO agent_actions
+                        (id, business_id, action_type, status, confidence, priority, title, summary,
+                         payload, autonomy_dial_at_creation, estimated_value_sar)
+                    VALUES
+                        (:id, :business_id, 'restock', 'pending_approval', 0.9, 1, 'T', 'S',
+                         CAST(:payload AS JSON), 50, 100)
+                """),
+                {
+                    "id": action_id,
+                    "business_id": bid,
+                    "payload": f'{{"item_id": "{item_id}", "recommended_qty": 15}}',
+                },
+            )
+        await owner_session.commit()
+
+    # Webhook scenarios operate against the NORMAL app dependency so the engine
+    # begin-listener (which reads app_role_enabled's patched settings and the
+    # tenant ContextVar) is the code path under test.
+    def _button_payload(button_id: str) -> bytes:
+        body = {
+            "entry": [{"changes": [{"value": {"messages": [
+                {"from": "+966500000000", "type": "interactive",
+                 "interactive": {"type": "button", "button_reply": {"id": button_id}}},
+            ]}}]}],
+        }
+        return json.dumps(body).encode()
+
+    def _headers(body: bytes) -> dict:
+        return {"x-hub-signature-256":
+                "sha256=" + hmac.new(b"rls-secret", body, hashlib.sha256).hexdigest()}
+
+    sent: list[tuple[str, str]] = []
+
+    async def fake_send(to_number: str, text: str):
+        sent.append((to_number, text))
+
+    monkeypatch.setattr(
+        "app.routers.whatsapp.settings",
+        types.SimpleNamespace(WHATSAPP_APP_SECRET="rls-secret"),
+    )
+    monkeypatch.setattr("app.routers.whatsapp.send_notification", fake_send)
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+        # 1. Correct tenant button -> action_a actually transitions.
+        body = _button_payload(f"approve_{bus_a}_{action_a}")
+        r = await ac.post("/api/v1/whatsapp/webhook", content=body, headers=_headers(body))
+        assert r.status_code == 200
+
+        # 2. Wrong-tenant button targeting action_a -> must fail closed.
+        body = _button_payload(f"approve_{bus_b}_{action_a}")
+        r = await ac.post("/api/v1/whatsapp/webhook", content=body, headers=_headers(body))
+        assert r.status_code == 200
+
+    async with SessionLocal() as check_session:
+        rows = (await check_session.execute(
+            text("SELECT id, status FROM agent_actions WHERE id IN (:a, :b)"),
+            {"a": action_a, "b": action_b},
+        )).fetchall()
+        statuses = {str(row.id): row.status for row in rows}
+
+    assert statuses[action_a] == "executed", "correct-tenant webhook must approve+execute"
+    assert statuses[action_b] == "pending_approval", "other tenant's action untouched"
+    assert len(sent) == 2, f"expected one confirmation + one denial, got {sent}"
+    assert sent[0][1].startswith("✅"), f"expected confirmed text, got {sent[0]}"
+    assert sent[1][1].startswith("⚠️"), f"expected fail-closed denial, got {sent[1]}"

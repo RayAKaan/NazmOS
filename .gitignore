@@ -114,6 +114,7 @@ yarn-error.log*
 !.env.template
 !.env.sample
 !.env.example.local
+!.env.production.example
 
 # Backend env files
 backend/.env

@@ -13,6 +13,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
+from app.database.connection import clear_rls_tenant_id, set_rls_tenant_id
 from app.services.whatsapp_bridge import send_notification
 from app.orchestration.runner import run_agent_approval, run_agent_rejection
 from app.config import get_settings
@@ -23,6 +24,53 @@ router = APIRouter(prefix="/api/v1/whatsapp", tags=["WhatsApp"])
 
 settings = get_settings()
 VERIFY_TOKEN = os.getenv("WHATSAPP_VERIFY_TOKEN", settings.WHATSAPP_VERIFY_TOKEN)
+
+
+def _parse_button_target(button_id: str) -> tuple[UUID | None, UUID | None]:
+    """Extract (business_id, action_id) from a reply-button id.
+
+    Button ids are formed ``{prefix}_{business_id}_{action_id}`` (see
+    ``services.whatsapp_bridge.send_approval_request``).  The webhook is
+    unauthenticated, so the tenant CANNOT be read from the database first
+    (Postgres RLS hides every row until a tenant context is set); it must be
+    carried in the button id itself and validated here.  Returns (None, None)
+    for ids that do not carry both UUIDs (legacy buttons / tampering).
+    """
+    if not button_id:
+        return None, None
+    action_part, sep, action_id = button_id.rpartition("_")
+    if not sep or not action_id:
+        return None, None
+    business_part, sep2, business_id = action_part.rpartition("_")
+    if not sep2 or not business_id:
+        return None, None
+    try:
+        bid = UUID(business_id)
+    except (ValueError, AttributeError):
+        return None, None
+    try:
+        aid = UUID(action_id)
+    except (ValueError, AttributeError):
+        return None, None
+    return bid, aid
+
+
+async def _run_tenant_scoped(db: AsyncSession, business_id: UUID, action) -> dict:
+    """Run an agent decision with its request session scoped to ``business_id``.
+
+    The dependency-opened transaction predates tenant resolution (RLS hides
+    rows until a tenant is set), so we commit it first to force the engine
+    begin-listener to re-apply ``SET LOCAL app.current_tenant_id`` + the app
+    role on the next transaction.  The tenant ContextVar is torn down in
+    ``finally``; the operation itself also carries ``business_id`` in its WHERE
+    clause (record.py) as defense-in-depth.
+    """
+    token = set_rls_tenant_id(str(business_id))
+    try:
+        await db.commit()
+        return await action()
+    finally:
+        clear_rls_tenant_id()
 
 
 @router.get("/webhook")
@@ -75,36 +123,58 @@ async def receive_webhook(
             # Interactive Button Replies (Approve / Reject)
             if msg.get("type") == "interactive":
                 button_id = msg.get("interactive", {}).get("button_reply", {}).get("id", "")
-                
-                if button_id.startswith("approve_price_shield_"):
-                    action_id = button_id.replace("approve_price_shield_", "")
-                    result = await run_agent_approval(db, action_id=UUID(action_id), note="Approved Price Shield via WhatsApp interactive button")
+                business_id, action_id = _parse_button_target(button_id)
+                if business_id is None or action_id is None:
+                    logger.warning("whatsapp_unresolvable_button button_id=%s", button_id)
+                    await send_notification(
+                        to_number=from_number,
+                        text="⚠️ This action could not be located. Please approve or reject it from the NazmOS app.",
+                    )
+                    continue
+
+                try:
+                    if button_id.startswith("approve_price_shield_"):
+                        result = await _run_tenant_scoped(
+                            db, business_id,
+                            lambda: run_agent_approval(db, action_id=action_id, business_id=business_id, note="Approved Price Shield via WhatsApp interactive button"),
+                        )
+                    elif button_id.startswith("approve_transfer_"):
+                        result = await _run_tenant_scoped(
+                            db, business_id,
+                            lambda: run_agent_approval(db, action_id=action_id, business_id=business_id, note="Approved transfer via WhatsApp interactive button"),
+                        )
+                    elif button_id.startswith("reject_"):
+                        result = await _run_tenant_scoped(
+                            db, business_id,
+                            lambda: run_agent_rejection(db, action_id=action_id, business_id=business_id, note="Rejected via WhatsApp interactive button"),
+                        )
+                        text = (
+                            "❌ Action rejected. It has been dismissed from your NazmOS priority queue."
+                            if result.get("ok")
+                            else "⚠️ The action was not in a pending state; nothing was rejected."
+                        )
+                        await send_notification(to_number=from_number, text=text)
+                        continue
+                    elif button_id.startswith("approve_"):
+                        result = await _run_tenant_scoped(
+                            db, business_id,
+                            lambda: run_agent_approval(db, action_id=action_id, business_id=business_id, note="Approved via WhatsApp interactive button"),
+                        )
+                    else:
+                        logger.warning("whatsapp_unknown_button button_id=%s", button_id)
+                        continue
+
                     outcome = result.get("outcome") or {}
+                    if result.get("ok"):
+                        text = f"✅ Action Approved. {outcome.get('action', 'Action processed')} via NazmOS."
+                    else:
+                        text = "⚠️ The action could not be approved (not pending, already processed, or out of scope)."
+                    await send_notification(to_number=from_number, text=text)
+                except Exception as exc:
+                    logger.error(f"Error handling WhatsApp approval for action {action_id}: {exc}")
                     await send_notification(
                         to_number=from_number,
-                        text=f"✅ Price Shield Approved. {outcome.get('action', 'Action processed')} via NazmOS."
-                    )
-                elif button_id.startswith("approve_transfer_"):
-                    action_id = button_id.replace("approve_transfer_", "")
-                    result = await run_agent_approval(db, action_id=UUID(action_id), note="Approved transfer via WhatsApp interactive button")
-                    await send_notification(
-                        to_number=from_number,
-                        text="✅ Transfer approved and recorded in NazmOS."
-                    )
-                elif button_id.startswith("approve_"):
-                    action_id = button_id.replace("approve_", "")
-                    result = await run_agent_approval(db, action_id=UUID(action_id), note="Approved via WhatsApp interactive button")
-                    outcome = result.get("outcome") or {}
-                    await send_notification(
-                        to_number=from_number,
-                        text=f"✅ Action Approved. {outcome.get('action', 'Action processed')} via NazmOS."
-                    )
-                elif button_id.startswith("reject_"):
-                    action_id = button_id.replace("reject_", "")
-                    await run_agent_rejection(db, action_id=UUID(action_id), note="Rejected via WhatsApp interactive button")
-                    await send_notification(
-                        to_number=from_number,
-                        text="❌ Action rejected. It has been dismissed from your NazmOS priority queue."
+                        text="⚠️ The action could not be processed right now. Please try again from the NazmOS app.",
                     )
             
             # Text inquiries (D2C order routing / bot)

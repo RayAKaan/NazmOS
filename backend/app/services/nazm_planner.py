@@ -155,6 +155,7 @@ class NazmPlanner:
                         approve_title="✅ Approve Price Shield" if is_price_action else "✅ Approve",
                         reject_title="❌ Reject",
                         action_prefix="approve_price_shield" if is_price_action else "approve",
+                        business_id=str(business_id),
                     )
                     message_id = None
                     if isinstance(resp, dict):

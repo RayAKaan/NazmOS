@@ -59,6 +59,10 @@ NUMERIC_COLUMNS = {
     "total_amount",
 }
 
+REVENUE_COLUMNS = {"unit_price", "sell_price", "total_amount"}
+
+BLANK_REJECT_COLUMNS = REVENUE_COLUMNS | {"current_stock"}
+
 DATE_COLUMNS = {"transaction_at", "expiry_date"}
 
 
@@ -184,8 +188,19 @@ def normalize_dataframe(df: pd.DataFrame, column_mapping: Dict[str, str], *, str
             if parse_date(normalized.at[idx, "transaction_at"]) is None:
                 report["rejected"].append({"row": int(idx) + 2, "field": "transaction_at", "reason": "invalid_date"})
         for col in NUMERIC_COLUMNS:
-            if col in normalized.columns and not _number_is_valid(normalized.at[idx, col]):
-                report["rejected"].append({"row": int(idx) + 2, "field": col, "reason": "invalid_number", "value": str(normalized.at[idx, col])[:120]})
+            if col not in normalized.columns:
+                continue
+            value = normalized.at[idx, col]
+            if pd.isna(value) and col in BLANK_REJECT_COLUMNS:
+                report["rejected"].append({"row": int(idx) + 2, "field": col, "reason": "blank_required_value"})
+            elif not _number_is_valid(value):
+                report["rejected"].append({"row": int(idx) + 2, "field": col, "reason": "invalid_number", "value": str(value)[:120]})
+        if "current_stock" in normalized.columns and not pd.isna(normalized.at[idx, "current_stock"]):
+            try:
+                if float(normalized.at[idx, "current_stock"]) < 0:
+                    report["rejected"].append({"row": int(idx) + 2, "field": "current_stock", "reason": "negative_current_stock", "value": str(normalized.at[idx, "current_stock"])[:120]})
+            except (TypeError, ValueError):
+                pass
 
     for col in list(normalized.columns):
         if col in DATE_COLUMNS:
@@ -206,6 +221,10 @@ def normalize_dataframe(df: pd.DataFrame, column_mapping: Dict[str, str], *, str
     has_inventory_snapshot = "current_stock" in normalized.columns
     if not has_sales_history and not has_inventory_snapshot:
         raise ValueError("Upload must include either sales date (transaction_at) or current stock (current_stock).")
+
+    if has_sales_history and not any(c in normalized.columns for c in REVENUE_COLUMNS):
+        if strict:
+            report["rejected"].append({"row": None, "field": "unit_price", "reason": "missing_price_basis"})
 
     if "quantity" not in normalized.columns and has_sales_history:
         normalized["quantity"] = 1.0
@@ -263,7 +282,7 @@ def normalize_dataframe(df: pd.DataFrame, column_mapping: Dict[str, str], *, str
     # Backward-compatible mode excludes invalid rows, but production strict mode
     # never reaches this branch.
     if report["rejected"]:
-        bad_rows = {r["row"] - 2 for r in report["rejected"] if "row" in r}
+        bad_rows = {r["row"] - 2 for r in report["rejected"] if r.get("row") is not None}
         normalized = normalized.drop(index=[i for i in normalized.index if i in bad_rows], errors="ignore")
     normalized = normalized[normalized["item_name"] != ""]
     normalized.attrs["data_quality_report"] = report

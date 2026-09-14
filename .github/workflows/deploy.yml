@@ -18,6 +18,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}/nazmos-api
+  RUNNER_IMAGE_NAME: ${{ github.repository }}/nazmos-opencode-runner
+  FRONTEND_IMAGE_NAME: ${{ github.repository }}/nazmos-frontend
 
 jobs:
   build-image:
@@ -28,6 +30,8 @@ jobs:
     outputs:
       image_tag: ${{ steps.meta.outputs.tags }}
       image_digest: ${{ steps.build.outputs.digest }}
+      runner_image_tag: ${{ steps.runner_meta.outputs.tags }}
+      runner_image_digest: ${{ steps.runner_build.outputs.digest }}
     steps:
       - uses: actions/checkout@v4
 
@@ -41,7 +45,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata
+      - name: Extract metadata (API)
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -56,9 +60,31 @@ jobs:
         with:
           context: ./backend
           file: ./backend/Dockerfile
+          target: production
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Extract metadata (OpenCode runner)
+        id: runner_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.RUNNER_IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=sha,prefix=,suffix=,format=short
+
+      - name: Build and push OpenCode runner image
+        id: runner_build
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile.opencode-runner
+          push: true
+          tags: ${{ steps.runner_meta.outputs.tags }}
+          labels: ${{ steps.runner_meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -72,21 +98,94 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push frontend image (staging)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile.prod
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:staging-${{ github.sha }}
+          build-args: |
+            NEXT_PUBLIC_API_URL=https://staging.app.nazm.ai
+            API_URL=https://staging.app.nazm.ai
+            NEXT_PUBLIC_CHAT_ENABLED=true
+            NEXT_PUBLIC_APP_NAME=NazmOS
+            NEXT_PUBLIC_CURRENCY=SAR
+            NEXT_PUBLIC_LOCALE=en
+
       - name: Deploy to staging server
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          STAGING_DB_PASSWORD: ${{ secrets.STAGING_DB_PASSWORD }}
+          STAGING_REDIS_PASSWORD: ${{ secrets.STAGING_REDIS_PASSWORD }}
+          STAGING_SECRET_KEY: ${{ secrets.STAGING_SECRET_KEY }}
+          STAGING_SENTRY_DSN: ${{ secrets.STAGING_SENTRY_DSN }}
+          STAGING_DATABASE_APP_ROLE: ${{ secrets.STAGING_DATABASE_APP_ROLE }}
+          STAGING_CREDENTIAL_MASTER_KEY: ${{ secrets.STAGING_CREDENTIAL_MASTER_KEY }}
+          STAGING_METRICS_TOKEN: ${{ secrets.STAGING_METRICS_TOKEN }}
+          STAGING_WHATSAPP_VERIFY_TOKEN: ${{ secrets.STAGING_WHATSAPP_VERIFY_TOKEN }}
         with:
           host: ${{ secrets.STAGING_SSH_HOST }}
           username: ${{ secrets.STAGING_SSH_USER }}
           key: ${{ secrets.STAGING_SSH_KEY }}
+          envs: GITHUB_TOKEN,GITHUB_ACTOR,STAGING_DB_PASSWORD,STAGING_REDIS_PASSWORD,STAGING_SECRET_KEY,STAGING_SENTRY_DSN,STAGING_DATABASE_APP_ROLE,STAGING_CREDENTIAL_MASTER_KEY,STAGING_METRICS_TOKEN,STAGING_WHATSAPP_VERIFY_TOKEN
           script: |
             set -e
             cd /opt/nazmos
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
             docker pull ${{ needs.build-image.outputs.image_tag }}
+            docker pull ${{ needs.build-image.outputs.runner_image_tag }}
+            docker pull ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:staging-${{ github.sha }}
             export API_IMAGE=${{ needs.build-image.outputs.image_tag }}
-            docker compose -f docker-compose.yml up -d api celery_worker celery_beat
-            docker compose -f docker-compose.yml exec -T api alembic upgrade head
-            docker compose -f docker-compose.yml ps
+            export OPENCODE_RUNNER_IMAGE=${{ needs.build-image.outputs.runner_image_tag }}
+            export FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:staging-${{ github.sha }}
+            # Fail-closed .env writer: secrets arrive via forwarded process env
+            # (never as literal shell text), so no character can break out of a
+            # heredoc or corrupt the file. Control characters are rejected
+            # loudly. A literal `$` is escaped as compose's `$$` because docker
+            # compose re-reads `$VAR`/`${VAR}` sequences inside .env VALUES as
+            # variable references (proven: an unescaped secret containing `$`
+            # is silently rewritten). Every other printable character
+            # (backticks, quotes, spaces, backslashes) composes byte-exact.
+            write_kv() {
+              key=$1
+              src=$2
+              v=$(printenv "$src" || true)
+              if [ -z "$v" ]; then
+                echo "ERROR: $src is empty; refusing to deploy" >&2
+                exit 1
+              fi
+              if [ "$(printf '%s' "$v" | tr -d '[:print:]' | wc -c)" -ne 0 ]; then
+                echo "ERROR: $src contains a control character; refusing to deploy" >&2
+                exit 1
+              fi
+              v=$(printf '%s' "$v" | sed 's/\$/$$/g')
+              printf '%s=%s\n' "$key" "$v" >> .env
+            }
+            : > .env
+            write_kv DB_PASSWORD STAGING_DB_PASSWORD
+            write_kv REDIS_PASSWORD STAGING_REDIS_PASSWORD
+            write_kv SECRET_KEY STAGING_SECRET_KEY
+            write_kv SENTRY_DSN STAGING_SENTRY_DSN
+            write_kv DATABASE_APP_ROLE STAGING_DATABASE_APP_ROLE
+            write_kv CREDENTIAL_MASTER_KEY STAGING_CREDENTIAL_MASTER_KEY
+            write_kv METRICS_TOKEN STAGING_METRICS_TOKEN
+            write_kv WHATSAPP_VERIFY_TOKEN STAGING_WHATSAPP_VERIFY_TOKEN
+            printf '%s\n' "CORS_ORIGINS=https://staging.app.nazm.ai" "PUBLIC_API_URL=https://staging.app.nazm.ai" >> .env
+            docker compose -f docker-compose.prod.yml config -q
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d
+            docker compose -f docker-compose.prod.yml ps
 
       - name: Staging smoke test
         env:
@@ -105,21 +204,94 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push frontend image (production)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile.prod
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:production-${{ github.sha }}
+          build-args: |
+            NEXT_PUBLIC_API_URL=https://app.nazm.ai
+            API_URL=https://app.nazm.ai
+            NEXT_PUBLIC_CHAT_ENABLED=true
+            NEXT_PUBLIC_APP_NAME=NazmOS
+            NEXT_PUBLIC_CURRENCY=SAR
+            NEXT_PUBLIC_LOCALE=en
+
       - name: Deploy to production server
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          PRODUCTION_DB_PASSWORD: ${{ secrets.PRODUCTION_DB_PASSWORD }}
+          PRODUCTION_REDIS_PASSWORD: ${{ secrets.PRODUCTION_REDIS_PASSWORD }}
+          PRODUCTION_SECRET_KEY: ${{ secrets.PRODUCTION_SECRET_KEY }}
+          PRODUCTION_SENTRY_DSN: ${{ secrets.PRODUCTION_SENTRY_DSN }}
+          PRODUCTION_DATABASE_APP_ROLE: ${{ secrets.PRODUCTION_DATABASE_APP_ROLE }}
+          PRODUCTION_CREDENTIAL_MASTER_KEY: ${{ secrets.PRODUCTION_CREDENTIAL_MASTER_KEY }}
+          PRODUCTION_METRICS_TOKEN: ${{ secrets.PRODUCTION_METRICS_TOKEN }}
+          PRODUCTION_WHATSAPP_VERIFY_TOKEN: ${{ secrets.PRODUCTION_WHATSAPP_VERIFY_TOKEN }}
         with:
           host: ${{ secrets.PRODUCTION_SSH_HOST }}
           username: ${{ secrets.PRODUCTION_SSH_USER }}
           key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          envs: GITHUB_TOKEN,GITHUB_ACTOR,PRODUCTION_DB_PASSWORD,PRODUCTION_REDIS_PASSWORD,PRODUCTION_SECRET_KEY,PRODUCTION_SENTRY_DSN,PRODUCTION_DATABASE_APP_ROLE,PRODUCTION_CREDENTIAL_MASTER_KEY,PRODUCTION_METRICS_TOKEN,PRODUCTION_WHATSAPP_VERIFY_TOKEN
           script: |
             set -e
             cd /opt/nazmos
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
             docker pull ${{ needs.build-image.outputs.image_tag }}
+            docker pull ${{ needs.build-image.outputs.runner_image_tag }}
+            docker pull ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:production-${{ github.sha }}
             export API_IMAGE=${{ needs.build-image.outputs.image_tag }}
-            docker compose -f docker-compose.yml up -d api celery_worker celery_beat
-            docker compose -f docker-compose.yml exec -T api alembic upgrade head
-            docker compose -f docker-compose.yml ps
+            export OPENCODE_RUNNER_IMAGE=${{ needs.build-image.outputs.runner_image_tag }}
+            export FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:production-${{ github.sha }}
+            # Fail-closed .env writer: secrets arrive via forwarded process env
+            # (never as literal shell text), so no character can break out of a
+            # heredoc or corrupt the file. Control characters are rejected
+            # loudly. A literal `$` is escaped as compose's `$$` because docker
+            # compose re-reads `$VAR`/`${VAR}` sequences inside .env VALUES as
+            # variable references (proven: an unescaped secret containing `$`
+            # is silently rewritten). Every other printable character
+            # (backticks, quotes, spaces, backslashes) composes byte-exact.
+            write_kv() {
+              key=$1
+              src=$2
+              v=$(printenv "$src" || true)
+              if [ -z "$v" ]; then
+                echo "ERROR: $src is empty; refusing to deploy" >&2
+                exit 1
+              fi
+              if [ "$(printf '%s' "$v" | tr -d '[:print:]' | wc -c)" -ne 0 ]; then
+                echo "ERROR: $src contains a control character; refusing to deploy" >&2
+                exit 1
+              fi
+              v=$(printf '%s' "$v" | sed 's/\$/$$/g')
+              printf '%s=%s\n' "$key" "$v" >> .env
+            }
+            : > .env
+            write_kv DB_PASSWORD PRODUCTION_DB_PASSWORD
+            write_kv REDIS_PASSWORD PRODUCTION_REDIS_PASSWORD
+            write_kv SECRET_KEY PRODUCTION_SECRET_KEY
+            write_kv SENTRY_DSN PRODUCTION_SENTRY_DSN
+            write_kv DATABASE_APP_ROLE PRODUCTION_DATABASE_APP_ROLE
+            write_kv CREDENTIAL_MASTER_KEY PRODUCTION_CREDENTIAL_MASTER_KEY
+            write_kv METRICS_TOKEN PRODUCTION_METRICS_TOKEN
+            write_kv WHATSAPP_VERIFY_TOKEN PRODUCTION_WHATSAPP_VERIFY_TOKEN
+            printf '%s\n' "CORS_ORIGINS=https://app.nazm.ai" "PUBLIC_API_URL=https://app.nazm.ai" >> .env
+            docker compose -f docker-compose.prod.yml config -q
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d
+            docker compose -f docker-compose.prod.yml ps
 
       - name: Production smoke test
         env:

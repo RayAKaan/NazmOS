@@ -166,7 +166,7 @@ class Settings(BaseSettings):
     WHATSAPP_PHONE_ID: str = ""
 
     # WhatsApp webhook security
-    WHATSAPP_VERIFY_TOKEN: str = "nazmos_ksa_whatsapp_2026"
+    WHATSAPP_VERIFY_TOKEN: str = ""
     WHATSAPP_APP_SECRET: str = ""  # Meta X-Hub-Signature-256 HMAC secret
 
     # Demo fixtures/seeding
@@ -300,6 +300,17 @@ class Settings(BaseSettings):
             raise ValueError("WHATSAPP_ENABLED must be 'mock' or 'live'")
         return value
 
+    @field_validator("WHATSAPP_VERIFY_TOKEN")
+    @classmethod
+    def validate_whatsapp_verify_token(cls, v: str, info: ValidationInfo) -> str:
+        env = info.data.get("ENVIRONMENT", "development")
+        if env == "production" and not v:
+            raise ValueError(
+                "WHATSAPP_VERIFY_TOKEN is required in production. "
+                "It protects the webhook verification handshake from spoofed challenges."
+            )
+        return v
+
     @field_validator("LLM_PROVIDER_ORDER")
     @classmethod
     def validate_llm_provider_order(cls, v: str) -> str:
@@ -351,10 +362,10 @@ class Settings(BaseSettings):
                 "production (merchant-facing LLM responses must use a real provider)"
             )
         if self.WHATSAPP_ENABLED == "live" and (
-            not self.WHATSAPP_TOKEN or not self.WHATSAPP_PHONE_ID
+            not self.WHATSAPP_TOKEN or not self.WHATSAPP_PHONE_ID or not self.WHATSAPP_VERIFY_TOKEN
         ):
             raise ValueError(
-                "WHATSAPP_ENABLED=live requires WHATSAPP_TOKEN and WHATSAPP_PHONE_ID"
+                "WHATSAPP_ENABLED=live requires WHATSAPP_TOKEN, WHATSAPP_PHONE_ID, and WHATSAPP_VERIFY_TOKEN"
             )
         return self
 
@@ -375,10 +386,12 @@ def get_settings() -> Settings:
                 "FATAL: at least one of GROQ_API_KEY or GOOGLE_AI_API_KEY is "
                 "required in production (merchant-facing LLM responses must use a real provider)"
             )
-        if s.WHATSAPP_ENABLED == "live" and (not s.WHATSAPP_TOKEN or not s.WHATSAPP_PHONE_ID):
+        if s.WHATSAPP_ENABLED == "live" and (not s.WHATSAPP_TOKEN or not s.WHATSAPP_PHONE_ID or not s.WHATSAPP_VERIFY_TOKEN):
             raise RuntimeError(
-                "FATAL: WHATSAPP_ENABLED=live requires WHATSAPP_TOKEN and WHATSAPP_PHONE_ID"
+                "FATAL: WHATSAPP_ENABLED=live requires WHATSAPP_TOKEN, WHATSAPP_PHONE_ID, and WHATSAPP_VERIFY_TOKEN"
             )
+        if not s.WHATSAPP_VERIFY_TOKEN:
+            raise RuntimeError("FATAL: WHATSAPP_VERIFY_TOKEN is required in production")
         if not s.CREDENTIAL_MASTER_KEY or len(s.CREDENTIAL_MASTER_KEY) < 32:
             raise RuntimeError("FATAL: CREDENTIAL_MASTER_KEY is required in production and must be >= 32 chars")
     # Auto-detect SQLite mode: no Celery/Redis needed. USE_TEMPORAL is only

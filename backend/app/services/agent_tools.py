@@ -82,33 +82,28 @@ async def execute_agent_tool(tool_name: str, tool_args: Dict[str, Any], business
         return {"items": rows, "count": len(rows)}
 
     if tool_name == "get_dead_stock_summary":
-        # Dialect-safe (Phase 12): Python cutoff instead of NOW() - interval, so SQLite
-        # development/integration and Postgres both work.
-        from datetime import datetime, timedelta, timezone
+        # Canonical WS5 rule delegated to the scoped DuckDB analytical feed
+        # (same path as analytics_service.get_dead_stock / calculate_dead_stock_value).
+        from app.analytics.repository import inventory_feed
+        from app.analytics.metrics import stock_value as canonical_stock_value
+        from app.analytics.contracts import ValueBasis
+
         days = int(tool_args.get("days_no_sale", 30) or 30)
-        cutoff = datetime.now(timezone.utc) - timedelta(days=days)
-        res = await db.execute(text("""
-            WITH recent_sales AS (
-                SELECT item_id, MAX(transaction_at) AS last_sold_at, COALESCE(SUM(quantity), 0) AS qty_30d
-                FROM transactions
-                WHERE business_id = :b AND transaction_at >= :cutoff
-                GROUP BY item_id
-            )
-            SELECT i.name, inv.current_stock, i.cost_price,
-                   COALESCE(rs.last_sold_at, NULL) AS last_sold_at,
-                   (inv.current_stock * i.cost_price) AS stuck_sar
-            FROM items i
-            JOIN inventory inv ON i.id = inv.item_id
-            LEFT JOIN recent_sales rs ON rs.item_id = i.id
-            WHERE i.business_id = :b
-              AND inv.business_id = :b
-              AND inv.current_stock > 0
-              AND COALESCE(rs.qty_30d, 0) < 1
-            ORDER BY stuck_sar DESC NULLS LAST
-            LIMIT 10
-        """), {"b": str(business_id), "cutoff": cutoff})
-        rows = [dict(r._mapping) for r in res.fetchall()]
-        total_stuck = sum(float(r.get("stuck_sar") or 0) for r in rows)
+        feed = await inventory_feed(db, business_id, window_days=days)
+        rows = []
+        for fact in feed.facts:
+            if not fact.dead_by_scan:
+                continue
+            value = canonical_stock_value(fact.current_stock, fact.cost_price, ValueBasis.COST)
+            rows.append({
+                "item_id": fact.item_id,
+                "name": fact.name,
+                "current_stock": float(fact.current_stock),
+                "cost_price": float(fact.cost_price),
+                "last_sold_at": fact.last_sold_at.isoformat() if fact.last_sold_at else None,
+                "stuck_sar": float(value),
+            })
+        total_stuck = sum(r.get("stuck_sar") or 0 for r in rows)
         return {"dead_stock_items": rows, "total_stuck_sar": round(total_stuck, 2), "days_no_sale": days}
 
     return {"error": f"Tool '{tool_name}' unknown"}

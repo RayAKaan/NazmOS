@@ -529,7 +529,8 @@ async def compute_money_audit(db: AsyncSession, business_id: UUID | str) -> Audi
 
         if audit.has_margin_leakage:
             leakage = audit.margin_leakage
-            margin = (sell - cost) / sell
+            from app.services.audit_core import gross_margin_pct
+            margin = gross_margin_pct(sell, cost)
             target_price = (cost / (Decimal("1") - TARGET_MARGIN_PCT)).quantize(Decimal("0.01"))
             # This is profit opportunity, not recoverable cash.
             gross_profit_at_risk += leakage

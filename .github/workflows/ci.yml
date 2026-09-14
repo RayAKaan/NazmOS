@@ -215,19 +215,81 @@ jobs:
           node-version: '20'
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
+      # FIX 3 proof chain: write the REAL Sentry DSN and the FIXED production-shaped
+      # .env BEFORE install, so the build exercises the exact production defaults
+      # (deploy.yml passes the same values as Docker build-args). Building with bare
+      # defaults bakes `http://localhost:8000` (next.config rewrite fallback) into the
+      # server bundle — the guard step below makes that a hard CI failure.
+      - name: Write real Sentry DSN
+        working-directory: frontend
+        env:
+          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+        run: |
+          printf 'NEXT_PUBLIC_SENTRY_DSN=%s\n' "$NEXT_PUBLIC_SENTRY_DSN" > .env.sentry
+      - name: Write fixed production-shaped .env
+        working-directory: frontend
+        run: |
+          # Values mirror deploy.yml "Build and push frontend image" build-args
+          # (staging/production), so the CI bundle is byte-equivalent to the
+          # shipped image bundle. NAZMOS_SERVER_ONLY_CANARY proves NEXT_PUBLIC-only
+          # inlining: it is a NON-prefixed var that must never reach .next/static.
+          cat > .env <<'EOF'
+          NEXT_PUBLIC_API_URL=https://app.nazm.ai
+          API_URL=https://app.nazm.ai
+          NEXT_PUBLIC_CHAT_ENABLED=true
+          NEXT_PUBLIC_APP_NAME=NazmOS
+          NEXT_PUBLIC_CURRENCY=SAR
+          NEXT_PUBLIC_LOCALE=en
+          NAZMOS_SERVER_ONLY_CANARY=canary-9f7e3b1d-cf4a-4d2c-8b2a-1e0f9a2c7d41
+          EOF
+          cat .env.sentry >> .env
+          rm -f .env.sentry
+          echo "--- .env written ---"
+          cat .env
+          echo "--- NEXT_PUBLIC-only prefix check (source) ---"
+          FAIL=0
+          # Every env var consumed by client-reachable code MUST be NEXT_PUBLIC_*.
+          # Server-only vars may be referenced only from server files (app/api,
+          # lib/bff-proxy.ts is the BFF server proxy). Grep fails the build if a
+          # non-prefixed var appears outside the server-only allowlist.
+          for f in $(git ls-files 'src/**/*.ts' 'src/**/*.tsx' | grep -vE '\.(test|spec)\.'); do
+            for v in $(grep -oE 'process\.env\.[A-Z_]+' "$f" | sed 's/process\.env\.//' | sort -u); do
+              case "$v" in
+                NEXT_PUBLIC_*) ;;
+                NODE_ENV) ;;
+                API_URL)
+                  # bff-proxy / route handlers are server-side (BFF). Safe.
+                  ;;
+                *)
+                  echo "::error file=$f::client-reachable env \`$v\` lacks NEXT_PUBLIC_ prefix"
+                  FAIL=1
+                  ;;
+              esac
+            done
+          done
+          if [ "$FAIL" -eq 1 ]; then
+            echo "::error::Non-NEXT_PUBLIC env referenced from non-server code. Rename to NEXT_PUBLIC_* or confine to the BFF/server allowlist."
+            exit 1
+          fi
+          echo "OK: no non-NEXT_PUBLIC env referenced from non-server code."
       - name: Install frontend dependencies
         working-directory: frontend
         run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Frontend unit tests (Jest + RouteGuard access-control)
+        working-directory: frontend
+        run: |
+          npm test -- --ci --runInBand
       - name: Lint, build, audit
         working-directory: frontend
         run: |
           npm run lint
           npm run build
           npm audit --audit-level=moderate --omit=dev
-      - name: Frontend unit tests (Jest + RouteGuard access-control)
+      # FIX 3 guards: the fixed-.env build must not bake localhost:8000, and the
+      # server-only canary must not have leaked into the client bundle.
+      - name: Frontend baked-bundle guard (no localhost:8000, no server-only leak)
         working-directory: frontend
-        run: |
-          npm test -- --ci --runInBand
+        run: node scripts/check_baked_bundle.mjs
       - name: Frontend route/link integrity check
         working-directory: frontend
         run: node scripts/check_frontend_routes.mjs

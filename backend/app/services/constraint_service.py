@@ -55,20 +55,28 @@ def filter_action_with_code(
     """Validate an action against owner constraints.
 
     Returns (feasible, stable_reason_code, human_reason).
+
+    ``constraints`` may use item_id keys (``blocked_discount_products``,
+    ``strategic_products``) and/or sku keys (``blocked_discount_skus``,
+    ``strategic_skus``) — both are checked so AI layers that only have skus
+    and execution layers that only have item_ids share one rule engine.
     """
     # Discount / pricing decrease
     if action_type in {"discount", "pricing_decrease"}:
         item_id = str(payload.get("item_id", ""))
+        sku = str(payload.get("sku", ""))
 
-        # Blocked products check
-        blocked = set(map(str, constraints.get("blocked_discount_products", [])))
-        if item_id in blocked:
-            return False, CODE_DISCOUNT_BLOCKED, f"Discount is blocked for product {item_id} by owner constraints."
+        # Blocked products check (item_id OR sku)
+        blocked_ids = set(map(str, constraints.get("blocked_discount_products", [])))
+        blocked_skus = set(map(str, constraints.get("blocked_discount_skus", [])))
+        if item_id in blocked_ids or (sku and sku in blocked_skus):
+            return False, CODE_DISCOUNT_BLOCKED, f"Discount is blocked for product {item_id or sku} by owner constraints."
 
         # Strategic product check — strategic products should not be discounted
-        strategic = set(map(str, constraints.get("strategic_products", [])))
-        if item_id in strategic:
-            return False, CODE_DISCOUNT_STRATEGIC, f"Product {item_id} is marked as strategic by owner constraints and should not be discounted."
+        strategic_ids = set(map(str, constraints.get("strategic_products", [])))
+        strategic_skus = set(map(str, constraints.get("strategic_skus", [])))
+        if item_id in strategic_ids or (sku and sku in strategic_skus):
+            return False, CODE_DISCOUNT_STRATEGIC, f"Product {item_id or sku} is marked as strategic by owner constraints and should not be discounted."
 
         # Maximum discount percentage check
         max_discount = float(constraints.get("max_discount_pct", constraints.get("max_discount", 100)))

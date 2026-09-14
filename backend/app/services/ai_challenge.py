@@ -444,28 +444,52 @@ def select_final_decision_v11(
 
 
 def _passes_v11_constraints(decision: str | None, context: StructuredContext) -> bool:
-    """Check if proposed decision passes owner constraints."""
+    """Check if proposed decision passes owner constraints via canonical engine.
+
+    Representable checks (blocked/strategic SKUs, cash budget) are delegated to
+    ``constraint_service.filter_action_with_code`` with the appropriate payload.
+    The minimum-margin pre-check is kept as an explicit pre-discount guard — it
+    is a *different* semantic from the canonical post-discount margin check
+    (``CODE_DISCOUNT_MIN_MARGIN``) and is documented here, not merged.
+    """
     if not decision:
         return False
 
-    # Check blocked discount SKUs
-    if decision == "DISCOUNT":
-        if context.product.sku in context.owner.blocked_discount_skus:
+    from app.services.constraint_service import filter_action_with_code
+
+    # Build minimal payload from context for the canonical engine.
+    payload: dict[str, Any] = {
+        "sku": context.product.sku,
+        "item_id": context.product.sku,
+    }
+
+    # Build constraints from owner fields that mirror the owner's
+    # constraint_json surface, keyed by the sku vocabulary the canonical engine
+    # now understands.
+    constraints: dict[str, Any] = {}
+    if context.owner.blocked_discount_skus:
+        constraints["blocked_discount_skus"] = list(context.owner.blocked_discount_skus)
+    if context.owner.strategic_skus:
+        constraints["strategic_skus"] = list(context.owner.strategic_skus)
+    if context.owner.cash_budget is not None:
+        constraints["cash_budget"] = context.owner.cash_budget
+
+    # Map decision to canonical action type for delegated checks.
+    action_type = {
+        "DISCOUNT": "discount",
+        "REORDER": "reorder",
+    }.get(decision)
+
+    if action_type:
+        feasible, _code, _reason = filter_action_with_code(action_type, payload, constraints)
+        if not feasible:
             return False
 
-    # Check minimum margin
+    # Pre-discount margin guard (distinct from the canonical after-discount
+    # ``CODE_DISCOUNT_MIN_MARGIN`` — this checks CURRENT margin before any
+    # discount is proposed; the canonical engine checks AFTER discount).
     if decision == "DISCOUNT" and context.owner.min_margin_pct:
-        # Discount must maintain minimum margin
         if context.product.gross_margin_pct < context.owner.min_margin_pct:
             return False
-
-    # Check cash budget for REORDER
-    if decision == "REORDER":
-        if context.owner.cash_budget is not None and context.owner.cash_budget <= 0:
-            return False
-
-    # Check strategic products
-    if decision == "DISCOUNT" and context.product.sku in context.owner.strategic_skus:
-        return False
 
     return True

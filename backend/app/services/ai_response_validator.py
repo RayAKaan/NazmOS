@@ -397,8 +397,25 @@ def _apply_owner_constraints(
     business: Any | None,
     allowed_constraints: dict[str, Any] | None,
 ) -> bool:
-    """Apply owner constraints to the AI proposal. Returns True if rejected."""
+    """Apply owner constraints to the AI proposal via the canonical constraint engine.
+
+    Returns True if rejected.  Error strings are mapped from stable reason codes
+    so existing tests and observability continue to work.
+    """
+    from app.services.constraint_service import (
+        filter_action_with_code,
+        CODE_DISCOUNT_BLOCKED,
+        CODE_DISCOUNT_STRATEGIC,
+        CODE_DISCOUNT_MAX_PCT,
+        CODE_DISCOUNT_MIN_MARGIN,
+        CODE_REORDER_MOQ_BUDGET,
+    )
+
     decision = str(getattr(ai_result, "decision", "") or "").strip().upper()
+    if not decision:
+        return False
+
+    # Build the canonical constraint set: business constraints_json + overrides.
     constraints: dict[str, Any] = {}
     if business is not None and hasattr(business, "to_dict"):
         constraints = dict(business.to_dict())
@@ -407,39 +424,51 @@ def _apply_owner_constraints(
             if value is not None:
                 constraints.setdefault(key, value)
 
-    sku = str(getattr(item, "sku", "") or "")
-
-    if decision == "DISCOUNT":
-        blocked = {str(s) for s in (constraints.get("blocked_discount_products") or [])}
-        if sku in blocked:
-            result.errors.append("DISCOUNT_BLOCKED_BY_CONSTRAINT")
-            return True
-        strategic = {str(s) for s in (constraints.get("strategic_products") or [])}
-        if sku in strategic:
-            result.errors.append("DISCOUNT_BLOCKED_STRATEGIC_PRODUCT")
-            return True
-        if getattr(item, "is_strategic", False) is True and not strategic:
-            result.errors.append("DISCOUNT_BLOCKED_STRATEGIC_PRODUCT")
-            return True
-        max_pct = constraints.get("max_discount_pct")
-        if max_pct is not None:
-            recommended = getattr(ai_result, "recommended_action", None) or {}
-            discount_pct = None
-            if isinstance(recommended, dict):
-                discount_pct = recommended.get("discount_pct") or recommended.get("recommended_discount_pct")
-            if discount_pct is not None and float(discount_pct) > float(max_pct):
-                result.errors.append("DISCOUNT_EXCEEDS_MAX_PCT")
-                return True
-
-    elif decision == "REORDER":
-        budget = constraints.get("cash_budget")
-        if budget is not None:
+    # Build the canonical payload from the item and AI result.
+    payload: dict[str, Any] = {}
+    if item is not None:
+        if hasattr(item, "sku"):
+            payload["sku"] = str(getattr(item, "sku", "") or "")
+            # Legacy compat: callers historically stored SKUs in
+            # blocked_discount_products; pass sku as item_id so the canonical
+            # engine matches the same set.
+            payload["item_id"] = payload["sku"]
+        if hasattr(item, "id") and not payload.get("item_id"):
+            payload["item_id"] = str(getattr(item, "id", "") or "")
+        if hasattr(item, "supplier_moq"):
             moq = getattr(item, "supplier_moq", None)
-            if moq is not None and float(moq) > float(budget):
-                result.errors.append("REORDER_MOQ_EXCEEDS_BUDGET")
-                return True
+            if moq is not None:
+                payload["supplier_moq"] = float(moq)
 
-    return False
+    recommended = getattr(ai_result, "recommended_action", None) or {}
+    if isinstance(recommended, dict):
+        for k in ("discount_pct", "recommended_discount_pct"):
+            if recommended.get(k) is not None:
+                payload.setdefault("discount_pct", float(recommended[k]))
+
+    # Map decision to canonical action_type.
+    action_type = {
+        "DISCOUNT": "discount",
+        "REORDER": "reorder",
+        "TRANSFER": "transfer_inventory",
+    }.get(decision)
+    if action_type is None:
+        return False
+
+    feasible, code, _reason = filter_action_with_code(action_type, payload, constraints)
+    if feasible:
+        return False
+
+    # Map stable reason codes to the same error strings the tests expect.
+    _CODE_TO_ERROR = {
+        CODE_DISCOUNT_BLOCKED: "DISCOUNT_BLOCKED_BY_CONSTRAINT",
+        CODE_DISCOUNT_STRATEGIC: "DISCOUNT_BLOCKED_STRATEGIC_PRODUCT",
+        CODE_DISCOUNT_MAX_PCT: "DISCOUNT_EXCEEDS_MAX_PCT",
+        CODE_DISCOUNT_MIN_MARGIN: "DISCOUNT_MIN_MARGIN",
+        CODE_REORDER_MOQ_BUDGET: "REORDER_MOQ_EXCEEDS_BUDGET",
+    }
+    result.errors.append(_CODE_TO_ERROR.get(code, f"CONSTRAINT_REJECTED:{code}"))
+    return True
 
 
 def _verify_financial_claims(ai_result: Any, item: Any | None) -> str | None:

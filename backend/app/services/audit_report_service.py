@@ -14,6 +14,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.impact_ledger_service import total_impact
+from app.services.health_metrics import findings_health_score
 
 
 def _json(value: Any) -> Any:
@@ -69,15 +70,15 @@ async def build_audit_report(db: AsyncSession, business_id: UUID | str) -> dict[
             recoverable += impact
         opportunities[r.category or r.domain] = opportunities.get(r.category or r.domain, 0.0) + impact
 
-    # Health score: 100 − severity-weighted penalty (capped, floor 0).
-    penalty = critical * 12 + high * 6 + watch * 2
-    health = max(0, 100 - penalty)
+    # Canonical findings health metric (severity-penalty-based).
+    findings_health = await findings_health_score(db, business_id)
 
     impact = await total_impact(db, business_id)
 
     top = sorted(opportunities.items(), key=lambda kv: kv[1], reverse=True)[:5]
     return {
-        "overall_health": health,
+        "overall_health": findings_health["overall_health"],
+        "health_metric": findings_health["metric"],
         "issues_found": len(rows),
         "critical": critical,
         "important": high,

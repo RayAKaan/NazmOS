@@ -19,9 +19,9 @@ pydantic-settings==2.5.2
 pyjwt>=2.9.0
 passlib[bcrypt]==1.7.4
 httpx>=0.27.0,<0.29
-pytest==7.4.4; python_version < "3.13"
+pytest>=8.3,<10; python_version < "3.13"
 pytest>=8.3,<10; python_version >= "3.13"
-pytest-asyncio==0.23.3; python_version < "3.13"
+pytest-asyncio>=0.25,<2; python_version < "3.13"
 pytest-asyncio>=0.25,<2; python_version >= "3.13"
 python-dotenv>=1.2.2
 
@@ -33,7 +33,9 @@ python-dotenv>=1.2.2
 statsforecast==2.1.1
 scikit-learn==1.5.1; python_version < "3.13"
 scikit-learn>=1.6,<2; python_version >= "3.13"
-statsmodels==0.14.2; python_version < "3.13"
+# statsforecast 2.1.1 requires statsmodels>=0.14.5; the pin must satisfy the
+# canonical forecaster, not just statsmodels itself.
+statsmodels==0.14.5; python_version < "3.13"
 statsmodels>=0.14.4,<1; python_version >= "3.13"
 scipy==1.13.0; python_version < "3.13"
 scipy>=1.15,<2; python_version >= "3.13"

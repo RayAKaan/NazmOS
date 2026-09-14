@@ -75,5 +75,6 @@ async def request_finding_approval(
         approve_url,
         reject_url,
         action_prefix="finding_approve",
+        business_id=str(business_id),
     )
     return result

@@ -185,7 +185,10 @@ FORBIDDEN = (SKU, PRODUCT, SUPPLIER, TENANT, "9876", "654321.25", "55.25", "120.
 
 
 def _capsule_text_all(capsule) -> str:
-    return json.dumps(capsule.blob(), default=str)
+    """Scan for_prompt() — the DLP-clean outbound view.  ``blob()`` includes
+    the random nonce/hash/signature whose hex can contain any numeric
+    substring, making direct substring scans of blob() inherently flaky."""
+    return json.dumps(capsule.for_prompt(), default=str)
 
 
 # --- TEST 1-18 : minimization ------------------------------------------------

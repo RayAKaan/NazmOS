@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from uuid import UUID
-from datetime import datetime, timezone
+from datetime import datetime, time, timezone
 
 from app.config import get_settings
 from app.database.connection import get_sync_session
@@ -39,30 +39,58 @@ def run_sync_pos_connection(connection_id: str, business_id: str | None = None):
                 import asyncio
                 sales_data = asyncio.run(adapter.fetch_sales())
                 records_fetched = len(sales_data)
+                imported = 0
+                skipped = 0
 
                 for record in sales_data:
-                    existing = db.execute(
-                        select(Transaction).where(
-                            Transaction.business_id == connection.business_id,
-                            Transaction.transaction_at >= record.get("date", datetime.min)
-                        )
-                    )
+                    transaction_at = record.get("date") or datetime.now(timezone.utc)
+                    if isinstance(transaction_at, str):
+                        try:
+                            transaction_at = datetime.fromisoformat(transaction_at)
+                        except ValueError:
+                            transaction_at = datetime.now(timezone.utc)
 
-                    if not existing.scalar_one_or_none():
-                        transaction = Transaction(
+                    quantity = float(record.get("quantity", 1))
+                    total_amount = float(record.get("total", 0))
+
+                    # Exact-fact dedup only. The old ``transaction_at >=`` cut-off
+                    # silently dropped any backdated order and any new sale that
+                    # landed before the earliest already-fetched transaction of
+                    # the day. A re-sync of identical POS rows is suppressed by
+                    # matching the same item/date/quantity/amount facts instead.
+                    day_start = datetime.combine(transaction_at.date(), time.min)
+                    day_end = datetime.combine(transaction_at.date(), time.max)
+                    existing = db.execute(
+                        select(Transaction.id).where(
+                            Transaction.business_id == connection.business_id,
+                            Transaction.item_id == record.get("item_id"),
+                            Transaction.transaction_at >= day_start,
+                            Transaction.transaction_at <= day_end,
+                            Transaction.quantity == quantity,
+                            Transaction.total_amount == total_amount,
+                            Transaction.transaction_type == "sale",
+                        ).limit(1)
+                    )
+                    if existing.scalar_one_or_none():
+                        skipped += 1
+                        continue
+
+                    db.add(
+                        Transaction(
                             business_id=connection.business_id,
                             item_id=record.get("item_id"),
-                            quantity=record.get("quantity", 1),
-                            unit_price=record.get("unit_price", 0),
-                            cost_price=record.get("cost_price", 0),
-                            total_amount=record.get("total", 0),
-                            profit=record.get("profit", 0),
+                            quantity=quantity,
+                            unit_price=float(record.get("unit_price", 0)),
+                            cost_price=float(record.get("cost_price", 0)),
+                            total_amount=total_amount,
+                            profit=float(record.get("profit", 0)),
                             transaction_type="sale",
-                            transaction_at=record.get("date", datetime.now(timezone.utc)),
+                            transaction_at=transaction_at,
                         )
-                        db.add(transaction)
+                    )
+                    imported += 1
 
-                sync_log.records_created += records_fetched
+                sync_log.records_created += imported
 
             if connection.sync_inventory:
                 import asyncio

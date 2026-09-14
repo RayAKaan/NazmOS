@@ -4,8 +4,9 @@ Builds the merchant-facing weekly report from the Impact Ledger, findings, and a
 actions — always separating OBSERVED impact from ESTIMATED impact (never turning
 estimates into claimed realized revenue).
 
-Health score is broken into traceable dimensions (inventory / margins / procurement /
-cash / sales / compliance), each derived from findings/data — not a mystery AI number.
+Health score is the ``findings_health`` metric (severity-penalty-based); the
+dashboard uses the distinct ``inventory_health`` metric.  Both live in
+``health_metrics`` and carry a ``metric`` key so consumers label them correctly.
 """
 from __future__ import annotations
 
@@ -19,18 +20,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.impact_ledger_service import total_impact
 
-# Finding domain → health dimension (each score is traceable to findings).
-DOMAIN_DIMENSION = {
-    "money_audit": "margins",
-    "inventory": "inventory",
-    "recovery_match": "inventory",
-    "compliance": "compliance",
-    "procurement": "procurement",
-    "cash": "cash",
-    "sales": "sales",
-}
-
-DIMENSIONS = ["inventory", "margins", "procurement", "cash", "sales", "compliance", "operations"]
+# Canonical definitions live in health_metrics; re-export for backward compat
+# (audits router, test_phase3).
+from app.services.health_metrics import (  # noqa: F401
+    DOMAIN_DIMENSION,
+    DIMENSIONS,
+    findings_health_breakdown as health_score_breakdown,
+    findings_health_trend as health_trend,
+)
 
 
 def _json(v: Any) -> Any:
@@ -42,72 +39,6 @@ def _json(v: Any) -> Any:
         return json.loads(v)
     except Exception:
         return v
-
-
-async def health_trend(db: AsyncSession, business_id: UUID | str) -> dict[str, Any]:
-    """Trend-based health: current score vs the previous 7-day window's score (§24)."""
-    now = datetime.now(timezone.utc)
-    week_ago = now - timedelta(days=7)
-    two_weeks_ago = now - timedelta(days=14)
-
-    async def _score(since: datetime, until: datetime) -> dict[str, Any]:
-        rows = await db.execute(text("""
-            SELECT domain, severity, COUNT(*) AS n
-            FROM findings
-            WHERE business_id = :b AND created_at >= :since AND created_at < :until
-              AND status NOT IN ('rejected', 'failed', 'verified')
-            GROUP BY domain, severity
-        """), {"b": str(business_id), "since": since, "until": until})
-        weight = {"critical": 12, "high": 6, "medium": 2, "low": 0, "info": 0}
-        penalty = 0
-        for r in rows.fetchall():
-            penalty += weight.get(r.severity, 0) * int(r.n)
-        return {"overall_health": max(0, 100 - penalty)}
-
-    current = await _score(week_ago, now)
-    previous = await _score(two_weeks_ago, week_ago)
-    delta = current["overall_health"] - previous["overall_health"]
-
-    return {
-        "current_health": current["overall_health"],
-        "previous_health": previous["overall_health"],
-        "trend": "up" if delta > 0 else "down" if delta < 0 else "flat",
-        "delta": delta,
-        "note": "Health is derived from finding severity within each window; every score is traceable to findings.",
-    }
-
-
-async def health_score_breakdown(db: AsyncSession, business_id: UUID | str) -> dict[str, Any]:
-    """Explainable health score: 100 − severity-weighted penalties, broken down by
-    dimension, each traceable to findings."""
-    rows = await db.execute(text("""
-        SELECT domain, severity, COUNT(*) AS n
-        FROM findings
-        WHERE business_id = :b AND status NOT IN ('rejected', 'failed', 'verified')
-        GROUP BY domain, severity
-    """), {"b": str(business_id)})
-    weight = {"critical": 12, "high": 6, "medium": 2, "low": 0, "info": 0}
-
-    dim_penalty = {d: 0 for d in DIMENSIONS}
-    dim_counts = {d: 0 for d in DIMENSIONS}
-    for r in rows.fetchall():
-        dim = DOMAIN_DIMENSION.get(r.domain, "operations")
-        w = weight.get(r.severity, 0)
-        dim_penalty[dim] += w * int(r.n)
-        dim_counts[dim] += int(r.n)
-
-    total_penalty = sum(dim_penalty.values())
-    overall = max(0, 100 - total_penalty)
-
-    dimensions = []
-    for d in DIMENSIONS:
-        dimensions.append({
-            "dimension": d,
-            "score": max(0, 100 - dim_penalty[d]),
-            "findings": dim_counts[d],
-        })
-
-    return {"overall_health": overall, "dimensions": dimensions}
 
 
 async def build_weekly_report(db: AsyncSession, business_id: UUID | str) -> dict[str, Any]:

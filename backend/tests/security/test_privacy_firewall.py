@@ -60,11 +60,15 @@ def _business() -> BusinessContext:
 
 
 def _capsule_text() -> str:
+    """Scan the DLP-clean *outbound* view (AGENTS.md: capsule.for_prompt() is the
+    only serializer that crosses the trust boundary).  ``blob()`` includes the
+    random nonce/capsule_hash/signature whose hex can coincidentally contain any
+    numeric substring — scanning it produces inherent flakiness."""
     capsule = build_reasoning_capsule(
         _item(), _business(), capability="counterfactual_audit", purpose="_internal"
     )
     CapsuleSigner().verify(capsule)
-    return json.dumps(capsule.blob(), default=str)
+    return json.dumps(capsule.for_prompt(), default=str)
 
 
 def test_capsule_never_contains_identifiers():
@@ -135,7 +139,7 @@ def test_payload_path_also_sanitized():
         },
     }
     capsule = build_capsule_for_payload(payload, capability="opencode_brain", purpose="_internal")
-    text = json.dumps(capsule.blob(), default=str)
+    text = json.dumps(capsule.for_prompt(), default=str)
     assert SKU not in text
     assert PRODUCT not in text
     assert BUSINESS not in text

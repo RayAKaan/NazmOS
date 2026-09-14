@@ -17,7 +17,7 @@ recorded as caveats, none is an unresolved blocker.
 |-----|--------|--------------|----------|
 | FIX 1 | Image / DLP / loopback sanitisation sweep on freshly rebuilt backend image | 230p + 69p + 17p verified in-container | `docs/PHASE_1_CLOSEOUT_REPORT.md` (in-image evidence) |
 | FIX 2 | `deploy.yml` fail-closed `.env` writer: escape `$` -> `$$` via `sed 's/\$/$$/g'` in BOTH staging (L159-173) and production (L263-277) blocks (the original `${v//\$/$$}` replacement was wrong) | byte-exact e2e proof that a secret containing literal `$` survives the writer | `docs/PHASE_1_CLOSEOUT_REPORT.md` (in-image evidence) |
-| FIX 3 | Baked-frontend guard: `frontend/scripts/check_baked_bundle.mjs` + rewritten `ci.yml` frontend job | guard proven NON-VACUOUS: PASS on fixed `.env` build, FAIL 7 hits on control build; real GitHub CI run **not exercised** (no push/remote available at the time) | `frontend/scripts/check_baked_bundle.mjs` |
+| FIX 3 | Baked-frontend guard: `frontend/scripts/check_baked_bundle.mjs` + rewritten `ci.yml` frontend job | guard proven NON-VACUOUS: PASS on fixed `.env` build, FAIL 7 hits on control build; real GitHub CI run **not exercised** (push happened, workflow files now parse-clean, but a live green Actions run of the tree has not been observed — see caveats) | `frontend/scripts/check_baked_bundle.mjs` |
 | FIX 4 | Loopback-only port topology + clean prod rebuild | 127.0.0.1-only binds; `DATABASE_APP_ROLE` must be literal `nazmos_app`; `API_WORKERS=1` required on this Docker Desktop/WSL2 host (fork() respawn bug, not app regression); dev stack restored | `docker-compose.prod.yml` |
 | FIX 5 | Ingestion strict gates in `backend/app/services/data_normalizer.py`: `REVENUE_COLUMNS`, `BLANK_REJECT_COLUMNS`, `missing_price_basis`, `negative_current_stock`, `blank_required_value`, row-drop guard; SKU/name identity conflicts downgraded to warning-only (empirically safe-to-defer) | 11p data-integrity (+7 new), 20p phase1 decision-safety, 3p ETL dedup (+1 xfail), 5p v4, 4p phase1, 15p golden regression incl 6 DB-backed against clean migrated `nazmos_test` | `backend/app/services/data_normalizer.py` |
 | FIX 6a | Temporal production substrate vs Postgres | Temporal suite 17/17 (real server + in-process production worker, sole poller, ZERO skips) | `tests/temporal/` |
@@ -46,7 +46,7 @@ Two clean rebuilds, both green:
 | RLS coverage / predicate indexes / code-prep / tenant-scope idempotency / legacy isolation / temporal-failure tenant isolation | **67 passed** (DB-free static+sqlite family) |
 | WhatsApp webhook tenant-scoped + decisions 403/404 (Postgres) | **10 passed** |
 | Ingestion/golden regression (FIX 5) | 11 + 20 + 3 + 5 + 4 + **15 (incl 6 DB-backed)** passed |
-| Frontend baked-bundle guard | PASS on real build (0 hits) vs 2-hit tampered-control FAIL (re-verified 2026-09-14); GitHub CI **not yet triggered** until first push |
+| Frontend baked-bundle guard | PASS on real build (0 hits) vs 2-hit tampered-control FAIL (re-verified 2026-09-14); workflow files actionlint-clean; a live green GitHub Actions run of the tree not yet observed (see caveats) |
 | Prod compose + deploy contract | `config -q` PASS with token; fail-closed without; deploy.yml escaping e2e PROVEN |
 | Image/DLP/localhost sweep | 230 + 69 + 17 passed in-container |
 
@@ -65,7 +65,7 @@ Per-action cross-tenant RLS coverage (the P0 matrix):
 
 ## 5. Honest caveats (recorded, not hidden)
 
-- FIX 3 guard's real GitHub CI trigger **not yet exercised** (pending first push of this branch); validated via local control experiment proving the guard fails a tampered bundle.
+- FIX 3 guard's live GitHub CI run **not yet observed green for the tree** (the branch push does not match `on.push.branches: [main, master]`; the historical Sep-07 PR run failed only on the ff09 migration-id width issue, fixed since by `a121792`). Validated via local control experiment proving the guard fails a tampered bundle; both workflow parse blockers found in final verification (`command:` on a GH Actions service container in `ci.yml`, missing `build-image` in `deploy-production.needs`) are fixed and actionlint-clean, with the absence of a new 0s parse-failure run on the `6c0166b` push confirming GitHub now parses the file and correctly applies branch filters.
 - Real provider-key execution gate (provider-implementation with a live API key) **not verified** in this environment; verified at contract/unit/design level.
 - The full 1200+ suite is not re-run as a single monolithic green pass in this session; every surface touched by FIX 1-6 was verified green on final code state and (for containers) on the rebuilt image/DBs, with the mandatory roster in section 3.
 - FIX-4's "booted healthy in production without `WHATSAPP_VERIFY_TOKEN`" is resolved: that image predated the config change; the FIX 6e image + negative boot test prove the FATAL now works as designed.

@@ -5,8 +5,7 @@ retry-probe, sqlite end-to-end, and Postgres integration files all speak to the
 SAME durable substrate the production worker runs.
 
 Server selection:
-- External: if ``TEMPORAL_ADDRESS`` env is set, connect to that server
-  (CI uses the ``temporalio/temporal`` dev-server service at localhost:7233).
+- External: if ``TEMPORAL_ADDRESS`` env is set, connect to that server.
 - Local: otherwise start ``WorkflowEnvironment.start_local()`` (Temporal CLI
   dev-server binary, no Docker required) and drive the runner against it by
   patching ``Client.connect`` to return the same real client.

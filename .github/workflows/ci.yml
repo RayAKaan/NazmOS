@@ -154,9 +154,9 @@ jobs:
           kill $SERVER_PID
 
   # Real-Temporal substrate gate: tests/temporal MUST execute every scenario
-  # against a real Temporal server (temporalio/temporal dev-server service)
-  # + real Postgres. Skips are forbidden here — a sqlite-only skip means the
-  # scenario never ran.
+  # against a real Temporal dev-server (WorkflowEnvironment.start_local(), the
+  # Temporal CLI dev-server binary) + real Postgres. Skips are forbidden here
+  # — a sqlite-only skip means the scenario never ran.
   temporal-backend:
     runs-on: ubuntu-latest
     services:
@@ -173,11 +173,6 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-      temporal:
-        image: temporalio/temporal:latest
-        command: ["server", "start-dev", "--ip", "0.0.0.0", "--headless"]
-        ports:
-          - 7233:7233
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -187,14 +182,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
-      - name: Temporal integration suite (real server + Postgres)
+      - name: Temporal integration suite (real dev-server + Postgres)
         working-directory: backend
         env:
           PYTHONPATH: .
           USE_TEMPORAL: "true"
           DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos_test
-          TEMPORAL_ADDRESS: localhost:7233
-          TEMPORAL_NAMESPACE: default
         run: |
           python -m compileall -q app tests
           python -m pytest tests/temporal -q --tb=short 2>&1 | tee temporal-suite.log

@@ -145,13 +145,13 @@ class TestEAnonymousExecutionPrevented:
                 node
                 for node in ast.walk(tree)
                 if isinstance(node, ast.Call)
-                and isinstance(node.func, ast.Attribute)
-                and node.func.attr == "execute_action"
+                and isinstance(node.func, ast.Name)
+                and node.func.id == "run_manual_action"
             ]
-            assert calls, f"{rel}: expected at least one execute_action call"
+            assert calls, f"{rel}: expected at least one run_manual_action call"
             for call in calls:
                 keywords = {kw.arg: kw.value for kw in call.keywords if kw.arg}
-                assert "user_id" in keywords, f"{rel}: execute_action without user_id"
+                assert "user_id" in keywords, f"{rel}: run_manual_action without user_id"
                 # user_id must be a real attribute of an attested actor, never None.
                 value = keywords["user_id"]
                 assert not isinstance(value, ast.Constant) or value.value is not None

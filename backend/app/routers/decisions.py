@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from app.middleware.auth_middleware import get_current_user
 from app.middleware.business_access import assert_business_access
 from app.database import get_db, User
+from app.services.audit_core import coverage_aware_daily_velocity
 from app.services.decision_engine import DecisionEngine
 
 router = APIRouter(prefix="/api/v1/decisions", tags=["decisions"])
@@ -40,7 +41,8 @@ async def get_recommendations(
 
     inventory_items = []
     for item in items:
-        daily_avg = float(item.daily_avg_30d) / 30 if item.daily_avg_30d else 0
+        daily_vel = coverage_aware_daily_velocity(float(item.total_30d or 0), None)
+        daily_avg = float(daily_vel) if daily_vel > 0 else 0
         days_left = float(item.current_stock) / daily_avg if daily_avg > 0.1 else 999
         
         prev_7d = float(item.daily_avg_7d) if item.daily_avg_7d else 0

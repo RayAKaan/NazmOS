@@ -100,12 +100,14 @@ the caller's session, and closes (fail-closed). Tests use SQLite in-memory.
 ```bash
 cd backend
 $env:PYTHONPATH="H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend"
+$env:USE_TEMPORAL="false"   # mirrors ci.yml "Backend tests with PostgreSQL" job
 python -m pytest tests/test_analytics_health_score.py tests/test_analytics_duckdb_boundary.py tests/test_analytics_dead_stock.py tests/test_analytics_item_detail.py tests/test_scan_consolidation.py -q
 ```
 
 **Postgres-backed integration (integration runner only):**
 ```bash
 $env:TEST_DATABASE_URL="postgresql+asyncpg://nazmos:nazmos_v5_dev@localhost:5432/nazmos_test"
+$env:USE_TEMPORAL="false"   # mirrors ci.yml "Backend tests with PostgreSQL" job
 python -m pytest tests/test_dashboard.py tests/test_e2e_happy_path.py -q
 ```
 
@@ -127,8 +129,27 @@ from here only — never from the deleted legacy executors.
 
 **Workflow** (`app/orchestration/workflows.py`):
 Deterministic, composable steps (precheck → idempotency → apply → record).
-Same code runs under `USE_TEMPORAL=False` (CI, local runner) and `USE_TEMPORAL=True`
-(prod Temporal server with local fallback).
+The real execution substrate is Temporal: the same step order runs as
+`ManualActionWorkflow` / `AgentApprovalWorkflow` / `SimulatedWorkflow` on the
+Temporal server, with every side effect delegated to an activity
+(`app/orchestration/temporal/activities.py`). `USE_TEMPORAL=False` keeps the
+local deterministic runner for tests/CI only — it is NEVER a production
+fallback (Temporal unavailability is an explicit operational error), per
+`app/orchestration/runner.py` strict dispatch.
+
+**Temporal suite (real server + worker, retries, exactly-once):**
+```bash
+cd backend
+$env:PYTHONPATH="H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend"
+$env:USE_TEMPORAL="true"
+$env:DATABASE_URL="sqlite+aiosqlite:///H:/NAZMOS_COMPLETE_LATEST/NAZMOS_LATEST_MERGED/backend/nazmos_temporal_test.db"
+Remove-Item -LiteralPath nazmos_temporal_test.db -ErrorAction SilentlyContinue
+python -m pytest tests/temporal -q            # 8 pass + 9 Postgres-only skips on sqlite
+```
+`tests/temporal/conftest.py` starts a real local dev server (or uses
+`TEMPORAL_ADDRESS` in CI) + one in-process production `build_worker`, and pins
+`USE_TEMPORAL=true`. With a Postgres `DATABASE_URL` none of the 17 scenarios
+skip; CI enforces zero skips.
 
 **Idempotency**: `execution_key` = SHA-256 hex from `business_id+action_type+entity_type+entity_id+payload+source`
 (`app/orchestration/keys.py::derive_execution_key`). Stored in `executed_actions`,
@@ -138,11 +159,15 @@ Same code runs under `USE_TEMPORAL=False` (CI, local runner) and `USE_TEMPORAL=T
 ```bash
 cd backend
 $env:PYTHONPATH="H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend"
+$env:USE_TEMPORAL="false"   # REQUIRED: without this, reachability of a Temporal
+                           # server causes execute_workflow to hang indefinitely
+                           # (no worker polling in these DB-free suites).
 python -m pytest tests/test_orchestration.py tests/test_execution_path_clarity.py tests/test_phase5.py tests/test_phase5_learning_loop.py tests/test_phase6_loop.py tests/test_phase7_loop.py tests/test_phase8_loop.py -q
 ```
 
 **Postgres-backed integration:**
 ```bash
 $env:TEST_DATABASE_URL="postgresql+asyncpg://nazmos:nazmos_v5_dev@localhost:5432/nazmos_test"
+$env:USE_TEMPORAL="false"   # mirrors ci.yml "Backend tests with PostgreSQL" job
 python -m pytest tests/test_restock_semantics.py tests/test_phase9_postgres.py tests/test_phase11_postgres.py tests/test_phase13_postgres.py tests/test_e2e_happy_path.py -q
 ```

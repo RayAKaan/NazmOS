@@ -95,3 +95,38 @@ async def test_rls_table_has_business_index(business_indexed_tables, table):
     assert business_indexed_tables[table], (
         f"{table} lacks an index/constraint leading with business_id for its RLS predicate"
     )
+
+
+@pytest.mark.asyncio
+async def test_join_scoped_tables_have_predicate_indexes_on_fk():
+    """chat_messages / pos_sync_logs resolve their tenant through a parent FK.
+
+    Their ff12 RLS policies join on ``session_id`` / ``connection_id``, so the
+    predicate index must lead with that FK column (not business_id, which these
+    tables do not carry).
+    """
+    expected = {"chat_messages": "session_id", "pos_sync_logs": "connection_id"}
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+        def _check(sync_conn) -> dict[str, bool]:
+            inspector = inspect(sync_conn)
+            result = {}
+            for table, col in expected.items():
+                indexed = False
+                for idx in inspector.get_indexes(table):
+                    cols = idx.get("column_names") or []
+                    if cols and cols[0] == col:
+                        indexed = True
+                        break
+                result[table] = indexed
+            return result
+
+        found = await conn.run_sync(_check)
+    await engine.dispose()
+
+    for table, col in expected.items():
+        assert found[table], (
+            f"{table} lacks an index leading with {col} for its join RLS predicate"
+        )

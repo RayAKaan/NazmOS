@@ -54,6 +54,14 @@ def _postgres_available(host: str | None = None, port: int | None = None, timeou
 
 @pytest.fixture(scope="session")
 def event_loop():
+    """Legacy no-op fixture retained for backward compatibility with any test
+    that explicitly depends on ``event_loop``.
+
+    pytest-asyncio >= 1.0 ignores this fixture; the session-scoped loop policy
+    is now driven by ``asyncio_default_fixture_loop_scope = session`` and
+    ``asyncio_default_test_loop_scope = session`` in ``pytest.ini``.  Kept
+    (rather than deleted) to satisfy conftest requirement (b): continue to
+    provide legacy fixtures."""
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()

@@ -22,6 +22,7 @@ def _prod(**overrides):
         "CREDENTIAL_MASTER_KEY": "b" * 48,
         "DATABASE_APP_ROLE": "nazmos_app",
         "DATABASE_URL": _PG_URL,
+        "USE_TEMPORAL": True,
         **_LLM,
     }
     base.update(overrides)
@@ -82,7 +83,7 @@ def test_production_weak_dev_secret_key_blocked_at_get_settings():
     keys = ("ENVIRONMENT", "SECRET_KEY", "SENTRY_DSN", "USE_MOCK_LLM",
             "CREDENTIAL_MASTER_KEY", "GROQ_API_KEY", "GOOGLE_AI_API_KEY",
             "DATABASE_APP_ROLE", "DATABASE_URL", "REDIS_URL", "UPLOAD_DIR",
-            "LLM_PROVIDER_ORDER", "WHATSAPP_ENABLED", "CORS_ORIGINS")
+            "LLM_PROVIDER_ORDER", "WHATSAPP_ENABLED", "CORS_ORIGINS", "USE_TEMPORAL")
     saved = {k: os.environ.get(k) for k in keys}
     env = {
         "ENVIRONMENT": "production",
@@ -93,6 +94,7 @@ def test_production_weak_dev_secret_key_blocked_at_get_settings():
         "GROQ_API_KEY": "grok-test-key",
         "DATABASE_APP_ROLE": "nazmos_app",
         "DATABASE_URL": _PG_URL,
+        "USE_TEMPORAL": "true",
     }
     try:
         for k in keys:

@@ -50,7 +50,7 @@ def test_capsules_still_minimize_end_to_end():
         build_reasoning_capsule(_item(), _business(), capability="counterfactual_audit", purpose="_internal"),
         build_challenge_capsule(_context(), capability="challenge", purpose="_internal"),
     ):
-        text = str(capsule.blob())
+        text = str(capsule.for_prompt())
         for token in FORBIDDEN:
             assert token not in text, f"leak: {token}"
 

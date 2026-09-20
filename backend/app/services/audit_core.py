@@ -41,6 +41,20 @@ def money(value: Any) -> Decimal:
         return ZERO
 
 
+def gross_margin_pct(sell: Any, cost: Any) -> Decimal:
+    """Gross margin ratio: ``(sell - cost) / sell``.
+
+    Canonical definition shared by ``analyze_product``, ``money_audit_service``,
+    and any other surface that needs a margin percentage.  Returns a ratio in
+    [0, 1] quantized to 0.0001 (0.01%).
+    """
+    sell_d = money(sell)
+    cost_d = money(cost)
+    if sell_d <= 0:
+        return ZERO
+    return ((sell_d - cost_d) / sell_d).quantize(D("0.0001"))
+
+
 def coverage_aware_daily_velocity(recent_qty_30: Any, coverage_days_30d: Any) -> Decimal:
     """Demand per day, normalised by the DISTINCT days actually observed.
 
@@ -244,7 +258,7 @@ def analyze_product(metrics: ProductMetrics) -> ProductAudit:
     margin_leakage = ZERO
     has_margin_leakage = False
     if recent_qty_30 > 0 and cost > 0 and sell > 0:
-        margin = (sell - cost) / sell
+        margin = gross_margin_pct(sell, cost)
         if margin < TARGET_MARGIN_PCT:
             target_price = (cost / (D("1") - TARGET_MARGIN_PCT)).quantize(D("0.01"))
             leakage = max(ZERO, target_price - sell) * recent_qty_30

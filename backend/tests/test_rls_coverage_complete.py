@@ -14,6 +14,10 @@ The exempt list is deliberate, documented debt:
                         rows written with NULL, so tenant-column normalization
                         must precede RLS enablement.
 
+Join-scoped tables (chat_messages, pos_sync_logs) carry NO business_id column,
+so this scanner cannot detect them; their ff12 policies are locked by
+``test_join_scoped_tables_have_rls_policy`` below.
+
 This test runs on SQLite (no database required) so it fires in CI on every
 suite run.
 """
@@ -123,3 +127,23 @@ def test_exempt_allowlist_never_grows_silently():
         "team_invitations",
         "team_members",
     }
+
+
+def _join_policy_tables() -> set[str]:
+    """Keys of the JOIN_POLICIES dict in the ff12 join-scoped RLS migration."""
+    path = os.path.join(MIGRATIONS_DIR, "ff12_rls_chat_pos_sync_logs.py")
+    tree = ast.parse(open(path, encoding="utf-8").read(), filename=path)
+    tables = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Dict):
+            for key in node.keys:
+                if isinstance(key, ast.Constant) and isinstance(key.value, str):
+                    tables.add(key.value)
+    return tables
+
+
+def test_join_scoped_tables_have_rls_policy():
+    """chat_messages and pos_sync_logs must keep their join-based RLS policies."""
+    assert {"chat_messages", "pos_sync_logs"}.issubset(
+        _join_policy_tables()
+    ), "ff12 must define JOIN_POLICIES entries for chat_messages and pos_sync_logs"

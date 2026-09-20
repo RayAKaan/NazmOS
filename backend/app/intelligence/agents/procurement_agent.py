@@ -9,9 +9,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from sqlalchemy import text
-
 from app.intelligence.agents.base import BaseAgent
+from app.services.audit_core import coverage_aware_daily_velocity
 
 
 class ProcurementAgent(BaseAgent):
@@ -41,39 +40,29 @@ class ProcurementAgent(BaseAgent):
                 WHERE sp.is_active = true
                 ORDER BY sp.item_id, sp.unit_price_sar ASC
             )
-            SELECT i.id AS item_id, i.name, inv.current_stock, inv.reorder_level,
-                   GREATEST(COALESCE(s.qty_30d,0)/30.0, 0.01) AS velocity,
-                   inv.current_stock / NULLIF(GREATEST(COALESCE(s.qty_30d,0)/30.0, 0.01),0) AS days_of_supply,
-                   lp.unit_price_sar, lp.lead_time_days, lp.min_order_sar
+            SELECT i.id AS item_id, i.name, inv.current_stock, inv.reorder_level, s.qty_30d
             FROM items i
             JOIN inventory inv ON inv.item_id = i.id AND inv.business_id = :b
             LEFT JOIN sales_30d s ON s.item_id = i.id
             LEFT JOIN lowest_price lp ON lp.item_id = i.id
             WHERE i.business_id = :b AND i.is_active = true
-              AND (inv.current_stock <= inv.reorder_level
-                   OR inv.current_stock / NULLIF(GREATEST(COALESCE(s.qty_30d,0)/30.0, 0.01),0) < 10)
-            ORDER BY days_of_supply ASC LIMIT 10
         """), {"b": str(self.business_id)})
-        for r in res.fetchall():
-            days = float(r.days_of_supply or 0)
-            qty = max(20, int((14 - days) * float(r.velocity)))
+        rows = res.fetchall()
+
+        for r in rows:
+            qty_30d = r.qty_30d
+            daily_velocity = max(
+                coverage_aware_daily_velocity(qty_30d, None),
+                Decimal("0.01"),
+            )
+            days_of_supply = (
+                float(r.current_stock) / float(daily_velocity) if daily_velocity > 0 else None
+            )
+            if days_of_supply is None or days_of_supply >= 10:
+                continue
+            days = float(days_of_supply)
+            qty = max(20, int((14 - days) * float(daily_velocity)))
             unit_cost = float(r.unit_price_sar or 0)
-            proposals.append({
-                "action_type": "restock",
-                "title": f"Procurement: {r.name}",
-                "reason": (
-                    f"{r.name} is at {days:.1f} days of supply. Cheapest observed supplier price "
-                    f"SAR {unit_cost:.2f}/unit (lead time {r.lead_time_days or 'n/a'}d). "
-                    f"Recommend ordering ~{qty} units for owner review."
-                ),
-                "item_id": str(r.item_id),
-                "current_stock": float(r.current_stock or 0),
-                "unit_price_sar": unit_cost,
-                "recommended_qty": qty,
-                "estimated_value_sar": round(qty * unit_cost, 2),
-                "confidence": 0.7,
-                "urgency": 0.7 if days < 5 else 0.4,
-            })
 
         # Overlay canonical forecast demand (same numbers NazmPlanner reads)
         # onto the recommended quantity, replacing the raw velocity surrogate.

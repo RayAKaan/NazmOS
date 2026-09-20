@@ -1,10 +1,16 @@
 # NazmOS production-pilot compose
 # Use behind a real TLS reverse proxy (Nginx/Caddy/Traefik) or a managed load balancer.
+# Images are built + pushed to a registry by CI (deploy.yml) and pulled here; the
+# deploy pipeline exports API_IMAGE / OPENCODE_RUNNER_IMAGE before `up`.
 # Required .env keys:
+#   API_IMAGE, OPENCODE_RUNNER_IMAGE,
 #   DB_PASSWORD, REDIS_PASSWORD, SECRET_KEY, CORS_ORIGINS, PUBLIC_API_URL,
 #   SENTRY_DSN, DATABASE_APP_ROLE, CREDENTIAL_MASTER_KEY
 # Optional:
 #   GROQ_API_KEY, GOOGLE_AI_API_KEY, LLM_PROVIDER_ORDER, USE_MOCK_LLM,
+#   API_WORKERS, BACKUP_RETENTION_DAYS,
+#   OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY, OPENAI_API_KEY,
+#   NAZMOS_OPENCODE_MODEL, NAZMOS_CAPSULE_SIGNING_KEY,
 #   WHATSAPP_ENABLED, WHATSAPP_TOKEN, WHATSAPP_PHONE_ID, METRICS_TOKEN
 
 services:
@@ -44,11 +50,38 @@ services:
     networks:
       - nazmos
 
+  # Durable Temporal server backing NazmOS business execution. Schema and
+  # visibility databases are provisioned by auto-setup against the SAME
+  # Postgres instance the platform already backs up nightly, so execution
+  # history survives container restarts (no ephemeral file persistence).
+  # Internal only: no host ports are published.
+  temporal:
+    image: temporalio/auto-setup:1.29.7
+    restart: unless-stopped
+    environment:
+      DB: postgres12
+      POSTGRES_SEEDS: postgres
+      POSTGRES_PORT: "5432"
+      # auto-setup connects via DB_PORT (defaults to 3306/mysql otherwise).
+      DB_PORT: "5432"
+      POSTGRES_USER: nazmos
+      POSTGRES_PWD: ${DB_PASSWORD:?DB_PASSWORD must be set}
+      DBNAME: temporal
+      VISIBILITY_DBNAME: temporal_visibility
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - nazmos
+    healthcheck:
+      test: ["CMD", "temporal", "operator", "cluster", "health", "--address", "temporal:7233"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
   migrate:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-      target: production
+    image: ${API_IMAGE:?API_IMAGE must be set (docker push result)}
     restart: "no"
     environment:
       ENVIRONMENT: production
@@ -58,6 +91,7 @@ services:
       CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS must be set}
       SENTRY_DSN: ${SENTRY_DSN:?SENTRY_DSN must be set}
       DATABASE_APP_ROLE: ${DATABASE_APP_ROLE:?DATABASE_APP_ROLE must be set}
+      CREDENTIAL_MASTER_KEY: ${CREDENTIAL_MASTER_KEY:?CREDENTIAL_MASTER_KEY must be set}
       UPLOAD_DIR: /app/uploads
       USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
       GROQ_API_KEY: ${GROQ_API_KEY:-}
@@ -70,6 +104,7 @@ services:
       WHATSAPP_ENABLED: ${WHATSAPP_ENABLED:-mock}
       WHATSAPP_TOKEN: ${WHATSAPP_TOKEN:-}
       WHATSAPP_PHONE_ID: ${WHATSAPP_PHONE_ID:-}
+      WHATSAPP_VERIFY_TOKEN: ${WHATSAPP_VERIFY_TOKEN:?WHATSAPP_VERIFY_TOKEN must be set}
     depends_on:
       postgres:
         condition: service_healthy
@@ -80,10 +115,7 @@ services:
       - nazmos
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-      target: production
+    image: ${API_IMAGE:?API_IMAGE must be set}
     restart: unless-stopped
     ports:
       - "127.0.0.1:8000:8000"
@@ -104,6 +136,16 @@ services:
       USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
       USE_CELERY: ${USE_CELERY:-true}
       USE_REDIS: ${USE_REDIS:-true}
+      # Durable execution substrate: the API dispatches to the real Temporal
+      # server; the nazmos-worker hosts the workflows. No local fallback.
+      USE_TEMPORAL: "true"
+      TEMPORAL_ADDRESS: temporal:7233
+      TEMPORAL_NAMESPACE: default
+      TEMPORAL_TASK_QUEUE: nazm-execution
+      # Phase A isolation core: route OpenCode brain calls to the hardened
+      # runner container; sign ReasoningCapsules.
+      OPENCODE_RUNNER_URL: http://opencode_runner:8010
+      NAZMOS_CAPSULE_SIGNING_KEY: ${NAZMOS_CAPSULE_SIGNING_KEY:-}
       GROQ_API_KEY: ${GROQ_API_KEY:-}
       GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
       GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY:-}
@@ -114,6 +156,8 @@ services:
       WHATSAPP_ENABLED: ${WHATSAPP_ENABLED:-mock}
       WHATSAPP_TOKEN: ${WHATSAPP_TOKEN:-}
       WHATSAPP_PHONE_ID: ${WHATSAPP_PHONE_ID:-}
+      WHATSAPP_VERIFY_TOKEN: ${WHATSAPP_VERIFY_TOKEN:?WHATSAPP_VERIFY_TOKEN must be set}
+      WHATSAPP_APP_SECRET: ${WHATSAPP_APP_SECRET:-}
       DEFAULT_CURRENCY: SAR
       DEFAULT_TIMEZONE: Asia/Riyadh
       BACKUP_DIR: /app/backups
@@ -121,6 +165,8 @@ services:
     depends_on:
       migrate:
         condition: service_completed_successfully
+      opencode_runner:
+        condition: service_healthy
     volumes:
       - uploaded_files:/app/uploads
       - ./scripts:/app/scripts:ro
@@ -134,12 +180,10 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers ${API_WORKERS:-2}
     networks:
       - nazmos
+      - opencode_net
 
   celery_worker:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-      target: production
+    image: ${API_IMAGE:?API_IMAGE must be set}
     restart: unless-stopped
     environment:
       ENVIRONMENT: production
@@ -163,6 +207,7 @@ services:
       WHATSAPP_ENABLED: ${WHATSAPP_ENABLED:-mock}
       WHATSAPP_TOKEN: ${WHATSAPP_TOKEN:-}
       WHATSAPP_PHONE_ID: ${WHATSAPP_PHONE_ID:-}
+      WHATSAPP_VERIFY_TOKEN: ${WHATSAPP_VERIFY_TOKEN:?WHATSAPP_VERIFY_TOKEN must be set}
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -175,10 +220,7 @@ services:
       - nazmos
 
   celery_beat:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-      target: production
+    image: ${API_IMAGE:?API_IMAGE must be set}
     restart: unless-stopped
     environment:
       ENVIRONMENT: production
@@ -190,6 +232,15 @@ services:
       CREDENTIAL_MASTER_KEY: ${CREDENTIAL_MASTER_KEY:?CREDENTIAL_MASTER_KEY must be set}
       USE_CELERY: ${USE_CELERY:-true}
       USE_REDIS: ${USE_REDIS:-true}
+      USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
+      GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY:-}
+      GOOGLE_AI_MODEL: ${GOOGLE_AI_MODEL:-gemini-2.5-flash-lite}
+      LLM_PROVIDER_ORDER: ${LLM_PROVIDER_ORDER:-groq,google,mock}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.2}
+      LLM_MAX_TOKENS: ${LLM_MAX_TOKENS:-1000}
+      WHATSAPP_VERIFY_TOKEN: ${WHATSAPP_VERIFY_TOKEN:?WHATSAPP_VERIFY_TOKEN must be set}
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -199,17 +250,86 @@ services:
     networks:
       - nazmos
 
+  # NazmOS execution worker: hosts every workflow + activity against the real
+  # Temporal server. The ONLY orchestrator for business execution paths; it
+  # must be running or executions fail loudly (no local degradation).
+  nazmos-worker:
+    image: ${API_IMAGE:?API_IMAGE must be set}
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: production
+      DATABASE_URL: postgresql+asyncpg://nazmos:${DB_PASSWORD}@postgres:5432/nazmos
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
+      CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS must be set}
+      SENTRY_DSN: ${SENTRY_DSN:?SENTRY_DSN must be set}
+      DATABASE_APP_ROLE: ${DATABASE_APP_ROLE:?DATABASE_APP_ROLE must be set}
+      CREDENTIAL_MASTER_KEY: ${CREDENTIAL_MASTER_KEY:?CREDENTIAL_MASTER_KEY must be set}
+      UPLOAD_DIR: /app/uploads
+      USE_CELERY: ${USE_CELERY:-true}
+      USE_REDIS: ${USE_REDIS:-true}
+      USE_TEMPORAL: "true"
+      TEMPORAL_ADDRESS: temporal:7233
+      TEMPORAL_NAMESPACE: default
+      TEMPORAL_TASK_QUEUE: nazm-execution
+      USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
+      GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY:-}
+      GOOGLE_AI_MODEL: ${GOOGLE_AI_MODEL:-gemini-2.5-flash-lite}
+      LLM_PROVIDER_ORDER: ${LLM_PROVIDER_ORDER:-groq,google,mock}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.2}
+      LLM_MAX_TOKENS: ${LLM_MAX_TOKENS:-1000}
+      WHATSAPP_VERIFY_TOKEN: ${WHATSAPP_VERIFY_TOKEN:?WHATSAPP_VERIFY_TOKEN must be set}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    volumes:
+      - uploaded_files:/app/uploads
+    command: ["python", "-m", "app.orchestration.temporal.worker"]
+    networks:
+      - nazmos
+
+  # Phase A isolation core: dedicated OpenCode runner container.
+  # - internal network only (opencode_net): cannot reach postgres/redis/temporal
+  #   or the nazmos production network; no published host ports.
+  # - read-only rootfs, ALL caps dropped, no-new-privileges, resource limits.
+  # - never mounted merchant data; its only job is the OpenCode CLI.
+  opencode_runner:
+    image: ${OPENCODE_RUNNER_IMAGE:?OPENCODE_RUNNER_IMAGE must be set (docker push result)}
+    restart: unless-stopped
+    environment:
+      PORT: "8010"
+      ENVIRONMENT: production
+      NAZMOS_OPENCODE_MODEL: ${NAZMOS_OPENCODE_MODEL:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+    networks:
+      - opencode_net
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /run
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 64
+    mem_limit: 512m
+    cpus: 1.0
+    stop_grace_period: 2s
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8010/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.prod
-      args:
-        NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:?PUBLIC_API_URL must be set}
-        API_URL: ${API_URL:-http://backend:8000}
-        NEXT_PUBLIC_CHAT_ENABLED: ${NEXT_PUBLIC_CHAT_ENABLED:-true}
-        NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-NazmOS}
-        NEXT_PUBLIC_CURRENCY: SAR
-        NEXT_PUBLIC_LOCALE: ${NEXT_PUBLIC_LOCALE:-en}
+    image: ${FRONTEND_IMAGE:?FRONTEND_IMAGE must be set (docker push result)}
     restart: unless-stopped
     ports:
       - "127.0.0.1:3000:3000"
@@ -235,3 +355,8 @@ volumes:
 networks:
   nazmos:
     name: nazmos_production
+  # Internal-only network for the OpenCode runner: no host ingress, and the
+  # runner cannot reach services on the nazmos production network.
+  opencode_net:
+    name: nazmos_opencode_net
+    internal: true

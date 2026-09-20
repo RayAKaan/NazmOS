@@ -44,12 +44,19 @@ async def send_approval_request(
     approve_title: str = "✅ Approve",
     reject_title: str = "❌ Reject",
     action_prefix: str = "approve",
+    business_id: str | None = None,
 ) -> Dict[str, Any]:
     """
     Send interactive approval message via WhatsApp.
     Mock mode: logs to console + returns fake message_id.
     Live mode: POST to graph.facebook.com/v21.0/{phone_id}/messages, falling
     back to a deep link on any Meta API error.
+
+    ``business_id`` is embedded in both reply-button ids
+    (``{prefix}_{business_id}_{action_id}`` / ``reject_{business_id}_{action_id}``)
+    so the unauthenticated webhook receiver can resolve the tenant without any
+    pre-tenant database read (impossible under Postgres RLS). Omit it only for
+    legacy/mock senders; the webhook will not be able to route those replies.
     """
     if not _is_live():
         # Mock – $0 – perfect for pilot clients
@@ -77,8 +84,8 @@ async def send_approval_request(
                         "body": {"text": f"{title}\n\n{summary}"},
                         "action": {
                             "buttons": [
-                                {"type": "reply", "reply": {"id": f"{action_prefix}_{action_id}", "title": approve_title}},
-                                {"type": "reply", "reply": {"id": f"reject_{action_id}", "title": reject_title}},
+                                {"type": "reply", "reply": {"id": f"{action_prefix}_{business_id}_{action_id}" if business_id else f"{action_prefix}_{action_id}", "title": approve_title}},
+                                {"type": "reply", "reply": {"id": f"reject_{business_id}_{action_id}" if business_id else f"reject_{action_id}", "title": reject_title}},
                             ]
                         }
                     }

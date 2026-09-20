@@ -1,9 +1,14 @@
 """Execution runner — single canonical entrypoint for all execution paths.
 
 Dispatches to the appropriate workflow. Under ``USE_TEMPORAL=False``
-(default / CI) runs the workflow in-process via the local deterministic
-runner. Under ``USE_TEMPORAL=True`` (prod) connects to the Temporal
-server via the temporalio SDK.
+(explicitly selected dev / test mode) runs the workflow in-process via the
+local deterministic runner. Under ``USE_TEMPORAL=True`` (the default; the only
+production-legal mode) connects to the Temporal server via the temporalio SDK.
+
+There is NO silent fallback: if ``USE_TEMPORAL`` is true and the Temporal
+substrate is unreachable or fails, ``TemporalExecutionError`` is raised and the
+caller surfaces it as an explicit operational failure. Nothing is executed
+locally behind the caller's back.
 
 Routers MUST call ``run_manual_action``, ``run_agent_approval``, or
 ``run_simulated`` — never instantiate legacy executors directly.
@@ -19,6 +24,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.orchestration.keys import derive_execution_key
 
 logger = structlog.get_logger(__name__)
+
+
+class TemporalExecutionError(RuntimeError):
+    """Raised when Temporal execution is selected but cannot be performed.
+
+    This is the explicit failure surface for an unavailable or failing Temporal
+    substrate — it deliberately replaces any local-fallback behavior.
+    """
 
 
 # ── Facade functions (routers call these) ─────────────────────────────
@@ -162,14 +175,20 @@ async def run_simulated(
 
 
 async def _dispatch(workflow_fn: Any, db: AsyncSession, req: Any) -> Any:
-    """Route to the correct runner based on USE_TEMPORAL setting."""
+    """Route to the correct runner based on USE_TEMPORAL setting.
+
+    Strict dispatch: Temporal is the canonical substrate and there is NO
+    fallback to the local runner when Temporal is unavailable. If
+    ``USE_TEMPORAL`` is set the request MUST complete through Temporal or raise
+    ``TemporalExecutionError``. The local runner is used ONLY when
+    ``USE_TEMPORAL`` is explicitly disabled (development/test selection).
+    """
     from app.config import get_settings
     settings = get_settings()
 
     if settings.USE_TEMPORAL:
         return await _temporal_run(workflow_fn, db, req)
-    else:
-        return await _local_run(workflow_fn, db, req)
+    return await _local_run(workflow_fn, db, req)
 
 
 async def get_execution_job(
@@ -194,55 +213,127 @@ async def get_execution_job(
 async def _local_run(workflow_fn: Any, db: AsyncSession, req: Any) -> Any:
     """Execute the workflow in-process — deterministic, no Temporal server.
 
-    This is the same code path that Temporal would replay. CI runs with
-    this runner; determinism is testable by calling the workflow function
-    twice with identical inputs and asserting the same result.
+    This runner is selected ONLY when ``USE_TEMPORAL`` is explicitly disabled
+    (development / test mode). It executes the same deterministic composition
+    the Temporal worker executes, so composition-level invariants are testable
+    here; production execution always flows through the Temporal substrate.
     """
     return await workflow_fn(db, req)
 
 
-# ── Temporal client runner (USE_TEMPORAL=True, prod) ─────────────────
+# ── request payload serialization (Temporal-safe transport) ──────────
+
+
+def _jsonable(value: Any) -> Any:
+    """Coerce an execution request/value into a Temporal-payload-safe tree.
+
+    UUIDs become strings; datetimes become ISO strings; everything else either
+    stays a JSON primitive or is stringified. Activity/workflow code that needs
+    a UUID re-parses it (the definitions in app.orchestration.temporal do).
+    """
+    if isinstance(value, UUID):
+        return str(value)
+    if isinstance(value, dict):
+        return {k: _jsonable(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_jsonable(v) for v in value]
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    return str(value)
+
+
+# ── Temporal client runner (USE_TEMPORAL=True, the canonical substrate) ─
 
 
 async def _temporal_run(workflow_fn: Any, db: AsyncSession, req: Any) -> Any:
     """Execute the workflow via the Temporal server.
 
-    Requires the temporalio SDK and a running Temporal server (see
-    docker-compose for the Temporal service definition).
+    Requires the temporalio SDK and a running Temporal server (see the
+    ``temporal`` and ``nazmos-worker`` services in docker-compose.yml, and the
+    ``temporal-backend`` job in CI). The workflow type is the canonical name
+    registered by the NazmOS Temporal worker (app.orchestration.temporal).
 
-    The workflow function is registered with the Temporal worker;
-    here we start it as a client and await the result.
+    This function NEVER downgrades to the local runner. Any connection or
+    execution failure is raised as ``TemporalExecutionError`` so the caller can
+    surface an explicit operational failure.
     """
-    try:
-        from temporalio.client import Client
-    except ImportError:
-        raise RuntimeError(
-            "temporalio is not installed. Install it with: pip install temporalio"
-        )
+    import asyncio
+    import dataclasses
+    import uuid as _uuid
+
+    from temporalio.client import Client
 
     from app.config import get_settings
+    from app.orchestration.workflows import WORKFLOW_TYPE_BY_FN_NAME
+
     settings = get_settings()
+    workflow_type = WORKFLOW_TYPE_BY_FN_NAME.get(workflow_fn.__name__, workflow_fn.__name__)
+    payload = _jsonable(dataclasses.asdict(req))
+    workflow_id = _workflow_id(req)
 
-    temporal_endpoint = getattr(settings, "TEMPORAL_ENDPOINT", "localhost:7233")
-    task_queue = "nazm-execution"
-
-    client = await Client.connect(temporal_endpoint)
-
-    # The workflow function name must match what's registered with the worker.
-    # For now, fall back to local execution if Temporal connection fails.
     try:
+        client = await asyncio.wait_for(
+            Client.connect(
+                settings.TEMPORAL_ADDRESS,
+                namespace=settings.TEMPORAL_NAMESPACE,
+            ),
+            timeout=settings.TEMPORAL_CONNECT_TIMEOUT_SECONDS,
+        )
         result = await client.execute_workflow(
-            workflow_fn.__name__,
-            req,
-            id=f"exec-{req.execution_key}" if req.execution_key else f"exec-{req.entity_id}",
-            task_queue=task_queue,
+            workflow_type,
+            payload,
+            id=workflow_id,
+            task_queue=settings.TEMPORAL_TASK_QUEUE,
         )
-        return result
-    except Exception as exc:
-        logger.warning(
-            "temporal_workflow_fallback_to_local",
-            error=str(exc),
-            workflow=workflow_fn.__name__,
+    except TemporalExecutionError:
+        raise
+    except Exception as exc:  # noqa: BLE001 - every failure is an explicit error
+        raise TemporalExecutionError(
+            f"Temporal execution failed (workflow={workflow_type}, "
+            f"workflow_id={workflow_id}, "
+            f"address={settings.TEMPORAL_ADDRESS}, "
+            f"task_queue={settings.TEMPORAL_TASK_QUEUE}): {exc}"
+        ) from exc
+
+    return _adapt_result(workflow_type, result)
+
+
+def _workflow_id(req: Any) -> str:
+    """Deterministic workflow id (idempotent starts) with a random fallback."""
+    action_id = getattr(req, "action_id", None)
+    if action_id is not None:
+        return f"agent-{action_id}"
+    execution_key = getattr(req, "execution_key", "") or ""
+    if execution_key:
+        return f"exec-{execution_key}"
+    entity_id = getattr(req, "entity_id", None)
+    if entity_id is not None:
+        return f"exec-{entity_id}-{getattr(req, 'action_type', '')}"
+    return f"exec-{_uuid.uuid4()}"
+
+
+def _adapt_result(workflow_type: str, result: Any) -> Any:
+    """Map the Temporal workflow result back to the same shape local workflows return."""
+    from app.orchestration.contracts import ActionResult
+
+    if workflow_type == "manual_action":
+        if result.get("blocked"):
+            return ActionResult(
+                success=False,
+                action_id=None,
+                message=result.get("reason") or "Blocked",
+                error=result.get("reason_code") or result.get("reason"),
+            )
+        if result.get("replayed"):
+            return ActionResult(
+                success=True,
+                action_id=None,
+                message=result.get("reason") or "Action already executed (replayed)",
+            )
+        return ActionResult(
+            success=bool(result.get("success")),
+            action_id=result.get("action_id"),
+            message=result.get("message") or "",
+            error=result.get("error"),
         )
-        # Fallback: run locally if Temporal server is unavailable
-        return await _local_run(workflow_fn, db, req)
+    return result

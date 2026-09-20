@@ -1,5 +1,5 @@
 # Production Dockerfile for NazmOS backend.
-FROM python:3.12-slim
+FROM python:3.12-slim AS base
 
 WORKDIR /app
 
@@ -20,3 +20,9 @@ EXPOSE 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 RUN chmod +x /app/scripts/runtime_worker_health.py /app/scripts/runtime_beat_health.py
+
+# `production` is the stage target referenced by docker-compose.prod.yml and
+# the deploy pipeline (`--target production`). It inherits the base runtime;
+# the stage exists so the production image is an explicit, peer-reviewed target
+# rather than an implicitly-selected default.
+FROM base AS production

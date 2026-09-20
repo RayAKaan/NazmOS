@@ -56,6 +56,7 @@ def _settings(environment: str):
         GOOGLE_AI_API_KEY="",
         CORS_ORIGINS="https://app.example.com" if environment == "production" else "",
         CREDENTIAL_MASTER_KEY=("m" * 48) if environment == "production" else "",
+        USE_TEMPORAL=environment == "production",
     )
 
 

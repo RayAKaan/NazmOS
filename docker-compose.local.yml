@@ -22,6 +22,12 @@ services:
       interval: 3s
       timeout: 3s
       retries: 30
+  # Real Temporal dev server (docker-compose variant of the CLI dev-server used
+  # by the local test suite). Self-contained file persistence; no extra DB.
+  temporal:
+    image: temporalio/temporal:latest
+    command: ["server", "start-dev", "--ip", "0.0.0.0", "--headless"]
+    ports: ["7233:7233"]
   migrate:
     build: {context: ./backend, dockerfile: Dockerfile}
     environment: &runtime_env
@@ -30,6 +36,12 @@ services:
       REDIS_URL: redis://redis:6379/0
       USE_CELERY: "true"
       USE_REDIS: "true"
+      # Durable execution substrate: every execution route is real Temporal.
+      # No silent local fallback — Temporal unavailability is an operational error.
+      USE_TEMPORAL: "true"
+      TEMPORAL_ADDRESS: temporal:7233
+      TEMPORAL_NAMESPACE: default
+      TEMPORAL_TASK_QUEUE: nazm-execution
       SECRET_KEY: ${SECRET_KEY:-nazmos-v5-runtime-secret-change-before-production-32chars}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
       SENTRY_DSN: ${SENTRY_DSN:-}
@@ -61,6 +73,7 @@ services:
     environment: *runtime_env
     depends_on:
       migrate: {condition: service_completed_successfully}
+      temporal: {condition: service_started}
       opencode_runner: {condition: service_healthy}
     networks:
       - default
@@ -90,6 +103,17 @@ services:
       migrate: {condition: service_completed_successfully}
       redis: {condition: service_healthy}
     command: ["celery", "-A", "app.celery_app", "beat", "--loglevel=info"]
+  # NazmOS execution worker: hosts every workflow + activity against the real
+  # Temporal server. The ONLY orchestrator for business execution paths; it
+  # must be running or executions fail loudly (no local downgrade).
+  nazmos-worker:
+    build: {context: ./backend, dockerfile: Dockerfile}
+    environment: *runtime_env
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      temporal: {condition: service_started}
+    restart: unless-stopped
+    command: ["python", "-m", "app.orchestration.temporal.worker"]
   # Phase A isolation core: dedicated OpenCode runner.
   # - internal network only (opencode_net): cannot reach postgres/redis or the
   #   default-network services; no published host ports.

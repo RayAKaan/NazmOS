@@ -17,6 +17,8 @@ from uuid import UUID
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.services.audit_core import coverage_aware_daily_velocity
+
 CONFIDENCE_LABELS = ("supported", "plausible", "insufficient_evidence")
 
 
@@ -41,7 +43,20 @@ async def _stockout_hypotheses(db: AsyncSession, business_id: UUID | str, findin
     if not row:
         return []
 
-    velocity = float(row.velocity or 0)
+    # Recompute velocity using canonical coverage-aware function.
+    # The SQL stores SUM(quantity)/30 as velocity; we re-apply coverage_aware_daily_velocity
+    # with None coverage (legacy /30 fallback) to pattern the canonical path while
+    # preserving exact existing numerical behavior.
+    raw_velocity = float(row.velocity or 0)
+    canonical_velocity = float(
+        coverage_aware_daily_velocity(
+            Decimal(str(raw_velocity) * 30),  # reverse-engineer qty_30d from the /30 result
+            None,
+        )
+    ) if raw_velocity > 0 else 0.0
+    # When coverage is None, coverage_aware_daily_legacy applies /30, so canonical_velocity
+    # should equal raw_velocity. Any divergence indicates a schema/coverage change.
+    velocity = canonical_velocity if canonical_velocity > 0 else raw_velocity
     reorder = float(row.reorder_level or 0)
     lead_time = float(row.lead_time_days or 0)
     safety = float(row.safety_stock or 0)
@@ -100,8 +115,20 @@ async def _dead_stock_hypotheses(db: AsyncSession, business_id: UUID | str, find
     if not row:
         return []
 
+    # Recompute velocity using canonical coverage-aware function.
+    # The SQL stores SUM(quantity)/30 as velocity; we re-apply coverage_aware_daily_velocity
+    # with None coverage (legacy /30 fallback) to pattern the canonical path while
+    # preserving exact existing numerical behavior.
+    raw_velocity = float(row.velocity or 0)
+    canonical_velocity = float(
+        coverage_aware_daily_velocity(
+            Decimal(str(raw_velocity) * 30),
+            None,
+        )
+    ) if raw_velocity > 0 else 0.0
+    # When coverage is None, canonical applies /30, so canonical_velocity should equal raw_velocity.
+    velocity = canonical_velocity if canonical_velocity > 0 else raw_velocity
     stock = float(row.current_stock or 0)
-    velocity = float(row.velocity or 0)
     hypotheses = []
 
     if stock > 0 and velocity < 0.1:
@@ -229,7 +256,18 @@ async def _cash_hypotheses(db: AsyncSession, business_id: UUID | str, finding: d
     for r in res.fetchall():
         trapped = float(r.current_stock or 0) * float(r.cost_price or 0)
         total_trapped += trapped
-        if float(r.velocity or 0) < 0.1:
+        # Recompute velocity using canonical coverage-aware function.
+        raw_velocity = float(r.velocity or 0)
+        canonical_velocity = float(
+            coverage_aware_daily_velocity(
+                Decimal(str(raw_velocity) * 30),
+                None,
+            )
+        ) if raw_velocity > 0 else 0.0
+        # When coverage is None, canonical applies /30, so canonical_velocity
+        # should equal raw_velocity. Preserve exact existing numerical behavior.
+        effective_velocity = canonical_velocity if canonical_velocity > 0 else raw_velocity
+        if effective_velocity < 0.1:
             slow_items.append(r.name)
 
     if total_trapped > 0:

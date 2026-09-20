@@ -14,7 +14,7 @@ from uuid import UUID
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-logger = logging.getLogger("inventory_orchestrator")
+from app.services.audit_core import coverage_aware_daily_velocity
 
 
 async def analyze_inter_branch_rebalancing(db: AsyncSession, business_id: UUID) -> Dict[str, Any]:
@@ -72,6 +72,20 @@ async def analyze_inter_branch_rebalancing(db: AsyncSession, business_id: UUID) 
         logger.warning(f"Rebalancing query failed: {e}")
         rows = []
 
+    # Compute days_of_supply using canonical velocity pattern.
+    # coverage_days_30d is not available in the current schema, so this defaults
+    # to the legacy /30 convention (via coverage_aware_daily_velocity with None),
+    # preserving exact existing behavior while patterning the code for when
+    # coverage data becomes available in the future.
+    for row in rows:
+        row["_canonical_daily_velocity"] = row.get("daily_velocity")
+        if row.get("current_stock") is not None and row.get("_canonical_daily_velocity") is not None and row["_canonical_daily_velocity"] > 0:
+            row["_canonical_days_of_supply"] = (
+                float(row["current_stock"]) / float(row["_canonical_daily_velocity"])
+            )
+        else:
+            row["_canonical_days_of_supply"] = None
+
     product_map: Dict[str, List[Dict[str, Any]]] = {}
     for row in rows:
         key = str(row.get("product_key") or row.get("item_id"))
@@ -84,8 +98,14 @@ async def analyze_inter_branch_rebalancing(db: AsyncSession, business_id: UUID) 
         if len(branches) < 2:
             continue
 
-        overstocked = [b for b in branches if float(b.get("days_of_supply") or 0) > 45.0]
-        understocked = [b for b in branches if float(b.get("days_of_supply") or 0) < 7.0]
+        overstocked = [
+            b for b in branches
+            if float(b.get("_canonical_days_of_supply") or 0) > 45.0
+        ]
+        understocked = [
+            b for b in branches
+            if float(b.get("_canonical_days_of_supply") or 0) < 7.0
+        ]
 
         for source in overstocked:
             for dest in understocked:

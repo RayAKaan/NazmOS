@@ -21,6 +21,7 @@ from typing import Any
 
 from app.database.models import MemoryType
 from app.intelligence.agents.base import BaseAgent
+from app.services.audit_core import coverage_aware_daily_velocity
 
 
 class InventoryAgent(BaseAgent):
@@ -103,7 +104,6 @@ class InventoryAgent(BaseAgent):
 
     async def _scan_live_inventory(self) -> list[dict[str, Any]]:
         from datetime import datetime, timedelta, timezone
-        from sqlalchemy import text
 
         cutoff = utcnow() - timedelta(days=30)
         proposals: list[dict[str, Any]] = []
@@ -114,28 +114,46 @@ class InventoryAgent(BaseAgent):
                 FROM transactions WHERE business_id = :b AND transaction_at >= :cutoff
                 GROUP BY item_id
             )
-            SELECT i.id AS item_id, i.name, inv.current_stock,
-                   GREATEST(COALESCE(s.qty_30d,0)/30.0, 0.01) AS velocity,
-                   inv.current_stock / NULLIF(GREATEST(COALESCE(s.qty_30d,0)/30.0, 0.01),0) AS days_of_supply
+            SELECT i.id AS item_id, i.name, inv.current_stock, s.qty_30d
             FROM items i
             JOIN inventory inv ON inv.item_id = i.id AND inv.business_id = :b
             LEFT JOIN sales_30d s ON s.item_id = i.id
             WHERE i.business_id = :b AND i.is_active = true AND inv.current_stock > 0
-              AND inv.current_stock / NULLIF(GREATEST(COALESCE(s.qty_30d,0)/30.0, 0.01),0) < 7
-            ORDER BY days_of_supply ASC LIMIT 10
         """), {"b": str(self.business_id), "cutoff": cutoff})
-        for r in stockout.fetchall():
-            days = float(r.days_of_supply or 0)
+        rows = stockout.fetchall()
+
+        for r in rows:
+            qty_30d = r.qty_30d
+            daily_velocity = max(
+                coverage_aware_daily_velocity(qty_30d, None),
+                Decimal("0.01"),
+            )
+            days_of_supply = (
+                float(r.current_stock) / float(daily_velocity) if daily_velocity > 0 else None
+            )
+            if days_of_supply is None or days_of_supply >= 7:
+                continue
+            days = float(days_of_supply)
             proposals.append({
                 "action_type": "restock",
                 "title": f"Stockout risk: {r.name}",
                 "reason": f"{r.name} has ~{days:.1f} days of supply left at current velocity.",
                 "item_id": str(r.item_id),
                 "current_stock": float(r.current_stock or 0),
-                "recommended_qty": max(20, int((7 - days) * float(r.velocity))),
+                "qty_30d": qty_30d,  # for sorting / velocity computation
+                "recommended_qty": max(20, int((7 - days) * float(daily_velocity))),
                 "confidence": 0.85,
                 "urgency": 0.9 if days < 3 else 0.6,
             })
+
+        # Order by days_of_supply ascending (most stockout risk first) and limit to 10
+        proposals.sort(key=lambda p: float(p.get("current_stock", 0))
+                       / max(float(coverage_aware_daily_velocity(
+                           Decimal(str(p.get("qty_30d", 0))), None),
+                           Decimal("0.01")),
+                       1),
+                      reverse=False)
+        proposals = proposals[:10]
 
         # Overlay canonical forecast demand on candidate items: when the
         # forecasting pipeline has a cached prediction, use it as the demand

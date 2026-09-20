@@ -7,13 +7,14 @@ from __future__ import annotations
 
 import math
 from datetime import date, datetime, timedelta, timezone
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from typing import Any
 from uuid import UUID
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.services.audit_core import coverage_aware_daily_velocity
 from app.utils.money import sar, decimal_value
 
 EXCLUDED_CATEGORY_KEYWORDS = [
@@ -128,25 +129,31 @@ async def generate_preview(db: AsyncSession, business_id: UUID | str) -> list[di
             GROUP BY item_id
         )
         SELECT i.id AS item_id, i.name AS item_name, i.sku, i.barcode, i.brand, i.pack_size, i.storage_type,
-               c.name AS category_name, inv.current_stock, i.cost_price,
-               GREATEST(COALESCE(s.qty_30d, 0) / 30.0, 0.01) AS daily_velocity,
-               inv.current_stock / NULLIF(GREATEST(COALESCE(s.qty_30d, 0) / 30.0, 0.01), 0) AS days_of_supply
+               c.name AS category_name, inv.current_stock, i.cost_price, s.qty_30d
         FROM inventory inv
         JOIN items i ON i.id = inv.item_id
         LEFT JOIN categories c ON c.id = i.category_id
         LEFT JOIN sales_30d s ON s.item_id = i.id
         WHERE inv.business_id = :business_id AND i.business_id = :business_id AND inv.current_stock > 0
-        ORDER BY days_of_supply DESC
+        ORDER BY inv.current_stock DESC
         LIMIT 25
     """), {"business_id": str(business_id)})
     opportunities = []
     for row in res.fetchall():
-        days = float(row.days_of_supply or 0)
+        qty_30d = row.qty_30d
+        daily_velocity = max(
+            coverage_aware_daily_velocity(qty_30d, None),
+            Decimal("0.01"),
+        )
+        days_of_supply = (
+            float(row.current_stock) / float(daily_velocity) if daily_velocity > 0 else None
+        )
+        days = float(days_of_supply or 0)
         if days < 30:
             continue
         if not _is_category_allowed(row.category_name, row.item_name, row.storage_type):
             continue
-        surplus_qty = max(0, float(row.current_stock or 0) - (float(row.daily_velocity or 0.01) * 14))
+        surplus_qty = max(0, float(row.current_stock or 0) - (float(daily_velocity) * 14))
         if surplus_qty <= 0:
             continue
         cost = float(row.cost_price or 0)
@@ -261,9 +268,7 @@ async def suggest_matches_for_listing(db: AsyncSession, listing_id: UUID | str, 
             GROUP BY business_id, item_id
         )
         SELECT b.id AS buyer_business_id, b.name AS buyer_name, b.city, b.latitude, b.longitude,
-               i.id AS buyer_item_id, inv.current_stock,
-               GREATEST(COALESCE(s.qty_30d, 0) / 30.0, 0.01) AS daily_velocity,
-               inv.current_stock / NULLIF(GREATEST(COALESCE(s.qty_30d, 0) / 30.0, 0.01), 0) AS days_left
+               i.id AS buyer_item_id, inv.current_stock, s.qty_30d
         FROM businesses b
         JOIN recovery_match_settings rms ON rms.business_id = b.id AND rms.is_enabled = true
         JOIN items i ON i.business_id = b.id
@@ -287,7 +292,12 @@ async def suggest_matches_for_listing(db: AsyncSession, listing_id: UUID | str, 
 
     created = []
     for c in candidates.fetchall():
-        days_left = float(c.days_left or 999)
+        qty_30d = c.qty_30d
+        daily_velocity = max(
+            coverage_aware_daily_velocity(qty_30d, None),
+            Decimal("0.01"),
+        )
+        days_left = float(c.current_stock) / float(daily_velocity) if daily_velocity > 0 else 999
         if days_left > 7:
             continue
         distance = _distance_km(listing.seller_lat, listing.seller_lon, c.latitude, c.longitude)
@@ -296,7 +306,7 @@ async def suggest_matches_for_listing(db: AsyncSession, listing_id: UUID | str, 
         score = _compute_match_score(listing.barcode, listing.sku, days_left, distance)
         if score < 75:
             continue
-        buyer_need = max(1, (float(c.daily_velocity or 0.01) * 14) - float(c.current_stock or 0))
+        buyer_need = max(1, (float(daily_velocity) * 14) - float(c.current_stock or 0))
         res = await db.execute(text("""
             INSERT INTO stock_recovery_matches
                 (id, listing_id, buyer_business_id, buyer_branch_id, buyer_item_id,

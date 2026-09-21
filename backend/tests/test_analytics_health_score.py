@@ -57,42 +57,42 @@ async def _seed(db: AsyncSession) -> uuid.UUID:
     await db.flush()
 
     # Seed using canonical coverage_aware_daily_velocity pattern.
-# coverage_days_30d = 1 means all sales observed on a single day;
-# the canonical velocity is qty / 1 = qty (not qty / 30).
-# The test manual calculation below (line 142-146) assumes this behavior.
-# qty_30d values already represent the 30-day total; with coverage=1,
-# daily_velocity = qty_30d / 1 = qty_30d.
-daily_qty = {  # all sales land on ONE observed day -> coverage = 1 day
-        "A": 0.0,     # dead
-        "B": 60.0,    # qty_30d=60   -> vel=60   -> 100/60 = 1.67 days -> critical
-        "C": 200.0,   # qty_30d=200  -> vel=200  -> ~0.5 days -> critical
-        "D": 900.0,   # qty_30d=900  -> vel=900  -> 0.11 days -> critical
-        "E": 1000.0,  # qty_30d=1000 -> vel=1000 -> 0.10 days -> critical
-    }
-now = datetime.now(timezone.utc)
-by_name = {i.name: i for i in items}
-tx_rows = []
-for name, qty in daily_qty.items():
-    item = by_name[name]
-    if qty == 0:
-        continue
-    # Use canonical velocity: with coverage=1, daily_velocity = qty (not qty/30).
-    # The transaction quantity stored is the per-day quantity (qty/30 would be wrong
-    # under canonical coverage-aware semantics where all sales are on one day).
-    tx_qty = qty  # one day's worth at full rate (canonical: coverage=1 → vel=qty)
-    tx_rows.append(Transaction(
-        id=uuid.uuid4(),
-        business_id=business.id,
-        item_id=item.id,
-        quantity=tx_qty,
-        unit_price=item.sell_price,
-        cost_price=item.cost_price,
-        total_amount=tx_qty * item.sell_price,
-        profit=tx_qty * (item.sell_price - item.cost_price),
-        transaction_at=now - timedelta(hours=1),
-    ))
-    db.add_all(tx_rows)
-    await db.flush()
+    # coverage_days_30d = 1 means all sales observed on a single day;
+    # the canonical velocity is qty / 1 = qty (not qty / 30).
+    # The test manual calculation below (line 142-146) assumes this behavior.
+    # qty_30d values already represent the 30-day total; with coverage=1,
+    # daily_velocity = qty_30d / 1 = qty_30d.
+    daily_qty = {  # all sales land on ONE observed day -> coverage = 1 day
+            "A": 0.0,     # dead
+            "B": 60.0,    # qty_30d=60   -> vel=60   -> 100/60 = 1.67 days -> critical
+            "C": 150.0,   # qty_30d=150  -> vel=150  -> 100/150 = 0.67 days -> critical
+            "D": 15.0,    # qty_30d=15   -> vel=15   -> 100/15 = 6.67 days -> healthy
+            "E": 10.0,    # qty_30d=10   -> vel=10   -> 100/10 = 10 days  -> healthy
+        }
+    now = datetime.now(timezone.utc)
+    by_name = {i.name: i for i in items}
+    tx_rows = []
+    for name, qty in daily_qty.items():
+        item = by_name[name]
+        if qty == 0:
+            continue
+        # Use canonical velocity: with coverage=1, daily_velocity = qty (not qty/30).
+        # The transaction quantity stored is the per-day quantity (qty/30 would be wrong
+        # under canonical coverage-aware semantics where all sales are on one day).
+        tx_qty = qty  # one day's worth at full rate (canonical: coverage=1 → vel=qty)
+        tx_rows.append(Transaction(
+            id=uuid.uuid4(),
+            business_id=business.id,
+            item_id=item.id,
+            quantity=tx_qty,
+            unit_price=item.sell_price,
+            cost_price=item.cost_price,
+            total_amount=tx_qty * item.sell_price,
+            profit=tx_qty * (item.sell_price - item.cost_price),
+            transaction_at=now - timedelta(hours=1),
+        ))
+        db.add_all(tx_rows)
+        await db.flush()
 
     for item in items:
         db.add(Inventory(

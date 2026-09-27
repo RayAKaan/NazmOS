@@ -118,21 +118,22 @@ jobs:
               sys.exit(1)
           print('No high/critical CVEs detected.')
           PY
-      - name: Backend tests with PostgreSQL
+- name: Backend tests with PostgreSQL
+        timeout-minutes: 30
         working-directory: backend
         env:
           PYTHONPATH: .
           DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos_test
           REDIS_URL: redis://localhost:6379/0
           ENVIRONMENT: test
-          # The temporal suite (tests/temporal) runs in its own job against a
-          # real Temporal server; here execution stays on the local runner.
           USE_TEMPORAL: "false"
         run: |
           python -m alembic upgrade head
-          pytest -q --ignore=tests/temporal
+          python -m pip install pytest-timeout --quiet
+          pytest -q --ignore=tests/temporal --timeout=120
 
       - name: Backend runtime E2E smoke tests
+        timeout-minutes: 10
         working-directory: backend
         env:
           PYTHONPATH: .

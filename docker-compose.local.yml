@@ -34,7 +34,6 @@ services:
       ENVIRONMENT: runtime_test
       DATABASE_URL: postgresql+asyncpg://nazmos:${DB_PASSWORD:-nazmos_v5_dev}@postgres:5432/nazmos
       REDIS_URL: redis://redis:6379/0
-      USE_CELERY: "true"
       USE_REDIS: "true"
       # Durable execution substrate: every execution route is real Temporal.
       # No silent local fallback — Temporal unavailability is an operational error.
@@ -88,21 +87,6 @@ services:
       timeout: 30s
       retries: 30
       start_period: 30s
-  celery_worker:
-    build: {context: ./backend, dockerfile: Dockerfile}
-    environment: *runtime_env
-    depends_on:
-      migrate: {condition: service_completed_successfully}
-      redis: {condition: service_healthy}
-    volumes: [nazmos_uploads_local:/app/uploads]
-    command: ["celery", "-A", "app.celery_app", "worker", "--loglevel=info", "--concurrency=2", "--queues=celery,ingestion,forecasting,analytics,dead_letter"]
-  celery_beat:
-    build: {context: ./backend, dockerfile: Dockerfile}
-    environment: *runtime_env
-    depends_on:
-      migrate: {condition: service_completed_successfully}
-      redis: {condition: service_healthy}
-    command: ["celery", "-A", "app.celery_app", "beat", "--loglevel=info"]
   # NazmOS execution worker: hosts every workflow + activity against the real
   # Temporal server. The ONLY orchestrator for business execution paths; it
   # must be running or executions fail loudly (no local downgrade).

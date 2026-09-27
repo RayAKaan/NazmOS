@@ -62,4 +62,15 @@ describe("middleware", () => {
     const res = middleware(fakeRequest("/ops", { [SESSION_COOKIE]: "1" }));
     expect(res.status).toBe(200);
   });
+
+  it("allows an authenticated owner through /loop (auth-gated; tenant scoping is server-side)", () => {
+    const res = middleware(fakeRequest("/loop", { [SESSION_COOKIE]: "1" }));
+    expect(res.status).toBe(200);
+  });
+
+  it("redirects unauthenticated visitors away from /loop to /login", () => {
+    const res = middleware(fakeRequest("/loop", {}));
+    expect(res.status).toBe(307);
+    expect(res.headers.get("location")).toBe("/login");
+  });
 });

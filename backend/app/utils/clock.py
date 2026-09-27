@@ -2,7 +2,7 @@
 
 A minimal, non-invasive clock abstraction so synthetic merchant scenarios can simulate
 historical business time (Day 1 → Day 14, 30-day, 90-day histories) instantly — WITHOUT
-`sleep`, Celery Beat, or real calendar waiting.
+`sleep`, schedulers, or real calendar waiting.
 
 Production semantics are unchanged: `utcnow()` returns the real current time unless a test
 explicitly sets a virtual "now" via `set_virtual_now`. The override is a contextvar, so it is

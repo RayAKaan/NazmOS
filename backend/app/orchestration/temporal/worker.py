@@ -43,11 +43,24 @@ def build_worker(
 
 
 async def _main() -> None:
+    # Install PII redaction on every logger path before any worker or activity
+    # logging can fire (AGENTS.md Phase D: call configure_global() first).
+    from app.utils.logger import configure_global
+
+    configure_global()
     settings = get_settings()
     client = await Client.connect(
         settings.TEMPORAL_ADDRESS,
         namespace=settings.TEMPORAL_NAMESPACE,
     )
+
+    # Seed the default schedules (idempotent — existing schedules are left
+    # untouched) so every production worker instance self-heals a missing
+    # schedule after a failed/misconfigured deployment.
+    from app.orchestration.temporal.schedules import ensure_default_schedules
+
+    await ensure_default_schedules(client, settings.TEMPORAL_TASK_QUEUE)
+
     worker = build_worker(client, settings.TEMPORAL_TASK_QUEUE)
     await worker.run()
 

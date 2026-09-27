@@ -1,0 +1,70 @@
+﻿.....................                                                    [100%]
+============================== warnings summary ===============================
+app\config.py:8
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\config.py:8: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class Settings(BaseSettings):
+
+app\schemas\auth.py:22
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\auth.py:22: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class UserResponse(BaseModel):
+
+app\schemas\common.py:11
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\common.py:11: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    timestamp: datetime = datetime.utcnow()
+
+app\schemas\organization.py:20
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:20: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OrganizationResponse(BaseModel):
+
+app\schemas\organization.py:60
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:60: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class BusinessLocationResponse(BaseModel):
+
+app\schemas\organization.py:89
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:89: PydanticDeprecatedSince20: Using extra keyword arguments on `Field` is deprecated and will be removed. Use `json_schema_extra` instead. (Extra keys: 'format'). Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    email: str = Field(..., format="email")
+
+app\schemas\organization.py:97
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:97: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class TeamMemberResponse(BaseModel):
+
+app\schemas\organization.py:112
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:112: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class InvitationResponse(BaseModel):
+
+app\schemas\subscription.py:19
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\subscription.py:19: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class SubscriptionResponse(BaseModel):
+
+app\schemas\subscription.py:51
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\subscription.py:51: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class BillingEventResponse(BaseModel):
+
+app\schemas\adapter.py:83
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\adapter.py:83: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class POSConnectionResponse(BaseModel):
+
+app\schemas\action.py:25
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\action.py:25: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ActionHistoryItem(BaseModel):
+
+app\schemas\action.py:43
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\action.py:43: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ActionDetailResponse(BaseModel):
+
+tests/test_analytics_health_score.py: 4 warnings
+tests/test_analytics_duckdb_boundary.py: 13 warnings
+tests/test_analytics_item_detail.py: 14 warnings
+tests/test_scan_consolidation.py: 71 warnings
+  C:\Users\Rayyan Khan\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:63: DeprecationWarning: The default datetime adapter is deprecated as of Python 3.12; see the sqlite3 documentation for suggested replacement recipes
+    result = function()
+
+tests/test_analytics_item_detail.py::test_item_detail_dead_stock_status
+tests/test_analytics_item_detail.py::test_item_detail_dead_stock_status
+tests/test_analytics_item_detail.py::test_item_detail_dead_stock_status
+tests/test_analytics_item_detail.py::test_item_detail_dead_stock_status
+  C:\Users\Rayyan Khan\AppData\Roaming\Python\Python314\site-packages\aiosqlite\core.py:63: DeprecationWarning: The default date adapter is deprecated as of Python 3.12; see the sqlite3 documentation for suggested replacement recipes
+    result = function()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+21 passed, 119 warnings in 12.86s

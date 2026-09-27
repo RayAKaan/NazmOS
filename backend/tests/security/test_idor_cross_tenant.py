@@ -27,6 +27,17 @@ READ_CASES = [
     ("intelligence_memory", "GET", "/api/v1/intelligence/memory/current_state", "business_id"),
     ("intelligence_context", "GET", "/api/v1/intelligence/context", "business_id"),
     ("forecast_all_path", "GET", "/api/v1/forecast/all/{business_id}", "path"),
+    ("loop_console_policy", "GET", "/api/v1/loop-console/policy", "business_id"),
+    ("loop_console_verified_outcomes", "GET", "/api/v1/loop-console/outcomes/verified", "business_id"),
+    ("loop_console_summary", "GET", "/api/v1/loop-console/summary", "business_id"),
+    ("loop_console_cycles", "GET", "/api/v1/loop-console/cycles", "business_id"),
+    ("chat_sessions", "GET", "/api/v1/chat/sessions", "business_id"),
+    ("chat_suggestions", "GET", "/api/v1/chat/suggestions", "business_id"),
+]
+
+# Case: (name, method, path_template, param_name or None for path segment)
+WRITE_CASES = [
+    ("chat_reason", "POST", "/api/v1/chat/reason", "business_id"),
 ]
 
 # Positive controls: attacker's own business_id must still work (200, not 403).
@@ -35,6 +46,12 @@ POSITIVE_CONTROL_CASES = [
     ("inventory_list", "GET", "/api/v1/inventory", "business_id"),
     ("decisions_recommend", "GET", "/api/v1/decisions/recommend", "business_id"),
     ("events_list", "GET", "/api/v1/events", "business_id"),
+    ("loop_console_policy", "GET", "/api/v1/loop-console/policy", "business_id"),
+    ("loop_console_summary", "GET", "/api/v1/loop-console/summary", "business_id"),
+    ("loop_console_cycles", "GET", "/api/v1/loop-console/cycles", "business_id"),
+    ("chat_sessions", "GET", "/api/v1/chat/sessions", "business_id"),
+    ("chat_suggestions", "GET", "/api/v1/chat/suggestions", "business_id"),
+    ("chat_reason", "POST", "/api/v1/chat/reason", "business_id"),
 ]
 
 
@@ -111,6 +128,32 @@ async def test_attacker_cannot_read_victim_data(
 
 @pytest.mark.parametrize(
     "name,method,path_template,param",
+    WRITE_CASES,
+    ids=[c[0] for c in WRITE_CASES],
+)
+@pytest.mark.asyncio
+async def test_attacker_cannot_write_victim_data(
+    client: AsyncClient,
+    two_tenants: dict,
+    name: str,
+    method: str,
+    path_template: str,
+    param: str,
+):
+    url = _url(path_template, two_tenants["victim_business_id"], param)
+    response = await client.request(
+        method,
+        url,
+        json={"message": "hello", "context": {}},
+        headers=two_tenants["attacker_headers"],
+    )
+    assert (
+        response.status_code in (403, 404)
+    ), f"[{name}] cross-tenant write leaked: {response.status_code} {response.text[:200]}"
+
+
+@pytest.mark.parametrize(
+    "name,method,path_template,param",
     POSITIVE_CONTROL_CASES,
     ids=[c[0] for c in POSITIVE_CONTROL_CASES],
 )
@@ -124,11 +167,15 @@ async def test_owner_can_read_own_business(
     param: str,
 ):
     """Control: the same token against its OWN business must succeed."""
+    kwargs = {}
+    if method == "POST":
+        kwargs["json"] = {"message": "hello", "context": {}}
     url = _url(path_template, two_tenants["attacker_business_id"], param)
     response = await client.request(
         method,
         url,
         headers=two_tenants["attacker_headers"],
+        **kwargs,
     )
     assert response.status_code == 200, (
         f"[{name}] legitimate owner request blocked: {response.status_code} {response.text[:200]}"
@@ -148,6 +195,34 @@ async def test_attacker_cannot_chat_into_victim_tenant(client, two_tenants):
     )
     assert response.status_code in (403, 404), (
         f"cross-tenant chat write leaked: {response.status_code} {response.text[:200]}"
+    )
+
+
+@pytest.mark.asyncio
+async def test_attacker_cannot_read_victim_loop_cycle_detail(client, two_tenants):
+    """The loop-console cycle DETAIL path is a path-segment id — attacker must
+    not reach victim data even with their own guessed cycle_id substituted."""
+    url = (
+        f"/api/v1/loop-console/cycles/cycle-{uuid.uuid4()}"
+        f"?business_id={two_tenants['victim_business_id']}"
+    )
+    response = await client.get(url, headers=two_tenants["attacker_headers"])
+    assert response.status_code in (403, 404), (
+        f"cross-tenant cycle detail leaked: {response.status_code} {response.text[:200]}"
+    )
+
+
+@pytest.mark.asyncio
+async def test_owner_unknown_loop_cycle_id_is_404_not_data(client, two_tenants):
+    """Control: a guessed cycle_id on the OWNER's own business must 404 — it
+    must be indistinguishable from the cross-tenant denial (never 200)."""
+    url = (
+        f"/api/v1/loop-console/cycles/cycle-does-not-exist"
+        f"?business_id={two_tenants['attacker_business_id']}"
+    )
+    response = await client.get(url, headers=two_tenants["attacker_headers"])
+    assert response.status_code == 404, (
+        f"unknown cycle id leaked a response: {response.status_code} {response.text[:200]}"
     )
 
 

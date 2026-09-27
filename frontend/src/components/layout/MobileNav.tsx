@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Activity,
   CalendarClock,
   ClipboardList,
   Inbox,
@@ -46,6 +47,7 @@ export function MobileNav() {
     { href: "/forecast", label: t.sidebar.forecast, icon: TrendingUp },
     { href: "/integrations", label: t.sidebar.integrations, icon: Link2 },
     { href: "/ops", label: "Pilot Ops", icon: ClipboardList },
+    { href: "/loop", label: "Loop Console", icon: Activity },
     ...(PHARMACY_ENABLED
       ? [{ href: "/inventory/expiry", label: t.sidebar.expiry, icon: CalendarClock }]
       : []),

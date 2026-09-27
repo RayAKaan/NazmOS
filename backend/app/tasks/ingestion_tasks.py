@@ -14,10 +14,12 @@ settings = get_settings()
 
 
 def run_process_upload(upload_id: str, business_id: str, column_mapping: dict):
-    """Core ingestion logic — called by both Celery task and BackgroundTasks fallback.
+    """Core ingestion logic — the single canonical body for upload processing.
 
-    Scoped to ``business_id`` so every statement (including the fresh async
-    engine the ETL pipeline opens) runs under that tenant's RLS context.
+    Called by the ``process_upload_ingestion`` Temporal activity (through a
+    worker thread). Scoped to ``business_id`` so every statement (including the
+    fresh async engine the ETL pipeline opens) runs under that tenant's RLS
+    context.
     """
     from app.services.cache_service import CacheService
 
@@ -159,47 +161,48 @@ def run_cleanup_stale_uploads():
         return {"deleted": deleted}
 
 
-if settings.USE_CELERY:
-    from celery import Task
-    from app.celery_app import celery_app
+def run_nightly_recovery_match_scan() -> dict:
+    """Preserved body of the formerly-dormant nightly recovery-match scan.
 
-    @celery_app.task(name="app.tasks.ingestion_tasks.process_upload")
-    def process_upload_task(upload_id: str, business_id: str, column_mapping: dict):
-        return run_process_upload(upload_id, business_id, column_mapping)
+    Kept as a first-class NazmOS function (previously only existed inside a
+    Celery task definition body); not part of any default schedule — callable
+    on demand via the ``nightly_recovery_match_scan`` operation.
+    """
+    import asyncio
+    from contextlib import asynccontextmanager
 
-    @celery_app.task(name="app.tasks.ingestion_tasks.cleanup_stale_uploads")
-    def cleanup_stale_uploads():
-        return run_cleanup_stale_uploads()
+    from sqlalchemy.ext.asyncio import (
+        AsyncSession,
+        async_sessionmaker,
+        create_async_engine,
+    )
 
-    @celery_app.task(name="app.tasks.ingestion_tasks.nightly_recovery_match_scan")
-    def nightly_recovery_match_scan():
-        from app.services.recovery_match_matcher import run_nightly_recovery_match_scan
-        from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-        from contextlib import asynccontextmanager
-        import asyncio
+    from app.services.recovery_match_matcher import run_nightly_recovery_match_scan as _scan
 
-        _engine = create_async_engine(settings.DATABASE_URL, pool_pre_ping=True, pool_size=5)
-        _sf = async_sessionmaker(_engine, class_=AsyncSession, expire_on_commit=False)
+    _engine = create_async_engine(settings.DATABASE_URL, pool_pre_ping=True, pool_size=5)
+    _sf = async_sessionmaker(_engine, class_=AsyncSession, expire_on_commit=False)
 
-        @asynccontextmanager
-        async def _scope():
-            async with _sf() as session:
-                from app.database.connection import _set_rls_context
-                if not settings.DATABASE_URL.startswith("sqlite"):
-                    await _set_rls_context(session)
-                try:
-                    yield session
-                    await session.commit()
-                except Exception:
-                    await session.rollback()
-                    raise
-                finally:
-                    await session.close()
+    @asynccontextmanager
+    async def _scope():
+        async with _sf() as session:
+            from app.database.connection import _set_rls_context
+            if not settings.DATABASE_URL.startswith("sqlite"):
+                await _set_rls_context(session)
+            try:
+                yield session
+                await session.commit()
+            except Exception:
+                await session.rollback()
+                raise
+            finally:
+                await session.close()
 
-        async def _run():
-            async with _scope() as session:
-                return await run_nightly_recovery_match_scan(session)
+    async def _run():
+        async with _scope() as session:
+            return await _scan(session)
 
+    try:
         result = asyncio.run(_run())
+    finally:
         asyncio.run(_engine.dispose())
-        return result
+    return result

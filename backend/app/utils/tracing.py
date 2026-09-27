@@ -1,6 +1,6 @@
 """OpenTelemetry tracing setup for NazmOS.
 
-Instruments FastAPI, SQLAlchemy, and Celery when OTEL_EXPORTER_OTLP_ENDPOINT
+Instruments FastAPI and SQLAlchemy when OTEL_EXPORTER_OTLP_ENDPOINT
 or Sentry performance monitoring is enabled. Trace context is propagated via
 ``traceparent`` and ``X-Request-ID`` headers.
 """

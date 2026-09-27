@@ -54,10 +54,6 @@ dmypy.json
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# Celery
-celerybeat-schedule
-celerybeat.pid
-
 # Alembic
 alembic/versions/*.pyc
 
@@ -284,12 +280,6 @@ metrics/
 *.metrics
 
 # =============================================================================
-# CELERY & BACKGROUND TASKS
-# =============================================================================
-celerybeat-schedule.db
-celerybeat-schedule.bak
-
-# =============================================================================
 # BACKUPS
 # =============================================================================
 *.backup
@@ -352,6 +342,9 @@ stripe.*
 # =============================================================================
 alertmanager.yml.tmp
 prometheus_alerts.yml.tmp
+
+# Scratch / agent temp work
+_opencode_tmp/
 
 # =============================================================================
 # INTERNAL FILES

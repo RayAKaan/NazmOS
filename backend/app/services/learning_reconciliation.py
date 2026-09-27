@@ -100,7 +100,7 @@ async def reconcile_all(
 
 
 async def reconcile_all_businesses(db: AsyncSession, limit_per_business: int = 200) -> dict[str, Any]:
-    """Reconcile across all active businesses (used by the Celery job)."""
+    """Reconcile across all active businesses (used by the Temporal schedule)."""
     res = await db.execute(text("SELECT id FROM businesses WHERE is_active = true ORDER BY created_at"))
     business_ids = [str(r[0]) for r in res.fetchall()]
 

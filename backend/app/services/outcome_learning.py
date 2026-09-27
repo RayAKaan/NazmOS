@@ -261,92 +261,100 @@ async def record_unified_outcome(
             OUTCOME_STATUS_UNKNOWN,
         )
 
-        # Determine outcome status from the learned outcome's execution result.
-        executed = False
-        if row.execution_result and isinstance(row.execution_result, dict):
-            executed = bool(row.execution_result.get("executed"))
-        elif row.execution_result:
-            try:
-                executed = bool(json.loads(row.execution_result).get("executed"))
-            except Exception:
-                pass
+        # Single write path: read back the canonical learned outcome this call just
+        # upserted, so the feedback bridge consumes the same action_performance
+        # fields (execution_result / expected / actual impact) it owns.
+        outcome_row = await db.execute(text("""
+            SELECT action_type, execution_result, expected_impact_sar, actual_impact_sar
+            FROM learned_outcomes WHERE agent_action_id = :aid AND business_id = :b
+        """), {"aid": str(action_id), "b": str(business_id)})
+        row = outcome_row.fetchone()
+        if row is not None:
+            # Determine outcome status from the learned outcome's execution result.
+            executed = False
+            if row.execution_result and isinstance(row.execution_result, dict):
+                executed = bool(row.execution_result.get("executed"))
+            elif row.execution_result:
+                try:
+                    executed = bool(json.loads(row.execution_result).get("executed"))
+                except Exception:
+                    pass
 
-        # Map execution result to canonical outcome status.
-        if executed and row.actual_impact_sar is not None:
-            outcome_status = OUTCOME_STATUS_CONFIRMED
-        elif executed and row.actual_impact_sar is None:
-            # Execution was attempted but no actual impact was recorded — partial.
-            outcome_status = OUTCOME_STATUS_PARTIAL
-        elif not executed:
-            # Execution did not succeed.
-            outcome_status = OUTCOME_STATUS_FAILED
-        else:
-            # No execution data observed.
-            outcome_status = OUTCOME_STATUS_UNKNOWN
+            # Map execution result to canonical outcome status.
+            if executed and row.actual_impact_sar is not None:
+                outcome_status = OUTCOME_STATUS_CONFIRMED
+            elif executed and row.actual_impact_sar is None:
+                # Execution was attempted but no actual impact was recorded — partial.
+                outcome_status = OUTCOME_STATUS_PARTIAL
+            elif not executed:
+                # Execution did not succeed.
+                outcome_status = OUTCOME_STATUS_FAILED
+            else:
+                # No execution data observed.
+                outcome_status = OUTCOME_STATUS_UNKNOWN
 
-        # Build the canonical feedback payload.
-        feedback = serialize_outcome_feedback(
-            feedback_id=uuid.uuid4(),
-            business_id=str(business_id),
-            decision_id=None,  # decision_id not available at this level;
-                # caller may set it if applicable.
-            action_id=str(action_id),
-            outcome_status=outcome_status,
-            observed_at=None,  # observed_at is set by the caller if known.
-            recorded_at=utcnow(),
-            actual_measured_values={
-                "actual_impact_sar": float(row.actual_impact_sar or 0),
-                "executed": executed,
-            } if executed or row.actual_impact_sar is not None else {},
-            expected_values={
-                "expected_impact_sar": float(row.expected_impact_sar or 0),
+            # Build the canonical feedback payload.
+            feedback = serialize_outcome_feedback(
+                feedback_id=uuid.uuid4(),
+                business_id=str(business_id),
+                decision_id=None,  # decision_id not available at this level;
+                    # caller may set it if applicable.
+                action_id=str(action_id),
+                outcome_status=outcome_status,
+                observed_at=None,  # observed_at is set by the caller if known.
+                recorded_at=utcnow(),
+                actual_measured_values={
+                    "actual_impact_sar": float(row.actual_impact_sar or 0),
+                    "executed": executed,
+                } if executed or row.actual_impact_sar is not None else {},
+                expected_values={
+                    "expected_impact_sar": float(row.expected_impact_sar or 0),
+                }
+                if row.expected_impact_sar is not None
+                else {},
+                evidence_references={},
+                source_provenance="system",
+                verification_status=(
+                    "verified" if executed and row.actual_impact_sar is not None else None
+                ),
+                failure_reason=(
+                    None  # failure reason would be populated by caller if status=failed
+                ),
+                idempotency_key=None,  # idempotency enforced via agent_action_id UQ.
+            )
+
+# Serialize the canonical dicts to JSON for PostgreSQL JSONB columns
+            # (module-level _json wraps json.dumps with default=str).
+            # Derive DB payloads from the canonical feedback dict.
+            actual_payload = feedback["actual_measured_values"]
+            expected_payload = feedback["expected_values"]
+            actual_impact = float(actual_payload.get("actual_impact_sar", 0.0))
+            expected_impact = float(expected_payload.get("expected_impact_sar", 0.0))
+            impact_delta = round(actual_impact - expected_impact, 2)
+
+            # Build the INSERT text and params separately to avoid nested
+            # parenthesis issues in the dict literal inside db.execute().
+            insert_sql = text(
+                "INSERT INTO outcome_feedback "
+                "(id, business_id, agent_action_id, decision_type, predicted_outcome, actual_outcome, delta, "
+                "feedback_source, recorded_at, created_at) "
+                "VALUES "
+                "(:id, :b, :aid, :type, CAST(:pred AS JSON), CAST(:actual AS JSON), "
+                "CAST(:delta AS JSON), 'system', :now, :now) "
+                "ON CONFLICT (agent_action_id) DO NOTHING"
+            )
+            params = {
+                "id": feedback["feedback_id"],
+                "b": str(business_id),
+                "aid": str(action_id),
+                "type": row.action_type,
+                "pred": _json(expected_payload),
+                "actual": _json(actual_payload),
+                "delta": _json({"impact_delta_sar": impact_delta}),
+                "now": utcnow(),
             }
-            if row.expected_impact_sar is not None
-            else {},
-            evidence_references={},
-            source_provenance="system",
-            verification_status=(
-                "verified" if executed and row.actual_impact_sar is not None else None
-            ),
-            failure_reason=(
-                None  # failure reason would be populated by caller if status=failed
-            ),
-            idempotency_key=None,  # idempotency enforced via agent_action_id UQ.
-        )
 
-# Serialize the canonical dicts to JSON for PostgreSQL JSONB columns.
-        import json as _json
-
-        # Derive DB payloads from the canonical feedback dict.
-        actual_payload = feedback["actual_measured_values"]
-        expected_payload = feedback["expected_values"]
-        actual_impact = float(actual_payload.get("actual_impact_sar", 0.0))
-        expected_impact = float(expected_payload.get("expected_impact_sar", 0.0))
-        impact_delta = round(actual_impact - expected_impact, 2)
-
-        # Build the INSERT text and params separately to avoid nested
-        # parenthesis issues in the dict literal inside db.execute().
-        insert_sql = text(
-            "INSERT INTO outcome_feedback "
-            "(id, business_id, agent_action_id, decision_type, predicted_outcome, actual_outcome, delta, "
-            "feedback_source, recorded_at, created_at) "
-            "VALUES "
-            "(:id, :b, :aid, :type, CAST(:pred AS JSON), CAST(:actual AS JSON), "
-            "CAST(:delta AS JSON), 'system', :now, :now) "
-            "ON CONFLICT (agent_action_id) DO NOTHING"
-        )
-        params = {
-            "id": feedback["feedback_id"],
-            "b": str(business_id),
-            "aid": str(action_id),
-            "type": row.action_type,
-            "pred": _json(expected_payload),
-            "actual": _json(actual_payload),
-            "delta": _json({"impact_delta_sar": impact_delta}),
-            "now": utcnow(),
-        }
-
-        await db.execute(insert_sql, params)
+            await db.execute(insert_sql, params)
     except Exception as exc:
         # The performance bridge is best-effort; business learning must never fail on it.
         import logging

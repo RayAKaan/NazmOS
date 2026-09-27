@@ -29,6 +29,7 @@ TENANT_TABLES = [
     "categories",
     "chat_sessions",
     "constraint_blocks",
+    "cycle_runs",
     "daily_summaries",
     "decision_log",
     "enabled_modules",

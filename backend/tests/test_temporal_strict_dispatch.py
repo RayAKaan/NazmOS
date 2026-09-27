@@ -51,6 +51,7 @@ _TEST_ENV_KEYS = [
     "CORS_ORIGINS",
     "WHATSAPP_ENABLED",
     "CREDENTIAL_MASTER_KEY",
+    "WHATSAPP_VERIFY_TOKEN",
 ]
 
 _PROD_REQUIRED_ENV = {
@@ -64,6 +65,7 @@ _PROD_REQUIRED_ENV = {
     "WHATSAPP_ENABLED": "mock",
     "CREDENTIAL_MASTER_KEY": "0123456789abcdef0123456789abcdef",
     "DATABASE_APP_ROLE": "nazmos_app_role",
+    "WHATSAPP_VERIFY_TOKEN": "test-verify-token",
 }
 
 
@@ -307,3 +309,60 @@ def test_dispatch_ast_has_no_fallback_branch():
         if isinstance(node, (ast.Try, ast.ExceptHandler))
     ]
     assert handlers == [], "dispatch must contain no try/except fallback path"
+
+
+# ── F: global execution kill switch (Phase 4I) ─────────────────────────
+#
+# EXECUTION_ENABLED=false must refuse EVERY action at the dispatch funnel —
+# manual, agent-approved, and simulated — before any workflow starts or any
+# side effect can occur. There is no local fallback for a disabled substrate;
+# the refusal is explicit and there is zero business mutation.
+
+
+@pytest_asyncio.fixture()
+async def kill_switch_env(monkeypatch):
+    """EXECUTION_ENABLED=false with a cleared settings cache."""
+    from app.config import get_settings
+
+    monkeypatch.setenv("USE_TEMPORAL", "false")
+    monkeypatch.setenv("EXECUTION_ENABLED", "false")
+    get_settings.cache_clear()
+    yield
+    get_settings.cache_clear()
+
+
+async def test_f_kill_switch_refuses_manual_action(sqlite_session, kill_switch_env):
+    from app.orchestration.runner import ExecutionDisabledError, run_manual_action
+
+    biz, item = uuid.uuid4(), uuid.uuid4()
+    await _seed_business(sqlite_session, biz)
+    await _seed_item(sqlite_session, biz, item)
+    await sqlite_session.commit()
+
+    with pytest.raises(ExecutionDisabledError) as excinfo:
+        await run_manual_action(sqlite_session, **_manual_kwargs(biz, item))
+    assert "EXECUTION_ENABLED=false" in str(excinfo.value)
+    await sqlite_session.commit()
+    assert await _stock(sqlite_session, item) == 50.0  # untouched
+    assert await _executed_count(sqlite_session, biz) == 0
+
+
+async def test_f_kill_switch_refuses_simulated(sqlite_session, kill_switch_env):
+    from app.orchestration.runner import ExecutionDisabledError, run_simulated
+
+    biz, item = uuid.uuid4(), uuid.uuid4()
+    await _seed_business(sqlite_session, biz)
+    await _seed_item(sqlite_session, biz, item)
+    await sqlite_session.commit()
+
+    with pytest.raises(ExecutionDisabledError):
+        await run_simulated(
+            sqlite_session,
+            business_id=biz,
+            action_type="RESTOCK",
+            entity_type="item",
+            entity_id=item,
+            payload={"restock_qty": 25.0},
+        )
+    await sqlite_session.commit()
+    assert await _executed_count(sqlite_session, biz) == 0

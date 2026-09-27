@@ -459,7 +459,6 @@ class UploadedFile(Base):
     etl_started_at = Column(DateTime(timezone=True), nullable=True)
     etl_completed_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    celery_task_id = Column(String, nullable=True)
 
     __table_args__ = (
         Index("idx_uploaded_files_business", "business_id"),
@@ -2027,6 +2026,46 @@ class MemoryUpdate(Base):
         Index("idx_memory_updates_business_type", "business_id", "memory_type"),
         Index("idx_memory_updates_event", "event_id"),
         Index("idx_memory_updates_occurred", "business_id", "occurred_at"),
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# INTELLIGENCE LAYER – Phase 4: Durable Business Improvement Loop Runs
+# ═══════════════════════════════════════════════════════════════════════════
+
+class CycleRunModel(Base):
+    """Durable persistence for one bounded Business Improvement Loop run.
+
+    Maps losslessly to ``business_loop.cycle.CycleRun.serialize()``. The
+    ``cycle_id`` is the idempotency anchor (cycle-<sha256[:24]> of
+    tenant:business:trigger:trigger_token); ``version`` is an optimistic
+    concurrency guard so two workers can never silently overwrite a run.
+    Terminated runs (``completed``) are immutable.
+    """
+    __tablename__ = "cycle_runs"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    cycle_id = Column(String(64), nullable=False)
+    tenant_id = Column(String(64), nullable=False)
+    trigger = Column(String(64), nullable=False)
+    trigger_token = Column(String(128), nullable=False, default="")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    starting_state_version = Column(String(64), nullable=True)
+    evidence_watermark = Column(String(64), nullable=True)
+    stage_index = Column(Integer, nullable=False, default=0)
+    completed = Column(Boolean, nullable=False, default=False)
+    last_error = Column(String, nullable=False, default="")
+    state_output = Column(JSON, nullable=False, default=dict)
+    stages = Column(JSON, nullable=False, default=list)
+    schema_version = Column(String(16), nullable=False, default="loop-v1")
+    version = Column(Integer, nullable=False, default=1)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        CheckConstraint("stage_index >= 0", name="ck_cycle_runs_stage_index_nonneg"),
+        UniqueConstraint("business_id", "cycle_id", name="uq_cycle_runs_business_cycle"),
+        Index("idx_cycle_runs_tenant_lookup", "business_id", "created_at"),
     )
 
 

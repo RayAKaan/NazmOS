@@ -4,7 +4,7 @@ Universal – Pharmacy first, then Food, Auto Parts
 
 No LLM. $0 cost. Pure SQL + Prophet + rules.
 
-Runs every 15 min via cron / Celery beat (optional).
+Runs every 15 min via cron / Temporal schedule (optional).
 Generates agent_actions → attention feed.
 """
 from datetime import datetime, timedelta, timezone

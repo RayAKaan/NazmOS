@@ -58,14 +58,13 @@ chardet==5.2.0
 xlrd==2.0.1
 rapidfuzz>=3.9,<4
 
-# Background Tasks
-celery==5.4.0
+# Caching / event bus / progress channel (NOT a task queue)
 redis==5.0.7
 
 # Durable orchestration
-# Temporal (MIT) is the durable-orchestration engine for execution paths
-# (app.orchestration). Workflows are deterministic skeletons; all business
-# rules stay in the NazmOS layer. Gated by USE_TEMPORAL; the local
+# Temporal (MIT) is the single production execution substrate for execution
+# paths (app.orchestration). Workflows are deterministic skeletons; all
+# business rules stay in the NazmOS layer. Gated by USE_TEMPORAL; the local
 # deterministic runner is used when the flag is off (CI / SQLite).
 temporalio==1.32.0
 

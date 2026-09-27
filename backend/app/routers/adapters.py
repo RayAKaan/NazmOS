@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from uuid import UUID
 from datetime import datetime, timezone
-import json
 
 from app.database.connection import get_db
 from app.database.models import POSConnection, POSSyncLog
@@ -14,11 +13,7 @@ from app.schemas.adapter import (
     POSConnectionCreate, POSConnectionResponse, POSConnectionUpdate,
     POSSyncStatusResponse, POSSyncTriggerResponse, POSFieldMappingUpdate,
 )
-from app.tasks.pos_sync_tasks import run_sync_pos_connection
 from app.adapters.registry import ADAPTER_REGISTRY
-from app.config import get_settings
-
-settings = get_settings()
 
 router = APIRouter(prefix="/api/v1/pos", tags=["pos"])
 
@@ -152,7 +147,6 @@ async def delete_connection(
 @router.post("/connections/{connection_id}/sync", response_model=POSSyncTriggerResponse)
 async def trigger_sync(
     connection_id: UUID,
-    background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
     tenant: TenantContext = Depends(get_current_tenant),
 ):
@@ -167,25 +161,16 @@ async def trigger_sync(
     connection.sync_status = "syncing"
     connection.updated_at = datetime.now(timezone.utc)
     await db.commit()
-    
-    task_id = f"sync_{connection_id}"
 
-    if settings.USE_CELERY:
-        from app.tasks.pos_sync_tasks import sync_pos_connection
-        sync_pos_connection.delay(str(connection_id), str(connection.business_id))
-    else:
-        import asyncio
+    from app.orchestration.operations import OP_POS_SYNC_RUN, dispatch_operation
 
-        async def _run_sync():
-            loop = asyncio.get_event_loop()
-            await loop.run_in_executor(
-                None,
-                run_sync_pos_connection,
-                str(connection_id),
-                str(connection.business_id),
-            )
-
-        background_tasks.add_task(_run_sync)
+    task_id, _ = await dispatch_operation(
+        OP_POS_SYNC_RUN,
+        {
+            "connection_id": str(connection.id),
+            "business_id": str(connection.business_id),
+        },
+    )
     
     return POSSyncTriggerResponse(
         task_id=task_id,

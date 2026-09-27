@@ -1,8 +1,30 @@
-from pydantic import field_validator, model_validator, ValidationInfo
+from pydantic import BaseModel, field_validator, model_validator, ValidationInfo
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 import os
 import secrets
+
+
+class JevSettings(BaseModel):
+    """Typed view of the Jev (TypeSafe System One) adapter configuration.
+
+    Materialized from the JEV_* env-driven fields on the main Settings object
+    via ``Settings.jev``. Jev is strictly non-authoritative: it may enrich
+    reasoning or raise a challenge but can never override the deterministic
+    decision. ``enabled`` is True only when explicitly turned on AND a key is
+    configured.
+    """
+
+    enabled: bool = False
+    shadow_enabled: bool = False
+    base_url: str = "https://system-one.dev/v1/systemone"
+    api_key: str = ""
+    model: str = "jev-1.13.0"
+    timeout_seconds: float = 20.0
+
+    @property
+    def configured(self) -> bool:
+        return bool(self.enabled and self.api_key and self.base_url)
 
 
 class Settings(BaseSettings):
@@ -20,11 +42,11 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     ENVIRONMENT: str = "development"
 
-    # Redis
+    # Redis (cache, rate limits, event pub/sub, ETL progress channel — NOT a task queue).
     REDIS_URL: str = "redis://localhost:6379/0"
 
-    # Zero-Cost Architecture — when False, FastAPI BackgroundTasks replaces Celery/Redis.
-    USE_CELERY: bool = False
+    # Zero-Cost Architecture — Redis off for the file-backed pilot; Temporal is
+    # the single production execution substrate and is ON by default.
     USE_REDIS: bool = False
     USE_CLIENT_ETL: bool = False  # When True, frontend parses CSV via PapaParse (no server-side pandas)
     USE_TEMPORAL: bool = True  # Durable orchestration (temporalio); when True, Temporal server is required
@@ -43,6 +65,13 @@ class Settings(BaseSettings):
     AGENT_PRICING_ENABLED: bool = True
     AGENT_CASH_ENABLED: bool = True
     AGENT_STAFF_ENABLED: bool = True
+    
+    # Global execution kill switch. When False, EVERY action execution
+    # (manual, agent-approved, simulated) is refused at the single dispatch
+    # funnel (app.orchestration.runner._dispatch) before any workflow starts
+    # or any side effect can occur — no local fallback, no partial run.
+    # Mirrors the AI_ENABLED kill switch for the execution substrate.
+    EXECUTION_ENABLED: bool = True
     
     # Vertical modules
     VERTICAL_PHARMACY: bool = True
@@ -86,6 +115,11 @@ class Settings(BaseSettings):
     # appends one JSONL record (provider, outcome, latency, token usage,
     # prompt fingerprint) so AI cost and traceability can be audited.
     AI_CALL_LEDGER_PATH: str = ""
+    # sec 17 outcome/business-state foundation: when set, every canonical
+    # decision append-one "decision -> evidence -> outcome" row to the V1
+    # SQLite outcome ledger (MASTER_PLAN sec 17 / TEST_AND_ACCEPTANCE_GATES).
+    # Best-effort capture; a missing/invalid path never blocks a decision.
+    AI_OUTCOME_LEDGER_PATH: str = ""
 
     # --- Phase A: AI isolation core ---------------------------------------
     # Global kill switch for AI (reasoning/challenge/brain). When False the
@@ -105,6 +139,22 @@ class Settings(BaseSettings):
     AI_OUTPUT_MAX_CHARS: int = 8000
     # Outbound/inbound DLP is fail-closed. Keep True.
     DLP_STRICT: bool = True
+
+    # --- Jev (TypeSafe System One) adapter --------------------------------
+    # Jev is added as a NEW provider behind the canonical gateway route and is
+    # STRICTLY NON-AUTHORITATIVE: the deterministic decision always wins. When
+    # JEV_ENABLED=false (default) the adapter is dormant and the gateway route
+    # returns the captured deterministic decision with source="fallback". Jev
+    # never receives raw merchant data -- only the DLP-clean capsule view
+    # (capsule.for_prompt()). It is NOT part of LLM_PROVIDER_ORDER because that
+    # list drives the merchant-facing chat/money-audit orchestrator (groq,
+    # google, mock only); Jev is an advisory reasoning route, not a chat backend.
+    JEV_ENABLED: bool = False
+    JEV_SHADOW_ENABLED: bool = False  # capture-to-ledger only; never influences outcome
+    JEV_BASE_URL: str = "https://system-one.dev/v1/systemone"
+    JEV_API_KEY: str = ""
+    JEV_MODEL: str = "jev-1.13.0"
+    JEV_TIMEOUT_SECONDS: float = 20.0
     
     # File Upload
     UPLOAD_DIR: str = "uploads"
@@ -329,6 +379,18 @@ class Settings(BaseSettings):
         """Comma-separated LLM_PROVIDER_ORDER as a list."""
         return [p.strip() for p in (self.LLM_PROVIDER_ORDER or "").split(",") if p.strip()]
 
+    @property
+    def jev(self) -> JevSettings:
+        """Typed Jev adapter configuration (non-authoritative provider)."""
+        return JevSettings(
+            enabled=self.JEV_ENABLED,
+            shadow_enabled=self.JEV_SHADOW_ENABLED,
+            base_url=self.JEV_BASE_URL,
+            api_key=self.JEV_API_KEY,
+            model=self.JEV_MODEL,
+            timeout_seconds=self.JEV_TIMEOUT_SECONDS,
+        )
+
     @model_validator(mode="after")
     def validate_production_cross_fields(self) -> "Settings":
         env = self.ENVIRONMENT
@@ -394,13 +456,12 @@ def get_settings() -> Settings:
             raise RuntimeError("FATAL: WHATSAPP_VERIFY_TOKEN is required in production")
         if not s.CREDENTIAL_MASTER_KEY or len(s.CREDENTIAL_MASTER_KEY) < 32:
             raise RuntimeError("FATAL: CREDENTIAL_MASTER_KEY is required in production and must be >= 32 chars")
-    # Auto-detect SQLite mode: no Celery/Redis needed. USE_TEMPORAL is only
+    # Auto-detect SQLite mode: no Redis needed. USE_TEMPORAL is only
     # auto-disabled for SQLite when the operator did not explicitly select it;
     # an explicit USE_TEMPORAL=true is respected so that Temporal availability
     # becomes a hard failure surface (never a silent local downgrade) even on a
     # file-backed database.
     if s.DATABASE_URL.startswith("sqlite"):
-        object.__setattr__(s, "USE_CELERY", False)
         object.__setattr__(s, "USE_REDIS", False)
         if os.getenv("USE_TEMPORAL") is None:
             object.__setattr__(s, "USE_TEMPORAL", False)

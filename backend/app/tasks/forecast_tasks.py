@@ -1,12 +1,10 @@
 import logging
 from sqlalchemy import text
 
-from app.config import get_settings
 from app.database.connection import get_sync_session, sync_rls_tenant_context
 from app.services.forecasting.statsforecast_provider import StatsForecastProvider
 from app.services.forecasting.sync_runner import run_provider_forecast_sync
 
-settings = get_settings()
 logger = logging.getLogger("forecast_tasks")
 
 
@@ -86,20 +84,3 @@ def run_train_forecast_for_item(item_id: str, business_id: str):
     with sync_rls_tenant_context(str(business_id)):
         provider = StatsForecastProvider()
         return run_provider_forecast_sync(provider, business_id, item_id, horizon_days=30)
-
-
-if settings.USE_CELERY:
-    from celery import Task
-    from app.celery_app import celery_app
-
-    @celery_app.task(bind=True, name="app.tasks.forecast_tasks.refresh_all_forecasts")
-    def refresh_all_forecasts(self):
-        return run_refresh_all_forecasts()
-
-    @celery_app.task(name="app.tasks.forecast_tasks.refresh_forecasts_for_business")
-    def refresh_forecasts_for_business(business_id: str):
-        return run_refresh_forecasts_for_business(business_id)
-
-    @celery_app.task(name="app.tasks.forecast_tasks.train_forecast_for_item")
-    def train_forecast_for_item(item_id: str, business_id: str):
-        return run_train_forecast_for_item(item_id, business_id)

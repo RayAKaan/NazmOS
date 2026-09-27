@@ -23,6 +23,34 @@ CANONICAL_ACTION_TYPES = frozenset({
     "GENERATE_DECISION", "INFO_ONLY", "STAFF_SCHEDULE", "SUPPLIER_SWITCH",
 })
 
+# Batch 2: inventory.stockout_tier -- canonical tier symbols mirroring
+# app.analytics.metrics.classify_status output, upper-snake so they match the
+# canonical controller's _normalize().
+INVENTORY_STATUS_TIERS = frozenset({
+    "DEAD", "CRITICAL", "LOW", "HEALTHY", "OVERSTOCK",
+})
+
+# Batch 2: inventory.anomaly_triage -- triage buckets over the z-score anomaly
+# detector's discrete signals (app.services.anomaly_detector type field).
+ANOMALY_TRIAGE_BUCKETS = frozenset({"SPIKE", "DROP"})
+
+# Batch 3: procurement.reorder_urgency -- urgency bands over days of supply,
+# mirroring the deterministic float ladder (procurement_agent: 0.7 if days < 5
+# else 0.4). Applies to reorder-eligible items only (DEAD items exclude REORDER).
+REORDER_URGENCY_BANDS = frozenset({"HIGH", "LOW"})
+
+# Batch 3: pricing.margin_erosion_risk -- margin magnitude bands over the
+# canonical gross-margin ratio (audit_core.gross_margin_pct). Thresholds mirror
+# privacy_firewall._band_margin: < 0.15 LOW, <= 0.40 MEDIUM, else HIGH. Band =
+# margin magnitude, NOT risk level: a LOW band means the lowest margin (most
+# eroded). Leakage target TARGET_MARGIN_PCT = 0.22 is cited in prompts, not a band.
+MARGIN_EROSION_BANDS = frozenset({"LOW", "MEDIUM", "HIGH"})
+
+# Batch 3: report.finding_priority -- Choice over the findings severity contract
+# (models.FindingSeverity: critical|high|medium|low|info, uppercased). Deterministic
+# priority = the stored severity string; advisory only until verified outcomes exist.
+FINDING_PRIORITY_TOKENS = frozenset({"CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"})
+
 
 def serialize_decision_action(
     *,

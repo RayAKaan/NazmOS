@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, Upload, TrendingUp, Inbox, Truck, CalendarClock, Link2, Sparkles, Repeat2, Settings, WalletCards, ClipboardList, FileText } from "lucide-react";
+import { LayoutDashboard, Package, Upload, TrendingUp, Inbox, Truck, CalendarClock, Link2, Sparkles, Repeat2, Settings, WalletCards, ClipboardList, FileText, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
 
@@ -27,6 +27,7 @@ export function Sidebar() {
     { href: "/recovery-match", label: t.sidebar.recoveryMatch || "Recovery Match", icon: Repeat2, badge: "Preview" },
     { href: "/weekly-report", label: "Weekly Report", icon: FileText },
     { href: "/ops", label: "Pilot Ops", icon: ClipboardList, badge: "Founder" },
+    { href: "/loop", label: "Loop Console", icon: Activity, badge: "Live" },
   ];
 
   const toolsNavItems = [

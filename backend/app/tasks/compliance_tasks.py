@@ -1,7 +1,7 @@
-"""Celery tasks for GDPR / PDPL compliance automation.
+"""Compliance / data-retention automation (GDPR / PDPL).
 
-- ``process_pending_deletions`` runs on a beat schedule and hard-purges any
-  ``deletion_requests`` rows whose ``scheduled_purge_at`` has passed.
+``run_process_pending_deletions`` runs on a schedule and hard-purges any
+``deletion_requests`` rows whose ``scheduled_purge_at`` has passed.
 """
 from __future__ import annotations
 
@@ -12,15 +12,13 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.config import get_settings
 from app.database import AsyncSessionLocal
 from app.database.connection import sync_rls_tenant_context
 from app.database.models import DeletionRequest
 from app.routers.compliance import _hard_delete_business_data
 from app.utils.logger import setup_logger
 
-settings = get_settings()
-logger = setup_logger("celery.compliance")
+logger = setup_logger("compliance_tasks")
 
 
 async def _purge_business(business_id: UUID) -> None:
@@ -52,7 +50,7 @@ async def _purge_business(business_id: UUID) -> None:
 
 
 def run_process_pending_deletions() -> dict:
-    """Synchronous entry point used by the Celery beat worker.
+    """Synchronous entry point used by the Temporal ``process_pending_deletions`` activity.
 
     Supervisor scope: enumerating pending deletion requests is cross-tenant
     scheduler work; each business purge then runs RLS-scoped in ``_purge_business``.
@@ -86,11 +84,3 @@ def run_process_pending_deletions() -> dict:
         return {"purged": purged, "skipped": skipped}
 
     return asyncio.run(_process())
-
-
-if settings.USE_CELERY:
-    from app.celery_app import celery_app
-
-    @celery_app.task(name="app.tasks.compliance_tasks.process_pending_deletions")
-    def process_pending_deletions() -> dict:
-        return run_process_pending_deletions()

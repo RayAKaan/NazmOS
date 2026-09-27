@@ -28,6 +28,7 @@ from app.services import context_engine
 from app.services import decision_engine
 from app.services import event_engine
 from app.services import planning_engine
+from app.services.audit_core import coverage_aware_daily_velocity
 from app.services import simulation_engine
 from app.utils.logger import setup_logger
 

@@ -137,3 +137,45 @@ async def test_get_all_forecasts(authenticated_client: dict):
     data = response.json()
     assert "forecasts" in data
     assert "total" in data
+async def test_get_all_forecasts_route_unique_in_router_and_openapi():
+    # Phase 2B 6/13 pin: exactly ONE GET /all/{business_id} in BOTH the
+    # forecast router's route table and the mounted OpenAPI schema.
+    # forecast.py previously registered the same GET /all/{business_id} twice
+    # (handler at :123 canonical, :241 dead shadow). Only the first-registered
+    # route is reachable in Starlette, so :241 was unreachable dead code -
+    # Phase 2B 6 removed it :241 and this test fails CI if the dedup regresses.
+    from app.routers.forecast import router as forecast_router
+
+    # Note: this forecast router registers FULL-prefixed paths (the router is
+    # declared with the /api/v1/forecast prefix baked in, so route.path here is
+    # "/api/v1/forecast/all/{business_id}", not the bare "/all/{business_id}".
+    matched = [
+        r for r in forecast_router.routes
+        if getattr(r, "path", None) == "/api/v1/forecast/all/{business_id}"
+        and "GET" in (getattr(r, "methods", None) or set())
+    ]
+    assert len(matched) == 1, (
+        "expected exactly ONE GET /api/v1/forecast/all/{business_id} "
+        f"registration on the forecast router, found {len(matched)}"
+    )
+
+    from app.main import app
+
+    app_matched = [
+        r for r in app.routes
+        if getattr(r, "path", None) == "/api/v1/forecast/all/{business_id}"
+        and "GET" in (getattr(r, "methods", None) or set())
+    ]
+    assert len(app_matched) == 1, (
+        "expected exactly ONE app-level GET /all/{business_id}, found "
+        f"{len(app_matched)}"
+    )
+
+    openapi_paths = app.openapi().get("paths", {}).get(
+        "/api/v1/forecast/all/{business_id}", {}
+    )
+    assert "get" in openapi_paths, "OpenAPI must still expose the GET /all route"
+    assert openapi_paths["get"]["operationId"].startswith("get_all_forecasts"), (
+        "single canonical operationId (prefix get_all_forecasts) after dedup, "
+        f"got {openapi_paths['get']['operationId']}"
+    )

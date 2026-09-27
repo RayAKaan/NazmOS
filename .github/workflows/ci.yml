@@ -139,7 +139,6 @@ jobs:
           DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@localhost:5432/nazmos_test
           REDIS_URL: redis://localhost:6379/0
           ENVIRONMENT: test
-          USE_CELERY: false
           USE_REDIS: false
           USE_TEMPORAL: "false"
           API_BASE_URL: http://localhost:8000

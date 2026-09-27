@@ -1,6 +1,6 @@
 """ForecastProvider abstraction.
 
-Every forecasting path (router, Celery task, intelligence API, tools) goes
+Every forecasting path (router, Temporal activity, intelligence API, tools) goes
 through :class:`ForecastProvider` so the whole product agrees on:
   - the canonical daily series (data_builder),
   - the quality gate (quality),

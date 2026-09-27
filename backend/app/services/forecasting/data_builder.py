@@ -1,7 +1,7 @@
 """Canonical daily-demand data builder.
 
 Single source of truth for turning raw transactions into a daily demand
-series. Every forecasting path (router, Celery task, providers, evaluation)
+series. Every forecasting path (router, Temporal activity, providers, evaluation)
 consumes this so the whole system aggregates by the SAME local calendar date.
 
 Historical bug this fixes: `forecast.py` grouped by the raw ``transaction_at``

@@ -16,6 +16,19 @@ from uuid import UUID
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.orchestration.contracts import FINDING_PRIORITY_TOKENS
+
+
+def finding_priority_token(severity: str | None) -> str:
+    """Deterministic finding priority = FindingSeverity value, contract-normalized.
+
+    The deterministic priority for ``report.finding_priority`` is the stored
+    severity string uppercased. The 5 ``FINDING_PRIORITY_TOKENS`` mirror
+    ``FindingSeverity`` exactly; ``INFO`` is in the contract but is never
+    assigned by any production writer today.
+    """
+    return (severity or "medium").strip().upper()
+
 
 def _json(value: Any) -> str:
     return json.dumps(value, default=str)
@@ -34,7 +47,13 @@ _FINDING_FLOW = {
 
 
 async def create_finding(db: AsyncSession, business_id: UUID | str, **fields: Any) -> UUID:
-    finding_id = UUID(fields.pop("id", None) or _new_uuid())
+    requested_id = fields.pop("id", None)
+    if isinstance(requested_id, UUID):
+        finding_id = requested_id
+    elif requested_id:
+        finding_id = UUID(requested_id)
+    else:
+        finding_id = _new_uuid()
     now = datetime.now(timezone.utc)
     await db.execute(text("""
         INSERT INTO findings
@@ -43,8 +62,8 @@ async def create_finding(db: AsyncSession, business_id: UUID | str, **fields: An
              action_risk, status, source, created_at, updated_at)
         VALUES
             (:id, :b, :domain, :category, :severity, :title, :explanation,
-             CAST(:evidence AS JSON), CAST(:entities AS JSON), :impact, :confidence,
-             CAST(:recommended AS JSON), :risk, 'detected', :source, :now, :now)
+             :evidence, :entities, :impact, :confidence,
+             :recommended, :risk, 'detected', :source, :now, :now)
     """), {
         "id": str(finding_id),
         "b": str(business_id),
@@ -117,7 +136,7 @@ async def verify_finding(
     now = datetime.now(timezone.utc)
     await db.execute(text(f"""
         UPDATE findings
-        SET verification_result = CAST(:vr AS JSON),
+        SET verification_result = :vr,
             status = CASE WHEN :verified THEN 'verified' ELSE 'failed' END,
             resolved_at = :now,
             updated_at = :now

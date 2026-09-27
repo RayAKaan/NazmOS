@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, File, UploadFile, Form, HTTPException, Body, Query, BackgroundTasks
+from fastapi import APIRouter, Depends, File, UploadFile, Form, HTTPException, Body, Query
 from fastapi.responses import StreamingResponse
 import aiofiles
 import uuid
@@ -184,12 +184,11 @@ async def upload_file(
 async def confirm_mapping(
     upload_id: str,
     payload: dict[str, Any] = Body(...),
-    background_tasks: BackgroundTasks = BackgroundTasks(),
     business_id: Optional[str] = Query(None),
     current_user: User = Depends(get_current_user),
     db=Depends(get_db),
 ):
-    """Save merchant-confirmed mappings and start import.
+    """Save merchant-confirmed mappings and start ingestion via Temporal.
 
     Accepts both the old raw mapping body and the newer UX body:
     {"business_id": "...", "column_mapping": {...}}
@@ -211,7 +210,7 @@ async def confirm_mapping(
 
     ownership = await db.execute(
         text("""
-            SELECT u.id FROM uploaded_files u
+            SELECT u.id, u.status FROM uploaded_files u
             JOIN businesses b ON b.id = u.business_id
             WHERE u.id = :id
               AND u.business_id = :business_id
@@ -219,8 +218,14 @@ async def confirm_mapping(
         """),
         {"id": upload_id, "business_id": effective_business_id, "uid": str(current_user.id)}
     )
-    if not ownership.fetchone():
+    row = ownership.fetchone()
+    if not row:
         raise HTTPException(404, detail="Upload not found")
+
+    # A scheduled/processed upload must never be re-dispatched: the ingestion
+    # workflow is idempotent, but re-running it would double-import rows.
+    if row.status in {"processing", "completed", "needs_review"}:
+        raise HTTPException(409, detail="Upload is already scheduled/processed; it cannot be re-mapped")
 
     await db.execute(
         text("""
@@ -235,86 +240,44 @@ async def confirm_mapping(
     )
     await db.commit()
 
-    task_id = f"bt_{upload_id}"
+    from app.orchestration.operations import OP_UPLOAD_INGEST, dispatch_operation
 
-    if settings.USE_CELERY:
-        from app.tasks.ingestion_tasks import process_upload_task
-        task = process_upload_task.apply_async(
-            args=[upload_id, effective_business_id, clean_mapping],
-            queue="ingestion",
-            countdown=1,
-        )
-        task_id = task.id
+    task_id, result = await dispatch_operation(
+        OP_UPLOAD_INGEST,
+        {
+            "upload_id": upload_id,
+            "business_id": effective_business_id,
+            "column_mapping": clean_mapping,
+        },
+    )
 
-        await db.execute(
-            text("UPDATE uploaded_files SET celery_task_id = :task_id WHERE id = :id"),
-            {"id": upload_id, "task_id": task.id}
-        )
-        await db.commit()
-    else:
-        # Zero-cost mode: run ingestion inline on the main event loop. The file
-        # sizes for Money Audit are small enough that blocking the response is
-        # acceptable for pilot validation without Celery/Redis.
-        from app.services.etl_pipeline import ETLPipeline
-        from app.services.upload_service import UploadService
-        from app.services.schema_detector import SchemaDetector
-        from pathlib import Path
-
-        upload_row = await db.execute(
-            text("SELECT stored_filename, file_type FROM uploaded_files WHERE id = :id"),
-            {"id": upload_id},
-        )
-        upload_meta = upload_row.fetchone()
-        local_parse_path, cleanup_after_parse = await _resolve_local_parse_path(
-            upload_meta.stored_filename, upload_id
-        )
-        try:
-            try:
-                df = UploadService.parse_file(local_parse_path, f".{upload_meta.file_type}", "utf-8")
-                if not clean_mapping:
-                    detection = SchemaDetector().detect(df)
-                    clean_mapping = detection["detected_columns"]
-                pipeline = ETLPipeline(upload_id, effective_business_id, df, clean_mapping)
-                stats = await pipeline.run()
-            except Exception as e:
-                # Mark the upload failed so it never gets stuck in 'processing'.
-                await db.execute(
-                    text("UPDATE uploaded_files SET status = 'failed', error_summary = :error WHERE id = :id"),
-                    {"id": upload_id, "error": str(e)}
-                )
-                await db.commit()
-                raise
-        finally:
-            if cleanup_after_parse:
-                try:
-                    os.unlink(local_parse_path)
-                except Exception:
-                    pass
-
-        # Persist import counters so /result and /status report real numbers.
-        imported = int(stats.get("imported", 0))
-        failed = int(stats.get("failed", 0))
-        await db.execute(
-            text("""
-                UPDATE uploaded_files
-                SET status = 'completed',
-                    row_count_imported = :imported,
-                    row_count_failed = :failed,
-                    etl_completed_at = NOW()
-                WHERE id = :id
-            """),
-            {"id": upload_id, "imported": imported, "failed": failed}
-        )
-        await db.commit()
+    # Unified response contract: ``task_id`` is always the Temporal workflow id.
+    # In local (dev/test) mode the ingestion body already completed, so live
+    # counters are reflected; under Temporal the workflow updates the
+    # uploaded_files row asynchronously and the response reports the scheduled
+    # state (the /status and /result endpoints surface the durable outcome).
+    resp_status = "processing"
+    progress = 35
+    rows_imported = 0
+    rows_failed = 0
+    if result is not None:
+        stats = result.get("stats") or {}
+        if result.get("status") == "completed":
+            resp_status = "completed"
+            progress = 100
+            rows_imported = int(stats.get("imported", 0))
+            rows_failed = int(stats.get("failed", 0))
+        else:
+            resp_status = result.get("status", "failed")
 
     return {
         "task_id": task_id,
         "upload_id": upload_id,
-        "status": "completed" if not settings.USE_CELERY else "processing",
-        "progress": 100 if not settings.USE_CELERY else 35,
-        "rows_processed": imported if not settings.USE_CELERY else 0,
-        "rows_imported": imported if not settings.USE_CELERY else 0,
-        "rows_failed": failed if not settings.USE_CELERY else 0,
+        "status": resp_status,
+        "progress": progress,
+        "rows_processed": rows_imported + rows_failed,
+        "rows_imported": rows_imported,
+        "rows_failed": rows_failed,
     }
 
 

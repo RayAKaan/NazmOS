@@ -1,0 +1,5 @@
+﻿services:
+  temporal:
+    environment:
+      POSTGRES_PWD: "nazmos_dev"
+      POSTGRES_PASSWORD: "nazmos_dev"

@@ -2,13 +2,10 @@ from sqlalchemy import select
 from uuid import UUID
 from datetime import datetime, time, timezone
 
-from app.config import get_settings
 from app.database.connection import get_sync_session
 from app.database.models import POSConnection, POSSyncLog, Item, Inventory, Transaction
 from app.services.credential_vault import POSCredentialManager
 from app.adapters.registry import get_adapter
-
-settings = get_settings()
 
 
 def run_sync_pos_connection(connection_id: str, business_id: str | None = None):
@@ -151,10 +148,13 @@ def run_sync_pos_connection(connection_id: str, business_id: str | None = None):
             }
 
 
-def run_schedule_syncs():
-    # Supervisor scope: enumerating every active POS connection is cross-tenant
-    # scheduler work.  Each sync is then dispatched with an explicit
-    # business_id so ``run_sync_pos_connection`` runs RLS-scoped.
+def scan_due_pos_connections() -> list[dict]:
+    """Supervisor scope: return POS connections that are due for a sync.
+
+    Enumerating every active connection is cross-tenant scheduler work.  Each
+    sync is then dispatched by the ``pos_sweep`` Temporal workflow with an
+    explicit ``business_id`` so ``run_sync_pos_connection`` runs RLS-scoped.
+    """
     with get_sync_session() as db:
         result = db.execute(
             select(POSConnection).where(
@@ -164,28 +164,14 @@ def run_schedule_syncs():
         )
         connections = result.scalars().all()
 
+        due: list[dict] = []
         for conn in connections:
-            if conn.last_sync_at:
-                elapsed = (datetime.now(timezone.utc) - conn.last_sync_at).total_seconds() / 60
-                if elapsed >= conn.sync_interval_minutes:
-                    if settings.USE_CELERY:
-                        from app.celery_app import celery_app
-                        celery_app.send_task(
-                            "pos_sync_tasks.sync_pos_connection",
-                            args=[str(conn.id), str(conn.business_id)],
-                        )
-                    else:
-                        run_sync_pos_connection(str(conn.id), str(conn.business_id))
-
-
-if settings.USE_CELERY:
-    from celery import Task
-    from app.celery_app import celery_app as celery
-
-    @celery.task(bind=True, name="pos_sync_tasks.sync_pos_connection")
-    def sync_pos_connection(self, connection_id: str, business_id: str | None = None):
-        return run_sync_pos_connection(connection_id, business_id)
-
-    @celery.task(name="pos_sync_tasks.schedule_syncs")
-    def schedule_syncs():
-        return run_schedule_syncs()
+            if not conn.last_sync_at:
+                continue
+            elapsed = (datetime.now(timezone.utc) - conn.last_sync_at).total_seconds() / 60
+            if elapsed >= conn.sync_interval_minutes:
+                due.append({
+                    "connection_id": str(conn.id),
+                    "business_id": str(conn.business_id),
+                })
+        return due

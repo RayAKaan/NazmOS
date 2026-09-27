@@ -134,7 +134,6 @@ services:
       BILLING_ENABLED: ${BILLING_ENABLED:-true}
       AGENT_ENABLED: ${AGENT_ENABLED:-true}
       USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
-      USE_CELERY: ${USE_CELERY:-true}
       USE_REDIS: ${USE_REDIS:-true}
       # Durable execution substrate: the API dispatches to the real Temporal
       # server; the nazmos-worker hosts the workflows. No local fallback.
@@ -165,6 +164,8 @@ services:
     depends_on:
       migrate:
         condition: service_completed_successfully
+      temporal:
+        condition: service_started
       opencode_runner:
         condition: service_healthy
     volumes:
@@ -182,74 +183,6 @@ services:
       - nazmos
       - opencode_net
 
-  celery_worker:
-    image: ${API_IMAGE:?API_IMAGE must be set}
-    restart: unless-stopped
-    environment:
-      ENVIRONMENT: production
-      DATABASE_URL: postgresql+asyncpg://nazmos:${DB_PASSWORD}@postgres:5432/nazmos
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
-      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
-      SENTRY_DSN: ${SENTRY_DSN:?SENTRY_DSN must be set}
-      DATABASE_APP_ROLE: ${DATABASE_APP_ROLE:?DATABASE_APP_ROLE must be set}
-      CREDENTIAL_MASTER_KEY: ${CREDENTIAL_MASTER_KEY:?CREDENTIAL_MASTER_KEY must be set}
-      UPLOAD_DIR: /app/uploads
-      USE_CELERY: ${USE_CELERY:-true}
-      USE_REDIS: ${USE_REDIS:-true}
-      USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
-      GROQ_API_KEY: ${GROQ_API_KEY:-}
-      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
-      GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY:-}
-      GOOGLE_AI_MODEL: ${GOOGLE_AI_MODEL:-gemini-2.5-flash-lite}
-      LLM_PROVIDER_ORDER: ${LLM_PROVIDER_ORDER:-groq,google,mock}
-      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.2}
-      LLM_MAX_TOKENS: ${LLM_MAX_TOKENS:-1000}
-      WHATSAPP_ENABLED: ${WHATSAPP_ENABLED:-mock}
-      WHATSAPP_TOKEN: ${WHATSAPP_TOKEN:-}
-      WHATSAPP_PHONE_ID: ${WHATSAPP_PHONE_ID:-}
-      WHATSAPP_VERIFY_TOKEN: ${WHATSAPP_VERIFY_TOKEN:?WHATSAPP_VERIFY_TOKEN must be set}
-    depends_on:
-      migrate:
-        condition: service_completed_successfully
-      redis:
-        condition: service_healthy
-    volumes:
-      - uploaded_files:/app/uploads
-    command: celery -A app.celery_app worker --loglevel=info --concurrency=${CELERY_CONCURRENCY:-2} --queues=celery,ingestion,forecasting,analytics
-    networks:
-      - nazmos
-
-  celery_beat:
-    image: ${API_IMAGE:?API_IMAGE must be set}
-    restart: unless-stopped
-    environment:
-      ENVIRONMENT: production
-      DATABASE_URL: postgresql+asyncpg://nazmos:${DB_PASSWORD}@postgres:5432/nazmos
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
-      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
-      SENTRY_DSN: ${SENTRY_DSN:?SENTRY_DSN must be set}
-      DATABASE_APP_ROLE: ${DATABASE_APP_ROLE:?DATABASE_APP_ROLE must be set}
-      CREDENTIAL_MASTER_KEY: ${CREDENTIAL_MASTER_KEY:?CREDENTIAL_MASTER_KEY must be set}
-      USE_CELERY: ${USE_CELERY:-true}
-      USE_REDIS: ${USE_REDIS:-true}
-      USE_MOCK_LLM: ${USE_MOCK_LLM:-false}
-      GROQ_API_KEY: ${GROQ_API_KEY:-}
-      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
-      GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY:-}
-      GOOGLE_AI_MODEL: ${GOOGLE_AI_MODEL:-gemini-2.5-flash-lite}
-      LLM_PROVIDER_ORDER: ${LLM_PROVIDER_ORDER:-groq,google,mock}
-      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.2}
-      LLM_MAX_TOKENS: ${LLM_MAX_TOKENS:-1000}
-      WHATSAPP_VERIFY_TOKEN: ${WHATSAPP_VERIFY_TOKEN:?WHATSAPP_VERIFY_TOKEN must be set}
-    depends_on:
-      migrate:
-        condition: service_completed_successfully
-      redis:
-        condition: service_healthy
-    command: celery -A app.celery_app beat --loglevel=info
-    networks:
-      - nazmos
-
   # NazmOS execution worker: hosts every workflow + activity against the real
   # Temporal server. The ONLY orchestrator for business execution paths; it
   # must be running or executions fail loudly (no local degradation).
@@ -266,7 +199,6 @@ services:
       DATABASE_APP_ROLE: ${DATABASE_APP_ROLE:?DATABASE_APP_ROLE must be set}
       CREDENTIAL_MASTER_KEY: ${CREDENTIAL_MASTER_KEY:?CREDENTIAL_MASTER_KEY must be set}
       UPLOAD_DIR: /app/uploads
-      USE_CELERY: ${USE_CELERY:-true}
       USE_REDIS: ${USE_REDIS:-true}
       USE_TEMPORAL: "true"
       TEMPORAL_ADDRESS: temporal:7233
@@ -284,6 +216,8 @@ services:
     depends_on:
       migrate:
         condition: service_completed_successfully
+      temporal:
+        condition: service_started
       redis:
         condition: service_healthy
     volumes:

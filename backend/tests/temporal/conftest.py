@@ -87,8 +87,15 @@ async def temporal_worker(temporal_server):
 
 @pytest_asyncio.fixture(scope="session", loop_scope="session")
 async def schema_ready():
-    """Create the application schema once on the app engine (factory checkfirst)."""
+    """Create the application schema once on the app engine (factory checkfirst).
+
+    Mirrors ``tests/conftest.py``: the Postgres test databases here are created
+    with only an ``app`` schema (no ``public``), so ensure ``public`` exists
+    before ``create_all``.
+    """
     async with engine.begin() as conn:
+        if conn.dialect.name == "postgresql":
+            await conn.execute(text("CREATE SCHEMA IF NOT EXISTS public"))
         await conn.run_sync(Base.metadata.create_all)
     yield
 

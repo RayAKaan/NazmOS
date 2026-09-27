@@ -2,7 +2,8 @@
 
 Scans all active listings, suggests matches, and notifies both sides via
 WhatsApp when a strong mutual opportunity is found.  This is intended to run
-as a Celery beat task or as a manual endpoint for pilot validation.
+on demand (manual endpoint or Temporal workflow invocation) for pilot
+validation.
 """
 from __future__ import annotations
 

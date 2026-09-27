@@ -19,6 +19,7 @@ const PROTECTED_SEGMENTS = [
   "suppliers",
   "weekly-report",
   "findings",
+  "loop",
 ];
 
 // Auth pages: already-authenticated users are sent to their dashboard.
@@ -86,5 +87,6 @@ export const config = {
     "/suppliers/:path*",
     "/weekly-report/:path*",
     "/findings/:path*",
+    "/loop/:path*",
   ],
 };

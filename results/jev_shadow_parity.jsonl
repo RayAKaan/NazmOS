@@ -1,0 +1,3 @@
+{"ts": "2026-09-23T22:35:07", "capability": "opencode_brain", "deterministic": "REORDER", "jev_source": "fallback", "jev_suggested": null, "agree": true, "decision": "REORDER"}
+{"ts": "2026-09-23T22:35:07", "capability": "opencode_brain", "deterministic": "DISCOUNT", "jev_source": "fallback", "jev_suggested": null, "agree": true, "decision": "DISCOUNT"}
+{"ts": "2026-09-23T22:35:07", "capability": "opencode_brain", "deterministic": "DO_NOTHING", "jev_source": "fallback", "jev_suggested": null, "agree": true, "decision": "DO_NOTHING"}

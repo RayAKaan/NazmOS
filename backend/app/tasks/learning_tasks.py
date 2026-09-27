@@ -1,17 +1,19 @@
-"""Celery tasks for the Learning Engine (Phase 6).
+"""Scheduled learning-engine maintenance (Phase 6).
+
+The async helpers are the canonical NazmOS bodies; the ``run_*`` supervisor
+wrappers are invoked by Temporal activities (see
+``app.orchestration.temporal.activities``).
 """
 from __future__ import annotations
 
-from app.config import get_settings
-from app.database.connection import AsyncSessionLocal, sync_rls_tenant_context
+from app.database.connection import AsyncSessionLocal, get_sync_session, sync_rls_tenant_context
 from app.services.learning_engine import (
     record_feedback,
     refresh_learning,
 )
 from app.utils.logger import setup_logger
 
-settings = get_settings()
-logger = setup_logger("celery.learning")
+logger = setup_logger("learning_tasks")
 
 
 async def _record_execution_feedback(execution_job_id: str, business_id: str | None = None) -> dict:
@@ -60,15 +62,30 @@ async def _refresh_model_performance(business_id: str, window_days: int = 30) ->
             }
 
 
-if settings.USE_CELERY:
-    from app.celery_app import celery_app
+def run_refresh_model_performance_all(window_days: int = 30) -> dict:
+    """Refresh learning-model performance for every active business.
 
-    @celery_app.task(name="app.tasks.learning_tasks.record_execution_feedback")
-    def record_execution_feedback_task(execution_job_id: str, business_id: str | None = None) -> dict:
-        import asyncio
-        return asyncio.run(_record_execution_feedback(execution_job_id, business_id))
+    Supervisor scope: enumerating active businesses is cross-tenant scheduler
+    work; each business refresh runs under its own RLS tenant context inside
+    ``_refresh_model_performance``. This corrects the legacy Celery beat call
+    that passed ``business_id=None`` to the per-business helper.
+    """
+    import asyncio
 
-    @celery_app.task(name="app.tasks.learning_tasks.refresh_model_performance")
-    def refresh_model_performance_task(business_id: str, window_days: int = 30) -> dict:
-        import asyncio
-        return asyncio.run(_refresh_model_performance(business_id, window_days))
+    from sqlalchemy import text
+
+    with get_sync_session() as session:
+        ids = [str(r[0]) for r in session.execute(
+            text("SELECT id FROM businesses WHERE is_active = true ORDER BY created_at")
+        ).fetchall()]
+
+    refreshed = 0
+    for business_id in ids:
+        try:
+            r = asyncio.run(_refresh_model_performance(business_id, window_days=window_days))
+            if r.get("status") == "refreshed":
+                refreshed += 1
+        except Exception as exc:
+            logger.warning("model performance refresh failed for %s: %s", business_id, exc)
+
+    return {"status": "completed", "businesses": len(ids), "refreshed": refreshed}

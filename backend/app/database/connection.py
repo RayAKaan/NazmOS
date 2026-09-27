@@ -48,7 +48,7 @@ def _sanitize_tenant_id(tenant_id: str | None) -> str | None:
 def sync_rls_tenant_context(tenant_id: str | None):
     """Scope background/sync execution to a single tenant via RLS.
 
-    Celery tasks, thread-pool executors, and CLI jobs have no HTTP request, so
+    Temporal activities, thread-pool executors, and CLI jobs have no HTTP request, so
     nothing sets the tenant ContextVar.  Wrapping a task body in this context
     makes every session created inside (``get_sync_session`` and
     ``AsyncSessionLocal`` alike) inherit the tenant: the sync engine begin
@@ -139,7 +139,7 @@ AsyncSessionLocal = async_sessionmaker(
     autoflush=False,
 )
 
-# Lazy sync engine for Celery workers (created on first use)
+# Lazy sync engine for background worker sessions (created on first use)
 _sync_engine = None
 
 
@@ -160,7 +160,7 @@ def _get_sync_engine():
             def _after_sync_begin(conn):
                 """Re-apply RLS tenant context on every sync transaction begin.
 
-                Mirrors the async engine listener so Celery/background sessions
+                Mirrors the async engine listener so background/sync sessions
                 opened without an explicit ``_set_rls_context`` still inherit
                 the tenant context set by ``sync_rls_tenant_context``.
                 """
@@ -237,7 +237,7 @@ async def async_session_scope():
 
 @contextmanager
 def get_sync_session(tenant_id: str | None = None):
-    """Synchronous session for Celery background tasks.
+    """Synchronous session for sync background tasks.
 
     Pass ``tenant_id`` (a business UUID) to scope the session AND any sibling
     sessions created while the context is active (e.g. the fresh async engine

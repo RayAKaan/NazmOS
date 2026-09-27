@@ -30,6 +30,14 @@ class AIBudget:
         with self._lock:
             self._roll(); self.calls_this_audit = 0
 
+    def reset(self):
+        """Zero every counter. Test isolation only -- a combined suite must never
+        let one module's daily-budget consumption leak into another module's
+        shadow-parity assertions."""
+        with self._lock:
+            self.calls_today = self.calls_this_audit = self.failures = 0
+            self.total_latency_ms = self.total_tokens = 0
+
     def can_call(self) -> bool:
         with self._lock:
             self._roll()

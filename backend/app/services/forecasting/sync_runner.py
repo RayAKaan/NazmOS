@@ -1,9 +1,9 @@
 """Sync facade for the async forecasting pipeline.
 
-Celery forecast tasks execute inside sync worker processes (`get_sync_session`).
+Forecast activities execute inside sync worker processes (`get_sync_session`).
 This module runs the async ``ForecastProvider`` + safe cache writer in a
-dedicated event loop so the Celery path produces exactly the same forecasts as
-the HTTP path.
+dedicated event loop so the background path produces exactly the same forecasts
+as the HTTP path.
 """
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ def run_provider_forecast_sync(
     """Run one provider forecast + cache persist synchronously.
 
     Returns the legacy-shaped forecast dict (via ``as_legacy_dict``), or an
-    empty dict on failure (callers keep Celery batches isolated).
+    empty dict on failure (callers keep background forecast batches isolated).
     """
 
     async def _run() -> Optional[ForecastResult]:

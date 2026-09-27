@@ -49,7 +49,7 @@ class ETLPipeline:
     def process(self, df: pd.DataFrame, business_id: str) -> dict:
         """Synchronous legacy API for smoke tests.
 
-        Real imports use the async Celery pipeline. This method validates that
+        Real imports use the async Temporal-backed pipeline. This method validates that
         the DataFrame is processable and returns import-style counters.
         """
         from app.services.data_normalizer import DataNormalizer

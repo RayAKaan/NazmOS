@@ -1,8 +1,8 @@
 """Scheduled continuous auditing (Phase 3, §2).
 
-Runs the reusable Audit Engine on a schedule via Celery Beat (the repo's intended
-production scheduler). The daily full audit iterates active businesses; a per-business
-variant exists for targeted re-runs.
+Runs the reusable Audit Engine on a schedule via Temporal (the single
+production execution substrate). The daily full audit iterates active
+businesses; a per-business variant exists for targeted re-runs.
 
 Idempotency/tenant-safety: the audit engine creates a fresh AuditRun per domain and
 persists findings; the debounce in the event processor prevents duplicate event-triggered
@@ -15,12 +15,10 @@ import logging
 
 from sqlalchemy import text
 
-from app.config import get_settings
 from app.database.connection import get_sync_session
 from app.utils.logger import setup_logger
 
-settings = get_settings()
-logger = setup_logger("celery.audits")
+logger = setup_logger("audit_tasks")
 
 ALL_DOMAINS = ["money_audit", "inventory", "recovery_match", "compliance"]
 
@@ -112,23 +110,3 @@ def run_daily_full_audit() -> dict:
             logger.error("daily audit failed for business %s: %s", business_id, exc)
 
     return {"status": "completed", "businesses_audited": audited, "total_businesses": len(business_ids)}
-
-
-if settings.USE_CELERY:
-    from app.celery_app import celery_app
-
-    @celery_app.task(bind=True, name="app.tasks.audit_tasks.daily_full_audit")
-    def daily_full_audit(self):
-        return run_daily_full_audit()
-
-    @celery_app.task(name="app.tasks.audit_tasks.audit_business")
-    def audit_business(business_id: str, domains: list[str] | None = None):
-        return run_audits_for_business(business_id, domains)
-
-    @celery_app.task(name="app.tasks.audit_tasks.goal_progress_snapshot")
-    def goal_progress_snapshot():
-        return run_goal_progress_snapshot()
-
-    @celery_app.task(name="app.tasks.audit_tasks.learning_reconciliation")
-    def learning_reconciliation():
-        return run_learning_reconciliation()

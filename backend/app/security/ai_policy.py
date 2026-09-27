@@ -20,6 +20,16 @@ AI_CAPABILITIES: dict[str, str] = {
     "challenge": "challenge the deterministic decision",
     "opencode_brain": "independent reasoning on a decision capsule",
     "chat": "executive copilot answering about the merchant's own business",
+    "recovery.rank": "resolve ambiguity in recovery candidate ranking",
+    "recovery.action_type": "resolve ambiguity in the recovery action type",
+    "audit.root_cause_bucket": "resolve ambiguity in the root-cause bucket",
+    "inventory.stockout_tier": "resolve ambiguity in the stockout urgency tier",
+    "inventory.anomaly_triage": "resolve ambiguity in the anomaly triage bucket",
+    "procurement.reorder_urgency": "score the reorder urgency ladder over days of supply",
+    "procurement.supplier_risk": "score supplier reliability risk over the vendor history contract",
+    "pricing.margin_erosion_risk": "score the margin erosion band against the gross margin threshold set",
+    "report.finding_priority": "choose the finding priority over the severity contract",
+    "business_loop.action_selection": "advisory action selection for the continuous_business_loop",
 }
 
 AI_CAPABILITY_FLAGS: dict[str, Callable[[object], bool]] = {}
@@ -36,6 +46,16 @@ AI_CAPABILITY_FLAGS["opencode_brain"] = _enabled("AI_ENABLED")
 AI_CAPABILITY_FLAGS["counterfactual_audit"] = _enabled("AI_ENABLED")
 AI_CAPABILITY_FLAGS["challenge"] = _enabled("AI_ENABLED")
 AI_CAPABILITY_FLAGS["chat"] = _enabled("CHAT_ENABLED")
+AI_CAPABILITY_FLAGS["recovery.rank"] = _enabled("AI_ENABLED")
+AI_CAPABILITY_FLAGS["recovery.action_type"] = _enabled("AI_ENABLED")
+AI_CAPABILITY_FLAGS["audit.root_cause_bucket"] = _enabled("AI_ENABLED")
+AI_CAPABILITY_FLAGS["inventory.stockout_tier"] = _enabled("AI_ENABLED")
+AI_CAPABILITY_FLAGS["inventory.anomaly_triage"] = _enabled("AI_ENABLED")
+AI_CAPABILITY_FLAGS["procurement.reorder_urgency"] = _enabled("AI_ENABLED")
+AI_CAPABILITY_FLAGS["procurement.supplier_risk"] = _enabled("AI_ENABLED")
+AI_CAPABILITY_FLAGS["pricing.margin_erosion_risk"] = _enabled("AI_ENABLED")
+AI_CAPABILITY_FLAGS["report.finding_priority"] = _enabled("AI_ENABLED")
+AI_CAPABILITY_FLAGS["business_loop.action_selection"] = _enabled("AI_ENABLED")
 
 
 class AiPolicy:

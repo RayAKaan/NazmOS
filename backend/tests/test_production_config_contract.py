@@ -23,6 +23,7 @@ def _prod(**overrides):
         "DATABASE_APP_ROLE": "nazmos_app",
         "DATABASE_URL": _PG_URL,
         "USE_TEMPORAL": True,
+        "WHATSAPP_VERIFY_TOKEN": "test-verify-token",
         **_LLM,
     }
     base.update(overrides)
@@ -83,7 +84,8 @@ def test_production_weak_dev_secret_key_blocked_at_get_settings():
     keys = ("ENVIRONMENT", "SECRET_KEY", "SENTRY_DSN", "USE_MOCK_LLM",
             "CREDENTIAL_MASTER_KEY", "GROQ_API_KEY", "GOOGLE_AI_API_KEY",
             "DATABASE_APP_ROLE", "DATABASE_URL", "REDIS_URL", "UPLOAD_DIR",
-            "LLM_PROVIDER_ORDER", "WHATSAPP_ENABLED", "CORS_ORIGINS", "USE_TEMPORAL")
+            "LLM_PROVIDER_ORDER", "WHATSAPP_ENABLED", "CORS_ORIGINS", "USE_TEMPORAL",
+            "WHATSAPP_VERIFY_TOKEN")
     saved = {k: os.environ.get(k) for k in keys}
     env = {
         "ENVIRONMENT": "production",
@@ -95,6 +97,7 @@ def test_production_weak_dev_secret_key_blocked_at_get_settings():
         "DATABASE_APP_ROLE": "nazmos_app",
         "DATABASE_URL": _PG_URL,
         "USE_TEMPORAL": "true",
+        "WHATSAPP_VERIFY_TOKEN": "test-verify-token",
     }
     try:
         for k in keys:

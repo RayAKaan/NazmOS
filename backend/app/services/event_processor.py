@@ -1,8 +1,8 @@
 """Synchronous (async) event processor for the Universal Event Engine.
 
-This module is called directly when Celery is disabled and via the Celery task
-when Celery is enabled. It validates, deduplicates, marks events processed, and
-publishes to the event bus.
+This module is the single event-processing body: called in-process (local
+zero-cost mode) or by the ``event_process`` Temporal activity. It validates,
+deduplicates, marks events processed, and publishes to the event bus.
 """
 from __future__ import annotations
 

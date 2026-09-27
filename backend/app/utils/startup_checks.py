@@ -5,7 +5,7 @@ Fail closed when required services are unreachable in production.
 from __future__ import annotations
 
 from app.config import get_settings
-from app.services.infra_service import ping_redis, ping_celery
+from app.services.infra_service import ping_redis, ping_temporal
 from app.utils.logger import setup_logger
 
 settings = get_settings()
@@ -13,7 +13,7 @@ logger = setup_logger("startup")
 
 
 async def validate_redis() -> None:
-    """Ping Redis when USE_REDIS or USE_CELERY is enabled. Raise on failure."""
+    """Ping Redis when USE_REDIS is enabled. Raise on failure."""
     if not settings.REDIS_URL:
         return
 
@@ -23,21 +23,20 @@ async def validate_redis() -> None:
     logger.info("Redis connectivity verified", extra={"version": result.get("version")})
 
 
-def validate_celery_broker() -> None:
-    """Validate Celery broker connectivity and worker presence. Raise on failure."""
-    if not settings.USE_CELERY:
+async def validate_temporal() -> None:
+    """Validate Temporal server connectivity. Raise on failure."""
+    if not settings.USE_TEMPORAL:
         return
 
-    result = ping_celery()
+    result = await ping_temporal()
     if not result.get("reachable"):
-        raise RuntimeError(f"Celery broker is unreachable: {result.get('reason')}")
-    if not result.get("workers_online"):
-        logger.warning("Celery broker reachable but no workers are online")
-    else:
-        logger.info(
-            "Celery connectivity verified",
-            extra={"workers": result.get("workers_online", [])},
+        raise RuntimeError(
+            f"Temporal server unreachable at {settings.TEMPORAL_ADDRESS}: {result.get('reason')}"
         )
+    logger.info(
+        "Temporal connectivity verified",
+        extra={"address": result.get("address"), "server_version": result.get("server_version")},
+    )
 
 
 def validate_production_secrets() -> None:
@@ -67,10 +66,8 @@ def validate_production_secrets() -> None:
 
 async def run_startup_checks() -> None:
     """Run all fail-closed startup checks."""
-    import asyncio
-
     validate_production_secrets()
-    if settings.USE_REDIS or settings.USE_CELERY:
+    if settings.USE_REDIS:
         await validate_redis()
-    if settings.USE_CELERY:
-        await asyncio.to_thread(validate_celery_broker)
+    if settings.USE_TEMPORAL:
+        await validate_temporal()

@@ -19,7 +19,7 @@ TEST_DATABASE_URL = os.environ.get(
 )
 
 # Route the application-level engine (used by code that opens its own session,
-# e.g. access-denial audit writes and Celery-style background paths) at the same
+# e.g. access-denial audit writes and background/Temporal paths) at the same
 # database the test fixtures use. Without this the app engine would try the dev
 # database with default credentials and those writes would fail mid-test. Env
 # vars win over defaults in pydantic-settings, so this MUST run before any app

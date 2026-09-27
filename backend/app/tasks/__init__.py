@@ -1,8 +1,6 @@
-from app.config import get_settings
+"""Background-operation bodies (single canonical NazmOS run_* functions).
 
-settings = get_settings()
-
-if settings.USE_CELERY:
-    from app.tasks.forecast_tasks import refresh_all_forecasts, train_forecast_for_item
-    from app.tasks.ingestion_tasks import process_upload_task, cleanup_stale_uploads
-    from app.tasks.analytics_tasks import rebuild_summaries_yesterday, refresh_daily_summaries
+The run_* functions in this package are the business logic invoked by Temporal
+activities (``app.orchestration.temporal.activities``). They contain no
+Celery/queue wiring.
+"""

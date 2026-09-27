@@ -1,0 +1,1 @@
+TCP+asyncpg AUTH FAIL: InvalidPasswordError: password authentication failed for user "nazmos"

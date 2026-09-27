@@ -1,10 +1,7 @@
 from datetime import datetime, timedelta
 from sqlalchemy import text
 
-from app.config import get_settings
 from app.database.connection import get_sync_session
-
-settings = get_settings()
 
 
 def run_refresh_daily_summaries(date_str: str):
@@ -54,16 +51,3 @@ def run_refresh_daily_summaries(date_str: str):
 def run_rebuild_summaries_yesterday():
     yesterday = datetime.utcnow().date() - timedelta(days=1)
     return run_refresh_daily_summaries(yesterday.strftime("%Y-%m-%d"))
-
-
-if settings.USE_CELERY:
-    from celery import Task
-    from app.celery_app import celery_app
-
-    @celery_app.task(name="app.tasks.analytics_tasks.rebuild_summaries_yesterday")
-    def rebuild_summaries_yesterday():
-        return run_rebuild_summaries_yesterday()
-
-    @celery_app.task(name="app.tasks.analytics_tasks.refresh_daily_summaries")
-    def refresh_daily_summaries(date_str: str):
-        return run_refresh_daily_summaries(date_str)

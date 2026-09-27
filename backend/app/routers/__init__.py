@@ -21,6 +21,7 @@ from app.routers.audits import router as audits_router
 from app.routers.partners import router as partners_router
 from app.routers.admin_backup import router as admin_backup_router
 from app.routers.oauth import router as oauth_router
+from app.routers.loop_console import router as loop_console_router
 
 # Retail Recovery routers
 from app.routers.pos_webhooks import router as pos_webhooks_router
@@ -84,4 +85,5 @@ __all__ = [
     "pos_webhooks_router",
     "orchestrator_router",
     "recovery_match_router",
+    "loop_console_router",
 ]

@@ -1,7 +1,5 @@
 from datetime import datetime
 
-import asyncio
-
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Any
 from sqlalchemy import text
@@ -10,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import get_settings
 from app.database import get_db
 from app.schemas.common import HealthResponse
-from app.services.infra_service import ping_redis, ping_celery, get_celery_queue_lengths
+from app.services.infra_service import ping_redis, ping_temporal
 
 router = APIRouter(tags=["Health"])
 settings = get_settings()
@@ -24,7 +22,7 @@ async def _dependency_checks(db: AsyncSession | None = None) -> tuple[str, dict]
         "environment": settings.ENVIRONMENT,
     }
     status = "healthy"
-    strict_runtime = settings.ENVIRONMENT in {"runtime_test", "production", "staging"} or settings.USE_CELERY or settings.USE_REDIS
+    strict_runtime = settings.ENVIRONMENT in {"runtime_test", "production", "staging"} or settings.USE_REDIS
 
     try:
         if db is None:
@@ -52,11 +50,9 @@ async def _dependency_checks(db: AsyncSession | None = None) -> tuple[str, dict]
             status = "degraded"
 
     if strict_runtime:
-        # Celery inspect broadcasts are blocking Kombu calls; run them on a
-        # worker thread so the event loop is never blocked by health probes.
-        celery_probe = await asyncio.to_thread(ping_celery)
-        checks["celery"] = "ok" if celery_probe.get("reachable") and celery_probe.get("workers_online") else "error"
-        if checks["celery"] != "ok":
+        temporal_probe = await ping_temporal()
+        checks["temporal"] = "ok" if temporal_probe.get("reachable") else "error"
+        if checks["temporal"] != "ok":
             status = "unhealthy"
 
     required_env = ["SECRET_KEY", "DATABASE_URL", "REDIS_URL"]
@@ -108,24 +104,4 @@ async def redis_health():
         "service": "redis",
         "timestamp": datetime.utcnow().isoformat(),
         **result,
-    }
-
-
-@router.get("/health/celery")
-async def celery_health():
-    probe, queues = await asyncio.gather(
-        asyncio.to_thread(ping_celery),
-        asyncio.to_thread(get_celery_queue_lengths),
-    )
-    if not probe.get("reachable") and "reason" in probe and not probe.get("enabled"):
-        probe["reason"] = "celery_disabled"
-    elif not probe.get("reachable"):
-        probe["reason"] = "celery_unreachable"
-    if "error" in queues:
-        queues["error"] = "queue_probe_failed"
-    return {
-        "service": "celery",
-        "timestamp": datetime.utcnow().isoformat(),
-        **probe,
-        "queues": queues.get("queues", {}),
     }

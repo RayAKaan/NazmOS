@@ -1,0 +1,257 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+__________ test_whatsapp_webhook_approval_is_tenant_scoped_under_rls __________
+
+rls_engine = <sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000026BCFA81310>
+app_role_enabled = None
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000026BCFCFAEA0>
+
+    @pytest.mark.asyncio
+    async def test_whatsapp_webhook_approval_is_tenant_scoped_under_rls(
+        rls_engine, app_role_enabled, monkeypatch,
+    ):
+        """The unauthenticated WhatsApp webhook must fail closed under real RLS.
+    
+        The webhook session assumes ``nazmos_app`` with a tenant resolved from the
+        button id.  A button for the correct business transitions the action; a
+        button whose tenant does not own the action must see zero rows (RLS) and
+        must NOT emit an approval confirmation.
+        """
+        import hashlib
+        import hmac
+        import json
+        import types
+    
+        from httpx import AsyncClient, ASGITransport
+    
+        from app.main import app
+        from app.database import get_db  # noqa: F401
+    
+        SessionLocal = async_sessionmaker(rls_engine, class_=AsyncSession, expire_on_commit=False)
+    
+        async with SessionLocal() as owner_session:
+            bus_a = str(uuid.uuid4())
+            bus_b = str(uuid.uuid4())
+            action_a = str(uuid.uuid4())
+            action_b = str(uuid.uuid4())
+            owner_row = await owner_session.execute(
+                text("""
+                    INSERT INTO users (id, email, password_hash, full_name, role, is_active)
+                    VALUES (:id, :email, 'hash', 'Owner', 'owner', true)
+                """),
+                {"id": str(uuid.uuid4()), "email": f"rls_wa_{uuid.uuid4().hex[:8]}@example.com"},
+            )
+            for bid in (bus_a, bus_b):
+                await owner_session.execute(
+                    text("INSERT INTO businesses (id, name, type, currency) VALUES (:id, 'W', 'retail', 'SAR')"),
+                    {"id": bid},
+                )
+            for bid, item_sku, action_id in (
+                (bus_a, "A-1", action_a),
+                (bus_b, "B-1", action_b),
+            ):
+                item_id = str(uuid.uuid4())
+                await owner_session.execute(
+                    text("""
+                        INSERT INTO items (id, business_id, name, sku, unit, cost_price, sell_price, is_active)
+                        VALUES (:id, :business_id, 'I', :sku, 'piece', 10, 20, true)
+                    """),
+                    {"id": item_id, "business_id": bid, "sku": item_sku},
+                )
+                await owner_session.execute(
+                    text("""
+                        INSERT INTO agent_actions
+                            (id, business_id, action_type, status, confidence, priority, title, summary,
+                             payload, autonomy_dial_at_creation, estimated_value_sar)
+                        VALUES
+                            (:id, :business_id, 'restock', 'pending_approval', 0.9, 1, 'T', 'S',
+                             CAST(:payload AS JSON), 50, 100)
+                    """),
+                    {
+                        "id": action_id,
+                        "business_id": bid,
+                        "payload": f'{{"item_id": "{item_id}", "recommended_qty": 15}}',
+                    },
+                )
+            await owner_session.commit()
+    
+        # Webhook scenarios operate against the NORMAL app dependency so the engine
+        # begin-listener (which reads app_role_enabled's patched settings and the
+        # tenant ContextVar) is the code path under test.
+        def _button_payload(button_id: str) -> bytes:
+            body = {
+                "entry": [{"changes": [{"value": {"messages": [
+                    {"from": "+966500000000", "type": "interactive",
+                     "interactive": {"type": "button", "button_reply": {"id": button_id}}},
+                ]}}]}],
+            }
+            return json.dumps(body).encode()
+    
+        def _headers(body: bytes) -> dict:
+            return {"x-hub-signature-256":
+                    "sha256=" + hmac.new(b"rls-secret", body, hashlib.sha256).hexdigest()}
+    
+        sent: list[tuple[str, str]] = []
+    
+        async def fake_send(to_number: str, text: str):
+            sent.append((to_number, text))
+    
+        monkeypatch.setattr(
+            "app.routers.whatsapp.settings",
+            types.SimpleNamespace(WHATSAPP_APP_SECRET="rls-secret"),
+        )
+        monkeypatch.setattr("app.routers.whatsapp.send_notification", fake_send)
+    
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+            # 1. Correct tenant button -> action_a actually transitions.
+            body = _button_payload(f"approve_{bus_a}_{action_a}")
+            r = await ac.post("/api/v1/whatsapp/webhook", content=body, headers=_headers(body))
+            assert r.status_code == 200
+    
+            # 2. Wrong-tenant button targeting action_a -> must fail closed.
+            body = _button_payload(f"approve_{bus_b}_{action_a}")
+            r = await ac.post("/api/v1/whatsapp/webhook", content=body, headers=_headers(body))
+            assert r.status_code == 200
+    
+        async with SessionLocal() as check_session:
+            rows = (await check_session.execute(
+                text("SELECT id, status FROM agent_actions WHERE id IN (:a, :b)"),
+                {"a": action_a, "b": action_b},
+            )).fetchall()
+            statuses = {str(row.id): row.status for row in rows}
+    
+>       assert statuses[action_a] == "executed", "correct-tenant webhook must approve+execute"
+E       AssertionError: correct-tenant webhook must approve+execute
+E       assert 'pending_approval' == 'executed'
+E         
+E         - executed
+E         + pending_approval
+
+backend\tests\test_rls_enforcement.py:487: AssertionError
+---------------------------- Captured stdout call -----------------------------
+2026-09-17 02:53:01,137 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+{"timestamp": "2026-09-16T21:23:01.137730+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "select pg_catalog.version()", "asctime": "2026-09-17 02:53:01,137", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+2026-09-17 02:53:01,137 INFO sqlalchemy.engine.Engine [raw sql] ()
+{"timestamp": "2026-09-16T21:23:01.138025+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "[raw sql] ()", "asctime": "2026-09-17 02:53:01,137", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+2026-09-17 02:53:01,140 INFO sqlalchemy.engine.Engine select current_schema()
+{"timestamp": "2026-09-16T21:23:01.140802+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "select current_schema()", "asctime": "2026-09-17 02:53:01,140", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+2026-09-17 02:53:01,140 INFO sqlalchemy.engine.Engine [raw sql] ()
+{"timestamp": "2026-09-16T21:23:01.141034+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "[raw sql] ()", "asctime": "2026-09-17 02:53:01,140", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+2026-09-17 02:53:01,144 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+{"timestamp": "2026-09-16T21:23:01.144413+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "show standard_conforming_strings", "asctime": "2026-09-17 02:53:01,144", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+2026-09-17 02:53:01,144 INFO sqlalchemy.engine.Engine [raw sql] ()
+{"timestamp": "2026-09-16T21:23:01.144612+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "[raw sql] ()", "asctime": "2026-09-17 02:53:01,144", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+2026-09-17 02:53:01,146 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+{"timestamp": "2026-09-16T21:23:01.146941+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "BEGIN (implicit)", "asctime": "2026-09-17 02:53:01,146", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+2026-09-17 02:53:01,147 INFO sqlalchemy.engine.Engine SET LOCAL ROLE "nazmos_app"
+{"timestamp": "2026-09-16T21:23:01.147184+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "SET LOCAL ROLE \"nazmos_app\"", "asctime": "2026-09-17 02:53:01,147", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+2026-09-17 02:53:01,147 INFO sqlalchemy.engine.Engine [raw sql] ()
+{"timestamp": "2026-09-16T21:23:01.147367+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "[raw sql] ()", "asctime": "2026-09-17 02:53:01,147", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+2026-09-17 02:53:01,149 INFO sqlalchemy.engine.Engine SET LOCAL ROLE "nazmos_app"
+{"timestamp": "2026-09-16T21:23:01.149512+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "SET LOCAL ROLE \"nazmos_app\"", "asctime": "2026-09-17 02:53:01,149", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+2026-09-17 02:53:01,149 INFO sqlalchemy.engine.Engine [generated in 0.00026s] ()
+{"timestamp": "2026-09-16T21:23:01.149775+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "[generated in 0.00026s] ()", "asctime": "2026-09-17 02:53:01,149", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+2026-09-17 02:53:01,151 INFO sqlalchemy.engine.Engine COMMIT
+{"timestamp": "2026-09-16T21:23:01.151403+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "COMMIT", "asctime": "2026-09-17 02:53:01,151", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+{"timestamp": "2026-09-17T04:08:59.900235+00:00", "level": "ERROR", "logger": "whatsapp_router", "message": "Error handling WhatsApp approval for action d672438b-c736-4a59-821f-8963908f6bed: Temporal execution failed (workflow=agent_approval, workflow_id=agent-d672438b-c736-4a59-821f-8963908f6bed, address=127.0.0.1:7233, task_queue=nazm-execution): Workflow execution failed", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+{"timestamp": "2026-09-17T04:09:08.014493+00:00", "level": "INFO", "logger": "api", "message": "POST /api/v1/whatsapp/webhook - 200", "business_id": null, "method": "POST", "path": "/api/v1/whatsapp/webhook", "response_time_ms": 24366193.917512894, "status_code": 200, "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "user_id": null, "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+{"timestamp": "2026-09-17T04:09:08.156993+00:00", "level": "INFO", "logger": "api", "message": "POST /api/v1/whatsapp/webhook - 200", "business_id": null, "method": "POST", "path": "/api/v1/whatsapp/webhook", "response_time_ms": 24366193.917512894, "status_code": 200, "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "user_id": null, "request_id": "72579013-c1c9-466a-8880-9c84effed7dc"}
+{"timestamp": "2026-09-17T04:09:16.134690+00:00", "level": "INFO", "logger": "httpx", "message": "HTTP Request: POST http://test/api/v1/whatsapp/webhook \"HTTP/1.1 200 OK\"", "taskName": "Task-7"}
+2026-09-17 09:39:22,753 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+{"timestamp": "2026-09-17T04:09:22.805422+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "BEGIN (implicit)", "asctime": "2026-09-17 09:39:22,753", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "0e89efda-46b4-479e-8bf1-5d884de90fd0"}
+2026-09-17 09:39:23,433 INFO sqlalchemy.engine.Engine SET LOCAL ROLE "nazmos_app"
+{"timestamp": "2026-09-17T04:09:23.433851+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "SET LOCAL ROLE \"nazmos_app\"", "asctime": "2026-09-17 09:39:23,433", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "0e89efda-46b4-479e-8bf1-5d884de90fd0"}
+2026-09-17 09:39:23,638 INFO sqlalchemy.engine.Engine [raw sql] ()
+{"timestamp": "2026-09-17T04:09:23.646013+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "[raw sql] ()", "asctime": "2026-09-17 09:39:23,638", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "0e89efda-46b4-479e-8bf1-5d884de90fd0"}
+2026-09-17 09:39:24,366 INFO sqlalchemy.engine.Engine SET LOCAL ROLE "nazmos_app"
+{"timestamp": "2026-09-17T04:09:24.414396+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "SET LOCAL ROLE \"nazmos_app\"", "asctime": "2026-09-17 09:39:24,366", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "0e89efda-46b4-479e-8bf1-5d884de90fd0"}
+2026-09-17 09:39:24,548 INFO sqlalchemy.engine.Engine [cached since 2.438e+04s ago] ()
+{"timestamp": "2026-09-17T04:09:24.548544+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "[cached since 2.438e+04s ago] ()", "asctime": "2026-09-17 09:39:24,548", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "0e89efda-46b4-479e-8bf1-5d884de90fd0"}
+2026-09-17 09:39:24,689 INFO sqlalchemy.engine.Engine COMMIT
+{"timestamp": "2026-09-17T04:09:24.689175+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "COMMIT", "asctime": "2026-09-17 09:39:24,689", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "0e89efda-46b4-479e-8bf1-5d884de90fd0"}
+{"timestamp": "2026-09-17T04:09:41.656814+00:00", "level": "ERROR", "logger": "whatsapp_router", "message": "Error handling WhatsApp approval for action d672438b-c736-4a59-821f-8963908f6bed: Temporal execution failed (workflow=agent_approval, workflow_id=agent-d672438b-c736-4a59-821f-8963908f6bed, address=127.0.0.1:7233, task_queue=nazm-execution): Workflow execution failed", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "0e89efda-46b4-479e-8bf1-5d884de90fd0"}
+{"timestamp": "2026-09-17T04:09:41.663095+00:00", "level": "INFO", "logger": "api", "message": "POST /api/v1/whatsapp/webhook - 200", "business_id": null, "method": "POST", "path": "/api/v1/whatsapp/webhook", "response_time_ms": 24792.353868484497, "status_code": 200, "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "user_id": null, "request_id": "0e89efda-46b4-479e-8bf1-5d884de90fd0"}
+{"timestamp": "2026-09-17T04:09:41.663335+00:00", "level": "INFO", "logger": "api", "message": "POST /api/v1/whatsapp/webhook - 200", "business_id": null, "method": "POST", "path": "/api/v1/whatsapp/webhook", "response_time_ms": 24792.353868484497, "status_code": 200, "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "user_id": null, "request_id": "0e89efda-46b4-479e-8bf1-5d884de90fd0"}
+{"timestamp": "2026-09-17T04:09:41.665728+00:00", "level": "INFO", "logger": "httpx", "message": "HTTP Request: POST http://test/api/v1/whatsapp/webhook \"HTTP/1.1 200 OK\"", "taskName": "Task-7"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:1848 select pg_catalog.version()
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 select current_schema()
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 show standard_conforming_strings
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:2712 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1848 SET LOCAL ROLE "nazmos_app"
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 SET LOCAL ROLE "nazmos_app"
+INFO     sqlalchemy.engine.Engine:base.py:1848 [generated in 0.00026s] ()
+INFO     sqlalchemy.engine.Engine:base.py:2718 COMMIT
+ERROR    whatsapp_router:whatsapp.py:174 Error handling WhatsApp approval for action d672438b-c736-4a59-821f-8963908f6bed: Temporal execution failed (workflow=agent_approval, workflow_id=agent-d672438b-c736-4a59-821f-8963908f6bed, address=127.0.0.1:7233, task_queue=nazm-execution): Workflow execution failed
+INFO     api:logger.py:273 POST /api/v1/whatsapp/webhook - 200
+INFO     httpx:_client.py:1740 HTTP Request: POST http://test/api/v1/whatsapp/webhook "HTTP/1.1 200 OK"
+INFO     sqlalchemy.engine.Engine:base.py:2712 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1848 SET LOCAL ROLE "nazmos_app"
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 SET LOCAL ROLE "nazmos_app"
+INFO     sqlalchemy.engine.Engine:base.py:1848 [cached since 2.438e+04s ago] ()
+INFO     sqlalchemy.engine.Engine:base.py:2718 COMMIT
+ERROR    whatsapp_router:whatsapp.py:174 Error handling WhatsApp approval for action d672438b-c736-4a59-821f-8963908f6bed: Temporal execution failed (workflow=agent_approval, workflow_id=agent-d672438b-c736-4a59-821f-8963908f6bed, address=127.0.0.1:7233, task_queue=nazm-execution): Workflow execution failed
+INFO     api:logger.py:273 POST /api/v1/whatsapp/webhook - 200
+INFO     httpx:_client.py:1740 HTTP Request: POST http://test/api/v1/whatsapp/webhook "HTTP/1.1 200 OK"
+============================== warnings summary ===============================
+backend\app\config.py:8
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\config.py:8: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class Settings(BaseSettings):
+
+backend\app\schemas\auth.py:22
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\auth.py:22: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class UserResponse(BaseModel):
+
+backend\app\schemas\common.py:11
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\common.py:11: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    timestamp: datetime = datetime.utcnow()
+
+backend\app\schemas\organization.py:20
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:20: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OrganizationResponse(BaseModel):
+
+backend\app\schemas\organization.py:60
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:60: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class BusinessLocationResponse(BaseModel):
+
+backend\app\schemas\organization.py:89
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:89: PydanticDeprecatedSince20: Using extra keyword arguments on `Field` is deprecated and will be removed. Use `json_schema_extra` instead. (Extra keys: 'format'). Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    email: str = Field(..., format="email")
+
+backend\app\schemas\organization.py:97
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:97: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class TeamMemberResponse(BaseModel):
+
+backend\app\schemas\organization.py:112
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:112: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class InvitationResponse(BaseModel):
+
+backend\app\schemas\subscription.py:19
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\subscription.py:19: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class SubscriptionResponse(BaseModel):
+
+backend\app\schemas\subscription.py:51
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\subscription.py:51: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class BillingEventResponse(BaseModel):
+
+backend\app\schemas\adapter.py:83
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\adapter.py:83: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class POSConnectionResponse(BaseModel):
+
+backend\app\schemas\action.py:25
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\action.py:25: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ActionHistoryItem(BaseModel):
+
+backend\app\schemas\action.py:43
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\action.py:43: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ActionDetailResponse(BaseModel):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED backend\tests\test_rls_enforcement.py::test_whatsapp_webhook_approval_is_tenant_scoped_under_rls
+1 failed, 13 warnings in 24420.79s (6:47:00)

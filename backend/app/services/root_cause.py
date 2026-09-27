@@ -11,6 +11,7 @@ strategy ranking → policy → approval → execution (§19).
 from __future__ import annotations
 
 import json
+from decimal import Decimal
 from typing import Any
 from uuid import UUID
 
@@ -50,7 +51,7 @@ async def _stockout_hypotheses(db: AsyncSession, business_id: UUID | str, findin
     raw_velocity = float(row.velocity or 0)
     canonical_velocity = float(
         coverage_aware_daily_velocity(
-            Decimal(str(raw_velocity) * 30),  # reverse-engineer qty_30d from the /30 result
+            Decimal(str(raw_velocity * 30)),  # reverse-engineer qty_30d from the /30 result
             None,
         )
     ) if raw_velocity > 0 else 0.0

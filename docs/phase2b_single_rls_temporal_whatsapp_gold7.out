@@ -1,0 +1,137 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+__________ test_whatsapp_webhook_approval_is_tenant_scoped_under_rls __________
+backend\tests\test_rls_enforcement.py:487: in test_whatsapp_webhook_approval_is_tenant_scoped_under_rls
+    assert statuses[action_a] == "executed", "correct-tenant webhook must approve+execute"
+E   AssertionError: correct-tenant webhook must approve+execute
+E   assert 'pending_approval' == 'executed'
+E     
+E     - executed
+E     + pending_approval
+---------------------------- Captured stdout call -----------------------------
+2026-09-17 19:45:45,286 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+{"timestamp": "2026-09-17T14:15:45.286716+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "select pg_catalog.version()", "asctime": "2026-09-17 19:45:45,286", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+2026-09-17 19:45:45,286 INFO sqlalchemy.engine.Engine [raw sql] ()
+{"timestamp": "2026-09-17T14:15:45.286976+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "[raw sql] ()", "asctime": "2026-09-17 19:45:45,286", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+2026-09-17 19:45:45,290 INFO sqlalchemy.engine.Engine select current_schema()
+{"timestamp": "2026-09-17T14:15:45.290392+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "select current_schema()", "asctime": "2026-09-17 19:45:45,290", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+2026-09-17 19:45:45,290 INFO sqlalchemy.engine.Engine [raw sql] ()
+{"timestamp": "2026-09-17T14:15:45.290669+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "[raw sql] ()", "asctime": "2026-09-17 19:45:45,290", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+2026-09-17 19:45:45,295 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+{"timestamp": "2026-09-17T14:15:45.295300+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "show standard_conforming_strings", "asctime": "2026-09-17 19:45:45,295", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+2026-09-17 19:45:45,295 INFO sqlalchemy.engine.Engine [raw sql] ()
+{"timestamp": "2026-09-17T14:15:45.295574+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "[raw sql] ()", "asctime": "2026-09-17 19:45:45,295", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+2026-09-17 19:45:45,298 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+{"timestamp": "2026-09-17T14:15:45.298785+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "BEGIN (implicit)", "asctime": "2026-09-17 19:45:45,298", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+2026-09-17 19:45:45,298 INFO sqlalchemy.engine.Engine SET LOCAL ROLE "nazmos_app"
+{"timestamp": "2026-09-17T14:15:45.299028+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "SET LOCAL ROLE \"nazmos_app\"", "asctime": "2026-09-17 19:45:45,298", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+2026-09-17 19:45:45,299 INFO sqlalchemy.engine.Engine [raw sql] ()
+{"timestamp": "2026-09-17T14:15:45.299197+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "[raw sql] ()", "asctime": "2026-09-17 19:45:45,299", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+2026-09-17 19:45:45,301 INFO sqlalchemy.engine.Engine SET LOCAL ROLE "nazmos_app"
+{"timestamp": "2026-09-17T14:15:45.301551+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "SET LOCAL ROLE \"nazmos_app\"", "asctime": "2026-09-17 19:45:45,301", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+2026-09-17 19:45:45,301 INFO sqlalchemy.engine.Engine [generated in 0.00027s] ()
+{"timestamp": "2026-09-17T14:15:45.301824+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "[generated in 0.00027s] ()", "asctime": "2026-09-17 19:45:45,301", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+2026-09-17 19:45:45,303 INFO sqlalchemy.engine.Engine COMMIT
+{"timestamp": "2026-09-17T14:15:45.303626+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "COMMIT", "asctime": "2026-09-17 19:45:45,303", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+{"timestamp": "2026-09-17T14:16:16.325270+00:00", "level": "ERROR", "logger": "whatsapp_router", "message": "Error handling WhatsApp approval for action ffd4d65d-162d-41ef-88d3-b50d68a072a4: Temporal execution failed (workflow=agent_approval, workflow_id=agent-ffd4d65d-162d-41ef-88d3-b50d68a072a4, address=127.0.0.1:7233, task_queue=nazm-execution): Workflow execution failed", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+{"timestamp": "2026-09-17T14:16:16.326169+00:00", "level": "INFO", "logger": "api", "message": "POST /api/v1/whatsapp/webhook - 200", "business_id": null, "method": "POST", "path": "/api/v1/whatsapp/webhook", "response_time_ms": 31119.72427368164, "status_code": 200, "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "user_id": null, "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+{"timestamp": "2026-09-17T14:16:16.326303+00:00", "level": "INFO", "logger": "api", "message": "POST /api/v1/whatsapp/webhook - 200", "business_id": null, "method": "POST", "path": "/api/v1/whatsapp/webhook", "response_time_ms": 31119.72427368164, "status_code": 200, "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "user_id": null, "request_id": "ebf60c50-7f41-4b78-b8e3-bca59fec5dc9"}
+{"timestamp": "2026-09-17T14:16:16.329241+00:00", "level": "INFO", "logger": "httpx", "message": "HTTP Request: POST http://test/api/v1/whatsapp/webhook \"HTTP/1.1 200 OK\"", "taskName": "Task-7"}
+2026-09-17 19:46:16,338 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+{"timestamp": "2026-09-17T14:16:16.338531+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "BEGIN (implicit)", "asctime": "2026-09-17 19:46:16,338", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "b6671e73-9d8d-4985-91cf-eebf07b65bbb"}
+2026-09-17 19:46:16,338 INFO sqlalchemy.engine.Engine SET LOCAL ROLE "nazmos_app"
+{"timestamp": "2026-09-17T14:16:16.338814+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "SET LOCAL ROLE \"nazmos_app\"", "asctime": "2026-09-17 19:46:16,338", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "b6671e73-9d8d-4985-91cf-eebf07b65bbb"}
+2026-09-17 19:46:16,338 INFO sqlalchemy.engine.Engine [raw sql] ()
+{"timestamp": "2026-09-17T14:16:16.339010+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "[raw sql] ()", "asctime": "2026-09-17 19:46:16,338", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "b6671e73-9d8d-4985-91cf-eebf07b65bbb"}
+2026-09-17 19:46:16,340 INFO sqlalchemy.engine.Engine SET LOCAL ROLE "nazmos_app"
+{"timestamp": "2026-09-17T14:16:16.340823+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "SET LOCAL ROLE \"nazmos_app\"", "asctime": "2026-09-17 19:46:16,340", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "b6671e73-9d8d-4985-91cf-eebf07b65bbb"}
+2026-09-17 19:46:16,340 INFO sqlalchemy.engine.Engine [cached since 31.04s ago] ()
+{"timestamp": "2026-09-17T14:16:16.341043+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "[cached since 31.04s ago] ()", "asctime": "2026-09-17 19:46:16,340", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "b6671e73-9d8d-4985-91cf-eebf07b65bbb"}
+2026-09-17 19:46:16,343 INFO sqlalchemy.engine.Engine COMMIT
+{"timestamp": "2026-09-17T14:16:16.343762+00:00", "level": "INFO", "logger": "sqlalchemy.engine.Engine", "message": "COMMIT", "asctime": "2026-09-17 19:46:16,343", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "b6671e73-9d8d-4985-91cf-eebf07b65bbb"}
+{"timestamp": "2026-09-17T14:16:32.658770+00:00", "level": "ERROR", "logger": "whatsapp_router", "message": "Error handling WhatsApp approval for action ffd4d65d-162d-41ef-88d3-b50d68a072a4: Temporal execution failed (workflow=agent_approval, workflow_id=agent-ffd4d65d-162d-41ef-88d3-b50d68a072a4, address=127.0.0.1:7233, task_queue=nazm-execution): something went wrong, please retry (e5d09531)", "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "request_id": "b6671e73-9d8d-4985-91cf-eebf07b65bbb"}
+{"timestamp": "2026-09-17T14:16:32.659417+00:00", "level": "INFO", "logger": "api", "message": "POST /api/v1/whatsapp/webhook - 200", "business_id": null, "method": "POST", "path": "/api/v1/whatsapp/webhook", "response_time_ms": 16325.052261352539, "status_code": 200, "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "user_id": null, "request_id": "b6671e73-9d8d-4985-91cf-eebf07b65bbb"}
+{"timestamp": "2026-09-17T14:16:32.659528+00:00", "level": "INFO", "logger": "api", "message": "POST /api/v1/whatsapp/webhook - 200", "business_id": null, "method": "POST", "path": "/api/v1/whatsapp/webhook", "response_time_ms": 16325.052261352539, "status_code": 200, "taskName": "starlette.middleware.base.BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.coro", "user_id": null, "request_id": "b6671e73-9d8d-4985-91cf-eebf07b65bbb"}
+{"timestamp": "2026-09-17T14:16:32.660866+00:00", "level": "INFO", "logger": "httpx", "message": "HTTP Request: POST http://test/api/v1/whatsapp/webhook \"HTTP/1.1 200 OK\"", "taskName": "Task-7"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:1848 select pg_catalog.version()
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 select current_schema()
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 show standard_conforming_strings
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:2712 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1848 SET LOCAL ROLE "nazmos_app"
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 SET LOCAL ROLE "nazmos_app"
+INFO     sqlalchemy.engine.Engine:base.py:1848 [generated in 0.00027s] ()
+INFO     sqlalchemy.engine.Engine:base.py:2718 COMMIT
+ERROR    whatsapp_router:whatsapp.py:174 Error handling WhatsApp approval for action ffd4d65d-162d-41ef-88d3-b50d68a072a4: Temporal execution failed (workflow=agent_approval, workflow_id=agent-ffd4d65d-162d-41ef-88d3-b50d68a072a4, address=127.0.0.1:7233, task_queue=nazm-execution): Workflow execution failed
+INFO     api:logger.py:273 POST /api/v1/whatsapp/webhook - 200
+INFO     httpx:_client.py:1740 HTTP Request: POST http://test/api/v1/whatsapp/webhook "HTTP/1.1 200 OK"
+INFO     sqlalchemy.engine.Engine:base.py:2712 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1848 SET LOCAL ROLE "nazmos_app"
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 SET LOCAL ROLE "nazmos_app"
+INFO     sqlalchemy.engine.Engine:base.py:1848 [cached since 31.04s ago] ()
+INFO     sqlalchemy.engine.Engine:base.py:2718 COMMIT
+ERROR    whatsapp_router:whatsapp.py:174 Error handling WhatsApp approval for action ffd4d65d-162d-41ef-88d3-b50d68a072a4: Temporal execution failed (workflow=agent_approval, workflow_id=agent-ffd4d65d-162d-41ef-88d3-b50d68a072a4, address=127.0.0.1:7233, task_queue=nazm-execution): something went wrong, please retry (e5d09531)
+INFO     api:logger.py:273 POST /api/v1/whatsapp/webhook - 200
+INFO     httpx:_client.py:1740 HTTP Request: POST http://test/api/v1/whatsapp/webhook "HTTP/1.1 200 OK"
+============================== warnings summary ===============================
+backend\app\config.py:8
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\config.py:8: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class Settings(BaseSettings):
+
+backend\app\schemas\auth.py:22
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\auth.py:22: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class UserResponse(BaseModel):
+
+backend\app\schemas\common.py:11
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\common.py:11: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    timestamp: datetime = datetime.utcnow()
+
+backend\app\schemas\organization.py:20
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:20: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OrganizationResponse(BaseModel):
+
+backend\app\schemas\organization.py:60
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:60: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class BusinessLocationResponse(BaseModel):
+
+backend\app\schemas\organization.py:89
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:89: PydanticDeprecatedSince20: Using extra keyword arguments on `Field` is deprecated and will be removed. Use `json_schema_extra` instead. (Extra keys: 'format'). Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    email: str = Field(..., format="email")
+
+backend\app\schemas\organization.py:97
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:97: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class TeamMemberResponse(BaseModel):
+
+backend\app\schemas\organization.py:112
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\organization.py:112: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class InvitationResponse(BaseModel):
+
+backend\app\schemas\subscription.py:19
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\subscription.py:19: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class SubscriptionResponse(BaseModel):
+
+backend\app\schemas\subscription.py:51
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\subscription.py:51: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class BillingEventResponse(BaseModel):
+
+backend\app\schemas\adapter.py:83
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\adapter.py:83: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class POSConnectionResponse(BaseModel):
+
+backend\app\schemas\action.py:25
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\action.py:25: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ActionHistoryItem(BaseModel):
+
+backend\app\schemas\action.py:43
+  H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend\app\schemas\action.py:43: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ActionDetailResponse(BaseModel):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED backend\tests\test_rls_enforcement.py::test_whatsapp_webhook_approval_is_tenant_scoped_under_rls
+1 failed, 13 warnings in 57.34s

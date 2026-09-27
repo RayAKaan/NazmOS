@@ -34,6 +34,14 @@ class TemporalExecutionError(RuntimeError):
     """
 
 
+class ExecutionDisabledError(RuntimeError):
+    """Raised when the global execution kill switch (EXECUTION_ENABLED) is off.
+
+    The dispatch funnel refuses every action before any workflow starts or any
+    side effect can occur. No local fallback exists: disabled means disabled.
+    """
+
+
 # ── Facade functions (routers call these) ─────────────────────────────
 
 
@@ -185,6 +193,16 @@ async def _dispatch(workflow_fn: Any, db: AsyncSession, req: Any) -> Any:
     """
     from app.config import get_settings
     settings = get_settings()
+
+    # Global execution kill switch (mirrors AI_ENABLED): refuse EVERY action
+    # here, before any workflow starts or any side effect can occur. This makes
+    # the guard apply regardless of which router surface triggered it and
+    # regardless of whether the router already validated feature flags.
+    if not settings.EXECUTION_ENABLED:
+        raise ExecutionDisabledError(
+            "Global execution kill switch is OFF (EXECUTION_ENABLED=false): "
+            f"refusing to dispatch {getattr(workflow_fn, '__name__', workflow_fn)}"
+        )
 
     if settings.USE_TEMPORAL:
         return await _temporal_run(workflow_fn, db, req)

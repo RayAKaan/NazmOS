@@ -64,7 +64,7 @@ docker-compose -f docker-compose.prod.yml up -d
 | API | 8000 | FastAPI application |
 | Nginx | 80, 443 | Reverse proxy, SSL termination |
 | PostgreSQL | 5432 | Primary database |
-| Redis | 6379 | Cache, Celery broker |
+| Redis | 6379 | Cache, rate limiting, event bus |
 | Prometheus | 9090 | Metrics collection |
 | Grafana | 3000 | Dashboards |
 

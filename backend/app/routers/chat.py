@@ -294,6 +294,7 @@ async def get_sessions(
     db=Depends(get_db),
 ):
     await require_feature_enabled(db, "chat_enabled", business_id=business_id)
+    await assert_business_access(db, business_id, current_user)
     offset = (page - 1) * limit
 
     result = await db.execute(
@@ -385,6 +386,7 @@ async def get_suggestions(
     db=Depends(get_db),
 ):
     await require_feature_enabled(db, "chat_enabled", business_id=business_id)
+    await assert_business_access(db, business_id, current_user)
     alerts = await _compute_chat_alerts(db, business_id)
     suggestions = [
         "What should I order urgently right now?",
@@ -416,6 +418,7 @@ async def chat_reason(
     intelligence surface as the rest of NazmOS.
     """
     await require_feature_enabled(db, "chat_enabled", business_id=business_id)
+    await assert_business_access(db, business_id, current_user)
     clean_message = sanitize_user_input(request.message)
     client = IntelligenceAPIClient(db, business_id)
     result = await client.reason(question=clean_message, context=request.context)

@@ -1,0 +1,1 @@
+H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\docs\align_temporal_pg_pwd_gold12.ps1

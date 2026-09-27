@@ -78,8 +78,10 @@ async def ingest_event(
 ) -> Event:
     """Persist a single event and dispatch it for processing.
 
-    If Celery is enabled, the event is queued asynchronously. Otherwise it is
-    processed synchronously so the backend works in zero-cost (no Redis) mode.
+    Under ``USE_TEMPORAL=True`` the event is processed by the ``event_process``
+    Temporal workflow (full projections + bus publish). Under the explicit
+    local (dev/test) mode it is processed synchronously through the same
+    canonical ``process_event_sync`` processor.
     """
     validated_payload = _validate_payload(event.event_type, event.payload)
 
@@ -138,12 +140,23 @@ async def ingest_event(
         },
     )
 
-    if settings.USE_CELERY:
-        from app.tasks.event_tasks import process_event
-        process_event.delay(str(event_record.id), str(business_id))
+    from app.config import get_settings
+    from app.orchestration.operations import OP_EVENT_PROCESS, dispatch_operation
+
+    if get_settings().USE_TEMPORAL:
+        # Production: run on the Temporal substrate via the event_process workflow.
+        await dispatch_operation(
+            OP_EVENT_PROCESS,
+            {"event_id": str(event_record.id), "business_id": str(business_id)},
+        )
     else:
+        # Explicit dev/test mode: process inline through the same canonical
+        # processor the Temporal activity body calls, on the caller's session
+        # (matches the historical zero-cost contract; never used in production).
         from app.services.event_processor import process_event_sync
+
         await process_event_sync(session, event_record)
+        await session.refresh(event_record)
 
     return event_record
 

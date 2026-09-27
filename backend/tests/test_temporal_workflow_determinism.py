@@ -90,7 +90,7 @@ ALLOWED_ACTIVITY_STARTERS = {"_act", "workflow.execute_activity"}
 # Benign deterministic calls allowed inside a workflow run body: pure-python
 # helpers, dict accessors, and the temporal API surface itself.
 ALLOWED_CALL_PREFIXES = {"_act", "workflow.", "_meta", "activity_retry_policy"}
-ALLOWED_CALL_SUFFIXES = {".get", ".items", ".keys", ".values", ".pop"}
+ALLOWED_CALL_SUFFIXES = {".get", ".items", ".keys", ".values", ".pop", ".append"}
 ALLOWED_BUILTINS = {
     "dict", "str", "bool", "int", "list", "tuple", "len", "sorted", "min",
     "max", "getattr", "setattr", "isinstance", "repr", "format", "enumerate",
@@ -183,5 +183,24 @@ def test_every_workflow_worker_function_starts_only_allowed_activity_calls():
 
 
 def test_registered_workflows_match_runtime_table():
-    assert sorted(WORKFLOWS) == ["agent_approval", "manual_action", "simulated"]
+    assert sorted(WORKFLOWS) == [
+        "agent_approval",
+        "business_cycle_run",
+        "cleanup_stale_uploads",
+        "daily_full_audit",
+        "drain_unprocessed_events",
+        "event_process",
+        "forecast_refresh_all",
+        "goal_progress_snapshot",
+        "learning_reconciliation",
+        "manual_action",
+        "nightly_recovery_match_scan",
+        "pos_sweep",
+        "pos_sync_run",
+        "process_pending_deletions",
+        "rebuild_daily_summaries",
+        "refresh_model_performance",
+        "simulated",
+        "upload_ingest",
+    ]
     assert callable(policies.activity_retry_policy)

@@ -12,6 +12,7 @@ from datetime import date, datetime, timedelta
 from decimal import Decimal
 
 from app.analytics.contracts import AnalyticalFeed, ItemFact, ItemKPI, ValueBasis
+from app.orchestration.contracts import INVENTORY_STATUS_TIERS
 from app.services.audit_core import (
     ZERO,
     money,
@@ -22,6 +23,15 @@ DEAD_MAX_DAILY_AVG = Decimal("0.1")
 CRITICAL_STOCKOUT_DAYS = 2
 LOW_STOCKOUT_DAYS = 5
 OVERSTOCK_DAYS = 20
+
+# Lower-case classify_status() output -> UPPER_SNAKE canonical tier symbol.
+_STOCKOUT_TIER_BY_STATUS = {
+    "dead": "DEAD",
+    "critical": "CRITICAL",
+    "low": "LOW",
+    "healthy": "HEALTHY",
+    "overstock": "OVERSTOCK",
+}
 
 
 def daily_velocity(fact: ItemFact) -> Decimal:
@@ -81,6 +91,37 @@ def classify_status(
     if include_overstock and remaining > OVERSTOCK_DAYS:
         return "overstock"
     return "healthy"
+
+
+def status_to_tier(status: str) -> str:
+    """Map ``classify_status`` output to the canonical UPPER_SNAKE tier symbol.
+
+    The mapping is fail-closed: an unexpected status raises ``KeyError`` so it
+    can never produce a tier outside ``INVENTORY_STATUS_TIERS`` by accident.
+    """
+    return _STOCKOUT_TIER_BY_STATUS[status]
+
+
+def classify_tier(
+    current_stock: float,
+    velocity: Decimal,
+    *,
+    include_overstock: bool = True,
+    dead_max_daily_avg: Decimal = DEAD_MAX_DAILY_AVG,
+) -> str:
+    """Canonical stockout urgency tier for the ``inventory.stockout_tier`` surface.
+
+    One wrapping call: classifies via ``classify_status`` then normalizes to the
+    contract tier. ``INVENTORY_STATUS_TIERS`` is the contract the Jev Score must
+    mirror (MIGRATION_MATRIX Batch 2).
+    """
+    status = classify_status(
+        current_stock,
+        velocity,
+        include_overstock=include_overstock,
+        dead_max_daily_avg=dead_max_daily_avg,
+    )
+    return status_to_tier(status)
 
 
 def kpi(fact: ItemFact) -> ItemKPI:

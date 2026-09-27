@@ -56,6 +56,7 @@ def _settings(environment: str):
         GOOGLE_AI_API_KEY="",
         CORS_ORIGINS="https://app.example.com" if environment == "production" else "",
         CREDENTIAL_MASTER_KEY=("m" * 48) if environment == "production" else "",
+        WHATSAPP_VERIFY_TOKEN=("w" * 32) if environment == "production" else "",
         USE_TEMPORAL=environment == "production",
     )
 
@@ -75,6 +76,7 @@ class TestConfigProductionValidators:
                 GOOGLE_AI_API_KEY="",
                 CORS_ORIGINS="https://app.example.com",
                 CREDENTIAL_MASTER_KEY="m" * 48,
+                WHATSAPP_VERIFY_TOKEN="w" * 32,
             )
 
     def test_development_allows_empty_database_app_role(self):

@@ -96,3 +96,73 @@
 4. Update `CREDENTIAL_MASTER_KEY` in the secret store.
 5. Rolling restart API and Celery workers.
 6. Leave the old key available read-only until all workers have restarted.
+
+## 10. Temporal Substrate Remediation (non-destructive)
+
+Validated live 2026-09-23 against project `nazmos_latest_merged` (postgres
+container `nazmos_latest_merged-postgres-1`, broadcast network
+`nazmos_default_net`, worker network `nazmos_latest_merged_default`).
+
+### 10.1 Symptoms
+- `nazmos-worker` crash-loops with
+  `socket.gaierror: [Errno -2] Name or service not known` resolving
+  `postgres` (worker is on a different Docker network than postgres).
+- Temporal container reports `unhealthy` because the minimal runtime image
+  (`temporalio/temporal:latest`) lacks `bash`, which the compose healthcheck
+  invokes; the cluster itself answers `temporal operator cluster health` →
+  `SERVING`. [V]
+
+### 10.2 Procedure (additive / non-destructive only)
+1. Verify worker network name: `docker compose ps` (project name is one of
+   `docker network ls` broadcast networks; worker/redis/temporal normally
+   share `<project>_default` while postgres may be on an older net).
+2. Place postgres on the worker's network with the service-name alias:
+   ```
+   docker network connect --alias postgres nazmos_latest_merged_default nazmos_latest_merged-postgres-1
+   ```
+   This is additive: it creates no new volume, deletes no data, and leaves
+   both networks in place.
+3. Verify resolution from inside the worker:
+   ```
+   docker exec nazmos_latest_merged-nazmos-worker-1 python /tmp/pgcheck.py   # prints pg_ok 1
+   ```
+4. Restart the worker container and confirm it stays up:
+   ```
+   docker start nazmos_latest_merged-nazmos-worker-1
+   docker inspect nazmos_latest_merged-nazmos-worker-1 --format '{{.State.Status}} {{.RestartCount}}'
+   ```
+5. Confirm the cluster is serving:
+   ```
+   docker exec nazmos_latest_merged-temporal-1 temporal operator cluster health   # SERVING
+   ```
+6. Run Temporal-backed acceptance **with the production worker paused** so the
+   in-process suite worker exclusively owns the queue:
+   ```
+   docker stop nazmos_latest_merged-nazmos-worker-1
+   # ... run the tests/temporal suite (see AGENTS.md) ...
+   docker start nazmos_latest_merged-nazmos-worker-1
+   ```
+
+### 10.3 Why pausing the production worker
+`tests/temporal/probes.py` schedules probe workflows with a hardcoded task
+queue name. The production worker polls the same queue but registers only
+`agent_approval / manual_action / simulated` — so a live production worker
+steals probe activity tasks and fails them ("Workflow class retry_probe...
+is not registered on this worker"). Probe tests pass only when the suite
+worker is the sole owner of the queue. [V]
+
+### 10.4 Verification results (2026-09-23)
+- Worker: `state=running restarts=0`, Postgres resolved as `172.31.0.5`
+  from the worker net, TCP PG probe `pg_ok 1`. [H]
+- `tests/temporal`: `8 passed, 9 skipped` (9 Postgres-only skips on SQLite). [H]
+- Temporal deterministic gates: `75 passed` across
+  `test_infra_service`, `test_temporal_deployment`, `test_temporal_strict_dispatch`,
+  `test_temporal_failure`, `test_temporal_retry_wiring`,
+  `test_temporal_workflow_determinism`, `test_context_temporal`. [H]
+
+### 10.5 Known residual (documented, not a blocker)
+- Temporal container healthcheck reports `unhealthy` solely because `bash` is
+  absent from the minimal runtime image; the cluster health endpoint and all
+  Temporal-backed tests are green. Recreating the container to `auto-setup`
+  with the proper healthcheck is a **destructive** operation (drops in-memory
+  history) and is intentionally NOT done under the non-destructive boundary.

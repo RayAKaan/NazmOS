@@ -198,5 +198,6 @@ def _settings(environment: str):
         GROQ_API_KEY="test-groq-key" if environment == "production" else "",
         GOOGLE_AI_API_KEY="",
         CREDENTIAL_MASTER_KEY=("y" * 48) if environment == "production" else "",
+        WHATSAPP_VERIFY_TOKEN=("z" * 32) if environment == "production" else "",
         USE_TEMPORAL=environment == "production",
     )

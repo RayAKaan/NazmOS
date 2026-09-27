@@ -225,7 +225,7 @@ async def refresh_context_for_business(
 ) -> dict[str, Any]:
     """Refresh all external context for a business and persist it.
 
-    This is intended to be called by a Celery beat task or on demand.
+    This is intended to be called by a Temporal schedule or on demand.
     """
     business_id = _to_uuid(business_id)
     business = await session.get(Business, business_id)

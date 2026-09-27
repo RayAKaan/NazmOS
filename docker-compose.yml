@@ -30,13 +30,30 @@ services:
       retries: 5
 
   # Real Temporal server (single-container dev server; file persistence).
-  # NazmOS execution routes through this substrate only — there is no local
+  # NazmOS execution routes through this substrate only â€” there is no local
   # fallback, so the server + nazmos-worker must both be up.
   temporal:
-    image: temporalio/temporal:latest
-    command: ["server", "start-dev", "--ip", "0.0.0.0", "--headless"]
+    image: temporalio/auto-setup:1.29.7
+    environment:
+      DB: postgres12
+      POSTGRES_SEEDS: postgres
+      DB_PORT: "5432"
+      POSTGRES_USER: nazmos
+      POSTGRES_PWD: nazmos_v5_dev
+      DBNAME: temporal
+      VISIBILITY_DBNAME: temporal_visibility
+      DB_HOST: postgres
+      SKIP_DEFAULT_NAMESPACE_CREATION: "false"
     ports:
       - "7233:7233"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/7233"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
 
   api:
     build:
@@ -46,7 +63,6 @@ services:
       ENVIRONMENT: staging
       DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@postgres:5432/nazmos
       REDIS_URL: redis://redis:6379/0
-      USE_CELERY: "true"
       USE_REDIS: "true"
       USE_TEMPORAL: "true"
       TEMPORAL_ADDRESS: temporal:7233
@@ -66,42 +82,10 @@ services:
       - ./backend/uploads:/app/uploads
     command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/ready"]
       interval: 10s
       timeout: 5s
       retries: 5
-
-  celery_worker:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    environment:
-      ENVIRONMENT: staging
-      DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@postgres:5432/nazmos
-      REDIS_URL: redis://redis:6379/0
-      USE_CELERY: "true"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    command: ["celery", "-A", "app.celery_app", "worker", "-l", "info", "-Q", "celery,forecasting,ingestion,analytics,dead_letter"]
-
-  celery_beat:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    environment:
-      ENVIRONMENT: staging
-      DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@postgres:5432/nazmos
-      REDIS_URL: redis://redis:6379/0
-      USE_CELERY: "true"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    command: ["celery", "-A", "app.celery_app", "beat", "-l", "info"]
 
   # NazmOS execution worker: hosts workflows + activities against the real
   # Temporal server. Required for all business execution; no local fallback.
@@ -113,7 +97,6 @@ services:
       ENVIRONMENT: staging
       DATABASE_URL: postgresql+asyncpg://nazmos:nazmos_dev@postgres:5432/nazmos
       REDIS_URL: redis://redis:6379/0
-      USE_CELERY: "true"
       USE_TEMPORAL: "true"
       TEMPORAL_ADDRESS: temporal:7233
       TEMPORAL_NAMESPACE: default

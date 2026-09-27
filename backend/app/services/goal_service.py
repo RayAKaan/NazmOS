@@ -177,7 +177,7 @@ async def snapshot_goal_progress(
     commit: bool = True,
 ) -> dict[str, Any]:
     """Record a historical snapshot of every active goal's progress (idempotent per
-    goal+hour via the unique constraint). Called by the Celery scheduler (§9)."""
+    goal+hour via the unique constraint). Called by the Temporal schedule."""
     from datetime import datetime, timezone
     now = datetime.now(timezone.utc).replace(minute=0, second=0, microsecond=0)
     res = await db.execute(text("""

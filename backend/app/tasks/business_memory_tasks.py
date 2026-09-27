@@ -1,15 +1,16 @@
-"""Celery tasks for the Business Memory Engine (Phase 1).
+"""Business Memory projection helpers (Phase 1).
+
+The async helpers are the canonical NazmOS bodies for on-demand memory
+projection and rebuild; they are invoked directly by services, not scheduled.
 """
 from __future__ import annotations
 
-from app.config import get_settings
 from app.database.connection import AsyncSessionLocal, sync_rls_tenant_context
 from app.database.models import Event
 from app.services.business_memory import route_event_to_projectors
 from app.utils.logger import setup_logger
 
-settings = get_settings()
-logger = setup_logger("celery.business_memory")
+logger = setup_logger("business_memory_tasks")
 
 
 async def _update_business_memory(event_id: str, business_id: str | None = None) -> dict:
@@ -24,42 +25,30 @@ async def _update_business_memory(event_id: str, business_id: str | None = None)
             return {"status": "projected", "event_id": event_id, "event_type": event.event_type}
 
 
-if settings.USE_CELERY:
-    from app.celery_app import celery_app
+async def rebuild_business_memory(business_id: str) -> dict:
+    """Rebuild all business memory for a tenant by replaying its event stream."""
+    from sqlalchemy import select
 
-    @celery_app.task(name="app.tasks.business_memory_tasks.update_business_memory")
-    def update_business_memory(event_id: str, business_id: str | None = None) -> dict:
-        import asyncio
-        return asyncio.run(_update_business_memory(event_id, business_id))
+    from app.database.models import BusinessMemory, MemoryUpdate
+    from app.services.business_memory import replay_events_to_memory
 
-    @celery_app.task(name="app.tasks.business_memory_tasks.rebuild_business_memory")
-    def rebuild_business_memory(business_id: str) -> dict:
-        """Rebuild all business memory for a tenant by replaying its event stream."""
-        import asyncio
-        from sqlalchemy import select
-        from app.database.models import BusinessMemory, MemoryUpdate
-        from app.services.business_memory import replay_events_to_memory
-
-        async def _run() -> dict:
-            with sync_rls_tenant_context(str(business_id)):
-                async with AsyncSessionLocal() as session:
-                    result = await session.execute(
-                        select(Event).where(Event.business_id == business_id).order_by(Event.occurred_at)
-                    )
-                    events = list(result.scalars().all())
-                    await replay_events_to_memory(session, business_id, events)
-                    memory_count = await session.scalar(
-                        select(BusinessMemory.id).where(BusinessMemory.business_id == business_id).count()
-                    )
-                    update_count = await session.scalar(
-                        select(MemoryUpdate.id).where(MemoryUpdate.business_id == business_id).count()
-                    )
-                    return {
-                        "status": "rebuilt",
-                        "business_id": business_id,
-                        "events_replayed": len(events),
-                        "memory_documents": memory_count,
-                        "memory_updates": update_count,
-                    }
-
-        return asyncio.run(_run())
+    with sync_rls_tenant_context(str(business_id)):
+        async with AsyncSessionLocal() as session:
+            result = await session.execute(
+                select(Event).where(Event.business_id == business_id).order_by(Event.occurred_at)
+            )
+            events = list(result.scalars().all())
+            await replay_events_to_memory(session, business_id, events)
+            memory_count = await session.scalar(
+                select(BusinessMemory.id).where(BusinessMemory.business_id == business_id).count()
+            )
+            update_count = await session.scalar(
+                select(MemoryUpdate.id).where(MemoryUpdate.business_id == business_id).count()
+            )
+            return {
+                "status": "rebuilt",
+                "business_id": business_id,
+                "events_replayed": len(events),
+                "memory_documents": memory_count,
+                "memory_updates": update_count,
+            }

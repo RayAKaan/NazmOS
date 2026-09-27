@@ -108,6 +108,25 @@ POLICY_REGISTRY = {
     "record_terminal_outcome": transient(),
     # ---- Simulated path (simulated) ----
     "apply_simulated_execution": deterministic_business(),
+    # ---- Phase 2A: background / scheduled operations ----
+    "process_upload_ingestion": transient(),
+    "process_single_event": transient(),
+    "drain_unprocessed_events": transient(),
+    "run_single_pos_sync": transient(),
+    "scan_due_pos_connections": transient(),
+    "run_rebuild_daily_summaries": transient(),
+    "run_cleanup_stale_uploads": transient(),
+    "run_forecast_refresh_all": transient(),
+    "run_process_pending_deletions": transient(),
+    "run_refresh_model_performance": transient(),
+    "run_daily_full_audit": transient(),
+    "run_goal_progress_snapshot": transient(),
+    "run_learning_reconciliation": transient(),
+    "run_nightly_recovery_match_scan": transient(),
+    # ---- Phase 4D: durable business improvement cycle ----
+    "business_cycle_start": transient(),
+    "business_cycle_advance": transient(),
+    "business_cycle_reconcile": transient(),
 }
 
 

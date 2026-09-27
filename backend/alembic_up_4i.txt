@@ -1,0 +1,57 @@
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> 748e4f2a4e7b, Initial schema
+INFO  [alembic.runtime.migration] Running upgrade 748e4f2a4e7b -> f208bd0ef3f1, add_feature_flags
+INFO  [alembic.runtime.migration] Running upgrade f208bd0ef3f1 -> fbcd840f72b7, add_idempotency_keys
+INFO  [alembic.runtime.migration] Running upgrade fbcd840f72b7 -> a25a714a2de8, add_tenant_rls_policies
+INFO  [alembic.runtime.migration] Running upgrade a25a714a2de8 -> 33dd43e565ed, create app role for rls enforcement
+INFO  [alembic.runtime.migration] Running upgrade fbcd840f72b7 -> 7597266ca47a, Add performance indexes for hot query paths.
+INFO  [alembic.runtime.migration] Running upgrade 7597266ca47a -> 7598266ca47b, Add deletion_requests table for GDPR/PDPL erasure scheduling.
+INFO  [alembic.runtime.migration] Running upgrade 7598266ca47b -> 7599266ca47c, Add webhook_events table for POS webhook audit and replay.
+INFO  [alembic.runtime.migration] Running upgrade 7599266ca47c, 33dd43e565ed -> 7a0871d948f8, merge compliance and rls branches
+INFO  [alembic.runtime.migration] Running upgrade 7a0871d948f8 -> e01776a29060, add rls for compliance and webhook tables
+INFO  [alembic.runtime.migration] Running upgrade e01776a29060 -> 969ef7949298, Add events and event engine tables.
+INFO  [alembic.runtime.migration] Running upgrade 969ef7949298 -> bc6893878598, Add business memory engine tables.
+INFO  [alembic.runtime.migration] Running upgrade bc6893878598 -> efab679a4d16, Add knowledge graph engine tables.
+INFO  [alembic.runtime.migration] Running upgrade efab679a4d16 -> 357f3cbca428, Add context and temporal reasoning tables.
+INFO  [alembic.runtime.migration] Running upgrade 357f3cbca428 -> 7a38b41efb11, Add intelligence decisions table.
+INFO  [alembic.runtime.migration] Running upgrade 7a38b41efb11 -> c6a487f9ec1e, Add Phase 5 agents, planning, simulation, and execution tables.
+INFO  [alembic.runtime.migration] Running upgrade c6a487f9ec1e -> d3e7a8c9b10e, Add Phase 6 Learning Engine tables.
+INFO  [alembic.runtime.migration] Running upgrade d3e7a8c9b10e -> e8a1b2c3d4e5, Add partner program tables.
+INFO  [alembic.runtime.migration] Running upgrade e01776a29060 -> 8b3f5c2a1d94, scope idempotency cache per tenant
+INFO  [alembic.runtime.migration] Running upgrade 8b3f5c2a1d94 -> c4d6e8f0a2b1, index rls predicate columns
+INFO  [alembic.runtime.migration] Running upgrade c4d6e8f0a2b1 -> e6f8a0c2b4d6, add transaction dedup row hash
+INFO  [alembic.runtime.migration] Running upgrade e6f8a0c2b4d6, e8a1b2c3d4e5 -> 9fe320efe5ff, merge transaction dedup and partner program branches
+INFO  [alembic.runtime.migration] Running upgrade 9fe320efe5ff -> a5b6c7d8e901, Add is_active to businesses for GDPR/PDPL soft-deletion.
+INFO  [alembic.runtime.migration] Running upgrade a5b6c7d8e901 -> 5f0a1b2c3d4e, enforce one active business per owner
+INFO  [alembic.runtime.migration] Running upgrade 5f0a1b2c3d4e -> 9f8e7d6c5b4a, add platform operator flag to users
+INFO  [alembic.runtime.migration] Running upgrade 9f8e7d6c5b4a -> b7c8d9e0f1a2, add rls for intelligence and recovery tables
+INFO  [alembic.runtime.migration] Running upgrade 9fe320efe5ff, b7c8d9e0f1a2 -> f1a2b3c4d5e6, Merge the two pre-existing heads before the Phase 1 agentic-foundation migration.
+INFO  [alembic.runtime.migration] Running upgrade f1a2b3c4d5e6 -> a1b2c3d4e5f6, Add AuditRun and Finding tables (Phase 1 agentic foundation).
+INFO  [alembic.runtime.migration] Running upgrade a1b2c3d4e5f6 -> b2c3d4e5f6a7, Add ImpactLedger and SupplierPrice tables (Phase 2).
+INFO  [alembic.runtime.migration] Running upgrade b2c3d4e5f6a7 -> c3d4e5f6a7b8, Add agent_runs table (Phase 3 observability).
+INFO  [alembic.runtime.migration] Running upgrade c3d4e5f6a7b8 -> d4e5f6a7b8c9, Add business_goals and learned_outcomes tables (Phase 4).
+INFO  [alembic.runtime.migration] Running upgrade d4e5f6a7b8c9 -> e5f6a7b8c9d0, Add goal_progress_history + learned_outcomes unique constraint (Phase 5).
+INFO  [alembic.runtime.migration] Running upgrade e5f6a7b8c9d0 -> f6a7b8c9d0e1, Add agent_actions.finding_id + learned_outcomes.data_quality_note (Phase 6).
+INFO  [alembic.runtime.migration] Running upgrade f6a7b8c9d0e1 -> a7b8c9d0e1f2, Add outcome_feedback.agent_action_id + unique constraint (Phase 7).
+INFO  [alembic.runtime.migration] Running upgrade a7b8c9d0e1f2 -> b8c9d0e1f2a3, Add impact_ledger.attribution (Phase 8).
+INFO  [alembic.runtime.migration] Running upgrade b8c9d0e1f2a3 -> c9d0e1f2a3b4, Add findings.urgency + findings.data_quality_score (Phase 9).
+INFO  [alembic.runtime.migration] Running upgrade c9d0e1f2a3b4 -> rec_intel_v2_0824, Recovery intelligence financial model and upload reconciliation.
+INFO  [alembic.runtime.migration] Running upgrade rec_intel_v2_0824 -> ff01_owner_const, Add first-class owner constraints.
+INFO  [alembic.runtime.migration] Running upgrade ff01_owner_const -> ff02_constraint_blocks, Add constraint_blocks observability table (Phase 1, P0-B).
+INFO  [alembic.runtime.migration] Running upgrade ff02_constraint_blocks -> ff03_po_received_items, Add per-line partial-receipt tracking to purchase_orders (Phase 1, A6).
+INFO  [alembic.runtime.migration] Running upgrade ff03_po_received_items -> phase6_pilot_baseline, Add durable pilot baseline snapshots (Phase 6).
+INFO  [alembic.runtime.migration] Running upgrade phase6_pilot_baseline -> phase_b_rls_core_services, Phase B (WS2) — Extend RLS to the core business-services tenant tables.
+INFO  [alembic.runtime.migration] Running upgrade phase_b_rls_core_services -> ff04_forecast_provenance, Forecast provenance: add provider/data provenance columns to forecast_cache.
+INFO  [alembic.runtime.migration] Running upgrade ff04_forecast_provenance -> ff05_ai_isolation, Phase A isolation core: AI reasoning request + security event audit tables.
+INFO  [alembic.runtime.migration] Running upgrade ff05_ai_isolation -> ff06_field_encryption, Phase C: field-level encryption for sensitive columns (starts users.two_factor_secret).
+2026-09-26 19:04:20 [warning  ] credential_master_key_not_set  extra={'detail': 'CREDENTIAL_MASTER_KEY is not set. Using dev-only key. Set CREDENTIAL_MASTER_KEY before production.'}
+INFO  [alembic.runtime.migration] Running upgrade ff06_field_encryption -> ff07_rls_audit_isolation, Phase A (follow-up): RLS tenant isolation for the AI/security audit tables.
+INFO  [alembic.runtime.migration] Running upgrade ff07_rls_audit_isolation -> ff08_loc_grain_tenant_model, Phase 1 (canonical model): first-class Location dimension and tenant grain.
+INFO  [alembic.runtime.migration] Running upgrade ff08_loc_grain_tenant_model -> ff09_forecast_version_widen, Phase 1 (StatsForecast): widen forecast_cache.model_version.
+INFO  [alembic.runtime.migration] Running upgrade ff09_forecast_version_widen -> ff10_execution_key_idempotency, Phase 1 (Temporal): add execution_key idempotency columns.
+INFO  [alembic.runtime.migration] Running upgrade ff10_execution_key_idempotency -> ff11_full_schema_app_role_grants, Catch-up grant: nazmos_app on ALL existing tables + sequences.
+INFO  [alembic.runtime.migration] Running upgrade ff11_full_schema_app_role_grants -> ff12_rls_chat_pos_sync_logs, P0: RLS for the join-scoped tenant tables chat_messages + pos_sync_logs.
+INFO  [alembic.runtime.migration] Running upgrade ff12_rls_chat_pos_sync_logs -> ff13_drop_celery_upload_task, P2A: Drop the retired Celery upload task column.
+INFO  [alembic.runtime.migration] Running upgrade ff13_drop_celery_upload_task -> ff14_cycle_runs, Phase 4: durable cycle_runs table for the Business Improvement Loop.
+INFO  [alembic.runtime.migration] Running upgrade ff14_cycle_runs -> ff15_cycle_runs_rls_coverage, Phase 4D — scanner-visible RLS coverage for cycle_runs.

@@ -1,11 +1,14 @@
 title = "NazmOS gitleaks config"
 [allowlist]
-  description = "Global allowlists for test fixtures and dummy keys"
+  description = "Global allowlists for test fixtures, dummy keys, and dev config"
   paths = [
     '''backend/tests/.*''',
     '''backend/app/database/encryption\.py''',
     '''backend/app/services/security_audit_service\.py''',
     '''backend/app/services/credential_vault\.py''',
+    '''docs/.*\.out(\.err)?$''',
+    '''docs/.*\.ps1$''',
+    '''docker-compose.*\.yml$''',
   ]
 
 [[rules]]

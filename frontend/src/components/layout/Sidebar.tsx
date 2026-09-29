@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, Upload, TrendingUp, Inbox, Truck, CalendarClock, Link2, Sparkles, Repeat2, Settings, WalletCards, ClipboardList, FileText, Activity } from "lucide-react";
+import { LayoutDashboard, Package, Upload, TrendingUp, Inbox, Truck, CalendarClock, Link2, Sparkles, Repeat2, Settings, WalletCards, ClipboardList, FileText, Activity, Orbit } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
 
@@ -19,6 +19,7 @@ export function Sidebar() {
     { href: "/chat", label: t.sidebar.copilot || "Nazm Copilot", icon: Sparkles, badge: "AI" },
     { href: "/dashboard", label: t.sidebar.dashboard, icon: LayoutDashboard },
     { href: "/money-audit", label: "Money Audit", icon: WalletCards, badge: "Free" },
+    { href: "/orbit", label: "Orbit", icon: Orbit, badge: "Beta" },
     { href: "/orchestrator", label: t.sidebar.orchestrator || "Recovery Engine", icon: Sparkles, badge: "Pilot" },
     { href: "/inventory", label: t.sidebar.inventory, icon: Package },
     { href: "/forecast", label: t.sidebar.forecast, icon: TrendingUp },

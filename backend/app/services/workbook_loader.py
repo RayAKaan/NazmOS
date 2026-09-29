@@ -4,6 +4,9 @@ Handles: multiple sheets, empty first sheet, merged / duplicate / missing
 headers, blank columns, BOM and unknown encodings, mixed numeric formats in
 Arabic or English, and unexpected column order. Never guesses silently data,
 and every decision is reproducible.
+
+Security: formula detection, external link detection, macro detection,
+decompression bomb protection (zip bomb), malicious content rejection.
 """
 from __future__ import annotations
 
@@ -11,6 +14,7 @@ import csv
 import io
 import json
 import os
+import re
 from dataclasses import dataclass
 from typing import Any
 
@@ -23,6 +27,78 @@ from app.services.file_ingestion import NORMALIZED_ALIASES, normalize_header, to
 MAX_SHEETS = 20
 MAX_HEADER_SCAN_ROWS = 12
 _ALIAS_KEYS = {alias for aliases in NORMALIZED_ALIASES.values() for alias in aliases}
+_MAX_CELL_LENGTH = 32767  # Excel cell limit
+_MAX_TOTAL_CELLS = 1_000_000  # Decompression bomb protection
+_FORMULA_PREFIXES = ("=", "+", "-", "@")  # Excel/Google Sheets formula prefixes
+_EXTERNAL_LINK_PATTERN = re.compile(r'\[.*\].*!|\\\\|//|https?://|ftp://', re.IGNORECASE)
+_MACRO_EXTS = {".xlsm", ".xlsb", ".xlam"}  # Macro-enabled extensions
+
+
+def _detect_formulas_and_threats(matrix: list[list[Any]], file_type: str) -> tuple[int, int, int]:
+    """Scan matrix for formulas, external links, and suspicious content.
+
+    Returns: (formula_count, external_link_count, macro_sheet_count)
+    """
+    formula_count = 0
+    external_link_count = 0
+    macro_sheet_count = 0
+
+    for row in matrix:
+        for cell in row:
+            if cell is None:
+                continue
+            cell_str = str(cell).strip()
+            if not cell_str:
+                continue
+
+            # Check for formula prefixes
+            if cell_str.startswith(_FORMULA_PREFIXES):
+                formula_count += 1
+
+            # Check for external links
+            if _EXTERNAL_LINK_PATTERN.search(cell_str):
+                external_link_count += 1
+
+    return formula_count, external_link_count, 0
+
+
+def _check_decompression_bomb(sheet_count: int, total_rows: int, total_cols: int) -> None:
+    """Raise DataQualityError if workbook appears to be a decompression bomb (zip bomb)."""
+    estimated_cells = sheet_count * total_rows * total_cols
+    if estimated_cells > _MAX_TOTAL_CELLS:
+        raise DataQualityError(
+            f"Workbook too large: estimated {estimated_cells:,} cells exceeds limit of {_MAX_TOTAL_CELLS:,}. "
+            "Possible decompression bomb (zip bomb)."
+        )
+
+
+def _validate_cell_lengths(matrix: list[list[Any]]) -> None:
+    """Validate that no cell exceeds Excel's character limit."""
+    for row_idx, row in enumerate(matrix):
+        for col_idx, cell in enumerate(row):
+            if cell is not None:
+                cell_str = str(cell)
+                if len(cell_str) > _MAX_CELL_LENGTH:
+                    raise DataQualityError(
+                        f"Cell at row {row_idx}, col {col_idx} exceeds maximum length "
+                        f"({len(cell_str)} > {_MAX_CELL_LENGTH}). Possible malicious content."
+                    )
+
+
+def _detect_macro_content(workbook, file_type: str) -> int:
+    """Detect macro/VBA content in workbook. Returns count of macro indicators."""
+    if file_type not in ("xlsx", "xlsm"):
+        return 0
+    macro_count = 0
+    try:
+        for sheet_name in workbook.sheetnames:
+            ws = workbook[sheet_name]
+            if hasattr(ws, 'sheet_properties') and ws.sheet_properties:
+                if ws.sheet_properties.code_name:
+                    macro_count += 1
+    except Exception:
+        pass
+    return macro_count
 
 
 class DataQualityError(ValueError):
@@ -151,10 +227,23 @@ def _load_csv(content: bytes) -> tuple[pd.DataFrame, dict[str, Any]]:
                 break
 
     reader = csv.reader(io.StringIO(text), delimiter=delimiter)
+    reader = csv.reader(io.StringIO(text), delimiter=delimiter)
     matrix = [[None if cell in ("", "nan", "null") else cell for cell in row] for row in reader]
     matrix = [row for row in matrix if any(c for c in row)]
     if not matrix:
         raise DataQualityError("CSV file is empty.")
+
+    # Security checks
+    _validate_cell_lengths(matrix)
+    formula_count, external_link_count, _ = _detect_formulas_and_threats(matrix, "csv")
+    if formula_count > 0:
+        raise DataQualityError(f"CSV contains {formula_count} formula(s). Formulas are not allowed in guest uploads.")
+    if external_link_count > 0:
+        raise DataQualityError(f"CSV contains {external_link_count} external link(s). External references are not allowed.")
+
+    # Decompression bomb check (1 sheet, rows x cols)
+    _check_decompression_bomb(1, len(matrix), max(len(r) for r in matrix) if matrix else 0)
+
     header_idx, headers, data = _pick_header_row(matrix)
     df = _clean_frame(headers, data)
     return df, {"encoding": encoding, "delimiter": delimiter, "header_row_index": header_idx, "sheet_count": 1, "selected_sheet": "csv"}
@@ -165,8 +254,19 @@ def _load_xlsx(content: bytes) -> tuple[pd.DataFrame, dict[str, Any]]:
         wb = _openpyxl_load_workbook(io.BytesIO(content), read_only=True, data_only=True)
     except Exception as exc:
         raise DataQualityError(f"Could not open XLSX workbook: {exc}")
+    
+    # Check for macro content
+    macro_count = _detect_macro_content(wb, "xlsx")
+    if macro_count > 0:
+        raise DataQualityError(f"XLSX workbook contains {macro_count} macro-enabled sheet(s). Macro-enabled files are not allowed.")
+
     sheet_count = min(len(wb.sheetnames), MAX_SHEETS)
     best: tuple[float, str, int, list[list[Any]]] | None = None
+    total_formula_count = 0
+    total_external_link_count = 0
+    total_rows = 0
+    total_cols = 0
+
     for sheet_name in wb.sheetnames[:MAX_SHEETS]:
         ws = wb[sheet_name]
         matrix = []
@@ -175,6 +275,20 @@ def _load_xlsx(content: bytes) -> tuple[pd.DataFrame, dict[str, Any]]:
         matrix = [row for row in matrix if any(c for c in row)]
         if not matrix:
             continue
+
+        # Security checks per sheet
+        _validate_cell_lengths(matrix)
+        formula_count, external_link_count, _ = _detect_formulas_and_threats(matrix, "xlsx")
+        if formula_count > 0:
+            raise DataQualityError(f"Sheet '{sheet_name}' contains {formula_count} formula(s). Formulas are not allowed in guest uploads.")
+        if external_link_count > 0:
+            raise DataQualityError(f"Sheet '{sheet_name}' contains {external_link_count} external link(s). External references are not allowed.")
+
+        total_formula_count += formula_count
+        total_external_link_count += external_link_count
+        total_rows += len(matrix)
+        total_cols = max(total_cols, max(len(r) for r in matrix) if matrix else 0)
+
         try:
             header_idx, headers, data = _pick_header_row(matrix)
         except DataQualityError:
@@ -184,8 +298,13 @@ def _load_xlsx(content: bytes) -> tuple[pd.DataFrame, dict[str, Any]]:
         score = alias_hits + min(len(df), 100) / 100.0
         if best is None or score > best[0]:
             best = (score, sheet_name, header_idx, matrix)
+    
     if best is None:
         raise DataQualityError("XLSX file contains no sheet with a recognizable header row.")
+
+    # Decompression bomb check
+    _check_decompression_bomb(sheet_count, total_rows, total_cols)
+
     _, sheet_name, header_idx, matrix = best
     header_idx, headers, data = _pick_header_row(matrix)
     df = _clean_frame(headers, data)
@@ -201,6 +320,13 @@ def _load_xls_or_other(content: bytes, filename: str) -> tuple[pd.DataFrame, dic
             raise DataQualityError(f"Could not read XLS workbook: {exc}")
         matrix = [[None if v in ("", "nan", "null") else v for v in row] for row in df.itertuples(index=False)]
         if matrix:
+            _validate_cell_lengths(matrix)
+            formula_count, external_link_count, _ = _detect_formulas_and_threats(matrix, "xls")
+            if formula_count > 0:
+                raise DataQualityError(f"XLS workbook contains {formula_count} formula(s). Formulas are not allowed.")
+            if external_link_count > 0:
+                raise DataQualityError(f"XLS workbook contains {external_link_count} external link(s). External references are not allowed.")
+            _check_decompression_bomb(1, len(matrix), max(len(r) for r in matrix) if matrix else 0)
             header_idx, headers, data = _pick_header_row(matrix)
             df = _clean_frame(headers, data)
         return df, {"header_row_index": 0, "sheet_count": 1, "selected_sheet": "sheet1"}
@@ -216,7 +342,20 @@ def _load_json(content: bytes) -> tuple[pd.DataFrame, dict[str, Any]]:
         data = data.get("rows", data.get("data", []))
     if not isinstance(data, list) or not data:
         raise DataQualityError("JSON file contains no rows.")
-    df = _clean_frame(list(data[0].keys()), [[r.get(k) for k in data[0].keys()] for r in data])
+
+    # Convert to matrix for security checks
+    keys = list(data[0].keys())
+    matrix = [[r.get(k) for k in keys] for r in data]
+
+    _validate_cell_lengths(matrix)
+    formula_count, external_link_count, _ = _detect_formulas_and_threats(matrix, "json")
+    if formula_count > 0:
+        raise DataQualityError(f"JSON contains {formula_count} formula(s). Formulas are not allowed.")
+    if external_link_count > 0:
+        raise DataQualityError(f"JSON contains {external_link_count} external link(s). External references are not allowed.")
+    _check_decompression_bomb(1, len(matrix), len(keys))
+
+    df = _clean_frame(keys, matrix)
     return df, {"header_row_index": 0, "sheet_count": 1, "selected_sheet": "json"}
 
 

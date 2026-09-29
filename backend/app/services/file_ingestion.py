@@ -15,12 +15,15 @@ recognize via exact alias match.
 from __future__ import annotations
 
 import re
+import json
 import unicodedata
 from dataclasses import dataclass, field
 from decimal import Decimal, InvalidOperation
 from typing import Any
 
 import pandas as pd
+
+from app.services.ingestion_schema import IngestionManifest, DataQualityModel
 
 D = Decimal
 ZERO = D("0")
@@ -419,13 +422,39 @@ class FileMetadata:
     header_row_index: int | None = None
 
 
-def analyze_file_metadata(df: pd.DataFrame, file_type: str, extras: dict[str, Any] | None = None) -> FileMetadata:
-    """Build the privacy-safe metadata record for one uploaded file.
+def analyze_file_metadata(df: pd.DataFrame, file_type: str, extras: dict[str, Any] | None = None) -> IngestionManifest:
+    """Build the per-file ingestion manifest (§5).
 
     Only column names and shape-level facts are reported — never row contents,
     product names, customers, or values.
     """
     resolution = resolve_columns(df)
+
+    # Compute quality metrics
+    duplicate_rows = int(df.duplicated().sum())
+    null_rate = float(df.isnull().sum().sum()) / float(max(1, df.size))
+    invalid_dates = 0
+    date_cols = [c for c in df.columns if resolution.mapping.get("date") == c]
+    for col in date_cols:
+        try:
+            pd.to_datetime(df[col], errors="raise")
+        except Exception:
+            invalid_dates += int(df[col].notna().sum())
+
+    # Build mapped_fields dict: canonical_role -> source_column
+    mapped_fields = {role: src for role, src in resolution.mapping.items()}
+
+    # Missing required fields
+    missing_fields = list(resolution.missing)
+
+    # Ambiguous fields - fields with low confidence or multiple alternatives
+    ambiguous_fields = []
+    if hasattr(resolution, 'ingestion_result') and resolution.ingestion_result:
+        for m in resolution.ingestion_result.mappings:
+            if m.confidence < 0.75 or m.alternatives:
+                ambiguous_fields.append(m.source_column)
+
+    # Detect Arabic content
     sample_text = ""
     for col in df.columns:
         for value in df[col].head(20).dropna():
@@ -434,14 +463,46 @@ def analyze_file_metadata(df: pd.DataFrame, file_type: str, extras: dict[str, An
                 break
         if sample_text:
             break
-    extras = extras or {}
-    return FileMetadata(
+
+    # Build manifests list for multi-file support
+    manifests = []
+    file_id = extras.get("file_id", "") if extras else ""
+
+    ingestion_result = resolution.ingestion_result if hasattr(resolution, 'ingestion_result') else None
+    classification = "unknown"
+    if ingestion_result and ingestion_result.file_classification:
+        classification = ingestion_result.file_classification[0]
+
+    manifest = IngestionManifest(
+        file_id=file_id,
+        filename=extras.get("filename", "unknown") if extras else "unknown",
+        classification=classification,
+        confidence=resolution.confidence / 100.0,
+        rows=len(df),
+        columns=len(df.columns),
+        mapped_fields=dict(resolution.mapping),
+        missing_fields=resolution.missing,
+        ambiguous_fields=ambiguous_fields,
+        quality={
+            "duplicate_rows": duplicate_rows,
+            "null_rate": null_rate,
+            "invalid_dates": invalid_dates,
+        },
+        metadata={
+            "sheet_count": extras.get("sheet_count") if extras else None,
+            "selected_sheet": extras.get("selected_sheet") if extras else None,
+            "header_row_index": extras.get("header_row_index") if extras else None,
+            "file_type": file_type,
+        },
+        # Backward compatibility fields for telemetry
         file_type=file_type,
+        selected_sheet=extras.get("selected_sheet") if extras else None,
+        sheet_count=extras.get("sheet_count") if extras else None,
+        header_row_index=extras.get("header_row_index") if extras else None,
         detected_columns=resolution.detected_fields,
-        column_confidence=resolution.confidence,
+        column_confidence=resolution.confidence / 100.0,
         is_arabic_headers=resolution.is_arabic,
         is_arabic_data=bool(sample_text),
-        sheet_count=extras.get("sheet_count"),
-        selected_sheet=extras.get("selected_sheet"),
-        header_row_index=extras.get("header_row_index"),
     )
+
+    return manifest

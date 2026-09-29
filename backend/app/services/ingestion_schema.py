@@ -130,6 +130,40 @@ class ColumnMapping:
 
 
 @dataclass
+class IngestionManifest:
+    """Per-file ingestion manifest — privacy-safe, frontend-ready (§5)."""
+    file_id: str
+    filename: str
+    classification: str  # SALES, INVENTORY, PRODUCT_CATALOG, PURCHASES, SUPPLIERS, EXPENSES, PAYMENTS, CUSTOMERS, BRANCHES, WASTAGE, UNKNOWN
+    confidence: float  # 0-1
+    rows: int
+    columns: int
+    mapped_fields: dict[str, str]  # canonical_role -> source_column
+    missing_fields: list[str]
+    ambiguous_fields: list[str]
+    quality: dict[str, Any]  # duplicate_rows, null_rate, invalid_dates, etc.
+    metadata: dict[str, Any] = field(default_factory=dict)  # sheet_count, header_row, etc.
+    # Backward compatibility fields for telemetry
+    file_type: str = ""
+    selected_sheet: str | None = None
+    sheet_count: int | None = None
+    header_row_index: int | None = None
+    detected_columns: list[str] = field(default_factory=list)
+    column_confidence: float = 0.0
+    is_arabic_headers: bool = False
+    is_arabic_data: bool = False
+
+
+@dataclass
+class DataQualityModel:
+    """Per-domain data readiness scores (§6)."""
+    overall_score: int  # 0-100
+    domain_scores: dict[str, int]  # {"sales": 96, "inventory": 88, "cost": 74, ...}
+    missing_required_fields: list[str] = field(default_factory=list)
+    ambiguous_fields: list[str] = field(default_factory=list)
+
+
+@dataclass
 class IngestionResult:
     status: str = INGESTION_STATUS_READY
     confidence: float = 0.0
@@ -141,6 +175,12 @@ class IngestionResult:
     human_message: str | None = None
     error_code: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
+
+    # New Phase 1B fields
+    manifest: "IngestionManifest | None" = field(default=None, repr=False)
+    data_quality: "DataQualityModel | None" = field(default=None, repr=False)
+    manifests: list["IngestionManifest"] = field(default_factory=list, repr=False)  # multi-file
+    overall_data_quality: "DataQualityModel | None" = field(default=None, repr=False)
 
     def role_map(self) -> dict[str, str]:
         """Return {role: source_column} for confidently mapped roles."""

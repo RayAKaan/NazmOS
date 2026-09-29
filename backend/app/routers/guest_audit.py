@@ -13,6 +13,7 @@ from __future__ import annotations
 import asyncio
 import json
 import time
+import uuid
 from collections import deque
 from typing import Any
 
@@ -107,16 +108,17 @@ def _rows_from_json(body: bytes) -> list[dict[str, Any]]:
 
 @router.post("")
 async def guest_audit(request: Request):
-    """Run a free Money Audit on a sales/inventory sample.
+    """Run a free Money Audit on business data files.
 
     Accepts either:
-    - `multipart/form-data` with a `file` field (CSV/XLSX/JSON) — single file, or
+    - `multipart/form-data` with multiple `files` fields (CSV/XLSX/JSON) — multi-file,
     - `multipart/form-data` with `sales_file` + `inventory_file` fields — the
       full two-file flow (pairs products by name, no AI), or
+    - `multipart/form-data` with a `file` field (CSV/XLSX/JSON) — single file, or
     - `application/json` body with `{ "rows": [...] }`.
 
-    Returns a simplified Money Audit summary and top recovery actions. No
-    account or authentication is required.
+    Returns a simplified Money Audit summary, per-file ingestion manifests,
+    and top recovery actions. No account or authentication is required.
     """
     client_ip = _client_ip(request)
     _check_rate_limit(client_ip)
@@ -125,11 +127,83 @@ async def guest_audit(request: Request):
     content_type = request.headers.get("content-type", "")
     if content_type.startswith("multipart/form-data"):
         form = await request.form()
+        
+        # Check for multi-file upload (new Orbit intake)
+        files = form.getlist("files")
         sales_file = form.get("sales_file")
         inventory_file = form.get("inventory_file")
         file_field = form.get("file")
 
-        if isinstance(sales_file, StarletteUploadFile) and isinstance(inventory_file, StarletteUploadFile):
+        # Multi-file Orbit intake (new)
+        if files and len(files) > 1:
+            manifests = []
+            dataframes = []
+            resolutions = []
+            
+            for file_field in files:
+                if not isinstance(file_field, StarletteUploadFile):
+                    continue
+                content = await _read_upload(file_field)
+                df, meta, resolution = _load_frame(content, file_field.filename or "upload.csv")
+                manifests.append(analyze_file_metadata(df, load.file_type if 'load' in locals() else "csv", {
+                    "filename": file_field.filename or "upload.csv",
+                    "file_id": str(uuid4()),
+                    "sheet_count": 1,
+                    "selected_sheet": "sheet1",
+                    "header_row_index": 0,
+                }))
+                dataframes.append(df)
+                resolutions.append(resolution)
+            
+            if len(dataframes) < 2:
+                raise HTTPException(422, detail="Multi-file upload requires at least 2 files.")
+            
+            # Combine all dataframes into a single BusinessSnapshot-like structure
+            # For now, fall back to two-file audit if we have sales + inventory
+            sales_idx = None
+            inv_idx = None
+            for i, m in enumerate(manifests):
+                if m.classification == "SALES" and sales_idx is None:
+                    sales_idx = i
+                elif m.classification == "INVENTORY" and inv_idx is None:
+                    inv_idx = i
+            
+            if sales_idx is not None and inv_idx is not None:
+                # Use two-file audit path
+                sales_df = dataframes[sales_idx]
+                inv_df = dataframes[inv_idx]
+                sales_res = resolutions[sales_idx]
+                inv_res = resolutions[inv_idx]
+                
+                try:
+                    result = await asyncio.wait_for(
+                        asyncio.to_thread(run_two_file_audit, dataframes[sales_idx], dataframes[inv_idx], resolutions[sales_idx], resolutions[inv_idx]),
+                        timeout=PROCESSING_TIMEOUT_SECONDS,
+                    )
+                except asyncio.TimeoutError:
+                    raise HTTPException(504, detail="Analysis timed out. Please upload smaller files.")
+                
+                # Add manifests to result
+                result["manifests"] = [m.__dict__ for m in manifests]
+                code = "multi_file"
+            else:
+                # Default to two-file if we have at least 2 files
+                if len(dataframes) >= 2:
+                    try:
+                        result = await asyncio.wait_for(
+                            asyncio.to_thread(run_two_file_audit, dataframes[0], dataframes[1], resolutions[0], resolutions[1]),
+                            timeout=PROCESSING_TIMEOUT_SECONDS,
+                        )
+                    except asyncio.TimeoutError:
+                        raise HTTPException(504, detail="Analysis timed out. Please upload smaller files.")
+                    
+                    result["manifests"] = [m.__dict__ for m in manifests]
+                    code = "multi_file"
+                else:
+                    raise HTTPException(422, detail="Multi-file upload requires at least 2 files.")
+        
+        # Two-file legacy flow
+        elif isinstance(sales_file, StarletteUploadFile) and isinstance(inventory_file, StarletteUploadFile):
             sales_bytes = await _read_upload(sales_file)
             inventory_bytes = await _read_upload(inventory_file)
             sales_df, sales_extra, sales_resolution = _load_frame(sales_bytes, sales_file.filename or "sales.csv")
@@ -164,6 +238,7 @@ async def guest_audit(request: Request):
                     detected_columns=meta.detected_columns, column_confidence=meta.column_confidence,
                     is_arabic_headers=meta.is_arabic_headers, is_arabic_data=meta.is_arabic_data,
                 )
+        # Single file legacy flow
         elif isinstance(file_field, StarletteUploadFile):
             content = await _read_upload(file_field)
             df, meta, resolution = _load_frame(content, file_field.filename or "upload.csv")
@@ -183,9 +258,10 @@ async def guest_audit(request: Request):
                 detected_columns=file_meta.detected_columns, column_confidence=file_meta.column_confidence,
                 is_arabic_headers=file_meta.is_arabic_headers, is_arabic_data=file_meta.is_arabic_data,
             )
+            result["manifests"] = [file_meta.__dict__]
             code = "single_file"
         else:
-            raise HTTPException(422, detail="Upload a `file`, or both `sales_file` and `inventory_file`.")
+            raise HTTPException(422, detail="Upload a `file`, or both `sales_file` and `inventory_file`, or multiple `files`.")
     else:
         body = await request.body()
         if len(body) > 512 * 1024:

@@ -154,7 +154,7 @@ class OutcomeLedger:
                         model = excluded.model,
                         provider = excluded.provider,
                         latency_ms = excluded.latency_ms
-                    """,
+                    """,  # nosec B608
                     params,
                 )
             return True

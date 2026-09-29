@@ -12,6 +12,10 @@ import tempfile
 from sqlalchemy import event
 
 from tests.test_analytics_health_score import _seed as real_seed
+# This probe uses the sessionmaker contract (sqlite_db.bind.sync_engine,
+# sqlite_db()), which test_analytics_health_score's tuple-returning fixture
+# does not provide; test_analytics_item_detail yields the bare sessionmaker.
+from tests.test_analytics_item_detail import sqlite_db  # noqa: F401  (fixture)
 
 _CAPTURE = os.path.join(tempfile.gettempdir(), "n2c_inventory_emission_full.json")
 
@@ -44,12 +48,15 @@ async def test_n2c_probe_inventory_emission_full(sqlite_db):
                 }
             )
 
-    event.listen(sqlite_db.bind.sync_engine, "before_cursor_execute", _listener)
+    # SQLAlchemy 2.x no longer exposes ``sessionmaker.bind``; the engine the
+    # sessionmaker was bound to lives in its constructor kwargs.
+    sync_engine = sqlite_db.kw["bind"].sync_engine
+    event.listen(sync_engine, "before_cursor_execute", _listener)
     try:
         async with sqlite_db() as db:
             await real_seed(db)
     finally:
-        event.remove(sqlite_db.bind.sync_engine, "before_cursor_execute", _listener)
+        event.remove(sync_engine, "before_cursor_execute", _listener)
 
     with open(_CAPTURE, "w", encoding="utf-8") as fh:
         json.dump(events, fh, indent=1, default=str)

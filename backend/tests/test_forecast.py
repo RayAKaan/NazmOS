@@ -137,6 +137,31 @@ async def test_get_all_forecasts(authenticated_client: dict):
     data = response.json()
     assert "forecasts" in data
     assert "total" in data
+
+
+def _iter_effective_routes(app):
+    """Yield the app's real routes, descending into included-router wrappers.
+
+    ``app.routes`` is not a flat list of APIRoute objects across FastAPI
+    versions: 0.141 (starlette 1.4) wraps each ``include_router`` result in an
+    ``_IncludedRouter`` whose own ``path``/``methods`` are None and whose routes
+    hang off ``original_router``. Older versions put the APIRoute objects
+    directly in ``app.routes``. The duplicate-registration pin below must see
+    the real route table either way, so normalise both shapes here.
+    """
+    for route in app.routes:
+        if getattr(route, "path", None) is not None:
+            yield route
+            continue
+        inner = getattr(route, "original_router", None)
+        if inner is not None:
+            yield from _iter_effective_routes(inner)
+            continue
+        inner_routes = getattr(route, "routes", None)
+        if inner_routes:
+            yield from _iter_effective_routes(type("R", (), {"routes": inner_routes})())
+
+
 async def test_get_all_forecasts_route_unique_in_router_and_openapi():
     # Phase 2B 6/13 pin: exactly ONE GET /all/{business_id} in BOTH the
     # forecast router's route table and the mounted OpenAPI schema.
@@ -162,7 +187,7 @@ async def test_get_all_forecasts_route_unique_in_router_and_openapi():
     from app.main import app
 
     app_matched = [
-        r for r in app.routes
+        r for r in _iter_effective_routes(app)
         if getattr(r, "path", None) == "/api/v1/forecast/all/{business_id}"
         and "GET" in (getattr(r, "methods", None) or set())
     ]

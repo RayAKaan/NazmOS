@@ -118,7 +118,7 @@ jobs:
               sys.exit(1)
           print('No high/critical CVEs detected.')
           PY
-- name: Backend tests with PostgreSQL
+      - name: Backend tests with PostgreSQL
         timeout-minutes: 30
         working-directory: backend
         env:

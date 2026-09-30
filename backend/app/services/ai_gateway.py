@@ -56,8 +56,7 @@ async def systemone_reason(
     """Canonical gateway route: Jev-first, STRICTLY NON-AUTHORITATIVE.
 
     Route contract:
-      1. AI policy kill-switch + budget are enforced exactly as the OpenCode
-         brain route (same choke point, same fail-closed semantics).
+      1. AI policy kill-switch + budget are enforced through the same canonical choke point and fail-closed semantics.
       2. A signed ReasoningCapsule is built from the raw payload; Jev only
          ever sees ``capsule.for_prompt()`` (opaque refs + banded signals).
       3. ``deterministic_decision`` is ALWAYS authoritative. Jev's reply can

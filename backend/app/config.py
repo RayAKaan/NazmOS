@@ -123,15 +123,13 @@ class Settings(BaseSettings):
 
     # --- Phase A: AI isolation core ---------------------------------------
     # Global kill switch for AI (reasoning/challenge/brain). When False the
-    # deterministic engine's decision is used and no LLM/OpenCode is consulted.
+    # deterministic engine's decision is used when AI is unavailable or disabled.
     AI_ENABLED: bool = True
     # HMAC key that signs ReasoningCapsules. Production requires >= 32 chars;
     # dev falls back to a value derived from SECRET_KEY so no new env var is
     # required locally.
     NAZMOS_CAPSULE_SIGNING_KEY: str = ""
     NAZMOS_CAPSULE_TTL_SECONDS: int = 90
-    # URL of the dedicated isolated OpenCode runner container. When set, the
-    # OpenCode brain path posts capsule prompts there instead of spawning a
     # subprocess in the backend container.
     # Max chars an AI response may be before the output gate rejects it.
     AI_OUTPUT_MAX_CHARS: int = 8000

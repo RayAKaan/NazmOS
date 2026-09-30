@@ -77,7 +77,7 @@ nazmos/
 │   ├── strategy/
 │   └── archive/             # Historical reports retained only when useful
 ├── scripts/                 # Current development/operational tooling
-├── sample_data/             # Current deterministic fixtures only
+├── tests/fixtures/sample_data/ # Current deterministic fixtures only
 └── .github/                 # CI/CD
 ```
 

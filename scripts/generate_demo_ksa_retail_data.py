@@ -208,8 +208,8 @@ def main() -> None:
     sales = generate_sales(rows=150)
     inventory = generate_inventory()
 
-    sales_path = ROOT / "sample_data" / "demo_ksa_retail_sales_q3_2026.csv"
-    inv_path = ROOT / "sample_data" / "demo_ksa_retail_inventory_aug_2026.csv"
+    sales_path = ROOT / "tests" / "fixtures" / "sample_data" / "demo_ksa_retail_sales_q3_2026.csv"
+    inv_path = ROOT / "tests" / "fixtures" / "sample_data" / "demo_ksa_retail_inventory_aug_2026.csv"
 
     write_csv(sales_path, sales)
     write_csv(inv_path, inventory)

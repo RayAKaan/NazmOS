@@ -13,7 +13,7 @@ from app.routers import (
     agent_router, suppliers_router, pharmacy_router, whatsapp_router, partners_router,
     admin_backup_router, oauth_router,
     pos_webhooks_router, orchestrator_router, recovery_match_router, compliance_router, events_router,
-    intelligence_router, guest_audit_router, audits_router,
+    intelligence_router, intelligence_canonical_router, guest_audit_router, audits_router,
     loop_console_router, orbit_router,
 )
 from app.middleware.advanced_rate_limiter import RedisRateLimiter, InMemoryRateLimiter, AdvancedRateLimitMiddleware, get_rate_limiter
@@ -201,6 +201,7 @@ app.include_router(money_audit_router, responses=COMMON_ERROR_RESPONSES)
 app.include_router(ops_router, responses=COMMON_ERROR_RESPONSES)
 app.include_router(compliance_router, responses=COMMON_ERROR_RESPONSES)
 app.include_router(events_router, responses=COMMON_ERROR_RESPONSES)
+app.include_router(intelligence_canonical_router, responses=COMMON_ERROR_RESPONSES)
 app.include_router(intelligence_router, responses=COMMON_ERROR_RESPONSES)
 app.include_router(loop_console_router, prefix="/api/v1", responses=COMMON_ERROR_RESPONSES)
 app.include_router(orbit_router, prefix="/api/v1", responses=COMMON_ERROR_RESPONSES)

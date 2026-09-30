@@ -12,6 +12,7 @@ from app.routers.ops import router as ops_router
 from app.routers.compliance import router as compliance_router
 from app.routers.events import router as events_router
 from app.routers.intelligence import router as intelligence_router
+from app.routers.intelligence_v2 import router as intelligence_canonical_router
 from app.routers.organizations import router as organizations_router
 from app.routers.subscriptions import router as subscriptions_router
 from app.routers.adapters import router as adapters_router
@@ -70,6 +71,7 @@ __all__ = [
     "compliance_router",
     "events_router",
     "intelligence_router",
+    "intelligence_canonical_router",
     "organizations_router",
     "subscriptions_router",
     "adapters_router",

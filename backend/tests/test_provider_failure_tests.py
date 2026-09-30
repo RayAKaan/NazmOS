@@ -59,7 +59,7 @@ PAYLOAD = {
 
 def _capsule() -> ReasoningCapsule:
     c = build_capsule_for_payload(
-        PAYLOAD, capability="opencode_brain", purpose="_internal"
+        PAYLOAD, capability="recovery.rank", purpose="_internal"
     )
     return CapsuleSigner().sign(c)
 

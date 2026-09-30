@@ -19,7 +19,7 @@ from app.services.security_audit_service import (
 )
 
 DEFAULT_CAPABILITY = "business_loop.action_selection"
-DEFAULT_PURPOSE = "resolve ambiguity in inventory decisions"
+DEFAULT_PURPOSE = "advisory action selection for the continuous_business_loop"
 
 # The deterministic-decision vocabulary the canonical route preserves by
 # default. Surfaces that migrate onto the route pass their own contract via

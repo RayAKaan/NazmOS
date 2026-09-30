@@ -18,7 +18,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}/nazmos-api
-  RUNNER_IMAGE_NAME: ${{ github.repository }}/nazmos-opencode-runner
   FRONTEND_IMAGE_NAME: ${{ github.repository }}/nazmos-frontend
 
 jobs:
@@ -30,8 +29,6 @@ jobs:
     outputs:
       image_tag: ${{ steps.meta.outputs.tags }}
       image_digest: ${{ steps.build.outputs.digest }}
-      runner_image_tag: ${{ steps.runner_meta.outputs.tags }}
-      runner_image_digest: ${{ steps.runner_build.outputs.digest }}
     steps:
       - uses: actions/checkout@v4
 
@@ -67,26 +64,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Extract metadata (OpenCode runner)
-        id: runner_meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.RUNNER_IMAGE_NAME }}
-          tags: |
-            type=semver,pattern={{version}}
-            type=sha,prefix=,suffix=,format=short
-
-      - name: Build and push OpenCode runner image
-        id: runner_build
-        uses: docker/build-push-action@v6
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile.opencode-runner
-          push: true
-          tags: ${{ steps.runner_meta.outputs.tags }}
-          labels: ${{ steps.runner_meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
   deploy-staging:
     runs-on: ubuntu-latest
@@ -144,10 +121,8 @@ jobs:
             cd /opt/nazmos
             echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
             docker pull ${{ needs.build-image.outputs.image_tag }}
-            docker pull ${{ needs.build-image.outputs.runner_image_tag }}
             docker pull ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:staging-${{ github.sha }}
             export API_IMAGE=${{ needs.build-image.outputs.image_tag }}
-            export OPENCODE_RUNNER_IMAGE=${{ needs.build-image.outputs.runner_image_tag }}
             export FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:staging-${{ github.sha }}
             # Fail-closed .env writer: secrets arrive via forwarded process env
             # (never as literal shell text), so no character can break out of a
@@ -250,10 +225,8 @@ jobs:
             cd /opt/nazmos
             echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
             docker pull ${{ needs.build-image.outputs.image_tag }}
-            docker pull ${{ needs.build-image.outputs.runner_image_tag }}
             docker pull ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:production-${{ github.sha }}
             export API_IMAGE=${{ needs.build-image.outputs.image_tag }}
-            export OPENCODE_RUNNER_IMAGE=${{ needs.build-image.outputs.runner_image_tag }}
             export FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:production-${{ github.sha }}
             # Fail-closed .env writer: secrets arrive via forwarded process env
             # (never as literal shell text), so no character can break out of a

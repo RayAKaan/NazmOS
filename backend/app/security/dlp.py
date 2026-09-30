@@ -2,7 +2,7 @@
 
 Applied on both sides of the AI boundary:
   - outbound prompts (built from capsules) before they reach any LLM provider
-    or the OpenCode CLI,
+    or any external model transport,
   - inbound AI responses before they are trusted by the output gate.
 
 Any match is a hard BLOCK (fail-closed). No silent redaction.

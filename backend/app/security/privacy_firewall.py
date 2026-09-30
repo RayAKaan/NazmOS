@@ -403,7 +403,7 @@ def build_capsule_for_payload(
 ) -> ReasoningCapsule:
     """Build a multi-item capsule from a plain evidence dict (gateway path).
 
-    Used by the OpenCode brain gateway when a caller hands the trusted zone an
+    Used by the canonical AI gateway when a caller hands the trusted zone an
     already-structured package (``items`` + ``business`` keyed like
     ItemEvidence/BusinessContext). Absent keys are safely skipped.
     """

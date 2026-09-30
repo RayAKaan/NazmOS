@@ -142,13 +142,31 @@ jobs:
           ENVIRONMENT: test
           USE_REDIS: false
           USE_TEMPORAL: "false"
-          API_BASE_URL: http://localhost:8000
+          # Match uvicorn's bind address exactly. `localhost` can resolve to
+          # ::1 on a runner, and uvicorn binds IPv4 only, which is an
+          # independent source of [Errno 111] in the smoke scripts.
+          API_BASE_URL: http://127.0.0.1:8000
           FOUNDER_EMAILS: pilot-test@example.com,demo-retail@example.com
         run: |
           python -m alembic upgrade head
           uvicorn app.main:app --host 127.0.0.1 --port 8000 --log-level warning &
           SERVER_PID=$!
-          sleep 3
+          # Wait for readiness instead of sleeping a fixed amount: startup runs
+          # alembic-free seeding (feature flags, event registry, demo data) and
+          # a fixed `sleep 3` loses the race on a cold runner, which surfaces as
+          # httpx.ConnectError [Errno 111] in the smoke scripts below.
+          for i in $(seq 1 60); do
+            if python -c "import httpx,sys; sys.exit(0 if httpx.get('http://127.0.0.1:8000/health', timeout=2).status_code == 200 else 1)" 2>/dev/null; then
+              echo "API ready after ${i}s"
+              break
+            fi
+            if [ "$i" = "60" ]; then
+              echo "API did not become ready in 60s"
+              kill $SERVER_PID || true
+              exit 1
+            fi
+            sleep 1
+          done
           python ../scripts/runtime_e2e_upload_money_audit.py
           python ../scripts/runtime_e2e_demo_ksa_retail.py
           kill $SERVER_PID

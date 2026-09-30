@@ -1,7 +1,7 @@
 """Phase 3 §12 + V8 compat: AI Response Validator.
 
 CANONICAL (production, Phase 3 §12): validates raw AI response strings
-before they can influence any NazmOS decision (OpenCode brain path).
+before they can influence any NazmOS decision (structured model-assisted path).
 Validates JSON, schema, decision enum, confidence, evidence IDs, risk flags,
 financial hallucination and prompt injection. Falls back on any failure.
 
@@ -109,7 +109,7 @@ def validate_ai_response(
 
     Dispatches on the type of the first argument:
 
-    - ``str`` (Phase 3 §12, production OpenCode brain path): validates a raw
+    - ``str`` (structured model-assisted path): validates a raw
       AI response string (JSON, schema, enum, confidence, evidence, hallucination,
       injection, constraints). See ``_validate_string_response``.
     - structured AI reasoning object (V8/V11 experiment harness, e.g.

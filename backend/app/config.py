@@ -133,8 +133,6 @@ class Settings(BaseSettings):
     # URL of the dedicated isolated OpenCode runner container. When set, the
     # OpenCode brain path posts capsule prompts there instead of spawning a
     # subprocess in the backend container.
-    OPENCODE_RUNNER_URL: str = ""
-    OPENCODE_RUNNER_TIMEOUT_SECONDS: int = 45
     # Max chars an AI response may be before the output gate rejects it.
     AI_OUTPUT_MAX_CHARS: int = 8000
     # Outbound/inbound DLP is fail-closed. Keep True.

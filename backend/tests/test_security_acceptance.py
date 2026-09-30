@@ -94,7 +94,7 @@ def test_dlp_blocks_secret_outbound():
 def test_kill_switch_disables_ai():
     from types import SimpleNamespace
     disabled = AiPolicy(SimpleNamespace(AI_ENABLED=False))
-    assert disabled.enabled("opencode_brain") is False
+    assert disabled.enabled("recovery.rank") is False
 
 
 # ---- DB-gated full-app (fresh migrated Postgres) -----------------------------

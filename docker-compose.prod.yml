@@ -8,7 +8,6 @@
 #   GROQ_API_KEY, GOOGLE_AI_API_KEY, LLM_PROVIDER_ORDER, USE_MOCK_LLM,
 #   API_WORKERS, BACKUP_RETENTION_DAYS,
 #   OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY, OPENAI_API_KEY,
-#   NAZMOS_OPENCODE_MODEL, NAZMOS_CAPSULE_SIGNING_KEY,
 #   WHATSAPP_ENABLED, WHATSAPP_TOKEN, WHATSAPP_PHONE_ID, METRICS_TOKEN
 
 services:
@@ -139,8 +138,6 @@ services:
       TEMPORAL_ADDRESS: temporal:7233
       TEMPORAL_NAMESPACE: default
       TEMPORAL_TASK_QUEUE: nazm-execution
-      # Phase A isolation core: route OpenCode brain calls to the hardened
-      # runner container; sign ReasoningCapsules.
       NAZMOS_CAPSULE_SIGNING_KEY: ${NAZMOS_CAPSULE_SIGNING_KEY:-}
       GROQ_API_KEY: ${GROQ_API_KEY:-}
       GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
@@ -176,7 +173,6 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers ${API_WORKERS:-2}
     networks:
       - nazmos
-      - opencode_net
 
   # NazmOS execution worker: hosts every workflow + activity against the real
   # Temporal server. The ONLY orchestrator for business execution paths; it
@@ -221,40 +217,6 @@ services:
     networks:
       - nazmos
 
-  # - internal network only (opencode_net): cannot reach postgres/redis/temporal
-  #   or the nazmos production network; no published host ports.
-  # - read-only rootfs, ALL caps dropped, no-new-privileges, resource limits.
-  # - never mounted merchant data; its only job is the OpenCode CLI.
-  opencode_runner:
-    restart: unless-stopped
-    environment:
-      PORT: "8010"
-      ENVIRONMENT: production
-      NAZMOS_OPENCODE_MODEL: ${NAZMOS_OPENCODE_MODEL:-}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY:-}
-      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
-      GROQ_API_KEY: ${GROQ_API_KEY:-}
-    networks:
-      - opencode_net
-    read_only: true
-    tmpfs:
-      - /tmp
-      - /run
-    cap_drop: [ALL]
-    security_opt: [no-new-privileges:true]
-    pids_limit: 64
-    mem_limit: 512m
-    cpus: 1.0
-    stop_grace_period: 2s
-    healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8010/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 10s
-
   frontend:
     image: ${FRONTEND_IMAGE:?FRONTEND_IMAGE must be set (docker push result)}
     restart: unless-stopped
@@ -282,7 +244,3 @@ volumes:
 networks:
   nazmos:
     name: nazmos_production
-  # runner cannot reach services on the nazmos production network.
-  opencode_net:
-    name: nazmos_opencode_net
-    internal: true

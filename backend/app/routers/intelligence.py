@@ -611,47 +611,52 @@ async def read_simulation(
     return simulation
 
 
-@router.post("/execute", response_model=ExecutionJobOut, status_code=status.HTTP_201_CREATED,
-             dependencies=[Depends(require_capability("can_approve_actions", "business_id"))])
-async def execute_action(
+@router.post("/execute", response_model=ExecutionJobOut, status_code=status.HTTP_410_GONE,
+             include_in_schema=False)
+async def execute_action_removed(
     business_id: UUID,
     request: ExecutionRequest,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user),
 ):
-    """Execute an approved action through the Execution Engine."""
-    await _verify_business_access(db, business_id, current_user)
-    result = await run_simulated(
-        db,
-        business_id=business_id,
-        action_type=request.action_type,
-        entity_type=request.entity_type,
-        entity_id=request.entity_id,
-        payload=request.payload,
-        decision_id=request.decision_id,
-        plan_id=request.plan_id,
+    """Removed: Intelligence must not expose Loop execution.
+
+    The canonical path is:
+
+        Intelligence DecisionCandidate → Governance → Approval
+                                        → Loop (/api/v1/actions, /api/v1/agent)
+                                        → Temporal → Execution
+
+    This endpoint previously called ``run_simulated`` directly, bypassing the
+    Governance/Approval boundary. It is now a hard 410 so no client can rely on
+    it.
+    """
+    raise HTTPException(
+        status_code=status.HTTP_410_GONE,
+        detail=(
+            "Intelligence no longer exposes execution. Decision candidates must be "
+            "approved and executed through the canonical Loop path "
+            "(/api/v1/actions or /api/v1/agent)."
+        ),
     )
-    await db.commit()
-    job = await get_execution_job(db, UUID(result["job_id"]))
-    if not job:
-        raise HTTPException(status_code=500, detail="Execution job not created")
-    await db.refresh(job)
-    return job
 
 
-@router.get("/execution-jobs/{job_id}", response_model=ExecutionJobOut)
-async def read_execution_job(
+@router.get("/execution-jobs/{job_id}", response_model=ExecutionJobOut, include_in_schema=False)
+async def read_execution_job_removed(
     job_id: UUID,
     business_id: UUID,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user),
 ):
-    """Retrieve an execution job by id."""
-    await _verify_business_access(db, business_id, current_user)
-    job = await get_execution_job(db, job_id, business_id)
-    if not job:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Execution job not found")
-    return job
+    """Removed: execution is a Loop concern, not an Intelligence one.
+
+    Execution jobs are now only reachable through the canonical Loop/orchestration
+    surface (``/api/v1/actions``, ``/api/v1/agent``, ``/api/v1/loop``). Intelligence
+    must never expose Loop execution.
+    """
+    raise HTTPException(
+        status_code=410,
+        detail=(
+            "Intelligence no longer exposes execution. "
+            "Use the canonical Loop path (/api/v1/actions or /api/v1/agent)."
+        ),
+    )
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -780,23 +785,26 @@ async def analyze_view(
     return AnalyzeOut(**result)
 
 
-@router.post("/predict", response_model=PredictOut)
-async def predict_view(
+@router.post("/predict", response_model=PredictOut, status_code=status.HTTP_410_GONE,
+             include_in_schema=False)
+async def predict_removed(
     business_id: UUID,
     request: PredictRequest,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user),
 ):
-    """Predict sales, demand, or stock over a horizon from business memory."""
-    await _verify_business_access(db, business_id, current_user)
-    result = await intelligence_api.predict(
-        db,
-        business_id,
-        request.target,
-        horizon_days=request.horizon_days,
-        item_id=request.item_id,
+    """Removed: the old Intelligence predict was a placeholder, not a model.
+
+    It returned a hardcoded ``confidence: 0.95`` with the current stock value
+    echoed back, and returned ``predicted_value: 0.0`` when no data existed —
+    i.e. it treated missing data as zero. Real deterministic forecasting already
+    lives behind ``/api/v1/forecast`` (the ``app.services.forecasting`` pipeline).
+    """
+    raise HTTPException(
+        status_code=status.HTTP_410_GONE,
+        detail=(
+            "Intelligence predict was removed because it fabricated predictions and "
+            "treated missing data as zero. Use /api/v1/forecast for real forecasts."
+        ),
     )
-    return PredictOut(**result)
 
 
 @router.post("/explain", response_model=DecisionExplainOut)

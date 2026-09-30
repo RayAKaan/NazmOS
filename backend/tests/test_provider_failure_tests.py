@@ -266,7 +266,7 @@ async def _run_gateway(monkeypatch, *, shadow: bool, jev_choice: str, determinis
 
     return await gateway.systemone_reason(
         PAYLOAD,
-        capability="opencode_brain",
+        capability="recovery.rank",
         purpose="_internal",
         deterministic_decision=deterministic,
         shadow=shadow,

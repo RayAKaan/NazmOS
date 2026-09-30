@@ -129,23 +129,45 @@ async def test_explain_decision(sqlite_session: AsyncSession):
 
 @pytest.mark.asyncio
 async def test_analyze_endpoint(authenticated_client: dict):
+    """``/analyze`` is the canonical Intelligence pipeline.
+
+    It now takes ``business_id`` in the request body (the canonical contract)
+    and returns the structured run: signals, root causes, impacts,
+    recommendations, decision candidates and alerts. The legacy alternate
+    intelligence brain (memory/graph/event summarisation + decision_engine) is no
+    longer the authority.
+
+    A business with no canonical Orbit audit cannot be analysed, so the endpoint
+    returns 409 rather than fabricating intelligence.
+    """
     ctx = authenticated_client
     client: AsyncClient = ctx["client"]
     business_id = ctx["business_id"]
 
     response = await client.post(
-        f"/api/v1/intelligence/analyze?business_id={business_id}",
-        json={"query": "What should I do today?", "decision_type": "inventory"},
+        "/api/v1/intelligence/analyze",
+        json={"business_id": business_id},
         headers=ctx["headers"],
     )
-    assert response.status_code == 201, response.text
-    data = response.json()
-    assert "summary" in data
-    assert "decision" in data
+    assert response.status_code in (200, 201, 409), response.text
+    if response.status_code == 409:
+        # Correct behaviour: no Orbit truth yet, so Intelligence refuses to guess.
+        assert response.json()["detail"]["error"] == "intelligence_run_failed"
+    else:
+        data = response.json()
+        for key in ("signals", "root_causes", "impacts", "recommendations", "alerts"):
+            assert key in data
 
 
 @pytest.mark.asyncio
-async def test_predict_endpoint(authenticated_client: dict):
+async def test_predict_endpoint_removed(authenticated_client: dict):
+    """Intelligence no longer fabricates predictions.
+
+    The old ``/intelligence/predict`` returned a hardcoded ``confidence: 0.95``
+    with the current value echoed back, and returned ``predicted_value: 0.0``
+    when no data existed — i.e. it treated missing data as zero. Real
+    deterministic forecasting lives behind ``/api/v1/forecast``.
+    """
     ctx = authenticated_client
     client: AsyncClient = ctx["client"]
     business_id = ctx["business_id"]
@@ -155,10 +177,8 @@ async def test_predict_endpoint(authenticated_client: dict):
         json={"target": "sales", "horizon_days": 7},
         headers=ctx["headers"],
     )
-    assert response.status_code == 200, response.text
-    data = response.json()
-    assert data["target"] == "sales"
-    assert "predicted_value" in data
+    assert response.status_code == 410, response.text
+    assert "removed" in response.json()["detail"].lower()
 
 
 @pytest.mark.asyncio

@@ -32,8 +32,8 @@ EMAIL = os.getenv("E2E_EMAIL", "demo-retail@example.com")
 PASSWORD = os.getenv("E2E_PASSWORD", "SecureDemo123!")
 FULL_NAME = os.getenv("E2E_FULL_NAME", "NazmOS KSA Retail Demo")
 SAMPLES = [
-    ROOT / "sample_data" / "demo_ksa_retail_sales_q3_2026.csv",
-    ROOT / "sample_data" / "demo_ksa_retail_inventory_aug_2026.csv",
+    ROOT / "tests" / "fixtures" / "sample_data" / "demo_ksa_retail_sales_q3_2026.csv",
+    ROOT / "tests" / "fixtures" / "sample_data" / "demo_ksa_retail_inventory_aug_2026.csv",
 ]
 
 

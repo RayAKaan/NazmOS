@@ -29,8 +29,8 @@ EMAIL = os.getenv("E2E_EMAIL", "pilot-test@example.com")
 PASSWORD = os.getenv("E2E_PASSWORD", "SecurePilot123!")
 FULL_NAME = os.getenv("E2E_FULL_NAME", "NazmOS Pilot Tester")
 SAMPLES = [
-    ROOT / "sample_data" / "sales_history_sample.csv",
-    ROOT / "sample_data" / "inventory_snapshot_sample.csv",
+    ROOT / "tests" / "fixtures" / "sample_data" / "sales_history_sample.csv",
+    ROOT / "tests" / "fixtures" / "sample_data" / "inventory_snapshot_sample.csv",
 ]
 
 

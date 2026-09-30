@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 AI_CAPABILITIES: dict[str, str] = {
     "counterfactual_audit": "resolve ambiguity in inventory decisions",
     "challenge": "challenge the deterministic decision",
-    "opencode_brain": "independent reasoning on a decision capsule",
     "chat": "executive copilot answering about the merchant's own business",
     "recovery.rank": "resolve ambiguity in recovery candidate ranking",
     "recovery.action_type": "resolve ambiguity in the recovery action type",
@@ -42,7 +41,6 @@ def _enabled(attr: str) -> Callable[[object], bool]:
     return check
 
 
-AI_CAPABILITY_FLAGS["opencode_brain"] = _enabled("AI_ENABLED")
 AI_CAPABILITY_FLAGS["counterfactual_audit"] = _enabled("AI_ENABLED")
 AI_CAPABILITY_FLAGS["challenge"] = _enabled("AI_ENABLED")
 AI_CAPABILITY_FLAGS["chat"] = _enabled("CHAT_ENABLED")

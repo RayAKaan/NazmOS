@@ -1,9 +1,7 @@
 # NazmOS production-pilot compose
 # Use behind a real TLS reverse proxy (Nginx/Caddy/Traefik) or a managed load balancer.
 # Images are built + pushed to a registry by CI (deploy.yml) and pulled here; the
-# deploy pipeline exports API_IMAGE / OPENCODE_RUNNER_IMAGE before `up`.
 # Required .env keys:
-#   API_IMAGE, OPENCODE_RUNNER_IMAGE,
 #   DB_PASSWORD, REDIS_PASSWORD, SECRET_KEY, CORS_ORIGINS, PUBLIC_API_URL,
 #   SENTRY_DSN, DATABASE_APP_ROLE, CREDENTIAL_MASTER_KEY
 # Optional:
@@ -143,7 +141,6 @@ services:
       TEMPORAL_TASK_QUEUE: nazm-execution
       # Phase A isolation core: route OpenCode brain calls to the hardened
       # runner container; sign ReasoningCapsules.
-      OPENCODE_RUNNER_URL: http://opencode_runner:8010
       NAZMOS_CAPSULE_SIGNING_KEY: ${NAZMOS_CAPSULE_SIGNING_KEY:-}
       GROQ_API_KEY: ${GROQ_API_KEY:-}
       GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
@@ -166,8 +163,6 @@ services:
         condition: service_completed_successfully
       temporal:
         condition: service_started
-      opencode_runner:
-        condition: service_healthy
     volumes:
       - uploaded_files:/app/uploads
       - ./scripts:/app/scripts:ro
@@ -226,13 +221,11 @@ services:
     networks:
       - nazmos
 
-  # Phase A isolation core: dedicated OpenCode runner container.
   # - internal network only (opencode_net): cannot reach postgres/redis/temporal
   #   or the nazmos production network; no published host ports.
   # - read-only rootfs, ALL caps dropped, no-new-privileges, resource limits.
   # - never mounted merchant data; its only job is the OpenCode CLI.
   opencode_runner:
-    image: ${OPENCODE_RUNNER_IMAGE:?OPENCODE_RUNNER_IMAGE must be set (docker push result)}
     restart: unless-stopped
     environment:
       PORT: "8010"
@@ -289,7 +282,6 @@ volumes:
 networks:
   nazmos:
     name: nazmos_production
-  # Internal-only network for the OpenCode runner: no host ingress, and the
   # runner cannot reach services on the nazmos production network.
   opencode_net:
     name: nazmos_opencode_net

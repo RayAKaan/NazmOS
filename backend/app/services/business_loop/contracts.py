@@ -123,7 +123,7 @@ RECOMMENDATION_TRANSITIONS: dict[RecommendationStatus, set[RecommendationStatus]
 
 
 class VerificationStatus(str, Enum):
-    """Outcome verification ladder (mirrors MASTER_PLAN sec 14.3)."""
+    """Outcome verification ladder (defines the canonical outcome verification ladder)."""
 
     REPORTED = "reported"
     OBSERVED = "observed"
@@ -137,14 +137,13 @@ class AdvisorySource(str, Enum):
     """Attribution must be exact: never label a fallback/provider as Jev."""
 
     JEV = "jev"
-    OPENCODE = "opencode"
     LLM_API = "llm_api"
     DETERMINISTIC_ONLY = "deterministic_only"
     MOCKED = "mocked"
 
 
 class CycleStage(str, Enum):
-    """Stages of one bounded improvement cycle (MASTER_PLAN sec 16.2)."""
+    """Stages of one bounded improvement cycle (canonical bounded improvement cycle)."""
 
     EVIDENCE_DISCOVERY = "evidence_discovery"
     INGESTION = "ingestion"

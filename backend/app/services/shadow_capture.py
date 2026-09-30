@@ -65,7 +65,7 @@ async def run_shadow_parity(
     *,
     cases: list[tuple[dict[str, Any], str]],  # (payload, deterministic_decision)
     question: str = "Which canonical decision is safest and why?",
-    capability: str = "opencode_brain",
+    capability: str = "business_loop.action_selection",
     purpose: str = "_internal",
     recorder: ShadowParityRecorder | None = None,
     consult: Any | None = None,  # async callable matching jev.consult

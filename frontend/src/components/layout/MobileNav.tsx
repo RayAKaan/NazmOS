@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   Link2,
   MoreHorizontal,
+  Orbit,
   Package,
   Repeat2,
   Settings,
@@ -42,6 +43,7 @@ export function MobileNav() {
 
   const moreNav = [
     { href: "/feed", label: t.sidebar.feed, icon: Inbox },
+    { href: "/orbit", label: "Orbit", icon: Orbit },
     { href: "/chat", label: t.sidebar.copilot || "Nazm Copilot", icon: Sparkles },
     { href: "/orchestrator", label: t.sidebar.orchestrator || "Recovery Engine", icon: Sparkles },
     { href: "/forecast", label: t.sidebar.forecast, icon: TrendingUp },

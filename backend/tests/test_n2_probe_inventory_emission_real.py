@@ -14,6 +14,7 @@ import pytest
 from sqlalchemy import event
 
 from tests.test_analytics_health_score import _seed
+from tests.test_analytics_health_score import sqlite_db  # noqa: F401  (fixture)
 
 
 def _dump_rows(parameters):

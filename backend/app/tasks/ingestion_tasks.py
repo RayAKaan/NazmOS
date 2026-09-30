@@ -13,6 +13,44 @@ from app.services.schema_detector import SchemaDetector
 settings = get_settings()
 
 
+def _resolve_stored_path(stored_filename: str) -> Path:
+    """Resolve ``uploaded_files.stored_filename`` to a local path.
+
+    ``storage.store`` already returns a path rooted at ``UPLOAD_DIR`` (e.g.
+    ``uploads\\<name>.csv``) and the uploader consumes it verbatim
+    (``app.routers.upload._resolve_local_parse_path``). Re-joining
+    ``UPLOAD_DIR`` here produced ``uploads/uploads/<name>.csv``, which never
+    exists, so ingestion reported "File not found" for every upload while the
+    row was already marked ``processing``.
+
+    Mirrors the uploader: honour an absolute path, otherwise use the stored
+    value as-is, falling back to a UPLOAD_DIR join only if that resolves.
+    """
+    stored = Path(stored_filename)
+    if stored.is_absolute():
+        return stored
+    joined = Path(settings.UPLOAD_DIR) / stored
+    return joined if joined.exists() else stored
+
+
+def _mark_failed(session, upload_id: str, error: str) -> dict:
+    """Put the row in a terminal state so callers never poll a stuck upload.
+
+    The early returns below used to leave ``status='processing'`` in place,
+    which surfaced to clients as an indefinite "processing" rather than an
+    error.
+    """
+    session.execute(
+        text(
+            "UPDATE uploaded_files SET status = 'failed', error_summary = :error "
+            "WHERE id = :id"
+        ),
+        {"id": upload_id, "error": error},
+    )
+    session.commit()
+    return {"status": "failed", "error": error}
+
+
 def run_process_upload(upload_id: str, business_id: str, column_mapping: dict):
     """Core ingestion logic — the single canonical body for upload processing.
 
@@ -33,9 +71,9 @@ def run_process_upload(upload_id: str, business_id: str, column_mapping: dict):
         if not upload:
             return {"status": "failed", "error": "Upload not found"}
 
-        file_path = Path(settings.UPLOAD_DIR) / upload.stored_filename
+        file_path = _resolve_stored_path(upload.stored_filename)
         if not file_path.exists():
-            return {"status": "failed", "error": "File not found"}
+            return _mark_failed(session, upload_id, f"File not found: {file_path}")
 
         session.execute(
             text("UPDATE uploaded_files SET status = 'processing', etl_started_at = NOW() WHERE id = :id"),
@@ -145,7 +183,7 @@ def run_cleanup_stale_uploads():
 
         deleted = 0
         for upload in stale:
-            file_path = Path(settings.UPLOAD_DIR) / upload.stored_filename
+            file_path = _resolve_stored_path(upload.stored_filename)
             try:
                 if file_path.exists():
                     os.unlink(file_path)

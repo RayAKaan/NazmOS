@@ -21,7 +21,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy import text
+from sqlalchemy import bindparam, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # ---------------------------------------------------------------------------
@@ -39,7 +39,17 @@ FINDINGS_SEVERITY_WEIGHTS: dict[str, int] = {
 # Findings that are resolved or out-of-scope never drag health.
 EXCLUDED_FINDING_STATUSES = ("rejected", "failed", "verified")
 
-_ACTIVE_CLAUSE = "status NOT IN ('rejected', 'failed', 'verified')"
+
+def _bind_excluded(sql: Any) -> Any:
+    """Attach the excluded-status set to a findings-health query.
+
+    The statuses come from ``EXCLUDED_FINDING_STATUSES`` as an expanding
+    bindparam rather than being spliced into the SQL text, so the query keeps
+    no interpolated fragment and that tuple stays the single source of truth.
+    """
+    return sql.bindparams(
+        bindparam("excluded", value=list(EXCLUDED_FINDING_STATUSES), expanding=True)
+    )
 
 # ---------------------------------------------------------------------------
 # Domain → dashboard dimension mapping (shared by breakdown)
@@ -113,11 +123,13 @@ async def findings_health_score(
     Returns ``overall_health`` plus metadata so consumers can label the metric.
     """
     rows = await db.execute(
-        text(
-            f"SELECT severity, COUNT(*) AS n "
-            f"FROM findings "
-            f"WHERE business_id = :b AND {_ACTIVE_CLAUSE} "
-            f"GROUP BY severity"
+        _bind_excluded(
+            text(
+                "SELECT severity, COUNT(*) AS n "
+                "FROM findings "
+                "WHERE business_id = :b AND status NOT IN :excluded "
+                "GROUP BY severity"
+            )
         ),
         {"b": str(business_id)},
     )
@@ -147,11 +159,13 @@ async def findings_health_breakdown(
     is ``100 - dimension_penalty``.
     """
     rows = await db.execute(
-        text(
-            f"SELECT domain, severity, COUNT(*) AS n "
-            f"FROM findings "
-            f"WHERE business_id = :b AND {_ACTIVE_CLAUSE} "
-            f"GROUP BY domain, severity"
+        _bind_excluded(
+            text(
+                "SELECT domain, severity, COUNT(*) AS n "
+                "FROM findings "
+                "WHERE business_id = :b AND status NOT IN :excluded "
+                "GROUP BY domain, severity"
+            )
         ),
         {"b": str(business_id)},
     )
@@ -194,13 +208,15 @@ async def findings_health_trend(
 
     async def _score(since: datetime, until: datetime) -> int:
         rows = await db.execute(
-            text(
-                f"SELECT severity, COUNT(*) AS n "
-                f"FROM findings "
-                f"WHERE business_id = :b "
-                f"AND created_at >= :since AND created_at < :until "
-                f"AND {_ACTIVE_CLAUSE} "
-                f"GROUP BY severity"
+            _bind_excluded(
+                text(
+                    "SELECT severity, COUNT(*) AS n "
+                    "FROM findings "
+                    "WHERE business_id = :b "
+                    "AND created_at >= :since AND created_at < :until "
+                    "AND status NOT IN :excluded "
+                    "GROUP BY severity"
+                )
             ),
             {"b": str(business_id), "since": since, "until": until},
         )

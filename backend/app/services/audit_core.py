@@ -7,6 +7,11 @@ product metrics always produce identical classifications and financial deltas.
 The module is pure Python + ``recovery_intelligence`` primitives. No AI, no
 no external services — every number is a deterministic calculation from the
 evidence supplied.
+
+FROZEN: This module is the CANONICAL audit engine. Behavior changes require:
+1. Cross-path equivalence test updates (guest single-file, guest two-file, authenticated)
+2. Version bump in AUDIT_CORE_VERSION
+3. Explicit approval in code review
 """
 from __future__ import annotations
 
@@ -20,6 +25,11 @@ from app.services.recovery_intelligence import (
     stockout_financials,
     FinancialEstimate,
 )
+
+# Canonical version — bump ONLY when behavior intentionally changes.
+# Cross-path equivalence tests (guest single/two-file, authenticated) must pass
+# before any version bump is merged.
+AUDIT_CORE_VERSION = "v2.1.0"
 
 D = Decimal
 ZERO = D("0")

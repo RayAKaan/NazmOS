@@ -150,7 +150,12 @@ def _get_sync_engine():
         if _is_sqlite:
             sync_database_url = settings.DATABASE_URL.replace("+aiosqlite", "")
         else:
-            sync_database_url = settings.DATABASE_URL.replace("+asyncpg", "")
+            # Keep the sync driver explicit. A bare "postgresql://" is not
+            # version-stable: SQLAlchemy <2.1 defaults it to psycopg2, while
+            # 2.1+ defaults it to psycopg v3. requirements.txt pins
+            # psycopg2-binary, so name it here rather than inherit a default
+            # that flips with the resolved SQLAlchemy version.
+            sync_database_url = settings.DATABASE_URL.replace("+asyncpg", "+psycopg2")
         sync_kwargs = {}
         if not _is_sqlite:
             sync_kwargs.update({"pool_pre_ping": True, "pool_size": 5})

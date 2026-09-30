@@ -416,19 +416,67 @@ def relationship_adjust(
 # ---------------------------------------------------------------------------
 
 def classify_file(mapped: dict[str, str]) -> list[str]:
+    """Classify a file into one or more of the 11 canonical categories (§4).
+
+    Returns a list of classifications. Multiple are possible when a file
+    contains mixed domains (e.g., sales + inventory).
+    """
     domains: list[str] = []
-    stock_like = any(k in mapped for k in ("stock", "opening_stock", "closing_stock", "inbound_stock"))
-    sales_like = any(k in mapped for k in ("quantity", "revenue", "unit_price", "price", "date"))
-    if sales_like and stock_like:
-        domains.append("combined_inventory_sales")
-    elif sales_like:
-        domains.append("sales_history")
-    elif stock_like:
-        domains.append("inventory_snapshot")
-    else:
-        domains.append("unknown")
-    if "purchase_quantity" in mapped:
-        domains.append("purchases")
+
+    # Identity domain
+    identity_like = any(k in mapped for k in ("product_name", "sku", "barcode", "category", "subcategory", "brand"))
+    if identity_like:
+        domains.append("PRODUCT_CATALOG")
+
+    # Sales domain
+    sales_like = any(k in mapped for k in ("quantity", "revenue", "unit_price", "price", "date", "transaction_id", "discount", "customer_id", "branch", "warehouse"))
+    if sales_like:
+        domains.append("SALES")
+
+    # Inventory domain
+    stock_like = any(k in mapped for k in ("stock", "opening_stock", "closing_stock", "available_stock", "reserved_stock", "inbound_stock", "damaged_stock"))
+    if stock_like:
+        domains.append("INVENTORY")
+
+    # Purchasing domain
+    purchasing_like = any(k in mapped for k in ("purchase_quantity", "purchase_price", "supplier", "purchase_order", "lead_time"))
+    if purchasing_like:
+        domains.append("PURCHASES")
+
+    # Supplier domain
+    supplier_like = any(k in mapped for k in ("supplier", "vendor", "supplier_name", "supplier_id"))
+    if supplier_like:
+        domains.append("SUPPLIERS")
+
+    # Expenses domain
+    expense_like = any(k in mapped for k in ("expense", "expense_category", "expense_amount", "tax", "rent", "utilities", "staff_cost", "marketing"))
+    if expense_like:
+        domains.append("EXPENSES")
+
+    # Payments domain
+    payment_like = any(k in mapped for k in ("payment", "payment_method", "payment_amount", "payment_date", "invoice_id"))
+    if payment_like:
+        domains.append("PAYMENTS")
+
+    # Customers domain
+    customer_like = any(k in mapped for k in ("customer_id", "customer_name", "customer_email", "customer_phone", "loyalty_id"))
+    if customer_like:
+        domains.append("CUSTOMERS")
+
+    # Branches domain
+    branch_like = any(k in mapped for k in ("branch", "branch_id", "location", "location_id", "warehouse", "store"))
+    if branch_like and "branch" not in [d for d in domains if "BRANCH" in d or "WAREHOUSE" in d]:
+        # Only add if not already captured via sales/inventory
+        pass  # Handled above via sales_like
+
+    # Wastage domain
+    wastage_like = any(k in mapped for k in ("wastage", "waste", "spoilage", "shrinkage", "damaged_qty", "expired_qty"))
+    if wastage_like:
+        domains.append("WASTAGE")
+
+    if not domains:
+        domains.append("UNKNOWN")
+
     return domains
 
 
@@ -560,12 +608,15 @@ def infer_schema(df: pd.DataFrame) -> IngestionResult:
     # Report required fields that are genuinely absent so the caller never
     # silently substitutes zeros (Phase 2 / 24 / 41). Sales fields are required
     # only for sales-y files, inventory fields only for inventory-y files.
+    # classify_file() emits the canonical §4 vocabulary (SALES / INVENTORY /
+    # PURCHASES); the legacy lowercase labels are still tolerated because other
+    # callers pass hand-built classifications through unchanged.
     required: set[str] = set()
-    if any(c in file_classification for c in ("sales_history", "combined_inventory_sales")):
+    if any(c in ("SALES", "sales_history", "combined_inventory_sales") for c in file_classification):
         required |= set(REQUIRED_SALES_FIELDS)
-    if any(c in file_classification for c in ("inventory_snapshot", "combined_inventory_sales")):
+    if any(c in ("INVENTORY", "inventory_snapshot", "combined_inventory_sales") for c in file_classification):
         required |= set(REQUIRED_INVENTORY_FIELDS)
-    if "purchases" in file_classification:
+    if any(c in ("PURCHASES", "purchases") for c in file_classification):
         required.add("product_name")
         required.add("purchase_quantity")
     missing = sorted(r for r in required if r not in role_map)

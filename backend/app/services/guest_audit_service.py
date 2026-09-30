@@ -263,8 +263,135 @@ def _detected_column_indices(resolution: ColumnResolution) -> dict[str, str | No
     return {field: (resolution.mapping.get(field) or None) for field in ("name", "quantity", "price", "cost", "stock", "date")}
 
 
+# =============================================================================
+# Canonical audit helpers (module level)
+# =============================================================================
+
+def _run_canonical_audit(snapshot) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Run canonical audit on BusinessSnapshot.
+
+    Returns (actions, aggregates) compatible with existing guest audit output.
+    """
+    from app.services.audit_core import ProductMetrics, analyze_product
+    from app.services.orbit_contracts import BusinessSnapshot
+
+    metrics_list = snapshot.to_product_metrics_list()
+    audits = [analyze_product(ProductMetrics(**m)) for m in metrics_list]
+
+    # Convert to legacy actions/aggregates format for backward compatibility
+    today = datetime.utcnow()
+    return _audits_to_legacy_actions(audits, today)
+
+
+def _audits_to_legacy_actions(audits: list, today: datetime) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Convert canonical ProductAudit list to legacy actions/aggregates format."""
+    from app.services.audit_core import money
+    from decimal import Decimal
+
+    ZERO = Decimal("0")
+    aggregates = {
+        "inventory_value": Decimal("0"),
+        "capital_at_risk": Decimal("0"),
+        "revenue_at_risk": Decimal("0"),
+        "gross_profit_at_risk": Decimal("0"),
+        "recoverable_low": Decimal("0"),
+        "recoverable_high": Decimal("0"),
+        "dead_stock_value": Decimal("0"),
+        "overstock_value": Decimal("0"),
+        "margin_leakage": Decimal("0"),
+        "products_with_risk": 0,
+    }
+    actions: list[dict[str, Any]] = []
+
+    for audit in audits:
+        aggregates["inventory_value"] += audit.stock_value
+        if audit.needs_attention:
+            aggregates["products_with_risk"] += 1
+        if audit.has_dead_or_slow_risk:
+            aggregates["capital_at_risk"] += audit.capital_at_risk
+            aggregates["dead_stock_value"] += audit.dead_stock_value
+            aggregates["recoverable_low"] += audit.dead_recoverable_low
+            aggregates["recoverable_high"] += audit.dead_recoverable_high
+            priority = 1 if audit.stock_value >= Decimal("5000") else 2
+            actions.append({
+                "action_type": "discount", "priority": priority,
+                "title": f"Review {audit.name} inventory",
+                "description": f"{audit.stock} units are classified {audit.classification.lower()}; recovery is not estimated without observed outcomes.",
+                "expected_recovery_sar": None,
+                "recoverable_value_low_sar": float(audit.dead_recoverable_low),
+                "recoverable_value_high_sar": float(audit.dead_recoverable_high),
+                "recovery_confidence": "MEDIUM" if audit.classification == "DEAD" else "LOW",
+                "quantity": float(audit.stock),
+            })
+        if audit.has_overstock_risk:
+            aggregates["capital_at_risk"] += audit.overstock_value
+            aggregates["overstock_value"] += audit.overstock_value
+            aggregates["recoverable_high"] += audit.overstock_recoverable_high
+            actions.append({
+                "action_type": "recovery_match", "priority": 3,
+                "title": f"Review {audit.name} for excess inventory",
+                "description": f"{audit.surplus_qty.quantize(Decimal('0.01'))} units exceed 30-day demand cover.",
+                "expected_recovery_sar": None, "recoverable_value_low_sar": 0.0,
+                "recoverable_value_high_sar": float(audit.overstock_recoverable_high),
+                "recovery_confidence": "LOW", "quantity": float(audit.surplus_qty),
+            })
+        if audit.has_stockout_risk:
+            aggregates["revenue_at_risk"] += audit.revenue_at_risk
+            aggregates["gross_profit_at_risk"] += audit.gross_profit_at_risk
+            priority = 1 if (audit.stock > 0 and audit.daily_velocity > 0 and audit.stock / audit.daily_velocity < Decimal("2")) else 2
+            actions.append({
+                "action_type": "reorder", "priority": priority,
+                "title": f"Review stockout risk on {audit.name}",
+                "description": f"Only {(audit.stock / audit.daily_velocity).quantize(Decimal('0.1'))} days of cover; supplier lead time is unavailable.",
+                "expected_recovery_sar": None, "recoverable_value_low_sar": 0.0, "recoverable_value_high_sar": 0.0,
+                "recovery_confidence": "LOW", "quantity": float(audit.order_qty.quantize(Decimal("1"))),
+            })
+        if audit.has_margin_leakage:
+            aggregates["gross_profit_at_risk"] += audit.margin_leakage
+            aggregates["margin_leakage"] += audit.margin_leakage
+            actions.append({
+                "action_type": "margin_fix", "priority": 2,
+                "title": f"Review margin on {audit.name}",
+                "description": "Theoretical gross-profit opportunity; not cash recovered.",
+                "expected_recovery_sar": None, "recoverable_value_low_sar": 0.0,
+                "recoverable_value_high_sar": float(audit.margin_leakage), "recovery_confidence": "LOW",
+                "quantity": float(audit.metrics.recent_qty_30) if hasattr(audit, 'metrics') and audit.metrics else 0.0,
+            })
+
+    actions = sorted(actions, key=lambda a: (a["priority"], -(float(a.get("recoverable_value_high_sar") or 0))))[:8]
+    aggregates["actions"] = actions
+    return actions, aggregates
+
+
+def _snapshot_to_legacy_ledger(snapshot) -> dict[str, dict[str, Any]]:
+    """Convert BusinessSnapshot to legacy ledger format for _summary compatibility."""
+    ledger = {}
+    for product in snapshot.products:
+        name = product.get("name", "")
+        # Find matching sales/inventory data
+        sales_data = next((s for s in snapshot.sales if s.get("product_name") == name), {})
+        inv_data = next((i for i in snapshot.inventory if i.get("product_name") == name), {})
+
+        ledger[name] = {
+            "name": name,
+            "stock": inv_data.get("stock", 0),
+            "cost": inv_data.get("cost", sales_data.get("cost", 0)),
+            "sell": inv_data.get("sell", sales_data.get("sell", 0)),
+            "qty_30d": sales_data.get("qty_30d", 0),
+            "prior_qty_30": sales_data.get("prior_qty_30", 0),
+            "revenue_30d": sales_data.get("revenue_30d", 0),
+            "last_sold_at": sales_data.get("last_sold_at"),
+            "records": 1,
+        }
+    return ledger
+
+
 async def run_guest_audit(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    """Run a simplified Money Audit over raw uploaded rows (single file)."""
+    """Run a simplified Money Audit over raw uploaded rows (single file).
+
+    Uses the canonical BusinessSnapshotBuilder pipeline for consistency
+    with single-file and authenticated paths.
+    """
     if not rows:
         return _empty_audit("No data received. Upload a CSV with sales or inventory rows.")
 
@@ -275,142 +402,38 @@ async def run_guest_audit(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
     resolution = resolve_columns(df)
     file_kind = _detect_file_kind(resolution)
-    ledger, missing = _single_file_ledger(df, resolution, file_kind)
-    if missing:
-        return _empty_audit(" ".join(missing))
-    if not ledger:
-        return _empty_audit("Could not recognize any products in the uploaded file.")
 
-    today = datetime.utcnow()
-    actions, aggregates = _audit_ledger(ledger, today)
+    # Build manifest for the single file
+    manifest = {
+        "file_id": str(uuid4()),
+        "filename": "upload.csv",
+        "classification": file_kind.upper(),
+        "confidence": 0.8,
+        "rows": len(df),
+        "columns": len(df.columns),
+        "mapped_fields": dict(resolution.mapping),
+        "missing_fields": list(resolution.missing),
+        "ambiguous_fields": [],
+        "quality": {"duplicate_rows": 0, "null_rate": 0.0, "invalid_dates": 0},
+        "metadata": {"file_type": "csv", "sheet_count": 1, "selected_sheet": "csv", "header_row_index": 0},
+    }
+
+    # Build canonical snapshot
+    from app.services.business_snapshot_builder import BusinessSnapshotBuilder
+    builder = BusinessSnapshotBuilder()
+    builder.add_file(df, manifest, resolution)
+    snapshot = builder.build()
+
+    # Run canonical audit
+    actions, aggregates = _run_canonical_audit(snapshot)
+
+    # Build summary in legacy format for backward compatibility
     detected = _detected_column_indices(resolution)
-    summary = _summary(ledger, actions, aggregates, file_kind, len(df), detected, resolution=resolution)
+    # Convert snapshot to legacy ledger format for _summary
+    ledger = _snapshot_to_legacy_ledger(snapshot)
+    summary = _summary(ledger, actions, aggregates, file_kind, len(df), _detected_column_indices(resolution), resolution=resolution)
+
     return {"summary": summary, "actions": actions, "missing_data": []}
-
-
-def _build_sales_ledger(df: pd.DataFrame, resolution: ColumnResolution, *, sales_history: bool | None = None) -> dict[str, dict[str, Any]]:
-    mapping = resolution.mapping
-    ledger: dict[str, dict[str, Any]] = {}
-    name_col = mapping.get("product_name")
-    if not name_col:
-        return ledger
-    file_kind = _detect_file_kind(resolution) if sales_history is None else ("sales_history" if sales_history else "inventory_snapshot")
-
-    qty_col = mapping.get("quantity")
-    price_col = mapping.get("price")
-    cost_col = mapping.get("cost")
-    stock_col = mapping.get("stock")
-    date_col = mapping.get("date")
-
-    if file_kind == "sales_history":
-        dates = df[date_col].map(_parse_date) if date_col else None
-        today = datetime.utcnow()
-        for idx, row in df.iterrows():
-            name = str(row.get(name_col) or "").strip()
-            if not name:
-                continue
-            qty = coerce_numeric(row.get(qty_col)) if qty_col else Decimal("0")
-            price = coerce_numeric(row.get(price_col)) if price_col else Decimal("0")
-            cost = coerce_numeric(row.get(cost_col)) if cost_col else Decimal("0")
-            tx_date = dates.iloc[idx] if dates is not None else None
-            in_recent = tx_date is None or (today - tx_date).days <= 30
-            in_prior = tx_date is not None and 30 < (today - tx_date).days <= 60
-
-            entry = ledger.setdefault(name, {
-                "name": name, "stock": Decimal("0"), "cost": Decimal("0"), "sell": Decimal("0"),
-                "qty_30d": Decimal("0"), "prior_qty_30": Decimal("0"),
-                "revenue_30d": Decimal("0"), "last_sold_at": None, "records": 0,
-            })
-            if in_recent:
-                entry["qty_30d"] += qty
-            elif in_prior:
-                entry["prior_qty_30"] += qty
-            entry["revenue_30d"] += qty * price
-            entry["records"] += 1
-            if cost > 0 and entry["cost"] == 0:
-                entry["cost"] = _coerce_cost(cost)
-            if price > 0 and entry["sell"] == 0:
-                entry["sell"] = price
-            if tx_date and (entry["last_sold_at"] is None or tx_date > entry["last_sold_at"]):
-                entry["last_sold_at"] = tx_date
-        return ledger
-
-    for _, row in df.iterrows():
-        name = str(row.get(name_col) or "").strip()
-        if not name:
-            continue
-        ledger[name] = {
-            "name": name,
-            "stock": coerce_numeric(row.get(stock_col)) if stock_col else Decimal("0"),
-            "cost": coerce_numeric(row.get(cost_col)) if cost_col else Decimal("0"),
-            "sell": coerce_numeric(row.get(price_col)) if price_col else Decimal("0"),
-            "qty_30d": Decimal("0"), "prior_qty_30": Decimal("0"),
-            "revenue_30d": Decimal("0"), "last_sold_at": None, "records": 1,
-        }
-    return ledger
-
-
-def _coerce_cost(value: Decimal) -> Decimal:
-    return value
-
-
-def _pair_ledgers(
-    sales_ledger: dict[str, dict[str, Any]], inventory_ledger: dict[str, dict[str, Any]],
-) -> dict[str, Any]:
-    pairing = pair_products(list(sales_ledger.keys()), list(inventory_ledger.keys()))
-    merged: dict[str, dict[str, Any]] = {}
-    used_sales: set[str] = set()
-    for p in pairing.paired:
-        sales_entry = sales_ledger[p.sales_name]
-        inv_entry = inventory_ledger.get(p.inventory_name, {})
-        merged[p.sales_name] = {
-            "name": p.sales_name,
-            "stock": money(inv_entry.get("stock")),
-            "cost": money(inv_entry.get("cost")) or money(sales_entry.get("cost")),
-            "sell": money(inv_entry.get("sell")) or money(sales_entry.get("sell")),
-            "qty_30d": money(sales_entry.get("qty_30d")),
-            "prior_qty_30": money(sales_entry.get("prior_qty_30")),
-            "revenue_30d": money(sales_entry.get("revenue_30d")),
-            "last_sold_at": sales_entry.get("last_sold_at"),
-            "records": sales_entry.get("records", 0) + inv_entry.get("records", 0),
-            "pair_score": p.score,
-            "pair_tier": p.tier,
-        }
-        used_sales.add(p.sales_name)
-    for name, sales_entry in sales_ledger.items():
-        if name in used_sales:
-            continue
-        merged[name] = {
-            "name": name,
-            "stock": Decimal("0"),
-            "cost": money(sales_entry.get("cost")),
-            "sell": money(sales_entry.get("sell")),
-            "qty_30d": money(sales_entry.get("qty_30d")),
-            "prior_qty_30": money(sales_entry.get("prior_qty_30")),
-            "revenue_30d": money(sales_entry.get("revenue_30d")),
-            "last_sold_at": sales_entry.get("last_sold_at"),
-            "records": sales_entry.get("records", 0),
-            "pair_score": None,
-            "pair_tier": "UNPAIRED_SALES",
-        }
-    for name, inv_entry in inventory_ledger.items():
-        paired_to = next((p.sales_name for p in pairing.paired if p.inventory_name == name), None)
-        if paired_to:
-            continue
-        merged[name] = {
-            "name": name,
-            "stock": money(inv_entry.get("stock")),
-            "cost": money(inv_entry.get("cost")),
-            "sell": money(inv_entry.get("sell")),
-            "qty_30d": Decimal("0"),
-            "prior_qty_30": Decimal("0"),
-            "revenue_30d": Decimal("0"),
-            "last_sold_at": None,
-            "records": inv_entry.get("records", 0),
-            "pair_score": None,
-            "pair_tier": "UNPAIRED_INVENTORY",
-        }
-    return {"merged": merged, "report": pairing}
 
 
 def run_two_file_audit(
@@ -419,19 +442,65 @@ def run_two_file_audit(
     sales_resolution: ColumnResolution,
     inventory_resolution: ColumnResolution,
 ) -> dict[str, Any]:
-    """Publicly callable two-file audit returning summary + actions."""
-    sales_ledger = _build_sales_ledger(sales_df, sales_resolution)
-    inventory_ledger = _build_sales_ledger(inventory_df, inventory_resolution, sales_history=False)
-    pairing = _pair_ledgers(sales_ledger, inventory_ledger)
-    merged = pairing["merged"]
-    report = pairing["report"]
+    """Publicly callable two-file audit returning summary + actions.
 
-    today = datetime.utcnow()
-    actions, aggregates = _audit_ledger(merged, today)
+    Uses the canonical BusinessSnapshotBuilder pipeline for consistency
+    with single-file and authenticated paths.
+    """
+    # Build manifests for both files
+    sales_manifest = {
+        "file_id": str(uuid4()),
+        "filename": "sales.csv",
+        "classification": "SALES",
+        "confidence": sales_resolution.confidence / 100.0 if sales_resolution.confidence > 1 else sales_resolution.confidence,
+        "rows": len(sales_df),
+        "columns": len(sales_df.columns),
+        "mapped_fields": dict(sales_resolution.mapping),
+        "missing_fields": list(sales_resolution.missing),
+        "ambiguous_fields": [],
+        "quality": {"duplicate_rows": 0, "null_rate": 0.0, "invalid_dates": 0},
+        "metadata": {"file_type": "csv", "sheet_count": 1, "selected_sheet": "csv", "header_row_index": 0},
+    }
+    inventory_manifest = {
+        "file_id": str(uuid4()),
+        "filename": "inventory.csv",
+        "classification": "INVENTORY",
+        "confidence": inventory_resolution.confidence / 100.0 if inventory_resolution.confidence > 1 else inventory_resolution.confidence,
+        "rows": len(inventory_df),
+        "columns": len(inventory_df.columns),
+        "mapped_fields": dict(inventory_resolution.mapping),
+        "missing_fields": list(inventory_resolution.missing),
+        "ambiguous_fields": [],
+        "quality": {"duplicate_rows": 0, "null_rate": 0.0, "invalid_dates": 0},
+        "metadata": {"file_type": "csv", "sheet_count": 1, "selected_sheet": "csv", "header_row_index": 0},
+    }
+
+    # Build canonical snapshot
+    from app.services.business_snapshot_builder import BusinessSnapshotBuilder
+    builder = BusinessSnapshotBuilder()
+    builder.add_file(sales_df, sales_manifest, sales_resolution)
+    builder.add_file(inventory_df, inventory_manifest, inventory_resolution)
+    snapshot = builder.build()
+
+    # Run canonical audit
+    actions, aggregates = _run_canonical_audit(snapshot)
+
+    # Build summary in legacy format for backward compatibility
     detected = {
         "sales": _detected_column_indices(sales_resolution),
         "inventory": _detected_column_indices(inventory_resolution),
     }
+    # Convert snapshot to legacy ledger format for _summary
+    ledger = _snapshot_to_legacy_ledger(snapshot)
+
+    # Build pairing extra for backward compatibility.
+    # The canonical snapshot merges every source into one ledger, so the
+    # per-file name sets are recovered from each product's recorded sources.
+    from app.services.product_pairing import pair_products
+
+    sales_names = [p["name"] for p in snapshot.products if "sales" in (p.get("sources") or [])]
+    inventory_names = [p["name"] for p in snapshot.products if "inventory" in (p.get("sources") or [])]
+    report = pair_products(sales_names, inventory_names)
     pairing_extra = {
         "pairing": {
             "attempted": report.attempted,
@@ -444,12 +513,13 @@ def run_two_file_audit(
             "truncated": report.truncated,
         },
         "is_two_file": True,
-        "row_count": int(len(sales_df)) + int(len(inventory_df)),
+        "row_count": len(sales_df) + len(inventory_df),
         "column_confidence_sales": sales_resolution.confidence,
         "column_confidence_inventory": inventory_resolution.confidence,
         "is_arabic": sales_resolution.is_arabic or inventory_resolution.is_arabic,
     }
-    summary = _summary(merged, actions, aggregates, "paired_two_file", pairing_extra["row_count"], detected, resolution=sales_resolution, extra=pairing_extra)
+    summary = _summary(_snapshot_to_legacy_ledger(snapshot), actions, aggregates, "paired_two_file", len(sales_df) + len(inventory_df), detected, resolution=sales_resolution, extra=pairing_extra)
+
     if inventory_resolution.ingestion_result is not None:
         diag = _build_ingestion_diagnostics(inventory_resolution)
         if diag:

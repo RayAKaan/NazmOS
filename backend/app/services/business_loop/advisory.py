@@ -1,4 +1,4 @@
-"""Typed advisory (Phase 3E) — Jev/OpenCode/LLM advisory with exact attribution.
+"""Typed advisory — Jev/LLM advisory with exact attribution.
 
 The advisory is STRICTLY NON-AUTHORITATIVE. The loop's deterministic decision
 is computed independently; the advisory can enrich confidence, propose an

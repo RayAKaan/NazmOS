@@ -138,7 +138,7 @@ def test_payload_path_also_sanitized():
             "blocked_discount_products": [SKU],
         },
     }
-    capsule = build_capsule_for_payload(payload, capability="opencode_brain", purpose="_internal")
+    capsule = build_capsule_for_payload(payload, capability="recovery.rank", purpose="_internal")
     text = json.dumps(capsule.for_prompt(), default=str)
     assert SKU not in text
     assert PRODUCT not in text

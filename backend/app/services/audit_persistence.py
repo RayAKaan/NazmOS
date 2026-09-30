@@ -200,6 +200,32 @@ class AuditPersistenceService:
             return None
         return self._row_to_orbit_result(row)
 
+    async def get_latest_audit_for_business(
+        self,
+        business_id: UUID | str,
+    ) -> OrbitAuditResult | None:
+        """Return the most recent persisted Orbit audit for a business.
+
+        This is the canonical entry point for downstream consumers (notably the
+        Intelligence layer): Orbit owns the reading of its own tables, so
+        Intelligence never re-implements this query. Returns ``None`` when the
+        business has no persisted audit yet, which callers MUST surface as a
+        missing-data condition rather than fabricating a zero-valued state.
+        """
+        result = await self.db.execute(
+            text("""
+                SELECT id FROM orbit_audit_runs
+                WHERE business_id = :business_id
+                ORDER BY created_at DESC
+                LIMIT 1
+            """),
+            {"business_id": business_id},
+        )
+        row = result.mappings().first()
+        if not row:
+            return None
+        return await self.get_audit_run(row["id"])
+
     async def get_audit_history(
         self,
         business_id: UUID | str | None = None,

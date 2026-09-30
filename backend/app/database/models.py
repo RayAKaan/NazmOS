@@ -2679,3 +2679,130 @@ class SecurityEvent(Base):
     __table_args__ = (
         Index("idx_security_events_type_time", "event_type", "created_at"),
     )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# ORBIT — canonical business truth (authoritative input to Intelligence)
+# ---------------------------------------------------------------------------
+# These models mirror migration `ff16_orbit_tables` exactly. Orbit is written and
+# read through `app.services.audit_persistence` (parameterised SQL), so these
+# declarative models exist so that:
+#   1. the schema is constructible from ORM metadata in tests, and
+#   2. Orbit is a first-class, introspectable part of the data model rather than
+#      invisible migration-only DDL.
+# Column names/types are kept identical to the migration on purpose; if they ever
+# diverge, the migration is the source of truth and these models must be updated.
+# ═══════════════════════════════════════════════════════════════════════════
+
+class OrbitIngestionRun(Base):
+    """One upload/ingestion session (guest or authenticated)."""
+
+    __tablename__ = "orbit_ingestion_runs"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="SET NULL"), nullable=True)
+    status = Column(String(32), nullable=False, default="processing")
+    business_type = Column(String(32), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+    guest_session_id = Column(String(64), nullable=True)
+
+    __table_args__ = (
+        Index("ix_orbit_ingestion_runs_business_id", "business_id"),
+        Index("ix_orbit_ingestion_runs_status", "status"),
+    )
+
+
+class OrbitFileManifest(Base):
+    """Per-file metadata inside an ingestion run."""
+
+    __tablename__ = "orbit_file_manifest"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    run_id = Column(UUID(as_uuid=True), ForeignKey("orbit_ingestion_runs.id", ondelete="CASCADE"), nullable=False)
+    file_id = Column(UUID(as_uuid=True), nullable=True)
+    filename = Column(String(255), nullable=False)
+    classification = Column(String(32), nullable=False)
+    confidence = Column(Numeric(4, 3), nullable=False)
+    row_count = Column(Integer, nullable=False)
+    column_count = Column(Integer, nullable=False)
+    mapped_fields = Column(JSON, nullable=False, default=dict)
+    missing_fields = Column(JSON, nullable=False, default=list)
+    ambiguous_fields = Column(JSON, nullable=False, default=list)
+    quality = Column(JSON, nullable=False, default=dict)
+    # `metadata` is reserved by SQLAlchemy declarative; expose it under an alias.
+    extra_metadata = Column("metadata", JSON, nullable=False, default=dict)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("ix_orbit_file_manifest_run_id", "run_id"),
+    )
+
+
+class OrbitDataQuality(Base):
+    """Data-quality snapshot for one ingestion run."""
+
+    __tablename__ = "orbit_data_quality"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    run_id = Column(UUID(as_uuid=True), ForeignKey("orbit_ingestion_runs.id", ondelete="CASCADE"), nullable=False)
+    overall_score = Column(Integer, nullable=False)
+    domain_scores = Column(JSON, nullable=False, default=dict)
+    missing_required_fields = Column(JSON, nullable=False, default=list)
+    ambiguous_fields = Column(JSON, nullable=False, default=list)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("ix_orbit_data_quality_run_id", "run_id"),
+    )
+
+
+class OrbitAuditRun(Base):
+    """A persisted canonical Orbit audit result — the authoritative business state.
+
+    The Intelligence layer projects THIS (never raw uploads) into its
+    ``BusinessContext``. ``id`` doubles as the Intelligence ``state_version``.
+    """
+
+    __tablename__ = "orbit_audit_runs"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    run_id = Column(UUID(as_uuid=True), ForeignKey("orbit_ingestion_runs.id", ondelete="CASCADE"), nullable=False)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="SET NULL"), nullable=True)
+    business_type = Column(String(32), nullable=True)
+    period_start = Column(Date, nullable=True)
+    period_end = Column(Date, nullable=True)
+    health_score = Column(Integer, nullable=False)
+    health_breakdown = Column(JSON, nullable=False, default=dict)
+    exposures = Column(JSON, nullable=False, default=dict)
+    findings = Column(JSON, nullable=False, default=list)
+    opportunities = Column(JSON, nullable=False, default=list)
+    evidence = Column(JSON, nullable=False, default=dict)
+    limitations = Column(JSON, nullable=False, default=dict)
+    sources = Column(JSON, nullable=False, default=list)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("ix_orbit_audit_runs_run_id", "run_id"),
+        Index("ix_orbit_audit_runs_business_id", "business_id"),
+    )
+
+
+class OrbitEvidence(Base):
+    """Finding → metric → source-row linkage backing every Orbit claim."""
+
+    __tablename__ = "orbit_evidence"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    audit_id = Column(UUID(as_uuid=True), ForeignKey("orbit_audit_runs.id", ondelete="CASCADE"), nullable=False)
+    finding_id = Column(String(64), nullable=False)
+    metric_name = Column(String(64), nullable=False)
+    evidence_type = Column(String(32), nullable=False)  # source_row | calculation | cross_column
+    source_ref = Column(JSON, nullable=False, default=dict)
+    calculation = Column(JSON, nullable=False, default=dict)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("ix_orbit_evidence_audit_id", "audit_id"),
+        Index("ix_orbit_evidence_finding_id", "finding_id"),
+    )

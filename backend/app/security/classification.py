@@ -10,9 +10,9 @@ Severity levels (higher = tighter handling):
     INTERNAL    – safe inside the trusted zone only.
     BUSINESS    – merchant business signals; may be shown to the merchant.
     SENSITIVE   – merchant operational data; MUST be banded/derived outside the
-                  trusted zone and MUST NOT reach an LLM or OpenCode.
+                  trusted zone and MUST NOT reach an external model without the AI policy boundary.
     RESTRICTED  – credentials/personal data; MUST never reach an LLM or
-                  OpenCode in any form, never plaintext at rest.
+                  External model credentials must remain isolated and never be stored as plaintext.
 """
 from __future__ import annotations
 

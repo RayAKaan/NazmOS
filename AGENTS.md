@@ -1,173 +1,145 @@
-# Agent Instructions (NazmOS)
+# Agent Instructions — NazmOS
 
-Guidance for AI coding agents working in this repository, mirroring the security
-acceptance contract enforced by `tests/test_security_acceptance.py` and the
-`tests/security/*` suite.
+## Product architecture
 
-## The security boundary (do not bypass)
+NazmOS is one AI-native Business Operating System with three capability layers:
 
-AI output is **untrusted** until the output gate validates it. The runtime
-system prompt *explains* the boundary; the code *enforces* it.
+1. Orbit — ingestion, canonical business state, Financial X-Ray, evidence and history.
+2. Intelligence — monitoring, root cause, recommendations, Owner Copilot and bounded Jev advisory.
+3. Loop — governance, approval, execution, reconciliation, verification and verified-only learning.
 
-- `app/security/privacy_firewall.py` builds signed `ReasoningCapsule`s that are
-  the **only** thing permitted to cross to the AI. Opaque refs + banded derived
-  signals only.
-- Never add SKUs, product/supplier/business ids, exact SAR values, stock counts,
-  budgets, margins, or outcomes to AI prompts, capsules, or logs.
-- `capsule.for_prompt()` is the DLP-clean outbound serializer. All three prompt
-  builders (`opencode_brain`, `ai_reasoning`, `ai_challenge`) MUST use it.
+Do not create parallel product architectures or duplicate authorities.
 
-## Master system prompt & system-role delivery
+## Authority boundaries
 
-- The live runtime system prompt is the 22-section **OpenCode Master System
-  Prompt** (`app/security/master_prompt.py`: `MASTER_SYSTEM_PROMPT`,
-  `FULL_SYSTEM_PROMPT`). It is a static constant — NEVER generated from merchant
-  data and MUST stay DLP-clean (it is scanned by `ai_adapter._guard_outbound`).
-- It is delivered to OpenCode as a genuine **system role**, not concatenated
-  into the user message:
-  - Runner: agent file `/app/agents/nazmos-brain.md`, invoked via
-    `opencode run --pure --agent nazmos-brain` (`opencode_runner/server.mjs`).
-  - Subprocess: `OpenCodeSubprocessTransport._render_agent()` writes a temp
-    agent .md, invoked the same way (`app/security/ai_adapter.py`).
-- The agent frontmatter denies ALL tool permissions (pure reasoning). Do not grant
-  any `allow`/`ask` permission on this agent.
-- Output contract is normalized to the enforced field set (see
-  `app/security/output_gate.py` / `ai_response_validator.py`):
-  `decision, confidence, reasoning, evidence_ids, risk_flags,
-  alternative_decision, challenge`. The prompt uses `evidence_ids` (not
-  `evidence_refs`). Keep prose in sync with those field names.
-- When editing `master_prompt.py`, run `tests/security/test_master_prompt.py`
-  to confirm DLP-cleanliness and field-name sync, then rebuild the runner image
-  (the agent .md is baked at build time) and the backend.
-- If a new sensitive column is added, it must remain OUT of the master prompt
-  prose; rely on the capsule DLP wrapper instead.
+- Deterministic business logic is authoritative.
+- Jev is advisory only and must never authorize or execute an action.
+- AI output must be validated against the contract of the capability that requested it.
+- Business mutations must flow through the canonical orchestration/execution path.
+- Never bypass authorization, tenant isolation, governance or reconciliation.
+- Never treat potential or expected financial impact as recovered cash.
+- Missing data is not zero; stale data is not current data.
 
-## Field-level encryption (Phase C)
+## AI / privacy boundary
 
-Sensitive columns use `EncryptedText()` from `app/database/encryption.py`, which
-stores a Fernet token in a `bytea` column and transparently decrypts on read
-(with a legacy-plaintext fallback). Currently applied to
-`users.two_factor_secret`. When adding a new sensitive column:
-1. Use `EncryptedText()` on the model.
-2. Add a migration chaining the current head that alters to `LargeBinary` with
-   `postgresql_using="<col>::bytea"` plus an idempotent plaintext→cipher backfill.
-3. Rebuild the `migrate` image and run it against the local compose stack, then
-   rebuild/recreate the backend container.
+The canonical structured AI entry point is:
 
-## Secrets & logging (Phase D)
+    deterministic candidate
+        → canonical controller
+        → AI Gateway / Jev
+        → typed validation
+        → deterministic result remains authoritative
 
-- `app/utils/logger.py` `configure_global()` attaches PII redaction to the root
-  logger, uvicorn (access + error), and structlog. Call it before any logging.
-- `app/services/security_audit_service.py` writes durable events to
-  `security_events` / `ai_reasoning_requests` (best-effort; audit friction must
-  never block a decision). `_scrub_detail` is an allowlist — never extend it with
-  free-text or merchant data keys.
-- `app/security/ai_policy.py#audit_event` remains a sync log-only hook; the async
-  AI entry points call the durable service.
+AI-facing payloads must use the privacy firewall/capsule boundary.
 
-## Tenant isolation (Phase B)
+Never send:
+- raw merchant identifiers
+- tenant/business IDs
+- SKUs or product names
+- exact SAR values
+- exact stock counts
+- credentials or secrets
+- unapproved raw database records
 
-- `app/middleware/rls_tenant.py` sets Postgres RLS **only** from a
-  token-validated tenant id.
-- `app/routers/inventory.py` restock requires `assert_business_access`.
-- `app/routers/pos_webhooks.py` `resolve_webhook_business` accepts a webhook only
-  when an active `POSConnection` exists for the claimed provider, and sets RLS
-  only after positive tenant resolution (with teardown).
+Prompts and model outputs must pass the repository's DLP and validation controls.
 
-## Tests & verification
+## Execution boundary
 
-- Backend unit tests: `cd backend && python -m pytest tests/security tests/phase4 -q`
-  (DB-free).
-- Full acceptance (needs Postgres): set `DATABASE_URL` to a migrated DB then run
-  `python -m pytest tests/test_security_acceptance.py`.
-- Before finishing a change: `cd backend && python -m compileall -q app tests`
-  and run the security acceptance + isolation suites.
-- Migrations must be applied to the local stack via the rebuilt `migrate` image;
-  `docker compose exec -T postgres psql` verifies schema at rest.
-- Pre-commit / CI gates: `.pre-commit-config.yaml` (bandit + gitleaks) and
-  `.gitleaks.toml`.
+All real execution must converge on the canonical orchestration layer under backend/app/orchestration/.
 
-## DuckDB analytical boundary (Phase 1)
+Do not add a new direct mutation path from routers, agents, LLM/Jev providers, services or background tasks.
 
-The inventory money-critical surface (velocity, dead-stock, valuation, alerts,
-item-detail, dashboard health) reads its per-item facts from an in-memory
-DuckDB engine (`app.analytics`). The engine computes raw aggregates only;
-every semantic lives in the NazmOS layer on top of `ItemFact` / `ItemKPI`.
-Each computation opens one scoped engine, streams tenant-scoped rows through
-the caller's session, and closes (fail-closed). Tests use SQLite in-memory.
+Execution must be:
 
-**Fast subset (SQLite, no Postgres):**
-```bash
-cd backend
-$env:PYTHONPATH="H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend"
-$env:USE_TEMPORAL="false"   # mirrors ci.yml "Backend tests with PostgreSQL" job
-python -m pytest tests/test_analytics_health_score.py tests/test_analytics_duckdb_boundary.py tests/test_analytics_dead_stock.py tests/test_analytics_item_detail.py tests/test_scan_consolidation.py -q
-```
+    Decision → Governance → Approval → Temporal → Execution Dispatcher
+             → External System → Reconciliation → Outcome
 
-**Postgres-backed integration (integration runner only):**
-```bash
-$env:TEST_DATABASE_URL="postgresql+asyncpg://nazmos:nazmos_v5_dev@localhost:5432/nazmos_test"
-$env:USE_TEMPORAL="false"   # mirrors ci.yml "Backend tests with PostgreSQL" job
-python -m pytest tests/test_dashboard.py tests/test_e2e_happy_path.py -q
-```
+A retry must reconcile external state before attempting a potentially duplicated mutation.
 
-The `CAST(inv.business_id AS TEXT)` in the engine load queries keeps the
-engine database-agnostic (Postgres refuses `uuid = character varying`
-without an explicit cast).
+## Business Loop
 
-## Orchestration layer (Phase 1 — Temporal replacement)
+The canonical improvement loop is:
 
-Every execution (manual, agent-approved, simulated) flows through the single
-canonical layer in `app/orchestration/`. Routers and services MUST import
-from here only — never from the deleted legacy executors.
+    Evidence
+    → Business State
+    → Opportunity
+    → Advisory
+    → Recommendation
+    → Governance
+    → Approval
+    → Execution
+    → Reconciliation
+    → Measurement
+    → Verification
+    → Learning Eligibility
+    → Next Cycle
 
-**Entry points** (`app/orchestration/runner.py`):
-- `run_manual_action` — actions.py / money_audit.py path (RESTOCK, PRICE_CHANGE, DISCOUNT, ALERT_DISMISS)
-- `run_agent_approval` — agent.py / whatsapp.py path (pending_approval → approved → executed)
-- `run_agent_rejection` — reject agent action
-- `run_simulated` — intelligence.py path (creates ExecutionJob, never mutates business data)
+Only traceable, authorized, verified outcomes may enter learning.
 
-**Workflow** (`app/orchestration/workflows.py`):
-Deterministic, composable steps (precheck → idempotency → apply → record).
-The real execution substrate is Temporal: the same step order runs as
-`ManualActionWorkflow` / `AgentApprovalWorkflow` / `SimulatedWorkflow` on the
-Temporal server, with every side effect delegated to an activity
-(`app/orchestration/temporal/activities.py`). `USE_TEMPORAL=False` keeps the
-local deterministic runner for tests/CI only — it is NEVER a production
-fallback (Temporal unavailability is an explicit operational error), per
-`app/orchestration/runner.py` strict dispatch.
+## Orbit
 
-**Temporal suite (real server + worker, retries, exactly-once):**
-```bash
-cd backend
-$env:PYTHONPATH="H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend"
-$env:USE_TEMPORAL="true"
-$env:DATABASE_URL="sqlite+aiosqlite:///H:/NAZMOS_COMPLETE_LATEST/NAZMOS_LATEST_MERGED/backend/nazmos_temporal_test.db"
-Remove-Item -LiteralPath nazmos_temporal_test.db -ErrorAction SilentlyContinue
-python -m pytest tests/temporal -q            # 8 pass + 9 Postgres-only skips on sqlite
-```
-`tests/temporal/conftest.py` starts a real local dev server (or uses
-`TEMPORAL_ADDRESS` in CI) + one in-process production `build_worker`, and pins
-`USE_TEMPORAL=true`. With a Postgres `DATABASE_URL` none of the 17 scenarios
-skip; CI enforces zero skips.
+Orbit is evidence-first and deterministic.
 
-**Idempotency**: `execution_key` = SHA-256 hex from `business_id+action_type+entity_type+entity_id+payload+source`
-(`app/orchestration/keys.py::derive_execution_key`). Stored in `executed_actions`,
-`agent_actions`, `execution_jobs` columns; checked before every apply.
+Canonical flow:
 
-**Fast tests (SQLite, no Postgres):**
-```bash
-cd backend
-$env:PYTHONPATH="H:\NAZMOS_COMPLETE_LATEST\NAZMOS_LATEST_MERGED\backend"
-$env:USE_TEMPORAL="false"   # REQUIRED: without this, reachability of a Temporal
-                           # server causes execute_workflow to hang indefinitely
-                           # (no worker polling in these DB-free suites).
-python -m pytest tests/test_orchestration.py tests/test_execution_path_clarity.py tests/test_phase5.py tests/test_phase5_learning_loop.py tests/test_phase6_loop.py tests/test_phase7_loop.py tests/test_phase8_loop.py -q
-```
+    Upload / integration
+    → universal ingestion
+    → semantic mapping
+    → data-quality assessment
+    → canonical Business Snapshot
+    → Financial X-Ray
+    → persisted audit/evidence
+    → history
 
-**Postgres-backed integration:**
-```bash
-$env:TEST_DATABASE_URL="postgresql+asyncpg://nazmos:nazmos_v5_dev@localhost:5432/nazmos_test"
-$env:USE_TEMPORAL="false"   # mirrors ci.yml "Backend tests with PostgreSQL" job
-python -m pytest tests/test_restock_semantics.py tests/test_phase9_postgres.py tests/test_phase11_postgres.py tests/test_phase13_postgres.py tests/test_e2e_happy_path.py -q
-```
+Do not reintroduce upload-specific analyzers that bypass the canonical snapshot.
+
+## Code organization
+
+- backend/app/analytics/ — raw analytical calculations.
+- backend/app/routers/ — HTTP/API boundaries.
+- backend/app/services/ — domain services and business logic.
+- backend/app/orchestration/ — execution dispatch and Temporal workflows.
+- backend/app/security/ — security, DLP, policy and tenant controls.
+- backend/alembic/ — schema migrations.
+- frontend/ — Next.js product UI.
+- docs/ — documentation; do not add phase reports to repository root.
+- scripts/ — current development/operational tooling only.
+
+Historical experiments, obsolete phase harnesses and generated result dumps should not be reintroduced.
+
+## Before changing code
+
+1. Search for the existing implementation before creating a new one.
+2. Identify the canonical authority for the behavior.
+3. Check callers and tests.
+4. Preserve tenant isolation and authorization.
+5. Run focused tests.
+6. Run the relevant full acceptance suite.
+7. Remove obsolete code when a replacement becomes authoritative.
+
+## Tests
+
+Backend:
+
+    cd backend
+    python -m pytest -q
+    python -m compileall -q app tests
+
+Frontend:
+
+    cd frontend
+    npm run lint
+    npx tsc --noEmit
+    npm run build
+
+For database/Temporal changes, use the repository's Postgres/Temporal acceptance environment.
+
+## Documentation rule
+
+Keep the repository root minimal:
+
+- README.md
+- AGENTS.md
+- required project/configuration files
+
+Product, engineering, research, strategy and historical documentation belongs under docs/.

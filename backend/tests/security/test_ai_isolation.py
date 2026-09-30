@@ -1,6 +1,6 @@
 """Phase A acceptance: the AI isolation contract (TEST 1-36 mapped to code).
 
-The AI (LLM or OpenCode) must never observe raw merchant data. These tests
+The AI provider must never observe raw merchant data. These tests
 verify the *enforced* controls, not prompts:
 
     TEST 1-15  capsule minimizes: no SKU/product/supplier/tenant identities,
@@ -21,7 +21,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from app.security.ai_adapter import AITransportError, LLMTransport, OpenCodeSubprocessTransport
+from app.security.ai_adapter import AITransportError, LLMTransport
 from app.security.ai_policy import AiPolicy, CircuitBreaker
 from app.security.capsule import CapsuleItem, CapsuleSigner, ReasoningCapsule
 from app.security.dlp import DLPViolationError
@@ -227,12 +227,16 @@ def test_capsule_reasoning_signals_present():
 
 # --- TEST 25-26 : typing enforces the boundary --------------------------------
 
-def test_opencode_reason_rejects_raw_evidence_dict():
-    from app.services.opencode_brain import reason
+def test_jev_consult_rejects_raw_evidence_dict():
+    from app.services.ai_providers.jev import consult
 
     async def run():
         try:
-            await reason({"items": [], "business": {}})
+            await consult(
+                question="test",
+                capsule={"items": [], "business": {}},
+                deterministic_decision="REORDER",
+            )
         except TypeError:
             return True
         return False
@@ -244,19 +248,6 @@ def test_tampered_capsule_fails_verification():
     capsule = build_reasoning_capsule(_item(), _business(), capability="counterfactual_audit", purpose="_internal")
     capsule.items[0].candidate_decisions.append("REORDER")
     assert CapsuleSigner().verify(capsule) is False
-
-
-# --- TEST 29 : minimal transport environment -----------------------------------
-
-def test_subprocess_env_is_allowlist_only(monkeypatch):
-    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "AKIA-SECRET-SECRET-SECRET")
-    monkeypatch.setenv("FOODICS_WEBHOOK_SECRET", "topsecret")
-    monkeypatch.setenv("NAZMOS_OPENCODE_BIN", "opencode")
-    transport = OpenCodeSubprocessTransport(binary_path="opencode")
-    env = transport._build_env()
-    assert "AWS_SECRET_ACCESS_KEY" not in env
-    assert "FOODICS_WEBHOOK_SECRET" not in env
-    assert "PATH" in env or "HOME" in env or "SystemRoot" in env
 
 
 # --- TEST 31 : decisions bounded to candidates ----------------------------------
@@ -324,12 +315,12 @@ def test_circuit_breaker_opens_and_blocks():
     assert breaker.is_open is True
 
 
-# --- TEST 35 : kill switch -------------------------------------------------------
+# --- TEST 35-36 : canonical gateway policy + deterministic authority --------
 
 def test_policy_kill_switch_disables_ai():
     disabled = AiPolicy(SimpleNamespace(AI_ENABLED=False))
-    assert disabled.enabled("opencode_brain") is False
-    allowed, reason = disabled.allow_request("opencode_brain", "_internal")
+    assert disabled.enabled("recovery.rank") is False
+    allowed, reason = disabled.allow_request("recovery.rank", "_internal")
     assert allowed is False and "disabled" in reason
 
     unknown = AiPolicy(SimpleNamespace(AI_ENABLED=True))
@@ -338,7 +329,6 @@ def test_policy_kill_switch_disables_ai():
 
 def test_gateway_returns_fallback_when_policy_blocks(monkeypatch):
     import app.services.ai_gateway as gateway
-    from app.config import get_settings
 
     class _Policy:
         def allow_request(self, capability, purpose):
@@ -347,9 +337,9 @@ def test_gateway_returns_fallback_when_policy_blocks(monkeypatch):
     monkeypatch.setattr(gateway, "_policy", _Policy())
 
     async def run():
-        result = await gateway.reason(
+        result = await gateway.systemone_reason(
             {"items": [], "business": {}},
-            capability="opencode_brain",
+            capability="recovery.rank",
             purpose="_internal",
             deterministic_decision="REORDER",
         )
@@ -361,30 +351,41 @@ def test_gateway_returns_fallback_when_policy_blocks(monkeypatch):
     assert "AI_POLICY_BLOCKED" in result["risk_flags"]
 
 
-# --- TEST 36 : gateway falls back safely; default policy respects settings ------
-
 def test_gateway_real_policy_wired_to_settings():
     from app.config import get_settings
     settings = get_settings()
     assert settings.AI_ENABLED is True
-    assert AiPolicy(settings).enabled("opencode_brain") is True
+    assert AiPolicy(settings).enabled("recovery.rank") is True
 
 
-def test_reasoning_path_full_roundtrip_preserves_deterministic_decision(monkeypatch):
-    import app.services.opencode_brain as brain
-    from app.services.opencode_brain import reason
+def test_jev_gateway_preserves_deterministic_decision(monkeypatch):
+    import app.services.ai_providers.jev as jev_module
+    from app.services.ai_providers.jev import JevReply
 
-    monkeypatch.setattr(brain, "_find_opencode_bin", lambda: None)
-    monkeypatch.setattr(brain, "OPENCODE_RUNNER_URL", "")
+    async def fake_consult(**kwargs):
+        return JevReply(
+            source="jev",
+            decision_basis="DISCOUNT",
+            suggested_decision="REORDER",
+            confidence=0.8,
+            reasoning="advisory",
+        )
 
-    capsule = build_reasoning_capsule(
-        _item(), _business(), capability="counterfactual_audit", purpose="_internal"
-    )
+    monkeypatch.setattr(jev_module, "consult", fake_consult)
+
+    class Client:
+        enabled = True
 
     async def run():
-        result = await reason(capsule, deterministic_decision="DISCOUNT")
-        return result
+        import app.services.ai_gateway as gateway
+        return await gateway.systemone_reason(
+            {"items": [], "business": {}},
+            capability="recovery.rank",
+            purpose="resolve ambiguity in recovery candidate ranking",
+            deterministic_decision="DISCOUNT",
+            client=Client(),
+        )
 
     result = asyncio.run(run())
-    assert result.source == "fallback"
-    assert result.decision == "DISCOUNT"
+    assert result["decision"] == "DISCOUNT"
+    assert result["alternative_decision"] == "REORDER"

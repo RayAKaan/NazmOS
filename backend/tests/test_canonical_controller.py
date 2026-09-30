@@ -39,7 +39,7 @@ def _reset_ai_budget():
     yield
 
 
-def _payload(bucket_capability: str = "opencode_brain") -> dict:
+def _payload(bucket_capability: str = "recovery.rank") -> dict:
     return {
         "items": [
             {

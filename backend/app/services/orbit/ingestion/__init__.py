@@ -1,0 +1,1 @@
+"""Phase 1 ingestion: unified loader, document extraction, idempotency."""

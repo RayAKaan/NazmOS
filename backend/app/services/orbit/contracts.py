@@ -747,6 +747,9 @@ class EntityResolution:
     confidence: float = 0.0
     evidence_ids: tuple[str, ...] = ()
     origin: DecisionOrigin = DecisionOrigin.DETERMINISTIC
+    #: Why this outcome was chosen, in plain language. Required for audit: an
+    #: ambiguous result must be explainable without re-running the resolver.
+    note: str = ""
     resolved_at: datetime = field(default_factory=_utcnow)
 
     def __post_init__(self) -> None:

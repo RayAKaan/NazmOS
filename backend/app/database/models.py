@@ -2679,3 +2679,483 @@ class SecurityEvent(Base):
     __table_args__ = (
         Index("idx_security_events_type_time", "event_type", "created_at"),
     )
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PHASE 1 — UNIVERSAL BUSINESS REALITY (Orbit)
+# ---------------------------------------------------------------------------
+# Declarative models mirroring migration `ff16_orbit_tables` and the new
+# `ff17_phase1_business_reality` migration EXACTLY.
+#
+# Why these exist: before Phase 1 the Orbit tables existed only as migration DDL
+# written by hand, with no ORM models. That made the entire Orbit layer
+# un-constructible from ORM metadata (so it could not be exercised in tests) and
+# invisible to schema introspection. The migration remains the source of truth;
+# if these ever diverge, fix them here.
+#
+# Note the ingestion tables are deliberately keyed on `content_hash` so that
+# re-ingesting identical content is idempotent at the database level, not merely
+# in application code.
+# ═══════════════════════════════════════════════════════════════════════════
+
+class OrbitIngestionRun(Base):
+    """One ingestion operation (spec §52) with full operational traceability."""
+
+    __tablename__ = "orbit_ingestion_runs"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="SET NULL"), nullable=True)
+    status = Column(String(32), nullable=False, default="received")
+    business_type = Column(String(32), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+    guest_session_id = Column(String(64), nullable=True)
+
+    # §52 traceability counters.
+    records_seen = Column(Integer, nullable=False, default=0, server_default=text("0"))
+    records_accepted = Column(Integer, nullable=False, default=0, server_default=text("0"))
+    records_rejected = Column(Integer, nullable=False, default=0, server_default=text("0"))
+    records_ambiguous = Column(Integer, nullable=False, default=0, server_default=text("0"))
+    conflicts_detected = Column(Integer, nullable=False, default=0, server_default=text("0"))
+    warnings = Column(JSON, nullable=False, default=list)
+    errors = Column(JSON, nullable=False, default=list)
+    state_version_before = Column(String(64), nullable=True)
+    state_version_after = Column(String(64), nullable=True)
+
+    __table_args__ = (
+        Index("ix_orbit_ingestion_runs_business_id", "business_id"),
+        Index("ix_orbit_ingestion_runs_status", "status"),
+    )
+
+
+class UniversalArtifact(Base):
+    """One external piece of business evidence, content-addressed (spec §5)."""
+
+    __tablename__ = "universal_artifacts"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=True)
+    tenant_id = Column(UUID(as_uuid=True), nullable=True)
+    ingestion_run_id = Column(UUID(as_uuid=True), ForeignKey("orbit_ingestion_runs.id", ondelete="SET NULL"), nullable=True)
+    parent_artifact_id = Column(UUID(as_uuid=True), ForeignKey("universal_artifacts.id", ondelete="SET NULL"), nullable=True)
+
+    source_type = Column(String(32), nullable=False, default="file")
+    source_name = Column(String(255), nullable=False, default="")
+    source_location = Column(String(500), nullable=True)
+    mime_type = Column(String(120), nullable=True)
+
+    artifact_type = Column(String(32), nullable=False, default="unknown")
+    classification_confidence = Column(Numeric(5, 4), nullable=False, default=0.0)
+    classification_origin = Column(String(16), nullable=False, default="deterministic")
+    classification_alternatives = Column(JSON, nullable=False, default=list)
+    classification_needs_review = Column(Boolean, nullable=False, default=False)
+
+    content_hash = Column(String(64), nullable=False)
+    size_bytes = Column(BigInteger, nullable=True)
+    version = Column(Integer, nullable=False, default=1, server_default=text("1"))
+
+    received_at = Column(DateTime(timezone=True), server_default=func.now())
+    observed_at = Column(DateTime(timezone=True), nullable=True)
+    period_start = Column(Date, nullable=True)
+    period_end = Column(Date, nullable=True)
+
+    timezone = Column(String(64), nullable=True)
+    currency = Column(String(3), nullable=True)
+    language = Column(String(16), nullable=True)
+
+    status = Column(String(32), nullable=False, default="received")
+    confidence = Column(Numeric(5, 4), nullable=False, default=0.0)
+    quality = Column(JSON, nullable=False, default=dict)
+
+    __table_args__ = (
+        # Same content in the same business is the same artifact. This is what
+        # makes re-upload idempotent at the DB layer (§28).
+        UniqueConstraint("business_id", "content_hash", name="uq_universal_artifact_business_content"),
+        Index("ix_universal_artifacts_business_id", "business_id"),
+        Index("ix_universal_artifacts_type", "artifact_type"),
+        Index("ix_universal_artifacts_status", "status"),
+        Index("ix_universal_artifacts_content_hash", "content_hash"),
+        Index("ix_universal_artifacts_run", "ingestion_run_id"),
+    )
+
+
+class OrbitFileManifest(Base):
+    """Per-file metadata inside an ingestion run (ff16, unchanged)."""
+
+    __tablename__ = "orbit_file_manifest"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    run_id = Column(UUID(as_uuid=True), ForeignKey("orbit_ingestion_runs.id", ondelete="CASCADE"), nullable=False)
+    file_id = Column(UUID(as_uuid=True), nullable=True)
+    filename = Column(String(255), nullable=False)
+    classification = Column(String(32), nullable=False)
+    confidence = Column(Numeric(4, 3), nullable=False)
+    row_count = Column(Integer, nullable=False)
+    column_count = Column(Integer, nullable=False)
+    mapped_fields = Column(JSON, nullable=False, default=dict)
+    missing_fields = Column(JSON, nullable=False, default=list)
+    ambiguous_fields = Column(JSON, nullable=False, default=list)
+    quality = Column(JSON, nullable=False, default=dict)
+    extra_metadata = Column("metadata", JSON, nullable=False, default=dict)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("ix_orbit_file_manifest_run_id", "run_id"),
+    )
+
+
+class OrbitDataQuality(Base):
+    """Data-quality snapshot for one ingestion run (ff16, unchanged)."""
+
+    __tablename__ = "orbit_data_quality"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    run_id = Column(UUID(as_uuid=True), ForeignKey("orbit_ingestion_runs.id", ondelete="CASCADE"), nullable=False)
+    overall_score = Column(Integer, nullable=True)
+    domain_scores = Column(JSON, nullable=False, default=dict)
+    missing_required_fields = Column(JSON, nullable=False, default=list)
+    ambiguous_fields = Column(JSON, nullable=False, default=list)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("ix_orbit_data_quality_run_id", "run_id"),
+    )
+
+
+class OrbitAuditRun(Base):
+    """Persisted canonical Orbit audit result (ff16, unchanged)."""
+
+    __tablename__ = "orbit_audit_runs"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    run_id = Column(UUID(as_uuid=True), ForeignKey("orbit_ingestion_runs.id", ondelete="CASCADE"), nullable=False)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="SET NULL"), nullable=True)
+    business_type = Column(String(32), nullable=True)
+    period_start = Column(Date, nullable=True)
+    period_end = Column(Date, nullable=True)
+    health_score = Column(Integer, nullable=False, default=0)
+    health_breakdown = Column(JSON, nullable=False, default=dict)
+    exposures = Column(JSON, nullable=False, default=dict)
+    findings = Column(JSON, nullable=False, default=list)
+    opportunities = Column(JSON, nullable=False, default=list)
+    evidence = Column(JSON, nullable=False, default=dict)
+    limitations = Column(JSON, nullable=False, default=dict)
+    sources = Column(JSON, nullable=False, default=list)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("ix_orbit_audit_runs_run_id", "run_id"),
+        Index("ix_orbit_audit_runs_business_id", "business_id"),
+    )
+
+
+class OrbitEvidence(Base):
+    """Append-only provenance for one extracted value (spec §12).
+
+    Extended by ff17 from the ff16 shape: `finding_id`/`metric_name` in ff16 were
+    always written as empty strings because the producer never emitted those keys,
+    so the finding->evidence foreign key was unusable. Phase 1 stores a real
+    semantic role, entity reference and line-level source locator instead.
+    """
+
+    __tablename__ = "orbit_evidence"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    artifact_id = Column(UUID(as_uuid=True), ForeignKey("universal_artifacts.id", ondelete="CASCADE"), nullable=False)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=True)
+    tenant_id = Column(UUID(as_uuid=True), nullable=True)
+    ingestion_run_id = Column(UUID(as_uuid=True), ForeignKey("orbit_ingestion_runs.id", ondelete="SET NULL"), nullable=True)
+
+    # ff16 columns retained for compatibility with existing readers.
+    finding_id = Column(String(64), nullable=True)
+    metric_name = Column(String(64), nullable=True)
+
+    source_type = Column(String(32), nullable=False, default="file")
+    source_locator = Column(JSON, nullable=False, default=dict)
+
+    raw_value = Column(String, nullable=True)
+    normalized_value = Column(String, nullable=True)
+    semantic_role = Column(String(64), nullable=True)
+    entity_ref = Column(String(255), nullable=True)
+
+    observed_at = Column(DateTime(timezone=True), nullable=True)
+    period_start = Column(Date, nullable=True)
+    period_end = Column(Date, nullable=True)
+
+    confidence = Column(Numeric(5, 4), nullable=False, default=0.0)
+    quality = Column(JSON, nullable=False, default=dict)
+    extraction_method = Column(String(32), nullable=False, default="spreadsheet_cell")
+    is_ocr = Column(Boolean, nullable=False, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    #: Content hash of the evidence identity. Unique per artifact so the same
+    #: cell/value cannot be registered twice.
+    hash = Column(String(64), nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint("artifact_id", "hash", name="uq_orbit_evidence_artifact_hash"),
+        Index("ix_orbit_evidence_audit_id_legacy", "finding_id"),
+        Index("ix_orbit_evidence_artifact_id", "artifact_id"),
+        Index("ix_orbit_evidence_business_id", "business_id"),
+        Index("ix_orbit_evidence_semantic_role", "business_id", "semantic_role"),
+        Index("ix_orbit_evidence_entity_ref", "business_id", "entity_ref"),
+        Index("ix_orbit_evidence_hash", "hash"),
+    )
+
+
+class OrbitEntity(Base):
+    """A resolved business entity (spec §13)."""
+
+    __tablename__ = "orbit_entities"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=True)
+    tenant_id = Column(UUID(as_uuid=True), nullable=True)
+
+    kind = Column(String(32), nullable=False)
+    #: Deterministic identity string (see Entity.entity_id in the contracts).
+    entity_ref = Column(String(255), nullable=False)
+
+    canonical_name = Column(String(500), nullable=True)
+    normalized_name = Column(String(500), nullable=True)
+    identifiers = Column(JSON, nullable=False, default=dict)
+    language = Column(String(16), nullable=True)
+
+    confidence = Column(Numeric(5, 4), nullable=False, default=0.0)
+    resolution_origin = Column(String(16), nullable=False, default="deterministic")
+    resolution_method = Column(String(32), nullable=False, default="unresolved")
+    #: True while the entity has unresolved candidate ambiguity.
+    is_ambiguous = Column(Boolean, nullable=False, default=False)
+    correction_note = Column(String, nullable=True)
+
+    first_seen_at = Column(DateTime(timezone=True), server_default=func.now())
+    last_seen_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("business_id", "kind", "entity_ref", name="uq_orbit_entity_business_kind_ref"),
+        Index("ix_orbit_entities_business_kind", "business_id", "kind"),
+        Index("ix_orbit_entities_normalized_name", "business_id", "kind", "normalized_name"),
+        Index("ix_orbit_entities_ambiguous", "business_id", "is_ambiguous"),
+    )
+
+
+class OrbitEntityAlias(Base):
+    """An observed name / alias for an entity, with its resolution provenance."""
+
+    __tablename__ = "orbit_entity_aliases"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=True)
+    entity_id = Column(UUID(as_uuid=True), ForeignKey("orbit_entities.id", ondelete="CASCADE"), nullable=False)
+    kind = Column(String(32), nullable=False)
+
+    raw_alias = Column(String(500), nullable=False)
+    normalized_alias = Column(String(500), nullable=False)
+    match_method = Column(String(32), nullable=False, default="unresolved")
+    outcome = Column(String(32), nullable=False, default="ambiguous")
+    confidence = Column(Numeric(5, 4), nullable=False, default=0.0)
+    origin = Column(String(16), nullable=False, default="deterministic")
+    evidence_ids = Column(JSON, nullable=False, default=list)
+    resolved_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("entity_id", "normalized_alias", name="uq_orbit_entity_alias_entity_normalized"),
+        Index("ix_orbit_entity_aliases_business", "business_id", "normalized_alias"),
+        Index("ix_orbit_entity_aliases_entity_id", "entity_id"),
+    )
+
+
+class OrbitConflict(Base):
+    """Two sources disagreeing about the same entity field (spec §19)."""
+
+    __tablename__ = "orbit_conflicts"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=True)
+    tenant_id = Column(UUID(as_uuid=True), nullable=True)
+    conflict_ref = Column(String(64), nullable=False)
+
+    entity_ref = Column(String(255), nullable=True)
+    field = Column(String(64), nullable=False)
+    evidence_a = Column(String(64), nullable=True)
+    evidence_b = Column(String(64), nullable=True)
+    value_a = Column(String, nullable=True)
+    value_b = Column(String, nullable=True)
+
+    relationship = Column(String(32), nullable=False, default="unknown")
+    severity = Column(String(16), nullable=False, default="medium")
+    classification = Column(String(32), nullable=True)
+    classification_origin = Column(String(16), nullable=False, default="deterministic")
+
+    period_a_start = Column(Date, nullable=True)
+    period_a_end = Column(Date, nullable=True)
+    period_b_start = Column(Date, nullable=True)
+    period_b_end = Column(Date, nullable=True)
+
+    status = Column(String(32), nullable=False, default="unresolved")
+    resolution_method = Column(String(64), nullable=True)
+    detected_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("business_id", "conflict_ref", name="uq_orbit_conflict_business_ref"),
+        Index("ix_orbit_conflicts_business_status", "business_id", "status"),
+        Index("ix_orbit_conflicts_entity_field", "business_id", "entity_ref", "field"),
+        Index("ix_orbit_conflicts_severity", "business_id", "severity"),
+    )
+
+
+class OrbitBusinessProfile(Base):
+    """Classified business profile + per-domain capability detection (spec §17-18)."""
+
+    __tablename__ = "orbit_business_profiles"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    tenant_id = Column(UUID(as_uuid=True), nullable=True)
+    state_version = Column(String(64), nullable=True)
+
+    business_type = Column(String(32), nullable=False, default="unknown")
+    business_type_confidence = Column(Numeric(5, 4), nullable=False, default=0.0)
+    business_type_origin = Column(String(16), nullable=False, default="none")
+    observed_business_types = Column(JSON, nullable=False, default=list)
+
+    operating_channels = Column(JSON, nullable=False, default=list)
+    locations = Column(JSON, nullable=False, default=list)
+    branches = Column(JSON, nullable=False, default=list)
+    currencies = Column(JSON, nullable=False, default=list)
+    countries = Column(JSON, nullable=False, default=list)
+    source_systems = Column(JSON, nullable=False, default=list)
+    #: Per-domain evidence availability. `observed_capability` (does the business
+    #: do this?) and `data_available` (do we have evidence?) are separate on purpose.
+    capabilities = Column(JSON, nullable=False, default=dict)
+    observed_patterns = Column(JSON, nullable=False, default=list)
+
+    product_count = Column(Integer, nullable=True)
+    service_count = Column(Integer, nullable=True)
+    supplier_count = Column(Integer, nullable=True)
+    employee_count = Column(Integer, nullable=True)
+
+    confidence = Column(Numeric(5, 4), nullable=False, default=0.0)
+    limitations = Column(JSON, nullable=False, default=list)
+    evidence_ids = Column(JSON, nullable=False, default=list)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("business_id", name="uq_orbit_business_profile_business"),
+        Index("ix_orbit_business_profiles_type", "business_type"),
+    )
+
+
+class OrbitStateVersion(Base):
+    """Immutable canonical state snapshot with a deterministic version (§27)."""
+
+    __tablename__ = "orbit_state_versions"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    tenant_id = Column(UUID(as_uuid=True), nullable=True)
+
+    state_version = Column(String(64), nullable=False)
+    previous_state_version = Column(String(64), nullable=True)
+
+    state = Column(JSON, nullable=False, default=dict)
+    artifact_hashes = Column(JSON, nullable=False, default=list)
+    entity_refs = Column(JSON, nullable=False, default=list)
+    evidence_ids = Column(JSON, nullable=False, default=list)
+    freshness = Column(JSON, nullable=False, default=dict)
+    evidence_coverage = Column(JSON, nullable=False, default=dict)
+    limitations = Column(JSON, nullable=False, default=list)
+
+    period_start = Column(Date, nullable=True)
+    period_end = Column(Date, nullable=True)
+    timezone = Column(String(64), nullable=True)
+    contract_version = Column(String(16), nullable=False, default="phase1-v1")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("business_id", "state_version", name="uq_orbit_state_version_business_version"),
+        Index("ix_orbit_state_versions_business_created", "business_id", "created_at"),
+    )
+
+
+class OrbitSemanticMapping(Base):
+    """Resolved semantic role for one artifact column (spec §8)."""
+
+    __tablename__ = "orbit_semantic_mappings"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    artifact_id = Column(UUID(as_uuid=True), ForeignKey("universal_artifacts.id", ondelete="CASCADE"), nullable=False)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=True)
+
+    sheet = Column(String(255), nullable=True)
+    header_index = Column(Integer, nullable=True)
+    raw_header = Column(String(500), nullable=True)
+    normalized_header = Column(String(500), nullable=True)
+
+    candidate_roles = Column(JSON, nullable=False, default=list)
+    selected_role = Column(String(64), nullable=True)
+    confidence = Column(Numeric(5, 4), nullable=False, default=0.0)
+    origin = Column(String(16), nullable=False, default="deterministic")
+    evidence_ids = Column(JSON, nullable=False, default=list)
+    #: Preserved ambiguity: when we could not decide, we say so instead of guessing.
+    ambiguity = Column(String, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("artifact_id", "sheet", "header_index", name="uq_orbit_semantic_mapping_artifact_sheet_col"),
+        Index("ix_orbit_semantic_mappings_artifact_id", "artifact_id"),
+        Index("ix_orbit_semantic_mappings_selected_role", "business_id", "selected_role"),
+    )
+
+
+class JevCall(Base):
+    """Audit record for every bounded judgment call (spec §32).
+
+    Exists so a judgment can never be the un-evidenced reason for a business
+    fact: each row records the capability, the schema versions, the request hash
+    and whether the deterministic fallback was used.
+    """
+
+    __tablename__ = "jev_calls"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="SET NULL"), nullable=True)
+    tenant_id = Column(UUID(as_uuid=True), nullable=True)
+
+    jev_call_id = Column(String(64), nullable=False)
+    capability = Column(String(64), nullable=False)
+    purpose = Column(String(255), nullable=True)
+    risk_level = Column(String(16), nullable=False, default="low")
+
+    model = Column(String(80), nullable=True)
+    model_version = Column(String(80), nullable=True)
+    request_hash = Column(String(64), nullable=False)
+    input_schema_version = Column(String(16), nullable=False, default="1")
+    output_schema_version = Column(String(16), nullable=False, default="1")
+
+    choice = Column(String(64), nullable=True)
+    confidence = Column(Numeric(5, 4), nullable=True)
+    alternatives = Column(JSON, nullable=False, default=list)
+    disagreement = Column(JSON, nullable=True)
+
+    latency_ms = Column(Numeric(10, 2), nullable=True)
+    status = Column(String(32), nullable=False, default="ok")
+    error_category = Column(String(32), nullable=True)
+    fallback_used = Column(Boolean, nullable=False, default=False)
+    provider = Column(String(32), nullable=False, default="remote")
+
+    artifact_ids = Column(JSON, nullable=False, default=list)
+    evidence_ids = Column(JSON, nullable=False, default=list)
+    capsule_hash = Column(String(64), nullable=True)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("jev_call_id", name="uq_jev_call_id"),
+        Index("ix_jev_calls_business_created", "business_id", "created_at"),
+        Index("ix_jev_calls_capability", "capability"),
+        Index("ix_jev_calls_status", "status"),
+        Index("ix_jev_calls_request_hash", "request_hash"),
+    )

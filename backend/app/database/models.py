@@ -2860,14 +2860,22 @@ class OrbitEvidence(Base):
     __tablename__ = "orbit_evidence"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    artifact_id = Column(UUID(as_uuid=True), ForeignKey("universal_artifacts.id", ondelete="CASCADE"), nullable=False)
+    # ff16 columns. `audit_id` is retained (nullable after ff17) because
+    # `AuditPersistenceService.save_audit_run` still writes through it, and
+    # `finding_id` / `metric_name` are kept for compatibility even though ff16
+    # always wrote them empty.
+    audit_id = Column(UUID(as_uuid=True), ForeignKey("orbit_audit_runs.id", ondelete="CASCADE"), nullable=True)
+    finding_id = Column(String(64), nullable=True)
+    metric_name = Column(String(64), nullable=True)
+    evidence_type = Column(String(32), nullable=False, default="calculation")
+    source_ref = Column(JSON, nullable=False, default=dict)
+    calculation = Column(JSON, nullable=False, default=dict)
+
+    # Phase 1 provenance fields.
+    artifact_id = Column(UUID(as_uuid=True), ForeignKey("universal_artifacts.id", ondelete="CASCADE"), nullable=True)
     business_id = Column(UUID(as_uuid=True), ForeignKey("businesses.id", ondelete="CASCADE"), nullable=True)
     tenant_id = Column(UUID(as_uuid=True), nullable=True)
     ingestion_run_id = Column(UUID(as_uuid=True), ForeignKey("orbit_ingestion_runs.id", ondelete="SET NULL"), nullable=True)
-
-    # ff16 columns retained for compatibility with existing readers.
-    finding_id = Column(String(64), nullable=True)
-    metric_name = Column(String(64), nullable=True)
 
     source_type = Column(String(32), nullable=False, default="file")
     source_locator = Column(JSON, nullable=False, default=dict)

@@ -182,12 +182,17 @@ def classify_row(
         return RowRole.METADATA, 0.65, (f"metadata marker {meta_hit!r}",)
 
     if is_first_row and mapped_roles:
-        # The header row repeats column labels rather than data values.
-        ratio = sum(1 for label in labels if label in set(mapped_roles.values())) / max(
-            len(labels), 1
-        )
-        if ratio >= 0.5:
-            return RowRole.HEADER, 0.85, (f"{ratio:.0%} of cells repeat column labels",)
+        # The header row repeats column labels rather than data values. Both sides
+        # are normalized before comparison: ``mapped_roles`` holds raw headers
+        # ("Unit Price") while labels are normalized ("unit price").
+        header_names = {normalize_text(h) for h in mapped_roles.values()}
+        if header_names:
+            matching = sum(1 for label in labels if label in header_names)
+            ratio = matching / max(len(labels), 1)
+            if ratio >= 0.5:
+                return RowRole.HEADER, 0.85, (
+                    f"{matching} of {len(labels)} cells repeat the mapped column labels",
+                )
 
     return RowRole.DATA, 0.85, ("no summary/metadata markers found",)
 

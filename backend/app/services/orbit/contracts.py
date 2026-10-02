@@ -677,7 +677,10 @@ class EvidenceRegistry:
         if existing is not None:
             return existing, False
         self._by_hash[evidence.hash] = evidence
-        self._order.append(evidence.evidence_id)
+        # ``_order`` holds hashes, matching the keys ``all()`` and ``by_hash``
+        # resolve. Storing evidence ids here instead would raise KeyError on the
+        # first ``all()`` call.
+        self._order.append(evidence.hash)
         return evidence, True
 
     def get(self, evidence_id: str) -> Optional[Evidence]:
@@ -693,7 +696,8 @@ class EvidenceRegistry:
         return [self._by_hash[h] for h in self._order]
 
     def ids(self) -> list[str]:
-        return list(self._order)
+        """Evidence ids in registration order."""
+        return [self._by_hash[h].evidence_id for h in self._order if h in self._by_hash]
 
     def __len__(self) -> int:
         return len(self._order)
@@ -774,6 +778,10 @@ class BusinessEventType(str, Enum):
     REFUND = "refund"
     RETURN = "return"
     PURCHASE = "purchase"
+    #: A point-in-time statement of stock on hand. Deliberately not a movement:
+    #: an inventory listing is an observation, and treating it as a receipt would
+    #: silently inflate inventory arithmetic.
+    STOCK_OBSERVATION = "stock_observation"
     STOCK_RECEIPT = "stock_receipt"
     STOCK_ADJUSTMENT = "stock_adjustment"
     STOCK_TRANSFER = "stock_transfer"

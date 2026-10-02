@@ -270,7 +270,10 @@ class EntityResolver:
     """
 
     def __init__(self, store: Optional[EntityStore] = None, *, business_id: Any = None) -> None:
-        self.store = store or EntityStore(business_id=business_id)
+        # ``store or EntityStore(...)`` would be wrong here: EntityStore defines
+        # ``__len__``, so an empty store is falsy and a real store would be silently
+        # discarded in favour of a fresh one that never sees the first resolution.
+        self.store = store if store is not None else EntityStore(business_id=business_id)
 
     # ── the ladder ───────────────────────────────────────────────────────────
 

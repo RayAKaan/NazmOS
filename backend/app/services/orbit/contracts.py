@@ -818,7 +818,12 @@ class BusinessEvent:
     entity_refs: dict[str, str] = field(default_factory=dict)
     quantity: Measured = field(default_factory=Measured.missing)
     amount: Measured = field(default_factory=Measured.missing)
+    #: Price charged per unit. This is a *sell* price.
     unit_price: Measured = field(default_factory=Measured.missing)
+    #: What the business paid per unit. Kept separate from ``unit_price`` because
+    #: conflating the two silently produces a margin of exactly zero on any dataset
+    #: that carries only a sell price, which looks like a real finding.
+    cost: Measured = field(default_factory=Measured.missing)
     location_ref: Optional[str] = None
     source_type: SourceType = SourceType.FILE
     source_locator: SourceLocator = field(default_factory=SourceLocator)

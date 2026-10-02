@@ -61,6 +61,9 @@ REVIEW_BAND = 0.70
 
 # Re-exported from the vocabulary module so callers of either module share one
 # definition of these header sets.
+#: Only genuinely vague words belong here. 'Cost' and 'Price' are *specific* -- a
+#: column called 'Cost' means cost -- and putting them in this set would let a
+#: POS export's designated money role capture the cost column and discard it.
 GENERIC_MONEY_HEADERS = _VOCAB_GENERIC_MONEY_HEADERS
 
 #: Money roles a generic header could plausibly mean, in reporting order.
@@ -606,11 +609,34 @@ class ArtifactColumnMap:
 
     @property
     def role_to_header(self) -> dict[str, str]:
-        """Selected role -> raw header. Ambiguous and unmapped columns excluded."""
+        """Selected role -> raw header.
+
+        Ambiguous and unmapped columns are excluded. When two columns claim the
+        same role the first one wins, and the collision is reported through
+        :attr:`role_collisions` rather than silently discarding a column.
+        """
+        out: dict[str, str] = {}
+        for mapping in self.mappings:
+            if not mapping.is_mapped or not mapping.selected_role:
+                continue
+            out.setdefault(mapping.selected_role, mapping.raw_header)
+        return out
+
+    @property
+    def role_collisions(self) -> dict[str, tuple[str, str]]:
+        """Roles claimed by more than one column: role -> (kept, discarded).
+
+        A collision means data was not ingested, so it must be visible rather than
+        resolved by iteration order.
+        """
+        seen: dict[str, list[str]] = {}
+        for mapping in self.mappings:
+            if mapping.is_mapped and mapping.selected_role:
+                seen.setdefault(mapping.selected_role, []).append(mapping.raw_header)
         return {
-            m.selected_role: m.raw_header
-            for m in self.mappings
-            if m.is_mapped and m.selected_role
+            role: (headers[0], ", ".join(headers[1:]))
+            for role, headers in seen.items()
+            if len(headers) > 1
         }
 
     @property
@@ -650,6 +676,10 @@ class ArtifactColumnMap:
             "ambiguous_headers": list(self.ambiguous_headers),
             "unmapped_headers": list(self.unmapped_headers),
             "needs_review": list(self.needs_review),
+            "role_collisions": {
+                role: {"kept": kept, "discarded": dropped}
+                for role, (kept, dropped) in self.role_collisions.items()
+            },
             "mean_confidence": self.mean_confidence,
         }
 

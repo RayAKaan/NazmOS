@@ -167,31 +167,86 @@ class OrbitFinancialXRay:
         )
         return min(100, max(0, 100 - int(concentration * 100)))
 
-    def _score_inventory_domain(self, inventory) -> int:
-        """Score inventory domain 0-100."""
-        if not inventory:
-            return 0
-        # Score based on stock health, turnover, etc.
-        return 62  # Placeholder
+    def _score_inventory_domain(self, inventory) -> int | None:
+        """Score inventory health from the products actually observed.
 
-    def _score_margin_domain(self, snapshot) -> int:
-        """Score margin domain 0-100."""
+        Previously ``return 62``. A fixed score reached the merchant as if it were
+        a measurement of their stock. The score is now derived from the share of
+        products with no stock, no cost or negative stock, and is ``None`` when
+        there is nothing to score.
+        """
+        if not inventory:
+            return None
+        total = len(inventory)
+        if total == 0:
+            return None
+
+        penalised = 0
+        for product in inventory:
+            has_stock = product.stock is not None
+            has_cost = product.cost is not None
+            negative = has_stock and product.stock < 0
+            if not has_stock or not has_cost or negative:
+                penalised += 1
+
+        return max(0, min(100, int((total - penalised) / total * 100)))
+
+    def _score_margin_domain(self, snapshot) -> int | None:
+        """Score margin health from products with complete cost evidence."""
         from app.services.audit_core import ProductMetrics, analyze_product
         audits = [analyze_product(ProductMetrics(**m)) for m in snapshot.to_product_metrics_list()]
         total = len(audits)
         if total == 0:
-            return 0
-        healthy = sum(1 for a in audits if not a.has_margin_leakage and not a.has_dead_or_slow_risk and not a.has_overstock_risk and not a.has_stockout_risk)
-        return min(100, max(0, int((healthy / total) * 100))) if total > 0 else 0
+            return None
+        # Only products whose cost is actually known may be scored. A product with
+        # no cost has no margin to be healthy or unhealthy about.
+        scorable = [a for a, m in zip(audits, snapshot.to_product_metrics_list())
+                    if m.get("cost") is not None]
+        if not scorable:
+            return None
+        healthy = sum(
+            1 for a in scorable
+            if not a.has_margin_leakage and not a.has_dead_or_slow_risk
+            and not a.has_overstock_risk and not a.has_stockout_risk
+        )
+        return max(0, min(100, int((healthy / len(scorable)) * 100)))
 
-    def _score_procurement_domain(self, purchases) -> int:
+    def _score_procurement_domain(self, purchases) -> int | None:
+        """Score procurement from real purchase records.
+
+        Previously ``return 69``. Score is the share of purchases carrying both an
+        amount and a known unit cost, since that is what procurement analysis
+        actually needs. ``None`` when there are no purchases to score.
+        """
         if not purchases:
-            return 50  # Neutral when no data
-        return 69  # Placeholder
+            return None
+        total = len(purchases)
+        if total == 0:
+            return None
+        complete = sum(
+            1 for p in purchases
+            if p.get("cost") is not None and p.get("qty_30d") is not None
+        )
+        return max(0, min(100, int((complete / total) * 100)))
 
-    def _score_data_quality(self) -> int:
-        # Would compute from snapshot.data_quality
-        return 91
+    def _score_data_quality(self, snapshot=None) -> int | None:
+        """Score data quality from the snapshot's own completeness signals.
+
+        Previously ``return 91``. A constant 91 is indistinguishable from a real
+        measurement, which is exactly why it is unacceptable. The score is now the
+        share of products whose sales, cost and stock are all present.
+        """
+        products = (snapshot.to_product_metrics_list() if snapshot is not None else [])
+        if not products:
+            return None
+        total = len(products)
+        complete = sum(
+            1 for p in products
+            if p.get("stock") is not None
+            and p.get("cost") is not None
+            and p.get("revenue_30d") is not None
+        )
+        return max(0, min(100, int((complete / total) * 100)))
 
     # =========================================================================
     # Exposures — Money-at-risk redesign (§17)

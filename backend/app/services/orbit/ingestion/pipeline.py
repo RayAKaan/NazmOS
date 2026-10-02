@@ -706,6 +706,12 @@ class CanonicalOrbitIngestionPipeline:
                 f"{[c.role for c in column_map.by_raw_header[ambiguous].candidates[:3]]}"
             )
 
+        for role, (kept, discarded) in column_map.role_collisions.items():
+            ctx.warnings.append(
+                f"columns {kept!r} and {discarded!r} both mapped to role {role!r}; "
+                f"{kept!r} was used and {discarded!r} was not ingested"
+            )
+
         method = (
             ExtractionMethod.SPREADSHEET_CELL
             if loaded.kind in ("xlsx", "xls")
@@ -876,9 +882,13 @@ class CanonicalOrbitIngestionPipeline:
         )
         amount = _measured(amount_value, evidence_id=amount_evidence)
         unit_price_value, unit_price_evidence = _pick(
-            values, evidence_by_role, "unit_price", "cost"
+            values, evidence_by_role, "unit_price"
         )
         unit_price = _measured(unit_price_value, evidence_id=unit_price_evidence)
+        # Cost is read from its own role only. Falling back to the sell price here
+        # would make every dataset without cost evidence report a margin of zero.
+        cost_value, cost_evidence = _pick(values, evidence_by_role, "cost")
+        cost = _measured(cost_value, evidence_id=cost_evidence)
         if amount.value is None and unit_price.value is not None and quantity.value is not None:
             # Derived, and marked as such so it is never mistaken for a source fact.
             amount = Measured.present(
@@ -911,6 +921,7 @@ class CanonicalOrbitIngestionPipeline:
             quantity=quantity,
             amount=amount,
             unit_price=unit_price,
+            cost=cost,
             location_ref=location_ref,
             source_type=artifact.source_type,
             source_locator=locator,

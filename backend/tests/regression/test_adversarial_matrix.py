@@ -113,23 +113,45 @@ class TestFNoUnknownBecomesZeroNoSixBecomesThirty:
 # ---------------------------------------------------------------------------
 
 class TestDBakedAgentFileHygiene:
-    def test_agent_frontmatter_denies_every_permission(self):
-        content = (BACKEND_DIR / "opencode_runner" / "agents" / "nazmos-brain.md").read_text(encoding="utf-8")
-        front = content.split("---", 2)[1]
-        perms = [line.strip() for line in front.splitlines() if ": deny" in line]
-        assert len(perms) >= 10, f"expected a broad deny matrix, got {perms}"
-        assert not any(": allow" in line or ": ask" in line for line in front.splitlines())
+    """OpenCode is absent from the active architecture (Phase 1 spec §56).
 
-    def test_agent_file_is_never_self_modifying(self):
-        source = _read_source("app/security/ai_adapter.py")
-        # The runtime transport must render a fresh temp agent — never edit the
-        # baked file, and never allow the baked file to change at build time.
-        assert "nazmos-brain.md" in source or "render_agent" in source
+    These tests previously asserted properties of
+    ``opencode_runner/agents/nazmos-brain.md``, a 657-line file with zero runtime
+    readers. Asserting the hygiene of a dead artifact is worse than useless: it
+    costs maintenance and it implies the file is still load-bearing.
 
-    def test_agent_file_is_dlp_clean(self):
-        content = (BACKEND_DIR / "opencode_runner" / "agents" / "nazmos-brain.md").read_text(encoding="utf-8")
+    The file has been deleted. These tests now assert its absence, so reintroducing
+    an OpenCode runtime fails the build rather than passing unnoticed.
+    """
+
+    def test_opencode_runner_directory_does_not_exist(self):
+        assert not (BACKEND_DIR / "opencode_runner").exists(), (
+            "the OpenCode runtime was removed from the active architecture; "
+            "reintroducing it requires an explicit architecture decision"
+        )
+
+    def test_no_baked_agent_file_exists(self):
+        agents = BACKEND_DIR / "opencode_runner" / "agents"
+        assert not agents.exists() or not list(agents.glob("*.md")), (
+            "a baked agent markdown file is present; Phase 1 keeps reasoning in "
+            "code and contracts, not in agent prompt files"
+        )
+
+    def test_no_active_module_imports_an_opencode_runtime(self):
+        """Import structure, not just text: no module may reach for OpenCode."""
+        offenders = []
+        for path in (BACKEND_DIR / "app").rglob("*.py"):
+            source = path.read_text(encoding="utf-8", errors="ignore")
+            for line in source.splitlines():
+                stripped = line.strip()
+                if stripped.startswith(("import ", "from ")) and "opencode" in stripped:
+                    offenders.append(f"{path.name}: {stripped}")
+        assert not offenders, f"active modules import OpenCode: {offenders}"
+
+    def test_dlp_rules_cover_the_removed_surface_without_it(self):
+        """DLP coverage remains a real assertion after the file's removal."""
         scanner = DlpScanner(rules=list(DLP_RULES), strict=True)
-        assert scanner.scan(content) == []
+        assert scanner.scan("customer phone +966500000001 and email a@b.com") != []
 
 
 # ---------------------------------------------------------------------------

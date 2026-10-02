@@ -755,9 +755,9 @@ GENERIC_MONEY_ROLE_BY_ARTIFACT_KIND: dict[str, str] = {
 #: a bank sheet. Without an artifact hint these are reported as ambiguous rather
 #: than resolved to whichever role happened to score highest.
 GENERIC_MONEY_HEADERS: frozenset[str] = frozenset({
-    "amount", "total", "value", "sum", "total amount", "total value", "amount value",
-    "net", "amount paid", "price", "money", "cost",
-    "المبلغ", "القيمة", "المجموع", "اجمالي", "المبلغ الاجمالي", "سعر", "تكلفة",
+    "amount", "total", "value", "sum", "total amount", "total value",
+    "amount value", "net", "money",
+    "المبلغ", "القيمة", "المجموع", "اجمالي", "المبلغ الاجمالي",
 })
 
 #: The same idea for quantity headers. "Qty" on a purchase order is a purchase

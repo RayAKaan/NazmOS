@@ -369,7 +369,10 @@ class AuditPersistenceService:
             } if audit.exposures else {},
             "findings_count": len(audit.findings) if audit.findings else 0,
             "top_opportunities": len(audit.opportunities) if audit.opportunities else 0,
-            "data_quality": 91,  # placeholder
+            # Previously a hardcoded 91. A constant is indistinguishable from a
+            # measurement, so this is now ``None`` when the audit carries no
+            # quality score rather than a fabricated number.
+            "data_quality": getattr(audit, "data_quality_score", None),
             "generated_at": audit.generated_at,
         }
 

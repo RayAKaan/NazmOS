@@ -28,6 +28,7 @@ from app.database.models import (
     OrbitEntityAlias,
     OrbitEvidence,
     OrbitIngestionRun,
+    JevCall,
     OrbitSemanticMapping,
     OrbitStateVersion,
     UniversalArtifact,
@@ -581,6 +582,43 @@ async def _persist_result(
                 timezone=state.timezone,
             )
         )
+
+    for call in result.jev_calls:
+        data = call.to_dict() if hasattr(call, "to_dict") else dict(call)
+        call_id = str(data.get("jev_call_id") or _stable_uuid(
+            "jev-call", business_id, data.get("capability"), data.get("request_hash")
+        ))
+        existing_call = await db.execute(
+            select(JevCall).where(JevCall.jev_call_id == call_id)
+        )
+        if existing_call.scalar_one_or_none() is None:
+            db.add(
+                JevCall(
+                    id=_stable_uuid("jev-db-id", call_id),
+                    business_id=business_id,
+                    tenant_id=business_id,
+                    jev_call_id=call_id,
+                    capability=data.get("capability", "unknown"),
+                    purpose=data.get("purpose"),
+                    risk_level="low",
+                    model=data.get("model"),
+                    model_version=data.get("model"),
+                    request_hash=data.get("request_hash") or data.get("capsule_hash") or "",
+                    input_schema_version="1",
+                    output_schema_version="1",
+                    choice=data.get("choice"),
+                    confidence=data.get("confidence"),
+                    alternatives=data.get("alternatives") or [],
+                    disagreement=data.get("disagreement"),
+                    latency_ms=data.get("latency_ms"),
+                    status=data.get("status", "fallback"),
+                    fallback_used=bool(data.get("fallback_used")),
+                    provider=data.get("provider", "fallback"),
+                    artifact_ids=[str(result.artifact_id)],
+                    evidence_ids=list(result.evidence_ids),
+                    capsule_hash=data.get("capsule_hash"),
+                )
+            )
 
     await db.flush()
 

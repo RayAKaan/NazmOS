@@ -140,7 +140,7 @@ class ReasoningCapsule(BaseModel):
         """Decision view for AI prompts: drops trusted-zone bookkeeping.
 
         UUIDs, nonce, capsule hash, signature and timestamps are process
-        internal; they are not sent to the LLM or OpenCode. This also keeps the
+        internal; they are not sent to the LLM or external model transport. This also keeps the
         outbound DLP clean (the DLP blocks raw UUIDs on the wire).
         """
         return self.model_dump(

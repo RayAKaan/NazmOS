@@ -49,7 +49,7 @@ def test_redact_string_strips_saudi_identifiers():
 
 def test_scrub_detail_allowlist_and_never_prompt_text():
     detail = {
-        "source": "opencode",
+        "source": "jev",
         "reasoning": "do not persist this free text",   # non-allowlisted -> dropped
         "prompt": "inventory appears in the JSON body",  # non-allowlisted -> dropped
         "ratio": 1.5,                                    # non-allowlisted -> dropped
@@ -58,7 +58,7 @@ def test_scrub_detail_allowlist_and_never_prompt_text():
         "bad": object(),
     }
     out = _scrub_detail(detail)
-    assert out["source"] == "opencode"
+    assert out["source"] == "jev"
     assert "reasoning" not in out
     assert "prompt" not in out
     assert "ratio" not in out

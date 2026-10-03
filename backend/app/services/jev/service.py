@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import Any, Mapping, Sequence
@@ -12,6 +13,7 @@ from app.services.ai_gateway import systemone_reason
 
 @dataclass(frozen=True)
 class JevCallRecord:
+    jev_call_id: str
     capability: str
     purpose: str
     model: str | None
@@ -99,6 +101,7 @@ class JevService:
 
         self.calls.append(
             JevCallRecord(
+                jev_call_id=hashlib.sha256((capability + ':' + capsule.capsule_hash).encode('utf-8')).hexdigest()[:64],
                 capability=capability,
                 purpose=purpose,
                 model=model,

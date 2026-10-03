@@ -628,7 +628,7 @@ async def ingest_and_project(
     db: AsyncSession,
     content: bytes,
     *,
-    business_id: UUID,
+    business_id: UUID | str,
     source_name: str,
     source_type: SourceType = SourceType.FILE,
     mime_type: Optional[str] = None,

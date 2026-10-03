@@ -401,15 +401,22 @@ async def ingest_and_project(
     source_location: Optional[str] = None,
     timezone_name: str = "Asia/Riyadh",
     jev: Any | None = None,
+    column_mapping_override: Optional[Mapping[str, str]] = None,
 ) -> tuple[CanonicalIngestionResult, ProjectionResult]:
     """Canonical authenticated ingestion + persistence + compatibility projection."""
-    result = ingest_artifact(
-        content,
+    from app.services.orbit.ingestion.pipeline import CanonicalOrbitIngestionPipeline
+
+    pipeline = CanonicalOrbitIngestionPipeline(
         business_id=business_id,
+        timezone_name=timezone_name,
+        jev=jev,
+    )
+    result = pipeline.ingest(
+        content,
         source_name=source_name,
         source_type=source_type,
         mime_type=mime_type,
-        pipeline=None,
+        column_mapping_override=column_mapping_override,
     )
 
     registry = EvidenceRegistry()

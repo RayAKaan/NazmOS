@@ -336,13 +336,24 @@ class EntityResolver:
                     note="exact normalized name match",
                 )
             if len(exact) > 1:
-                # The name alone points at several entities. Do not pick one.
-                return self._record(
+                ambiguous = self._record(
                     kind, name or "", ResolutionOutcome.AMBIGUOUS,
                     MatchMethod.UNRESOLVED, candidates=tuple(exact),
                     confidence=0.5, evidence_ids=evidence_ids,
                     note=f"{len(exact)} entities share this normalized name",
                 )
+                if jev is not None:
+                    judged = self._consult_jev(
+                        jev, kind, name or "", identifiers,
+                        fuzzy_candidates=[
+                            EntityCandidate(entity=e, match_method=MatchMethod.EXACT_NORMALIZED_NAME, score=100.0)
+                            for e in exact[:3]
+                        ],
+                        evidence_ids=evidence_ids,
+                    )
+                    if judged is not None:
+                        return judged
+                return ambiguous
 
         # 5. Alias.
         if query_name:
@@ -371,7 +382,7 @@ class EntityResolver:
                         evidence_ids=evidence_ids, candidates=tuple(c.entity for c in fuzzy[:3]),
                         note=f"fuzzy score {best.score:.1f} with a clear margin",
                     )
-                return self._record(
+                ambiguous = self._record(
                     kind, name or "", ResolutionOutcome.AMBIGUOUS,
                     MatchMethod.FUZZY, candidates=tuple(c.entity for c in fuzzy[:3]),
                     confidence=round(best.score / 100.0, 4), evidence_ids=evidence_ids,
@@ -380,6 +391,14 @@ class EntityResolver:
                         + (f" (runner-up {runner.score:.1f})" if runner else "")
                     ),
                 )
+                if jev is not None:
+                    judged = self._consult_jev(
+                        jev, kind, name or "", identifiers,
+                        fuzzy_candidates=fuzzy[:3], evidence_ids=evidence_ids,
+                    )
+                    if judged is not None:
+                        return judged
+                return ambiguous
 
         # 7. Bounded judgment, only if a provider is supplied and it is safe to ask.
         if jev is not None and query_name:

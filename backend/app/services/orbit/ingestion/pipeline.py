@@ -557,8 +557,10 @@ class CanonicalOrbitIngestionPipeline:
             if not any(e.row_hash == event.row_hash for e in self._accumulated_events):
                 self._accumulated_events.append(event)
         all_events_raw = list(self._accumulated_events)
-        all_evidence = list(ctx.registry.all())
-        self._accumulated_evidence = all_evidence
+        evidence_by_hash = {e.hash: e for e in self._accumulated_evidence}
+        for evidence in ctx.registry.all():
+            evidence_by_hash.setdefault(evidence.hash, evidence)
+        self._accumulated_evidence = list(evidence_by_hash.values())
 
         # State version derived from content, so re-ingestion is idempotent.
         state_version_after = compute_state_version(
@@ -604,6 +606,9 @@ class CanonicalOrbitIngestionPipeline:
             artifact=artifact,
             registry=ctx.registry,
             previous_state_version=self._prior_state_version,
+            artifact_ids=tuple(self._accumulated_artifact_ids),
+            artifact_content_hashes=tuple(self._accumulated_artifact_hashes),
+            ingestion_run_ids=(run.run_id,),
         )
         self._prior_state_version = state.state_version
         context = build_business_context(state, profile, quality, ctx.registry)
@@ -625,7 +630,7 @@ class CanonicalOrbitIngestionPipeline:
             records_accepted=ctx.accepted,
             records_rejected=ctx.rejected,
             records_ambiguous=ctx.ambiguous,
-            evidence=tuple(dict.fromkeys(self._accumulated_evidence + ctx.registry.all())),
+            evidence=tuple(self._accumulated_evidence),
             entities=entity_list,
             events=events,
             conflicts=conflicts,

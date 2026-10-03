@@ -33,8 +33,25 @@ from app.database.models import (
     UniversalArtifact,
 )
 from app.services.orbit.contracts import (
+    BusinessEvent,
+    BusinessEventType,
+    BusinessProfile,
     CanonicalBusinessState,
+    Conflict,
+    ConflictRelationship,
+    ConflictResolution,
+    ConflictSeverity,
+    DecisionOrigin,
+    Entity,
+    EntityKind,
+    Evidence,
     EvidenceRegistry,
+    ExtractionMethod,
+    FieldStatus,
+    MatchMethod,
+    Measured,
+    ResolutionOutcome,
+    SourceLocator,
     SourceType,
     content_hash,
 )
@@ -59,6 +76,185 @@ def _jsonable(value: Any) -> Any:
 
 def _stable_uuid(*parts: Any) -> UUID:
     return UUID(content_hash(*parts)[:32])
+
+
+def _parse_datetime(value: Any) -> Optional[datetime]:
+    if not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(str(value))
+        return parsed if parsed.tzinfo else parsed.astimezone()
+    except (TypeError, ValueError):
+        return None
+
+
+def _parse_date(value: Any) -> Optional[date]:
+    if not value:
+        return None
+    try:
+        return date.fromisoformat(str(value)[:10])
+    except (TypeError, ValueError):
+        return None
+
+
+def _measured_from_dict(data: Any) -> Measured:
+    if not isinstance(data, Mapping):
+        return Measured.missing()
+    status = FieldStatus(str(data.get("status") or "missing"))
+    evidence_ids = tuple(str(x) for x in data.get("evidence_ids", []) or [])
+    value = data.get("value")
+    if status is FieldStatus.PRESENT and value is not None:
+        return Measured.present(
+            value,
+            unit=data.get("unit"),
+            currency=data.get("currency"),
+            evidence_ids=evidence_ids,
+        )
+    if status is FieldStatus.UNKNOWN:
+        return Measured.unknown(evidence_ids=evidence_ids)
+    if status is FieldStatus.CONFLICT:
+        return Measured.conflict(evidence_ids=evidence_ids)
+    return Measured.missing()
+
+
+def _entity_from_dict(data: Mapping[str, Any]) -> Entity:
+    return Entity(
+        kind=EntityKind(str(data.get("kind", "product"))),
+        business_id=UUID(data["business_id"]) if data.get("business_id") else None,
+        canonical_name=data.get("canonical_name"),
+        normalized_name=data.get("normalized_name"),
+        raw_names=tuple(data.get("raw_names", []) or []),
+        identifiers=dict(data.get("identifiers", {}) or {}),
+        aliases=tuple(data.get("aliases", []) or []),
+        evidence_ids=tuple(data.get("evidence_ids", []) or []),
+        language=data.get("language"),
+        first_seen_at=_parse_datetime(data.get("first_seen_at")),
+        last_seen_at=_parse_datetime(data.get("last_seen_at")),
+        confidence=float(data.get("confidence") or 0.0),
+        correction_note=data.get("correction_note"),
+    )
+
+
+def _event_from_dict(data: Mapping[str, Any]) -> BusinessEvent:
+    refs = dict(data.get("entity_refs", {}) or {})
+    return BusinessEvent(
+        event_id=str(data.get("event_id") or ""),
+        business_id=UUID(data["business_id"]) if data.get("business_id") else None,
+        event_type=BusinessEventType(str(data.get("event_type", "unknown"))),
+        event_time=_parse_datetime(data.get("event_time")),
+        business_local_date=_parse_date(data.get("business_local_date")),
+        timezone=data.get("timezone"),
+        entity_refs=refs,
+        quantity=_measured_from_dict(data.get("quantity")),
+        amount=_measured_from_dict(data.get("amount")),
+        unit_price=_measured_from_dict(data.get("unit_price")),
+        cost=_measured_from_dict(data.get("cost")),
+        location_ref=data.get("location_ref"),
+        source_type=SourceType(str(data.get("source_type", "file"))),
+        source_locator=SourceLocator(**dict(data.get("source_locator", {}) or {})),
+        evidence_ids=tuple(data.get("evidence_ids", []) or []),
+        confidence=float(data.get("confidence") or 0.0),
+        state=FieldStatus(str(data.get("state", "present"))),
+        external_reference=data.get("external_reference"),
+        row_hash=str(data.get("row_hash") or ""),
+    )
+
+
+def _conflict_from_dict(data: Mapping[str, Any]) -> Conflict:
+    def period(name: str):
+        raw = data.get(name)
+        if isinstance(raw, (list, tuple)) and len(raw) == 2:
+            a, b = _parse_date(raw[0]), _parse_date(raw[1])
+            return (a, b) if a and b else None
+        return None
+
+    return Conflict(
+        conflict_id=str(data.get("conflict_id") or ""),
+        business_id=UUID(data["business_id"]) if data.get("business_id") else None,
+        entity_ref=data.get("entity_ref"),
+        field=str(data.get("field") or ""),
+        evidence_a=str(data.get("evidence_a") or ""),
+        evidence_b=str(data.get("evidence_b") or ""),
+        value_a=data.get("value_a"),
+        value_b=data.get("value_b"),
+        relationship=ConflictRelationship(str(data.get("relationship", "unknown"))),
+        severity=ConflictSeverity(str(data.get("severity", "medium"))),
+        period_a=period("period_a"),
+        period_b=period("period_b"),
+        classification=data.get("classification"),
+        classification_origin=DecisionOrigin(str(data.get("classification_origin", "deterministic"))),
+        detected_at=_parse_datetime(data.get("detected_at")) or datetime.now().astimezone(),
+        status=ConflictResolution(str(data.get("status", "unresolved"))),
+        resolution_method=data.get("resolution_method"),
+    )
+
+
+async def _load_canonical_seed(
+    db: AsyncSession,
+    *,
+    business_id: UUID,
+) -> tuple[tuple[Entity, ...], tuple[BusinessEvent, ...], tuple[Evidence, ...], tuple[str, ...], tuple[UUID, ...], Optional[str]]:
+    """Rehydrate the latest canonical business state so each new artifact accumulates."""
+    latest_q = await db.execute(
+        select(OrbitStateVersion)
+        .where(OrbitStateVersion.business_id == business_id)
+        .order_by(OrbitStateVersion.created_at.desc())
+        .limit(1)
+    )
+    latest = latest_q.scalar_one_or_none()
+    if latest is None:
+        return (), (), (), (), (), None
+
+    payload = latest.state or {}
+    entities = tuple(_entity_from_dict(item) for item in payload.get("entities", []) or [])
+    events = tuple(_event_from_dict(item) for item in payload.get("events", []) or [])
+    conflicts = tuple(_conflict_from_dict(item) for item in payload.get("conflicts", []) or [])
+    del conflicts  # conflict history is persisted; current conflicts are recomputed from events
+
+    evidence_rows = await db.execute(
+        select(OrbitEvidence).where(OrbitEvidence.business_id == business_id)
+    )
+    evidence: list[Evidence] = []
+    for row in evidence_rows.scalars().all():
+        evidence.append(
+            Evidence(
+                evidence_id=row.id.hex,
+                artifact_id=row.artifact_id,
+                business_id=row.business_id,
+                tenant_id=row.tenant_id,
+                source_type=SourceType(row.source_type),
+                source_locator=SourceLocator(**(row.source_locator or {})),
+                raw_value=row.raw_value,
+                normalized_value=row.normalized_value,
+                semantic_role=row.semantic_role,
+                entity_ref=row.entity_ref,
+                observed_at=row.observed_at,
+                period_start=row.period_start,
+                period_end=row.period_end,
+                confidence=float(row.confidence or 0.0),
+                quality=dict(row.quality or {}),
+                extraction_method=ExtractionMethod(row.extraction_method),
+                is_ocr=bool(row.is_ocr),
+                created_at=row.created_at,
+                hash=row.hash,
+            )
+        )
+
+    artifact_rows = await db.execute(
+        select(UniversalArtifact).where(UniversalArtifact.business_id == business_id)
+    )
+    artifacts = tuple(
+        str(row.content_hash) for row in artifact_rows.scalars().all() if row.content_hash
+    )
+    artifact_ids = tuple(row.id for row in artifact_rows.scalars().all())
+    return (
+        entities,
+        events,
+        tuple(evidence),
+        tuple(dict.fromkeys(artifacts)),
+        tuple(dict.fromkeys(artifact_ids)),
+        latest.state_version,
+    )
 
 
 def _full_state_payload(state: CanonicalBusinessState) -> dict[str, Any]:

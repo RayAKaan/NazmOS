@@ -242,3 +242,29 @@ class TestPhaseOneDoesNotImplementLaterPhases:
         assert not offenders, (
             f"Phase 2/3 modules must not live in Orbit: {sorted(offenders)}"
         )
+
+class TestSingleTruthPipeline:
+    """Canonical Orbit owns ingestion truth; ETLPipeline is compatibility projection only."""
+
+    def test_no_production_module_instantiates_etl_truth_pipeline(self):
+        offenders: list[str] = []
+        app_root = BACKEND / "app"
+        for path in sorted(app_root.rglob("*.py")):
+            if path == BACKEND / "app" / "services" / "etl_pipeline.py":
+                continue
+            source = path.read_text(encoding="utf-8", errors="ignore")
+            if "from app.services.etl_pipeline import ETLPipeline" in source:
+                offenders.append(f"{path}: imports ETLPipeline")
+            if "ETLPipeline(" in source:
+                offenders.append(f"{path}: instantiates ETLPipeline")
+        assert not offenders, (
+            "ETLPipeline is a compatibility projector, never a production "
+            "truth producer: " + "; ".join(offenders)
+        )
+
+    def test_business_snapshot_builder_is_only_a_canonical_compatibility_adapter(self):
+        builder = BACKEND / "app" / "services" / "business_snapshot_builder.py"
+        assert builder.exists()
+        source = builder.read_text(encoding="utf-8", errors="ignore")
+        assert "CanonicalOrbitIngestionPipeline" in source
+        assert "Compatibility wrapper" in source

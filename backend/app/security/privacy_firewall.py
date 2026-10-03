@@ -307,6 +307,35 @@ def build_reasoning_capsule(
     return CapsuleSigner().sign(capsule)
 
 
+
+def build_bounded_choice_capsule(
+    *,
+    candidates: list[str] | tuple[str, ...],
+    context_bands: Mapping[str, Any] | None = None,
+    capability: str,
+    purpose: str,
+    ttl_seconds: int = 90,
+) -> ReasoningCapsule:
+    """Build a signed, PII-free capsule for non-action classification."""
+    cleaned = [str(c).strip().upper() for c in candidates if str(c).strip()]
+    if not cleaned:
+        raise ValueError("bounded-choice capsule requires at least one candidate")
+    safe_context: dict[str, Any] = {}
+    for key, value in (context_bands or {}).items():
+        if isinstance(value, (str, bool, int, float)) or value is None:
+            safe_context[str(key)] = value
+        elif isinstance(value, (list, tuple)):
+            safe_context[str(key)] = [str(v)[:80] for v in value[:16]]
+    capsule = ReasoningCapsule.new(
+        capability=capability,
+        purpose=purpose,
+        items=[],
+        bounded_choices=cleaned,
+        context_bands=safe_context,
+        ttl_seconds=ttl_seconds,
+    )
+    return CapsuleSigner().sign(capsule)
+
 def build_challenge_capsule(
     context: StructuredContext,
     *,

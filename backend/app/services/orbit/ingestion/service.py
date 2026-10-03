@@ -257,7 +257,7 @@ async def _load_canonical_seed(
     )
 
 
-def _full_state_payload(state: CanonicalBusinessState) -> dict[str, Any]:
+def _full_state_payload(state: CanonicalBusinessState, context: Any | None = None) -> dict[str, Any]:
     payload = state.to_dict()
     payload.update(
         {
@@ -265,6 +265,7 @@ def _full_state_payload(state: CanonicalBusinessState) -> dict[str, Any]:
             "events": [_jsonable(e) for e in state.events],
             "conflicts": [_jsonable(c) for c in state.conflicts],
             "relationships": _jsonable(state.relationships),
+            "business_context": _jsonable(context) if context is not None else None,
         }
     )
     return payload
@@ -570,7 +571,7 @@ async def _persist_result(
                 business_id=business_id,
                 state_version=state.state_version,
                 previous_state_version=state.previous_state_version,
-                state=_full_state_payload(state),
+                state=_full_state_payload(state, result.context),
                 artifact_hashes=[result.artifact.content_hash],
                 entity_refs=[e.entity_id for e in state.entities],
                 evidence_ids=list(state.evidence_ids),

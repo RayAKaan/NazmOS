@@ -399,6 +399,9 @@ class CanonicalOrbitIngestionPipeline:
         # silently discard a caller-supplied store and create a second one.
         self.store = store if store is not None else EntityStore(business_id=business_id)
         self.resolver = EntityResolver(self.store)
+        if jev is None:
+            from app.services.jev import JevService
+            jev = JevService()
         self.jev = jev
         self.strict_currency = strict_currency
         self._accumulated_events: list[BusinessEvent] = list(seed_events)
@@ -409,6 +412,37 @@ class CanonicalOrbitIngestionPipeline:
         self._prior_state_version: Optional[str] = prior_state_version
         for seeded in seed_entities:
             self.store.register(seeded)
+
+    def _apply_column_judgment(
+        self,
+        column_map: ArtifactColumnMap,
+    ) -> ArtifactColumnMap:
+        """Use bounded Jev only for ambiguous column roles."""
+        if self.jev is None:
+            return column_map
+        from dataclasses import replace
+        rewritten = list(column_map.mappings)
+        for index, mapping in enumerate(rewritten):
+            candidates = tuple(dict.fromkeys(
+                c.role for c in mapping.candidates if getattr(c, "role", None)
+            ))
+            if not candidates or len(candidates) <= 1:
+                continue
+            decision = self.jev.decide_column_role(
+                candidates=candidates,
+                header=mapping.raw_header,
+            )
+            choice = str(getattr(decision, "choice", "") or "").lower()
+            if choice in {c.lower() for c in candidates} and getattr(decision, "origin", "") == "jev":
+                selected = next(c for c in candidates if c.lower() == choice)
+                rewritten[index] = replace(
+                    mapping,
+                    selected_role=selected,
+                    confidence=max(mapping.confidence, float(getattr(decision, "confidence", 0.0))),
+                    origin=__import__("app.services.orbit.contracts", fromlist=["DecisionOrigin"]).DecisionOrigin.JEV,
+                    notes=tuple(mapping.notes) + ("bounded Jev disambiguation",),
+                )
+        return replace(column_map, mappings=tuple(rewritten))
 
     # ── public API ───────────────────────────────────────────────────────────
 
@@ -529,6 +563,7 @@ class CanonicalOrbitIngestionPipeline:
                         )
                     )
                 column_map = replace(column_map, mappings=tuple(rewritten))
+            column_map = self._apply_column_judgment(column_map)
             if classification.artifact_kind is None:
                 # Re-classify now that columns are mapped: content beats format.
                 classification = self._classify(
@@ -541,6 +576,8 @@ class CanonicalOrbitIngestionPipeline:
                         rows=_sheet_of(loaded).rows,
                         artifact_hint=classification.artifact_kind,
                     )
+                    if column_mapping_override:
+                        column_map = self._apply_column_judgment(column_map)
 
             self._ingest_rows(loaded, column_map, classification, ctx, artifact)
         elif document is not None:
@@ -579,6 +616,8 @@ class CanonicalOrbitIngestionPipeline:
         from app.services.orbit.state import build_canonical_state
 
         conflicts = detect_conflicts(all_events_raw, ctx.registry)
+        from app.services.orbit.conflicts import classify_ambiguous_conflict
+        conflicts = tuple(classify_ambiguous_conflict(c, self.jev) for c in conflicts)
         events = build_events(all_events_raw)
         profile = build_business_profile(
             entity_list, events, classification, currencies=tuple(sorted(self._currencies))
@@ -720,7 +759,7 @@ class CanonicalOrbitIngestionPipeline:
         if not name and not identifiers:
             return None
         entity, resolution, _created = self.resolver.resolve_or_create(
-            kind, name=name, identifiers=identifiers, evidence_ids=evidence_ids
+            kind, name=name, identifiers=identifiers, evidence_ids=evidence_ids, jev=self.jev
         )
         ctx.resolutions.append(resolution)
         if resolution.outcome is ResolutionOutcome.AMBIGUOUS:

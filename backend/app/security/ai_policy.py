@@ -29,6 +29,15 @@ AI_CAPABILITIES: dict[str, str] = {
     "pricing.margin_erosion_risk": "score the margin erosion band against the gross margin threshold set",
     "report.finding_priority": "choose the finding priority over the severity contract",
     "business_loop.action_selection": "advisory action selection for the continuous_business_loop",
+    "orbit.artifact.classify": "classify an ambiguous business artifact from bounded evidence",
+    "orbit.column.classify": "classify an ambiguous business column from bounded evidence",
+    "orbit.row.classify": "classify an ambiguous spreadsheet row from bounded evidence",
+    "orbit.entity.resolve": "resolve an ambiguous business entity from bounded candidates",
+    "orbit.time.interpret": "interpret an ambiguous business date from bounded candidates",
+    "orbit.conflict.classify": "classify an ambiguous source conflict",
+    "orbit.quality.triage": "triage an ambiguous data-quality issue",
+    "orbit.profile.classify": "classify an ambiguous business profile",
+    "orbit.analysis.route": "route an ambiguous artifact to a deterministic analysis",
 }
 
 AI_CAPABILITY_FLAGS: dict[str, Callable[[object], bool]] = {}
@@ -54,6 +63,15 @@ AI_CAPABILITY_FLAGS["procurement.supplier_risk"] = _enabled("AI_ENABLED")
 AI_CAPABILITY_FLAGS["pricing.margin_erosion_risk"] = _enabled("AI_ENABLED")
 AI_CAPABILITY_FLAGS["report.finding_priority"] = _enabled("AI_ENABLED")
 AI_CAPABILITY_FLAGS["business_loop.action_selection"] = _enabled("AI_ENABLED")
+AI_CAPABILITY_FLAGS["orbit.artifact.classify"] = _enabled("JEV_ENABLED")
+AI_CAPABILITY_FLAGS["orbit.column.classify"] = _enabled("JEV_ENABLED")
+AI_CAPABILITY_FLAGS["orbit.row.classify"] = _enabled("JEV_ENABLED")
+AI_CAPABILITY_FLAGS["orbit.entity.resolve"] = _enabled("JEV_ENABLED")
+AI_CAPABILITY_FLAGS["orbit.time.interpret"] = _enabled("JEV_ENABLED")
+AI_CAPABILITY_FLAGS["orbit.conflict.classify"] = _enabled("JEV_ENABLED")
+AI_CAPABILITY_FLAGS["orbit.quality.triage"] = _enabled("JEV_ENABLED")
+AI_CAPABILITY_FLAGS["orbit.profile.classify"] = _enabled("JEV_ENABLED")
+AI_CAPABILITY_FLAGS["orbit.analysis.route"] = _enabled("JEV_ENABLED")
 
 
 class AiPolicy:

@@ -30,7 +30,7 @@ from app.services.orbit.contracts import (
 )
 
 #: Fields compared for agreement. Two observations disagree only on these.
-COMPARED_FIELDS = ("amount", "quantity", "unit_price")
+COMPARED_FIELDS = ("amount", "quantity", "unit_price", "cost")
 
 #: How close two values must be to count as agreeing.
 DECIMAL_TOLERANCE = Decimal("0.01")

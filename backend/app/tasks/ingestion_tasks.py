@@ -6,9 +6,6 @@ from sqlalchemy import text
 
 from app.config import get_settings
 from app.database.connection import get_sync_session
-from app.services.etl_pipeline import ETLPipeline
-from app.services.upload_service import UploadService
-from app.services.schema_detector import SchemaDetector
 
 settings = get_settings()
 

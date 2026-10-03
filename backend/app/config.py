@@ -155,7 +155,7 @@ class Settings(BaseSettings):
     # File Upload
     UPLOAD_DIR: str = "uploads"
     MAX_UPLOAD_SIZE_MB: int = 15
-    ALLOWED_UPLOAD_EXTENSIONS: str = ".csv,.xlsx,.xls"
+    ALLOWED_UPLOAD_EXTENSIONS: str = ".csv,.xlsx,.xls,.json,.pdf,.docx,.txt"
 
     # Audit / autonomy configuration (Phase 4 §13). These were hard-coded constants;
     # now configurable WITH conservative safety floors enforced in policy_engine.
@@ -414,11 +414,8 @@ class Settings(BaseSettings):
                     raise ValueError("CORS wildcard '*' is not allowed in production")
                 if not origin.startswith(("https://", "http://")):
                     raise ValueError(f"CORS origin must include scheme: {origin}")
-        if not self.GROQ_API_KEY and not self.GOOGLE_AI_API_KEY:
-            raise ValueError(
-                "At least one of GROQ_API_KEY or GOOGLE_AI_API_KEY is required in "
-                "production (merchant-facing LLM responses must use a real provider)"
-            )
+        # Phase 1 Orbit does not require an LLM. Merchant-facing Intelligence/Loop
+        # can enforce its own provider policy when those features are enabled.
         if self.WHATSAPP_ENABLED == "live" and (
             not self.WHATSAPP_TOKEN or not self.WHATSAPP_PHONE_ID or not self.WHATSAPP_VERIFY_TOKEN
         ):
@@ -439,11 +436,8 @@ def get_settings() -> Settings:
             raise RuntimeError("FATAL: SENTRY_DSN is required in production")
         if s.USE_MOCK_LLM:
             raise RuntimeError("FATAL: USE_MOCK_LLM must be False in production")
-        if not s.GROQ_API_KEY and not s.GOOGLE_AI_API_KEY:
-            raise RuntimeError(
-                "FATAL: at least one of GROQ_API_KEY or GOOGLE_AI_API_KEY is "
-                "required in production (merchant-facing LLM responses must use a real provider)"
-            )
+        # No LLM provider key is required for an Orbit-only deployment. Intelligence
+        # and Loop validate their LLM gateway configuration at their own boundary.
         if s.WHATSAPP_ENABLED == "live" and (not s.WHATSAPP_TOKEN or not s.WHATSAPP_PHONE_ID or not s.WHATSAPP_VERIFY_TOKEN):
             raise RuntimeError(
                 "FATAL: WHATSAPP_ENABLED=live requires WHATSAPP_TOKEN, WHATSAPP_PHONE_ID, and WHATSAPP_VERIFY_TOKEN"

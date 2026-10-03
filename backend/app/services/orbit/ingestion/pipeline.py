@@ -94,7 +94,7 @@ from app.services.orbit.semantics import (
     classify_rows,
     map_columns,
 )
-from app.services.orbit.semantics.vocabulary import DATE_ROLES, is_currency_role
+from app.services.orbit.semantics.vocabulary import DATE_ROLES, is_currency_role, ALL_ROLES
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -506,7 +506,7 @@ class CanonicalOrbitIngestionPipeline:
                     if mapping.raw_header in override:
                         role = override[mapping.raw_header]
                     for k, v in override.items():
-                        if v == mapping.raw_header and k in map_columns.__globals__["ALL_ROLES"]:
+                        if v == mapping.raw_header and k in {r.canonical_name for r in ALL_ROLES}:
                             role = k
                     rewritten.append(
                         replace(

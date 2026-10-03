@@ -63,11 +63,9 @@ def main() -> int:
         else:
             _ok("CORS_ORIGINS does not include localhost")
 
-        if not settings.GROQ_API_KEY and not settings.GOOGLE_AI_API_KEY:
-            _fail("At least one of GROQ_API_KEY or GOOGLE_AI_API_KEY must be set in production")
-            exit_code = 1
-        else:
-            _ok("LLM provider keys are configured (Groq and/or Google Gemini)")
+        # Phase 1 Orbit does not require an LLM provider. Intelligence/Loop
+        # validate the LLM gateway only when those capabilities are enabled.
+        _ok("Orbit startup does not require an LLM provider")
 
         if settings.WHATSAPP_ENABLED == "live" and (
             not settings.WHATSAPP_TOKEN or not settings.WHATSAPP_PHONE_ID

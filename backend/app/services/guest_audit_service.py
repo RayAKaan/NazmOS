@@ -556,8 +556,8 @@ def run_two_file_audit(
             },
             "is_two_file": True,
             "row_count": len(sales_df) + len(inventory_df),
-            "column_confidence_sales": sales_resolution.confidence,
-            "column_confidence_inventory": inventory_resolution.confidence,
+            "column_confidence_sales": getattr(sales_resolution, "confidence", None),
+            "column_confidence_inventory": getattr(inventory_resolution, "confidence", None),
         },
     )
     summary["canonical_limitations"] = list(

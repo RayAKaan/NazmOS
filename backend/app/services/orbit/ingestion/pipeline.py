@@ -269,6 +269,17 @@ def _sheet_of(loaded: LoadedArtifact):
     return loaded.primary_sheet
 
 
+#: Roles that hold a human-readable name. These supply an entity's canonical name.
+_NAME_ROLES = (
+    "product_name", "supplier_name", "customer_name", "employee_name",
+    "branch_name", "location_name", "campaign_name", "category", "channel",
+    "notes",
+)
+
+#: Roles that hold a stable identifier. These are identifiers, never names.
+_IDENTIFIER_ROLES = ("sku", "barcode", "customer_phone", "customer_email")
+
+
 def _pick(
     values: Mapping[str, Any],
     evidence_by_role: Mapping[str, str],
@@ -821,20 +832,21 @@ class CanonicalOrbitIngestionPipeline:
             if not present:
                 continue
 
-            # Prefer a strong identifier as the name when one exists, so the
-            # resolver can match on it instead of on free text.
-            primary_role = next(
-                (r for r in present if r in ("sku", "barcode")), present[0]
+            # The entity is *named* by its human-readable name and *identified* by
+            # its SKU/barcode. Naming it by the SKU would make every product called
+            # "P330" in canonical state, which is unreadable and loses the only
+            # label a merchant recognises.
+            name_role = next(
+                (r for r in _NAME_ROLES if r in present and kind.value in _ROLE_ENTITY_KIND
+                 and _ROLE_ENTITY_KIND[r] is kind),
+                None,
             )
-            name = str(values[primary_role])
+            if name_role is None:
+                name_role = present[0]
+            name = str(values[name_role])
             identifiers: dict[str, str] = {
-                r: str(values[r]) for r in present if r in ("sku", "barcode")
+                r: str(values[r]) for r in present if r in _IDENTIFIER_ROLES
             }
-            if kind is EntityKind.CUSTOMER:
-                identifiers.update({
-                    r: str(values[r]) for r in present
-                    if r in ("customer_phone", "customer_email")
-                })
 
             ev_ids = [evidence_by_role[r] for r in present if evidence_by_role.get(r)]
             entity = self._resolve_entity(

@@ -190,8 +190,24 @@ class TestAccumulation:
             to_csv(INVENTORY_HEADERS, INVENTORY_ROWS), source_name="inventory.csv"
         )
         names = {str(e.canonical_name) for e in result.context.entities}
-        # Products from the sales export survive the inventory upload.
-        assert {"P330", "P500", "N250"} <= names
+        # Products from the sales export survive the inventory upload, under their
+        # human names rather than their SKUs.
+        assert {"Pepsi 330ml", "Pepsi 500ml", "Nestle 250g"} <= names
+
+    def test_products_are_named_by_name_not_by_sku(self, pipeline):
+        """The SKU is an identifier; the canonical name is what a merchant recognises."""
+        pipeline.ingest(to_csv(POS_HEADERS, POS_ROWS), source_name="pos_export.csv")
+        result = pipeline.ingest(
+            to_csv(INVENTORY_HEADERS, INVENTORY_ROWS), source_name="inventory.csv"
+        )
+        products = {
+            str(e.canonical_name): e.identifiers
+            for e in result.context.entities if e.kind.value == "product"
+        }
+        assert "Pepsi 330ml" in products
+        assert products["Pepsi 330ml"].get("sku") == "P330"
+        # No product may be named after its SKU.
+        assert not {name for name in products if name.startswith("P") and name[1:].isdigit()}
 
 
 class TestIdempotency:

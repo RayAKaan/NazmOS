@@ -644,6 +644,9 @@ async def ingest_and_project(
         artifact=result.artifact,
         registry=registry,
         previous_state_version=result.state_version_before,
+        artifact_ids=tuple(dict.fromkeys((*seed_artifact_ids, result.artifact_id))),
+        artifact_content_hashes=tuple(dict.fromkeys((*seed_artifact_hashes, result.artifact.content_hash))),
+        ingestion_run_ids=(result.run_id,),
     )
 
     await _persist_result(

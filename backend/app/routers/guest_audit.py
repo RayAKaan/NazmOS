@@ -22,7 +22,7 @@ from fastapi import APIRouter, HTTPException, Request, UploadFile
 from starlette.datastructures import UploadFile as StarletteUploadFile
 from fastapi.responses import JSONResponse
 
-from app.services.file_ingestion import analyze_file_metadata, resolve_columns
+from app.services.file_ingestion import analyze_file_metadata
 from app.services.guest_audit_service import run_guest_audit, run_two_file_audit
 from app.services.telemetry import record_guest_audit
 from app.services.workbook_loader import DataQualityError, load_workbook
@@ -90,9 +90,8 @@ def _load_frame(content: bytes, filename: str) -> tuple[pd.DataFrame, dict[str, 
         raise HTTPException(413, detail=f"Guest audit supports up to {MAX_ROWS} rows per file. Sign up for larger imports.")
     if (load.sheet_count or 1) > MAX_SHEETS:
         raise HTTPException(422, detail=f"Workbook has too many sheets (max {MAX_SHEETS}). Please combine into one sheet.")
-    resolution = resolve_columns(df)
     metadata = analyze_file_metadata(df, load.file_type, load.meta())
-    return df, load.meta(), resolution
+    return df, load.meta(), None
 
 
 def _rows_from_json(body: bytes) -> list[dict[str, Any]]:

@@ -1,0 +1,3 @@
+product_name,sku,stock,cost,unit,currency,branch_name
+Milk 1L,M-001,40,5.00,unit,SAR,Main
+Bread,B-001,25,2.40,unit,SAR,Main

@@ -1,0 +1,22 @@
+{
+  "name": "Phase 1 Universal Business Reality golden fixtures",
+  "contract_version": "phase1-v1",
+  "ocr": "intentional-limitation",
+  "artifacts": [
+    "golden_pos.csv",
+    "golden_inventory.csv",
+    "golden_bank.csv",
+    "golden_staff.csv",
+    "golden_marketing.csv",
+    "ambiguous_headers.csv",
+    "conflicting_cost.csv",
+    "partial_inventory.csv",
+    "mixed_currency.csv",
+    "mixed_units.csv",
+    "arabic_english.csv",
+    "no_timezone.csv",
+    "duplicate_rows.csv",
+    "malformed.csv",
+    "golden.json"
+  ]
+}

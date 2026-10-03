@@ -1,0 +1,3 @@
+date,description,amount,currency,reference
+2026-09-01,POS settlement,29.40,SAR,SET-001
+2026-09-02,Bank fee,-1.00,SAR,FEE-001

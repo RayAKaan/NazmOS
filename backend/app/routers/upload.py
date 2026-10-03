@@ -609,24 +609,43 @@ async def ingest_json(
     clean_mapping = {k: v for k, v in column_mapping.items() if v not in (None, "")}
 
     try:
-        df = pd.DataFrame(rows)
-        from app.services.etl_pipeline import ETLPipeline
-        pipeline = ETLPipeline(upload_id, business_id, df, clean_mapping)
-        stats = await pipeline.run()
+        from app.services.orbit.ingestion.service import ingest_and_project
+        from app.services.orbit.contracts import SourceType
+
+        # Client-side parsing is a transport optimization only. The JSON rows are
+        # re-entered through the same canonical Orbit pipeline used by every other
+        # authenticated upload; ETL is never a truth producer here.
+        canonical_payload = json.dumps({"rows": rows}, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        canonical, projection = await ingest_and_project(
+            db,
+            canonical_payload,
+            business_id=business_id,
+            source_name=filename,
+            source_type=SourceType.FILE,
+            mime_type="application/json",
+            column_mapping_override=clean_mapping,
+        )
+
+        imported = projection.transactions_inserted + projection.items_created + projection.inventory_written
+        failed = canonical.records_rejected
+        status = "needs_review" if canonical.status.value == "needs_review" else "completed"
 
         await db.execute(
             text("""
                 UPDATE uploaded_files
-                SET status = 'completed',
+                SET status = :status,
                     row_count_imported = :imported,
                     row_count_failed = :failed,
-                    etl_completed_at = NOW()
+                    etl_completed_at = NOW(),
+                    error_summary = :error
                 WHERE id = :id
             """),
             {
                 "id": upload_id,
-                "imported": stats.get("imported", 0),
-                "failed": stats.get("failed", 0),
+                "status": status,
+                "imported": imported,
+                "failed": failed,
+                "error": json.dumps(list(canonical.errors), ensure_ascii=False),
             }
         )
         await db.commit()
@@ -636,10 +655,14 @@ async def ingest_json(
 
         return {
             "upload_id": upload_id,
-            "status": "completed",
-            "rows_imported": stats.get("imported", 0),
-            "rows_failed": stats.get("failed", 0),
-            "errors": [],
+            "status": status,
+            "rows_imported": imported,
+            "rows_failed": failed,
+            "errors": list(canonical.errors),
+            "warnings": list(canonical.warnings),
+            "state_version": canonical.state_version_after,
+            "canonical_event_ids": list(canonical.event_ids),
+            "projection": projection.to_dict(),
             "duration_seconds": 0,
         }
 

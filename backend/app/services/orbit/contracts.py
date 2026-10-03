@@ -846,6 +846,8 @@ class BusinessEvent:
                     self.entity_refs,
                     self.quantity.value,
                     self.amount.value,
+                    self.unit_price.value,
+                    self.cost.value,
                     self.external_reference,
                 ),
             )
@@ -866,6 +868,7 @@ class BusinessEvent:
             "quantity": self.quantity.to_dict(),
             "amount": self.amount.to_dict(),
             "unit_price": self.unit_price.to_dict(),
+            "cost": self.cost.to_dict(),
             "location_ref": self.location_ref,
             "source_type": self.source_type.value,
             "source_locator": self.source_locator.to_dict(),

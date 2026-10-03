@@ -414,6 +414,7 @@ class CanonicalOrbitIngestionPipeline:
         mime_type: Optional[str] = None,
         known_artifacts: Optional[Mapping[tuple[Optional[str], str], str]] = None,
         state_version_before: Optional[str] = None,
+        column_mapping_override: Optional[Mapping[str, str]] = None,
     ) -> CanonicalIngestionResult:
         """Ingest one artifact and return the canonical result."""
         ctx = _IngestContext(business_id=self.business_id)
@@ -492,6 +493,30 @@ class CanonicalOrbitIngestionPipeline:
                 rows=_sheet_of(loaded).rows,
                 artifact_hint=classification.artifact_kind,
             )
+
+            # Merchant-confirmed mappings are hints to the canonical mapper, not a
+            # bypass around it. Accept both API shapes (role -> raw header and raw
+            # header -> role), preserving the canonical ColumnMapping contract.
+            if column_mapping_override:
+                from dataclasses import replace
+                override = dict(column_mapping_override)
+                rewritten = []
+                for mapping in column_map.mappings:
+                    role = mapping.selected_role
+                    if mapping.raw_header in override:
+                        role = override[mapping.raw_header]
+                    for k, v in override.items():
+                        if v == mapping.raw_header and k in map_columns.__globals__["ALL_ROLES"]:
+                            role = k
+                    rewritten.append(
+                        replace(
+                            mapping,
+                            selected_role=role,
+                            confidence=max(mapping.confidence, 0.99) if role != mapping.selected_role else mapping.confidence,
+                            notes=tuple(mapping.notes) + (("merchant-confirmed mapping",) if role != mapping.selected_role else ()),
+                        )
+                    )
+                column_map = replace(column_map, mappings=tuple(rewritten))
             if classification.artifact_kind is None:
                 # Re-classify now that columns are mapped: content beats format.
                 classification = self._classify(

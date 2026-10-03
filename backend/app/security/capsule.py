@@ -80,6 +80,10 @@ class ReasoningCapsule(BaseModel):
     business: CapsuleBusiness = Field(default_factory=CapsuleBusiness)
     items: list[CapsuleItem] = Field(default_factory=list)
     constraints: CapsuleConstraints = Field(default_factory=CapsuleConstraints)
+    # Generic bounded choices are used by Orbit for classification/routing.
+    # They contain no merchant identifiers or exact business values.
+    bounded_choices: list[str] = Field(default_factory=list)
+    context_bands: dict[str, Any] = Field(default_factory=dict)
     forecast_signals: dict[str, dict[str, Any]] = Field(default_factory=dict)
     capsule_hash: str = ""
     signature: str = ""
@@ -97,6 +101,8 @@ class ReasoningCapsule(BaseModel):
         business: CapsuleBusiness | None = None,
         constraints: CapsuleConstraints | None = None,
         forecast_signals: dict[str, dict[str, Any]] | None = None,
+        bounded_choices: list[str] | None = None,
+        context_bands: dict[str, Any] | None = None,
         ttl_seconds: int = 90,
     ) -> "ReasoningCapsule":
         now = datetime.now(timezone.utc)
@@ -111,6 +117,8 @@ class ReasoningCapsule(BaseModel):
             business=business or CapsuleBusiness(),
             items=items,
             constraints=constraints or CapsuleConstraints(),
+            bounded_choices=[str(v).upper() for v in (bounded_choices or [])],
+            context_bands=dict(context_bands or {}),
             forecast_signals=forecast_signals or {},
         )
 
@@ -154,6 +162,7 @@ class ReasoningCapsule(BaseModel):
         for item in self.items:
             for d in item.candidate_decisions or []:
                 allowed.add(str(d).upper())
+        allowed.update(str(d).upper() for d in self.bounded_choices)
         return frozenset(allowed)
 
     def allowed_evidence(self) -> frozenset[str]:

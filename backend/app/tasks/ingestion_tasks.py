@@ -108,6 +108,7 @@ def run_process_upload(upload_id: str, business_id: str, column_mapping: dict):
                             source_type=SourceType.FILE,
                             mime_type=getattr(row, "mime_type", None),
                             source_location=str(row.stored_filename),
+                            column_mapping_override=column_mapping or None,
                         )
                 finally:
                     await engine.dispose()

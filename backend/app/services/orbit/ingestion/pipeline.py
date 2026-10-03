@@ -386,6 +386,12 @@ class CanonicalOrbitIngestionPipeline:
         store: Optional[EntityStore] = None,
         jev: Optional[Any] = None,
         strict_currency: bool = True,
+        seed_entities: Sequence[Any] = (),
+        seed_events: Sequence[BusinessEvent] = (),
+        seed_evidence: Sequence[Evidence] = (),
+        seed_artifact_hashes: Sequence[str] = (),
+        seed_artifact_ids: Sequence[UUID] = (),
+        prior_state_version: Optional[str] = None,
     ) -> None:
         self.business_id = business_id
         self.timezone_name = timezone_name
@@ -395,13 +401,14 @@ class CanonicalOrbitIngestionPipeline:
         self.resolver = EntityResolver(self.store)
         self.jev = jev
         self.strict_currency = strict_currency
-        #: Canonical facts accumulated across every artifact this pipeline has
-        #: ingested. A context reflects the business, not the last file received,
-        #: so state must persist between calls.
-        self._accumulated_events: list[BusinessEvent] = []
-        self._accumulated_evidence: list[Evidence] = []
+        self._accumulated_events: list[BusinessEvent] = list(seed_events)
+        self._accumulated_evidence: list[Evidence] = list(seed_evidence)
         self._currencies: set[str] = set()
-        self._prior_state_version: Optional[str] = None
+        self._accumulated_artifact_hashes: list[str] = list(dict.fromkeys(str(h) for h in seed_artifact_hashes if h))
+        self._accumulated_artifact_ids: list[UUID] = list(dict.fromkeys(seed_artifact_ids))
+        self._prior_state_version: Optional[str] = prior_state_version
+        for seeded in seed_entities:
+            self.store.register(seeded)
 
     # ── public API ───────────────────────────────────────────────────────────
 
@@ -435,6 +442,11 @@ class CanonicalOrbitIngestionPipeline:
                 f"artifact already ingested as {decision.existing_artifact_id}; "
                 "no duplicate canonical facts created"
             )
+
+        if identity.content_hash not in self._accumulated_artifact_hashes:
+            self._accumulated_artifact_hashes.append(identity.content_hash)
+        if not any(a == _deterministic_artifact_id(identity.content_hash, self.business_id) for a in self._accumulated_artifact_ids):
+            self._accumulated_artifact_ids.append(_deterministic_artifact_id(identity.content_hash, self.business_id))
 
         # Artifact identity is content-addressed, not random. A random UUID would make
         # the same bytes produce different artifact and evidence ids depending on
@@ -551,7 +563,7 @@ class CanonicalOrbitIngestionPipeline:
         # State version derived from content, so re-ingestion is idempotent.
         state_version_after = compute_state_version(
             self.business_id,
-            [artifact.content_hash],
+            self._accumulated_artifact_hashes,
             [e.entity_id for e in entity_list],
             [e.row_hash for e in all_events_raw],
         )
@@ -613,7 +625,7 @@ class CanonicalOrbitIngestionPipeline:
             records_accepted=ctx.accepted,
             records_rejected=ctx.rejected,
             records_ambiguous=ctx.ambiguous,
-            evidence=tuple(ctx.registry.all()),
+            evidence=tuple(dict.fromkeys(self._accumulated_evidence + ctx.registry.all())),
             entities=entity_list,
             events=events,
             conflicts=conflicts,

@@ -156,6 +156,9 @@ def build_canonical_state(
     artifact: Optional[UniversalArtifact] = None,
     registry: Optional[EvidenceRegistry] = None,
     previous_state_version: Optional[str] = None,
+    artifact_ids: Sequence[Any] = (),
+    artifact_content_hashes: Sequence[str] = (),
+    ingestion_run_ids: Sequence[Any] = (),
 ) -> CanonicalBusinessState:
     """Assemble the canonical state from already-canonical inputs."""
     entities = tuple(entities)
@@ -175,7 +178,7 @@ def build_canonical_state(
 
     state_version = compute_state_version(
         business_id,
-        [artifact.content_hash] if artifact else [],
+        artifact_content_hashes or ([artifact.content_hash] if artifact else []),
         [e.entity_id for e in entities],
         [e.row_hash for e in events],
     )
@@ -203,7 +206,8 @@ def build_canonical_state(
         evidence_coverage=_evidence_coverage(registry, events),
         freshness=build_freshness(events, conflicts),
         capabilities=(profile.capabilities if profile else ()),
-        artifact_ids=(artifact.artifact_id,) if artifact else (),
+        artifact_ids=tuple(dict.fromkeys(artifact_ids or ((artifact.artifact_id,) if artifact else ()))),
+
         evidence_ids=tuple(sorted({eid for e in events for eid in e.evidence_ids})),
         source_systems=(),
         historical_coverage={

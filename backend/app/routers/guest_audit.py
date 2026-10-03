@@ -146,7 +146,7 @@ async def guest_audit(request: Request):
                 df, meta, resolution = _load_frame(content, file_field.filename or "upload.csv")
                 manifests.append(analyze_file_metadata(df, load.file_type if 'load' in locals() else "csv", {
                     "filename": file_field.filename or "upload.csv",
-                    "file_id": str(uuid4()),
+                    "file_id": str(uuid.uuid4()),
                     "sheet_count": 1,
                     "selected_sheet": "sheet1",
                     "header_row_index": 0,

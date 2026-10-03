@@ -137,6 +137,7 @@ class CanonicalIngestionResult:
     limitations: tuple[str, ...] = ()
     warnings: tuple[str, ...] = ()
     errors: tuple[dict[str, Any], ...] = ()
+    jev_calls: tuple[Any, ...] = ()
     status: IngestionStatus = IngestionStatus.COMPLETED
 
     @property
@@ -206,6 +207,10 @@ class CanonicalIngestionResult:
             "limitations": list(self.limitations),
             "warnings": list(self.warnings),
             "errors": list(self.errors),
+            "jev_calls": [
+                call.to_dict() if hasattr(call, "to_dict") else dict(call)
+                for call in self.jev_calls
+            ],
         }
 
 
@@ -682,6 +687,7 @@ class CanonicalOrbitIngestionPipeline:
             limitations=tuple(dict.fromkeys(ctx.limitations)),
             warnings=tuple(dict.fromkeys(ctx.warnings)),
             errors=tuple(ctx.errors),
+            jev_calls=tuple(getattr(self.jev, "calls", ())),
             status=status,
         )
 

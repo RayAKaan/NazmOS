@@ -116,7 +116,7 @@ def _record_shadow(
                 "risk_flags": risk_flags,
                 "latency_ms": latency_ms,
                 "capsule_hash": capsule_hash,
-                "model": "jev-1.13.0",
+                "model": __import__("app.config", fromlist=["get_settings"]).get_settings().jev.model,
                 "provider": jev_source,
                 "source_label": "deterministic_authoritative",
             }
@@ -274,7 +274,8 @@ async def canonical_decision(
 
     capsule = build_capsule_for_payload(payload, capability=capability, purpose=purpose)
 
-    # Jev consults in shadow mode; the deterministic decision is authoritative.
+    # Reuse the exact signed capsule constructed above. Audits and outcome ledgers
+    # must refer to the bytes actually sent to Jev.
     result = await systemone_reason(
         payload,
         capability=capability,
@@ -285,6 +286,7 @@ async def canonical_decision(
         shadow=True,
         allowed_suggestions=contract,
         allowed_decisions=contract,
+        capsule=capsule,
     )
     latency = (time.monotonic() - start) * 1000
 
@@ -318,7 +320,7 @@ async def canonical_decision(
         agree=agree,
         risk_flags=risk_flags,
         capsule_hash=capsule.capsule_hash,
-        model="jev-1.13.0",
+        model=result.get("model") or __import__("app.config", fromlist=["get_settings"]).get_settings().jev.model,
         provider=result.get("source", "fallback"),
         latency_ms=latency,
     )

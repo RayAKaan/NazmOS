@@ -601,16 +601,32 @@ async def ingest_and_project(
     """Canonical authenticated ingestion + persistence + compatibility projection."""
     from app.services.orbit.ingestion.pipeline import CanonicalOrbitIngestionPipeline
 
+    (
+        seed_entities,
+        seed_events,
+        seed_evidence,
+        seed_artifact_hashes,
+        seed_artifact_ids,
+        prior_state_version,
+    ) = await _load_canonical_seed(db, business_id=business_id)
+
     pipeline = CanonicalOrbitIngestionPipeline(
         business_id=business_id,
         timezone_name=timezone_name,
         jev=jev,
+        seed_entities=seed_entities,
+        seed_events=seed_events,
+        seed_evidence=seed_evidence,
+        seed_artifact_hashes=seed_artifact_hashes,
+        seed_artifact_ids=seed_artifact_ids,
+        prior_state_version=prior_state_version,
     )
     result = pipeline.ingest(
         content,
         source_name=source_name,
         source_type=source_type,
         mime_type=mime_type,
+        state_version_before=prior_state_version,
         column_mapping_override=column_mapping_override,
     )
 

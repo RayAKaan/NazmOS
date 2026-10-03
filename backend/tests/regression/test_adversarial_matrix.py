@@ -8,7 +8,7 @@ silently recur even though the happy-path regression suite passes:
       shared helper is used (``audit_core.coverage_aware_daily_velocity``). The
       money-audit time-machine and evidence builders must keep using it.
 
-  D   Input-side injection / baked artifact hygiene. The on-disk OpenCode agent
+  D   Input-side injection / baked artifact hygiene. The on-disk legacy model transport agent
       (``opencode_runner/agents/nazmos-brain.md``) is the live reasoning brain
       for the subprocess transport; it must stay permissionless (all deny) and
       DLP-clean, just like the runtime master prompt.
@@ -113,7 +113,7 @@ class TestFNoUnknownBecomesZeroNoSixBecomesThirty:
 # ---------------------------------------------------------------------------
 
 class TestDBakedAgentFileHygiene:
-    """OpenCode is absent from the active architecture (Phase 1 spec §56).
+    """legacy model transport is absent from the active architecture (Phase 1 spec §56).
 
     These tests previously asserted properties of
     ``opencode_runner/agents/nazmos-brain.md``, a 657-line file with zero runtime
@@ -121,12 +121,12 @@ class TestDBakedAgentFileHygiene:
     costs maintenance and it implies the file is still load-bearing.
 
     The file has been deleted. These tests now assert its absence, so reintroducing
-    an OpenCode runtime fails the build rather than passing unnoticed.
+    an legacy model transport runtime fails the build rather than passing unnoticed.
     """
 
     def test_opencode_runner_directory_does_not_exist(self):
         assert not (BACKEND_DIR / "opencode_runner").exists(), (
-            "the OpenCode runtime was removed from the active architecture; "
+            "the legacy model transport runtime was removed from the active architecture; "
             "reintroducing it requires an explicit architecture decision"
         )
 
@@ -138,7 +138,7 @@ class TestDBakedAgentFileHygiene:
         )
 
     def test_no_active_module_imports_an_opencode_runtime(self):
-        """Import structure, not just text: no module may reach for OpenCode."""
+        """Import structure, not just text: no module may reach for legacy model transport."""
         offenders = []
         for path in (BACKEND_DIR / "app").rglob("*.py"):
             source = path.read_text(encoding="utf-8", errors="ignore")
@@ -146,7 +146,7 @@ class TestDBakedAgentFileHygiene:
                 stripped = line.strip()
                 if stripped.startswith(("import ", "from ")) and "opencode" in stripped:
                     offenders.append(f"{path.name}: {stripped}")
-        assert not offenders, f"active modules import OpenCode: {offenders}"
+        assert not offenders, f"active modules import legacy model transport: {offenders}"
 
     def test_dlp_rules_cover_the_removed_surface_without_it(self):
         """DLP coverage remains a real assertion after the file's removal."""

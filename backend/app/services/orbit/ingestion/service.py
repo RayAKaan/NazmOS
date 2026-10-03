@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import is_dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from enum import Enum
 from typing import Any, Mapping, Optional
 from uuid import UUID
@@ -83,7 +83,7 @@ def _parse_datetime(value: Any) -> Optional[datetime]:
         return None
     try:
         parsed = datetime.fromisoformat(str(value))
-        return parsed if parsed.tzinfo else parsed.astimezone()
+        return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
     except (TypeError, ValueError):
         return None
 
@@ -218,7 +218,7 @@ async def _load_canonical_seed(
     for row in evidence_rows.scalars().all():
         evidence.append(
             Evidence(
-                evidence_id=row.id.hex,
+                evidence_id="ev-" + row.hash[:24],
                 artifact_id=row.artifact_id,
                 business_id=row.business_id,
                 tenant_id=row.tenant_id,
@@ -243,10 +243,9 @@ async def _load_canonical_seed(
     artifact_rows = await db.execute(
         select(UniversalArtifact).where(UniversalArtifact.business_id == business_id)
     )
-    artifacts = tuple(
-        str(row.content_hash) for row in artifact_rows.scalars().all() if row.content_hash
-    )
-    artifact_ids = tuple(row.id for row in artifact_rows.scalars().all())
+    artifact_list = artifact_rows.scalars().all()
+    artifacts = tuple(str(row.content_hash) for row in artifact_list if row.content_hash)
+    artifact_ids = tuple(row.id for row in artifact_list)
     return (
         entities,
         events,

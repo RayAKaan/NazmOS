@@ -83,7 +83,7 @@ LEGAL_SUFFIX_TOKENS = frozenset({
 VARIANT_SURFACING_THRESHOLD = 70.0
 
 #: Identifiers strong enough to merge without any name agreement.
-STRONG_IDENTIFIERS = ("sku", "barcode", "email", "phone", "abn", "vat_number")
+STRONG_IDENTIFIERS = ("sku", "barcode", "email", "phone", "abn")
 
 #: How each authoritative identifier is reported in the resolution record.
 _IDENTIFIER_MATCH_METHOD: dict[str, MatchMethod] = {

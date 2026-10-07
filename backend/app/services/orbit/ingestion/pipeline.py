@@ -405,8 +405,20 @@ class CanonicalOrbitIngestionPipeline:
         self.store = store if store is not None else EntityStore(business_id=business_id)
         self.resolver = EntityResolver(self.store)
         if jev is None:
-            from app.services.jev import JevService
-            jev = JevService()
+            # JEV is an optional bounded-judgment provider, not the default
+            # resolver. When disabled, deterministic Orbit must be able to create
+            # new entities; JevService's safe fallback for an unresolved entity is
+            # AMBIGUOUS, which is correct when JEV is explicitly in use but would
+            # incorrectly discard every first-seen entity if instantiated here.
+            try:
+                from app.config import get_settings
+                if get_settings().JEV_ENABLED:
+                    from app.services.jev import JevService
+                    jev = JevService()
+            except Exception:
+                # Configuration/provider discovery must never make deterministic
+                # ingestion unavailable.
+                jev = None
         self.jev = jev
         self.strict_currency = strict_currency
         self._accumulated_events: list[BusinessEvent] = list(seed_events)

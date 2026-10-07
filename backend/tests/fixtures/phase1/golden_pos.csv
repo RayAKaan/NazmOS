@@ -1,0 +1,5 @@
+transaction_id,transaction_date,product_name,sku,quantity,unit_price,cost,currency,branch_name
+T-001,2026-09-01,Milk 1L,M-001,2,7.50,5.00,SAR,Main
+T-002,2026-09-01,Bread,B-001,3,4.80,2.40,SAR,Main
+T-003,2026-09-02,Milk 1L,M-001,1,7.50,5.00,SAR,Main
+TOTAL,,,,,31.80,,SAR,

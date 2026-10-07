@@ -6,9 +6,6 @@ from sqlalchemy import text
 
 from app.config import get_settings
 from app.database.connection import get_sync_session
-from app.services.etl_pipeline import ETLPipeline
-from app.services.upload_service import UploadService
-from app.services.schema_detector import SchemaDetector
 
 settings = get_settings()
 
@@ -52,118 +49,108 @@ def _mark_failed(session, upload_id: str, error: str) -> dict:
 
 
 def run_process_upload(upload_id: str, business_id: str, column_mapping: dict):
-    """Core ingestion logic — the single canonical body for upload processing.
-
-    Called by the ``process_upload_ingestion`` Temporal activity (through a
-    worker thread). Scoped to ``business_id`` so every statement (including the
-    fresh async engine the ETL pipeline opens) runs under that tenant's RLS
-    context.
-    """
+    """Process an authenticated upload through the single canonical Orbit path."""
+    import asyncio
     from app.services.cache_service import CacheService
+    from app.services.orbit.contracts import SourceType
+    from app.services.orbit.ingestion.service import ingest_and_project
 
     with get_sync_session(tenant_id=business_id) as session:
-        result = session.execute(
-            text("SELECT * FROM uploaded_files WHERE id = :upload_id"),
-            {"upload_id": upload_id}
-        )
-        upload = result.fetchone()
-
-        if not upload:
+        row = session.execute(
+            text("SELECT * FROM uploaded_files WHERE id = :upload_id AND business_id = :business_id"),
+            {"upload_id": upload_id, "business_id": business_id},
+        ).fetchone()
+        if not row:
             return {"status": "failed", "error": "Upload not found"}
 
-        file_path = _resolve_stored_path(upload.stored_filename)
+        file_path = _resolve_stored_path(row.stored_filename)
         if not file_path.exists():
             return _mark_failed(session, upload_id, f"File not found: {file_path}")
 
         session.execute(
             text("UPDATE uploaded_files SET status = 'processing', etl_started_at = NOW() WHERE id = :id"),
-            {"id": upload_id}
+            {"id": upload_id},
         )
         session.commit()
 
         try:
-            df = UploadService.parse_file(
-                file_path,
-                f".{upload.file_type}",
-                "utf-8"
-            )
+            content = file_path.read_bytes()
 
-            if column_mapping:
-                clean_mapping = {k: v for k, v in column_mapping.items() if v is not None}
-            else:
-                detection = SchemaDetector().detect(df)
-                clean_mapping = detection["detected_columns"]
+            async def _run():
+                from contextlib import asynccontextmanager
+                from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-            pipeline = ETLPipeline(upload_id, business_id, df, clean_mapping)
+                engine = create_async_engine(settings.DATABASE_URL, pool_pre_ping=True, pool_size=5)
+                factory = async_sessionmaker(
+                    engine, class_=AsyncSession, expire_on_commit=False, autoflush=False
+                )
 
-            from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-            from contextlib import asynccontextmanager
-            _fresh_engine = create_async_engine(
-                settings.DATABASE_URL, pool_pre_ping=True, pool_size=5,
-            )
-            _fresh_sf = async_sessionmaker(
-                _fresh_engine, class_=AsyncSession, expire_on_commit=False,
-                autocommit=False, autoflush=False,
-            )
+                @asynccontextmanager
+                async def scope():
+                    async with factory() as db:
+                        if not settings.DATABASE_URL.startswith("sqlite"):
+                            from app.database.connection import _set_rls_context
+                            await _set_rls_context(db)
+                        try:
+                            yield db
+                            await db.commit()
+                        except Exception:
+                            await db.rollback()
+                            raise
 
-            @asynccontextmanager
-            async def _fresh_session_scope():
-                async with _fresh_sf() as session:
-                    from app.database.connection import _set_rls_context
-                    if not settings.DATABASE_URL.startswith("sqlite"):
-                        await _set_rls_context(session)
-                    try:
-                        yield session
-                        await session.commit()
-                    except Exception:
-                        await session.rollback()
-                        raise
-                    finally:
-                        await session.close()
+                try:
+                    async with scope() as db:
+                        return await ingest_and_project(
+                            db,
+                            content,
+                            business_id=business_id,
+                            source_name=str(row.original_filename),
+                            source_type=SourceType.FILE,
+                            mime_type=getattr(row, "mime_type", None),
+                            source_location=str(row.stored_filename),
+                            column_mapping_override=column_mapping or None,
+                        )
+                finally:
+                    await engine.dispose()
 
-            import asyncio
-            stats = asyncio.run(pipeline.run(session_factory=_fresh_session_scope))
-            asyncio.run(_fresh_engine.dispose())
-
+            canonical, projection = asyncio.run(_run())
+            status_value = "completed" if canonical.succeeded else "needs_review"
             session.execute(
-                text("""
-                    UPDATE uploaded_files
-                    SET status = 'completed',
-                        row_count_imported = :imported,
-                        row_count_failed = :failed,
-                        etl_completed_at = NOW()
-                    WHERE id = :id
-                """),
+                text("UPDATE uploaded_files SET status = :status, row_count_imported = :imported, row_count_failed = :failed, etl_completed_at = NOW(), error_summary = :error WHERE id = :id"),
                 {
                     "id": upload_id,
-                    "imported": stats.get("imported", 0),
-                    "failed": stats.get("failed", 0),
-                }
+                    "status": status_value,
+                    "imported": canonical.records_accepted,
+                    "failed": canonical.records_rejected,
+                    "error": None if canonical.succeeded else "; ".join(canonical.warnings[:5]),
+                },
             )
             session.commit()
-
             CacheService.invalidate_business_cache(business_id)
-
             try:
                 os.unlink(file_path)
-            except:
+            except OSError:
                 pass
 
             return {
-                "status": "completed",
+                "status": status_value,
                 "upload_id": upload_id,
-                "stats": stats,
+                "stats": {
+                    "imported": canonical.records_accepted,
+                    "failed": canonical.records_rejected,
+                    "ambiguous": canonical.records_ambiguous,
+                    "conflicts": len(canonical.conflicts),
+                    "state_version": canonical.state_version_after,
+                    "projection": projection.to_dict(),
+                },
             }
-
-        except Exception as e:
-            status = 'needs_review' if e.__class__.__name__ == 'DataQualityError' else 'failed'
+        except Exception as exc:
             session.execute(
-                text("UPDATE uploaded_files SET status = :status, error_summary = :error WHERE id = :id"),
-                {"id": upload_id, "status": status, "error": str(e)}
+                text("UPDATE uploaded_files SET status = 'failed', error_summary = :error WHERE id = :id"),
+                {"id": upload_id, "error": str(exc)},
             )
             session.commit()
-            return {"status": "failed", "error": str(e)}
-
+            return {"status": "failed", "error": str(exc)}
 
 def run_cleanup_stale_uploads():
     # Supervisor scope: purging stale uploads is a cross-tenant maintenance

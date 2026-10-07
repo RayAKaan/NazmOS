@@ -4,13 +4,16 @@ import chardet
 from pathlib import Path
 from typing import Tuple
 
-ALLOWED_EXTENSIONS = {".csv", ".xlsx", ".xls"}
+ALLOWED_EXTENSIONS = {".csv", ".xlsx", ".xls", ".json", ".pdf", ".docx", ".txt"}
 ALLOWED_MIME_TYPES = {
     "text/csv",
     "text/plain",
     "application/csv",
     "application/vnd.ms-excel",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/json",
 }
 MAX_FILE_SIZE = 15 * 1024 * 1024
 MAX_ROWS = 500_000
@@ -42,7 +45,7 @@ class FileValidator:
         ext = Path(original_filename).suffix.lower()
         if ext not in ALLOWED_EXTENSIONS:
             raise FileValidationError(
-                f"File type '{ext}' is not allowed. Upload CSV or Excel files only.",
+                f"File type '{ext}' is not allowed. Upload a supported business artifact.",
                 "INVALID_EXTENSION"
             )
 
@@ -55,7 +58,7 @@ class FileValidator:
         mime = magic.from_file(str(file_path), mime=True)
         if mime not in ALLOWED_MIME_TYPES:
             raise FileValidationError(
-                f"File content does not match a valid spreadsheet format. Detected: {mime}",
+                f"File content does not match a supported business artifact format. Detected: {mime}",
                 "MIME_MISMATCH"
             )
 

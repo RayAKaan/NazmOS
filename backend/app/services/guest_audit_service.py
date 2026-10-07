@@ -387,53 +387,108 @@ def _snapshot_to_legacy_ledger(snapshot) -> dict[str, dict[str, Any]]:
 
 
 async def run_guest_audit(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    """Run a simplified Money Audit over raw uploaded rows (single file).
-
-    Uses the canonical BusinessSnapshotBuilder pipeline for consistency
-    with single-file and authenticated paths.
-    """
+    """Run the public audit through the same canonical Orbit pipeline as auth uploads."""
     if not rows:
         return _empty_audit("No data received. Upload a CSV with sales or inventory rows.")
 
-    import pandas as pd_local
-    df = pd_local.DataFrame(rows).replace({pd_local.NaT: None})
+    df = pd.DataFrame(rows).replace({pd.NaT: None})
     if len(df) == 0:
         return _empty_audit("No rows found in the uploaded file.")
 
-    resolution = resolve_columns(df)
-    file_kind = _detect_file_kind(resolution)
+    from app.services.orbit.ingestion.pipeline import CanonicalOrbitIngestionPipeline
 
-    # Build manifest for the single file
-    manifest = {
-        "file_id": str(uuid4()),
-        "filename": "upload.csv",
-        "classification": file_kind.upper(),
-        "confidence": 0.8,
-        "rows": len(df),
-        "columns": len(df.columns),
-        "mapped_fields": dict(resolution.mapping),
-        "missing_fields": list(resolution.missing),
-        "ambiguous_fields": [],
-        "quality": {"duplicate_rows": 0, "null_rate": 0.0, "invalid_dates": 0},
-        "metadata": {"file_type": "csv", "sheet_count": 1, "selected_sheet": "csv", "header_row_index": 0},
-    }
-
-    # Build canonical snapshot
-    from app.services.business_snapshot_builder import BusinessSnapshotBuilder
-    builder = BusinessSnapshotBuilder()
-    builder.add_file(df, manifest, resolution)
-    snapshot = builder.build()
-
-    # Run canonical audit
-    actions, aggregates = _run_canonical_audit(snapshot)
-
-    # Build summary in legacy format for backward compatibility
-    detected = _detected_column_indices(resolution)
-    # Convert snapshot to legacy ledger format for _summary
-    ledger = _snapshot_to_legacy_ledger(snapshot)
-    summary = _summary(ledger, actions, aggregates, file_kind, len(df), _detected_column_indices(resolution), resolution=resolution)
-
+    pipe = CanonicalOrbitIngestionPipeline(business_id=None)
+    result = pipe.ingest(
+        df.to_csv(index=False).encode("utf-8"),
+        source_name="guest-upload.csv",
+        mime_type="text/csv",
+    )
+    ledger = _canonical_results_to_legacy_ledger(result)
+    actions, aggregates = _audit_ledger(ledger, datetime.utcnow())
+    file_kind = result.classification.artifact_kind or "unknown"
+    summary = _summary(
+        ledger,
+        actions,
+        aggregates,
+        file_kind,
+        len(df),
+        {
+            "name": result.column_map.role_to_header.get("product_name") if result.column_map else None,
+            "quantity": result.column_map.role_to_header.get("quantity") if result.column_map else None,
+            "price": result.column_map.role_to_header.get("unit_price") if result.column_map else None,
+            "cost": result.column_map.role_to_header.get("cost") if result.column_map else None,
+            "stock": result.column_map.role_to_header.get("stock") if result.column_map else None,
+            "date": result.column_map.role_to_header.get("date") if result.column_map else None,
+        },
+    )
+    if result.warnings:
+        summary["canonical_warnings"] = list(result.warnings)
+    if result.limitations:
+        summary["canonical_limitations"] = list(result.limitations)
     return {"summary": summary, "actions": actions, "missing_data": []}
+
+
+def _canonical_results_to_legacy_ledger(result) -> dict[str, dict[str, Any]]:
+    """Project canonical events into the frozen guest-audit read shape."""
+    from app.services.orbit.contracts import BusinessEventType
+
+    ledger: dict[str, dict[str, Any]] = {}
+    entity_names = {
+        entity.entity_id: entity.canonical_name or entity.normalized_name or entity.entity_id
+        for entity in result.entities
+        if getattr(entity, "kind", None).value == "product"
+    }
+    for event in result.events:
+        product_id = event.entity_refs.get("product")
+        if not product_id:
+            continue
+        name = entity_names.get(product_id, product_id)
+        entry = ledger.setdefault(
+            name,
+            {
+                "name": name,
+                "stock": Decimal("0"),
+                "cost": Decimal("0"),
+                "sell": Decimal("0"),
+                "qty_30d": Decimal("0"),
+                "prior_qty_30": Decimal("0"),
+                "revenue_30d": Decimal("0"),
+                "last_sold_at": None,
+                "records": 0,
+            },
+        )
+        entry["records"] += 1
+
+        if event.cost.value is not None and entry["cost"] == 0:
+            entry["cost"] = event.cost.value
+        if event.unit_price.value is not None and entry["sell"] == 0:
+            entry["sell"] = event.unit_price.value
+
+        if event.event_type is BusinessEventType.STOCK_OBSERVATION:
+            if event.quantity.value is not None:
+                entry["stock"] = event.quantity.value
+        elif event.event_type in {
+            BusinessEventType.SALE,
+            BusinessEventType.RETURN,
+            BusinessEventType.REFUND,
+        }:
+            qty = event.quantity.value or Decimal("0")
+            amount = event.amount.value
+            if amount is None and event.unit_price.value is not None:
+                amount = event.unit_price.value * qty
+            sign = Decimal("-1") if event.event_type in {BusinessEventType.RETURN, BusinessEventType.REFUND} else Decimal("1")
+            entry["qty_30d"] += sign * qty
+            entry["revenue_30d"] += sign * (amount or Decimal("0"))
+            if event.event_time is not None:
+                current = entry["last_sold_at"]
+                if current is None or event.event_time > current:
+                    entry["last_sold_at"] = event.event_time
+        elif event.event_type in {BusinessEventType.PURCHASE, BusinessEventType.STOCK_RECEIPT}:
+            # Purchases enrich cost evidence but are not sales velocity.
+            if event.cost.value is not None:
+                entry["cost"] = event.cost.value
+    return ledger
+
 
 
 def run_two_file_audit(
@@ -442,92 +497,73 @@ def run_two_file_audit(
     sales_resolution: ColumnResolution,
     inventory_resolution: ColumnResolution,
 ) -> dict[str, Any]:
-    """Publicly callable two-file audit returning summary + actions.
+    """Run the paired guest audit through one shared canonical Orbit pipeline.
 
-    Uses the canonical BusinessSnapshotBuilder pipeline for consistency
-    with single-file and authenticated paths.
+    The legacy resolution arguments are accepted for API compatibility only; the
+    canonical mapper owns semantic interpretation.
     """
-    # Build manifests for both files
-    sales_manifest = {
-        "file_id": str(uuid4()),
-        "filename": "sales.csv",
-        "classification": "SALES",
-        "confidence": sales_resolution.confidence / 100.0 if sales_resolution.confidence > 1 else sales_resolution.confidence,
-        "rows": len(sales_df),
-        "columns": len(sales_df.columns),
-        "mapped_fields": dict(sales_resolution.mapping),
-        "missing_fields": list(sales_resolution.missing),
-        "ambiguous_fields": [],
-        "quality": {"duplicate_rows": 0, "null_rate": 0.0, "invalid_dates": 0},
-        "metadata": {"file_type": "csv", "sheet_count": 1, "selected_sheet": "csv", "header_row_index": 0},
+    from app.services.orbit.ingestion.pipeline import CanonicalOrbitIngestionPipeline
+
+    pipe = CanonicalOrbitIngestionPipeline(business_id=None)
+    sales_result = pipe.ingest(
+        sales_df.to_csv(index=False).encode("utf-8"),
+        source_name="guest-sales.csv",
+        mime_type="text/csv",
+    )
+    inventory_result = pipe.ingest(
+        inventory_df.to_csv(index=False).encode("utf-8"),
+        source_name="guest-inventory.csv",
+        mime_type="text/csv",
+    )
+    ledger = _canonical_results_to_legacy_ledger(inventory_result)
+    actions, aggregates = _audit_ledger(ledger, datetime.utcnow())
+
+    sales_names = {
+        str(e.entity_refs["product"])
+        for e in sales_result.events
+        if "product" in e.entity_refs
     }
-    inventory_manifest = {
-        "file_id": str(uuid4()),
-        "filename": "inventory.csv",
-        "classification": "INVENTORY",
-        "confidence": inventory_resolution.confidence / 100.0 if inventory_resolution.confidence > 1 else inventory_resolution.confidence,
-        "rows": len(inventory_df),
-        "columns": len(inventory_df.columns),
-        "mapped_fields": dict(inventory_resolution.mapping),
-        "missing_fields": list(inventory_resolution.missing),
-        "ambiguous_fields": [],
-        "quality": {"duplicate_rows": 0, "null_rate": 0.0, "invalid_dates": 0},
-        "metadata": {"file_type": "csv", "sheet_count": 1, "selected_sheet": "csv", "header_row_index": 0},
+    inventory_names = {
+        str(e.entity_refs["product"])
+        for e in inventory_result.events
+        if "product" in e.entity_refs
     }
-
-    # Build canonical snapshot
-    from app.services.business_snapshot_builder import BusinessSnapshotBuilder
-    builder = BusinessSnapshotBuilder()
-    builder.add_file(sales_df, sales_manifest, sales_resolution)
-    builder.add_file(inventory_df, inventory_manifest, inventory_resolution)
-    snapshot = builder.build()
-
-    # Run canonical audit
-    actions, aggregates = _run_canonical_audit(snapshot)
-
-    # Build summary in legacy format for backward compatibility
-    detected = {
-        "sales": _detected_column_indices(sales_resolution),
-        "inventory": _detected_column_indices(inventory_resolution),
-    }
-    # Convert snapshot to legacy ledger format for _summary
-    ledger = _snapshot_to_legacy_ledger(snapshot)
-
-    # Build pairing extra for backward compatibility.
-    # The canonical snapshot merges every source into one ledger, so the
-    # per-file name sets are recovered from each product's recorded sources.
     from app.services.product_pairing import pair_products
-
-    sales_names = [p["name"] for p in snapshot.products if "sales" in (p.get("sources") or [])]
-    inventory_names = [p["name"] for p in snapshot.products if "inventory" in (p.get("sources") or [])]
-    report = pair_products(sales_names, inventory_names)
-    pairing_extra = {
-        "pairing": {
-            "attempted": report.attempted,
-            "paired": len(report.paired),
-            "high": sum(1 for p in report.paired if p.tier == "HIGH"),
-            "medium": sum(1 for p in report.paired if p.tier == "MEDIUM"),
-            "unmatched_sales": len(report.unmatched_sales),
-            "unmatched_inventory": len(report.unmatched_inventory),
-            "success_rate": report.success_rate,
-            "truncated": report.truncated,
+    report = pair_products(
+        [e.canonical_name or e.entity_id for e in inventory_result.entities if e.entity_id in inventory_names],
+        [e.canonical_name or e.entity_id for e in inventory_result.entities if e.entity_id in sales_names],
+    )
+    summary = _summary(
+        ledger,
+        actions,
+        aggregates,
+        "paired_two_file",
+        len(sales_df) + len(inventory_df),
+        {
+            "sales": sales_result.column_map.to_dict() if sales_result.column_map else {},
+            "inventory": inventory_result.column_map.to_dict() if inventory_result.column_map else {},
         },
-        "is_two_file": True,
-        "row_count": len(sales_df) + len(inventory_df),
-        "column_confidence_sales": sales_resolution.confidence,
-        "column_confidence_inventory": inventory_resolution.confidence,
-        "is_arabic": sales_resolution.is_arabic or inventory_resolution.is_arabic,
-    }
-    summary = _summary(_snapshot_to_legacy_ledger(snapshot), actions, aggregates, "paired_two_file", len(sales_df) + len(inventory_df), detected, resolution=sales_resolution, extra=pairing_extra)
-
-    if inventory_resolution.ingestion_result is not None:
-        diag = _build_ingestion_diagnostics(inventory_resolution)
-        if diag:
-            if "ingestion" not in summary:
-                summary["ingestion"] = {}
-            summary["ingestion"]["inventory"] = diag
+        extra={
+            "pairing": {
+                "attempted": report.attempted,
+                "paired": len(report.paired),
+                "high": sum(1 for p in report.paired if p.tier == "HIGH"),
+                "medium": sum(1 for p in report.paired if p.tier == "MEDIUM"),
+                "unmatched_sales": len(report.unmatched_sales),
+                "unmatched_inventory": len(report.unmatched_inventory),
+                "success_rate": report.success_rate,
+                "truncated": report.truncated,
+            },
+            "is_two_file": True,
+            "row_count": len(sales_df) + len(inventory_df),
+            "column_confidence_sales": getattr(sales_resolution, "confidence", None),
+            "column_confidence_inventory": getattr(inventory_resolution, "confidence", None),
+        },
+    )
+    summary["canonical_limitations"] = list(
+        dict.fromkeys((*sales_result.limitations, *inventory_result.limitations))
+    )
     return {"summary": summary, "actions": actions, "missing_data": []}
-
 
 def _empty_audit(message: str) -> dict[str, Any]:
     return {

@@ -14,8 +14,6 @@ from app.middleware.business_access import assert_business_access
 from app.middleware.feature_gate import enforce_upload_limit
 from app.database import get_db, User, Business, UploadedFile as UploadedFileModel
 from app.services.file_validator import FileValidator, FileValidationError
-from app.services.schema_detector import SchemaDetector
-from app.services.upload_service import UploadService
 from app.services.storage import storage
 from app.config import get_settings
 
@@ -109,12 +107,38 @@ async def upload_file(
             len(content)
         )
 
-        df, parse_report = UploadService.parse_file_with_report(
-            local_parse_path,
-            validation["detected_extension"],
-            validation["encoding"],
+        from app.services.orbit.ingestion.pipeline import CanonicalOrbitIngestionPipeline
+        from app.services.orbit.ingestion.loaders import load_artifact
+        from app.services.orbit.contracts import SourceType
+
+        preview = CanonicalOrbitIngestionPipeline(
+            business_id=uuid.UUID(business_id)
+        ).ingest(
+            content,
+            source_name=file.filename or "upload",
+            source_type=SourceType.FILE,
+            mime_type=validation["mime_type"],
         )
-        detection = SchemaDetector().detect(df)
+        loaded = None
+        try:
+            loaded = load_artifact(content, file.filename or "upload")
+        except Exception:
+            loaded = None
+        primary = loaded.primary_sheet if loaded is not None else None
+        parse_report = {
+            "rows_received": preview.records_seen,
+            "rows_rejected": list(preview.errors),
+            "row_count_rejected": preview.records_rejected,
+            "canonical_status": preview.status.value,
+            "limitations": list(preview.limitations),
+        }
+        detected_columns = preview.column_map.role_to_header if preview.column_map else {}
+        confidence_scores = {
+            role: preview.column_map.confidence_for(role)
+            for role in detected_columns
+        } if preview.column_map else {}
+        unmapped_columns = list(preview.column_map.unmapped_headers) if preview.column_map else []
+        sample_rows = [list(r) for r in primary.rows[:5]] if primary is not None else []
 
         result = await db.execute(
             text("""
@@ -140,14 +164,14 @@ async def upload_file(
                 "file_size_bytes": len(content),
                 "mime_type": validation["mime_type"],
                 "sha256_hash": validation["sha256_hash"],
-                "row_count_raw": len(df),
-                "row_count_received": int(parse_report.get("rows_received", len(df))),
+                "row_count_raw": preview.records_seen,
+                "row_count_received": int(parse_report.get("rows_received", preview.records_seen)),
                 "row_count_rejected": int(parse_report.get("row_count_rejected", 0)),
                 "rows_rejected": json.dumps(parse_report.get("rows_rejected", [])),
                 "data_quality_report": json.dumps(parse_report),
-                "data_quality_score": 100.0 if not parse_report.get("rows_rejected") else max(0.0, 100.0 - (100.0 * len(parse_report.get("rows_rejected", [])) / max(1, parse_report.get("rows_received", len(df))))),
-                "detected_columns": json.dumps(detection["detected_columns"]),
-                "sample_rows": json.dumps(detection["sample_rows"]),
+                "data_quality_score": preview.quality.overall_score if preview.quality and preview.quality.overall_score is not None else 0.0,
+                "detected_columns": json.dumps(detected_columns),
+                "sample_rows": json.dumps(sample_rows),
             }
         )
         await db.commit()
@@ -157,13 +181,13 @@ async def upload_file(
             "filename": file.filename,
             "file_size": len(content),
             "mime_type": validation["mime_type"],
-            "row_count": len(df),
-            "detected_columns": detection["detected_columns"],
-            "confidence_scores": detection["confidence_scores"],
-            "unmapped_columns": detection["unmapped_columns"],
-            "sample_rows": detection["sample_rows"],
-            "suggested_file_kind": detection.get("suggested_file_kind"),
-            "schema_valid": bool(detection["detected_columns"]),
+            "row_count": preview.records_seen,
+            "detected_columns": detected_columns,
+            "confidence_scores": confidence_scores,
+            "unmapped_columns": unmapped_columns,
+            "sample_rows": sample_rows,
+            "suggested_file_kind": preview.classification.artifact_kind,
+            "schema_valid": bool(detected_columns),
             "status": "mapping_required",
             "data_quality_report": parse_report,
         }
@@ -585,24 +609,43 @@ async def ingest_json(
     clean_mapping = {k: v for k, v in column_mapping.items() if v not in (None, "")}
 
     try:
-        df = pd.DataFrame(rows)
-        from app.services.etl_pipeline import ETLPipeline
-        pipeline = ETLPipeline(upload_id, business_id, df, clean_mapping)
-        stats = await pipeline.run()
+        from app.services.orbit.ingestion.service import ingest_and_project
+        from app.services.orbit.contracts import SourceType
+
+        # Client-side parsing is a transport optimization only. The JSON rows are
+        # re-entered through the same canonical Orbit pipeline used by every other
+        # authenticated upload; ETL is never a truth producer here.
+        canonical_payload = json.dumps({"rows": rows}, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        canonical, projection = await ingest_and_project(
+            db,
+            canonical_payload,
+            business_id=business_id,
+            source_name=filename,
+            source_type=SourceType.FILE,
+            mime_type="application/json",
+            column_mapping_override=clean_mapping,
+        )
+
+        imported = projection.transactions_inserted + projection.items_created + projection.inventory_written
+        failed = canonical.records_rejected
+        status = "needs_review" if canonical.status.value == "needs_review" else "completed"
 
         await db.execute(
             text("""
                 UPDATE uploaded_files
-                SET status = 'completed',
+                SET status = :status,
                     row_count_imported = :imported,
                     row_count_failed = :failed,
-                    etl_completed_at = NOW()
+                    etl_completed_at = NOW(),
+                    error_summary = :error
                 WHERE id = :id
             """),
             {
                 "id": upload_id,
-                "imported": stats.get("imported", 0),
-                "failed": stats.get("failed", 0),
+                "status": status,
+                "imported": imported,
+                "failed": failed,
+                "error": json.dumps(list(canonical.errors), ensure_ascii=False),
             }
         )
         await db.commit()
@@ -612,10 +655,14 @@ async def ingest_json(
 
         return {
             "upload_id": upload_id,
-            "status": "completed",
-            "rows_imported": stats.get("imported", 0),
-            "rows_failed": stats.get("failed", 0),
-            "errors": [],
+            "status": status,
+            "rows_imported": imported,
+            "rows_failed": failed,
+            "errors": list(canonical.errors),
+            "warnings": list(canonical.warnings),
+            "state_version": canonical.state_version_after,
+            "canonical_event_ids": list(canonical.event_ids),
+            "projection": projection.to_dict(),
             "duration_seconds": 0,
         }
 

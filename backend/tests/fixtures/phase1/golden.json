@@ -1,0 +1,25 @@
+{
+  "business_id": "golden-phase1",
+  "rows": [
+    {
+      "transaction_id": "T-001",
+      "product_name": "Milk 1L",
+      "sku": "M-001",
+      "quantity": 2,
+      "unit_price": 7.5,
+      "cost": 5,
+      "currency": "SAR",
+      "transaction_date": "2026-09-01"
+    },
+    {
+      "transaction_id": "T-002",
+      "product_name": "Bread",
+      "sku": "B-001",
+      "quantity": 3,
+      "unit_price": 4.8,
+      "cost": 2.4,
+      "currency": "SAR",
+      "transaction_date": "2026-09-01"
+    }
+  ]
+}

@@ -51,6 +51,11 @@ coverage.xml
 dmypy.json
 .ruff_cache/
 
+# Generated test/debug output. `backend/results/` holds capture and parity dumps
+# written by test runs; they are artefacts of a run, never committed inputs.
+backend/results/
+results/
+
 # Jupyter Notebook
 .ipynb_checkpoints
 

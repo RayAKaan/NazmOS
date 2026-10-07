@@ -167,15 +167,16 @@ async def _emit_pos_event(
     webhook_event: WebhookEvent,
     payload: dict,
 ) -> None:
-    """Emit a normalized event into the Universal Event Engine.
+    """Record transport telemetry after canonical ingestion.
 
-    Legacy adapter handlers continue to write to transactions/inventory tables
-    for backward compatibility. The normalized event becomes the source of truth
-    for future intelligence features.
+    This is an operational webhook receipt, not a business-state event. The
+    canonical sale/inventory observation already lives in Orbit and is projected
+    to compatibility tables by the canonical projector. Keeping this record
+    separate prevents the event engine from becoming a second truth source.
     """
     external_event_id = webhook_event.external_event_id or str(webhook_event.id)
     event = EventIngest(
-        event_type="pos.order.received",
+        event_type="pos.transport.received",
         source=provider,
         source_id=external_event_id,
         payload={

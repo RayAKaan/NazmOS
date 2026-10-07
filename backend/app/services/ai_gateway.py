@@ -13,6 +13,7 @@ from app.config import get_settings
 from app.security.ai_policy import AiPolicy, audit_event
 from app.security.privacy_firewall import build_capsule_for_payload
 from app.services.ai_budget import GLOBAL_AI_BUDGET
+from app.security.capsule import ReasoningCapsule
 from app.services.security_audit_service import (
     record_ai_reasoning_request,
     record_security_event,
@@ -52,6 +53,7 @@ async def systemone_reason(
     shadow: bool = True,
     allowed_suggestions: frozenset[str] | None = None,
     allowed_decisions: frozenset[str] | None = None,
+    capsule: ReasoningCapsule | None = None,
 ) -> dict[str, Any]:
     """Canonical gateway route: Jev-first, STRICTLY NON-AUTHORITATIVE.
 
@@ -104,7 +106,7 @@ async def systemone_reason(
             "jev_consulted": False,
         }
 
-    capsule = build_capsule_for_payload(payload, capability=capability, purpose=purpose)
+    capsule = capsule or build_capsule_for_payload(payload, capability=capability, purpose=purpose)
 
     start = time.monotonic()
     from app.services.ai_providers.jev import JevClient, consult as jev_consult
@@ -189,4 +191,6 @@ async def systemone_reason(
         "latency_ms": latency,
         "jev_consulted": reply.source == "jev",
         "use_jev_exposition": surface_jev_suggestion,
+        "model": getattr(getattr(client, "settings", None), "model", None) if client is not None else get_settings().jev.model,
+        "capsule_hash": capsule.capsule_hash,
     }

@@ -189,11 +189,12 @@ class NazmPlanner:
         are skipped rather than guessed.
         """
         rows = await self.db.execute(text("""
-            SELECT 
+            SELECT
                 i.id, i.name,
                 inv.current_stock,
                 inv.reorder_level,
-                i.sell_price
+                i.sell_price,
+                i.cost
             FROM items i
             JOIN inventory inv ON inv.item_id = i.id
             WHERE i.business_id = :b AND inv.current_stock >= 0
@@ -241,23 +242,43 @@ class NazmPlanner:
                 if effective_stock_days < 3.0 and float(r.current_stock) < float(r.reorder_level or 10) * 1.5:
                     # Calculate reorder qty – 14 days cover, minus useful inbound.
                     reorder_qty = max(int(daily_demand * 14 - usable_inbound), 20)
-                    cost_sar = reorder_qty * float(r.sell_price or 0) * 0.7  # estimate cost = 70% of sell
-                    
+                    # Use the item's real recorded cost. The previous
+                    # 70%-of-sell-price estimate produced a specific-looking SAR
+                    # figure for every reorder even when the merchant had never
+                    # entered a cost, which is a fabricated number in a financial
+                    # field.
+                    unit_cost = getattr(r, "cost", None)
+                    cost_sar = (reorder_qty * float(unit_cost)) if unit_cost is not None else None
+                    cost_known = cost_sar is not None
+
                     confidence = 0.92 if effective_stock_days < 1.5 else 0.85
-                    
+                    # Confidence drops when the cost is unknown, because the
+                    # merchant cannot check the money figure against anything.
+                    if not cost_known:
+                        confidence = min(confidence, 0.6)
+                    cost_text = f"~{cost_sar:.0f} SAR" if cost_known else "cost not recorded"
+
                     ok = await self._create_action(
                         business_id, "restock",
                         title=f"Restock {r.name}",
                         title_ar=f"إعادة طلب {r.name}",
-                        summary=f"Stock runs out in {effective_stock_days:.1f} days (incl. {usable_inbound:.0f} usable confirmed inbound). Order {reorder_qty} units – ~{cost_sar:.0f} SAR. Supplier: TBD",
-                        summary_ar=f"المخزون ينتهي خلال {effective_stock_days:.1f} يوم – اطلب {reorder_qty} – ~{cost_sar:.0f} ر.س",
+                        summary=(
+                            f"Stock runs out in {effective_stock_days:.1f} days "
+                            f"(incl. {usable_inbound:.0f} usable confirmed inbound). "
+                            f"Order {reorder_qty} units – {cost_text}. Supplier: TBD"
+                        ),
+                        summary_ar=(
+                            f"المخزون ينتهي خلال {effective_stock_days:.1f} يوم – "
+                            f"اطلب {reorder_qty} – {cost_text}"
+                        ),
                         payload={
                             "item_id": str(r.id),
                             "item_name": r.name,
                             "current_stock": float(r.current_stock),
                             "days_left": round(effective_stock_days, 1),
                             "recommended_qty": reorder_qty,
-                            "estimated_cost_sar": round(cost_sar, 2),
+                            "estimated_cost_sar": round(cost_sar, 2) if cost_known else None,
+                            "cost_known": cost_known,
                             "confirmed_inbound_qty": float(timing.total_qty) if timing else 0.0,
                             "usable_inbound_qty": usable_inbound,
                             "late_inbound_qty": float(timing.late_qty) if timing else 0.0,
@@ -525,10 +546,11 @@ class NazmPlanner:
         # Check pharmacy_lots for items expiring < 90 days with stock > 0
         try:
             rows = await self.db.execute(text("""
-                SELECT 
+                SELECT
                     pl.item_id, i.name,
                     pl.expiry_date,
                     pl.quantity,
+                    i.cost,
                     CURRENT_DATE + INTERVAL '90 days' as threshold
                 FROM pharmacy_lots pl
                 JOIN items i ON i.id = pl.item_id
@@ -552,21 +574,44 @@ class NazmPlanner:
                 days_left = 60
             
             if days_left < 90:
+                # Value at risk is quantity x recorded unit cost. The previous
+                # ``quantity * 10`` invented a specific SAR figure for every batch
+                # regardless of what the item actually cost, which is a fabricated
+                # number in a financial field.
+                unit_cost = getattr(r, "cost", None)
+                at_risk = (
+                    float(r.quantity) * float(unit_cost)
+                    if unit_cost is not None else None
+                )
+                confidence = 0.95 if at_risk is not None else 0.6
+                value_text = (
+                    f"{at_risk:.2f} SAR at risk"
+                    if at_risk is not None
+                    else "value at risk unknown (no unit cost recorded)"
+                )
                 ok = await self._create_action(
                     business_id, "expiry_alert",
                     title=f"Expiry Alert – {r.name}",
                     title_ar=f"تنبيه انتهاء صلاحية – {r.name}",
-                    summary=f"Batch expires in {days_left} days – {float(r.quantity)} units in stock – Discount to clear?",
-                    summary_ar=f"تنتهي الصلاحية خلال {days_left} يوم – الكمية {float(r.quantity)} – خصم للتصريف؟",
+                    summary=(
+                        f"Batch expires in {days_left} days – {float(r.quantity)} units "
+                        f"in stock – {value_text} – Discount to clear?"
+                    ),
+                    summary_ar=(
+                        f"تنتهي الصلاحية خلال {days_left} يوم – الكمية {float(r.quantity)} – "
+                        f"{value_text} – خصم للتصريف؟"
+                    ),
                     payload={
                         "item_id": str(r.item_id),
                         "item_name": r.name,
                         "expiry_date": str(r.expiry_date),
                         "days_left": days_left,
                         "quantity": float(r.quantity),
+                        "value_at_risk_sar": at_risk,
+                        "value_known": at_risk is not None,
                     },
-                    confidence=0.95,
-                    estimated_value_sar=float(r.quantity) * 10,  # placeholder
+                    confidence=confidence,
+                    estimated_value_sar=at_risk,
                 )
                 if ok:
                     created += 1

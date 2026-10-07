@@ -45,6 +45,21 @@ depends_on: Union[str, Sequence[str], None] = None
 
 APP_ROLE = "nazmos_app"
 
+# Static declaration consumed by the RLS drift guards. Keep this list in sync
+# with the policies created below; the test intentionally requires an explicit
+# scanner-visible inventory so adding a tenant-scoped table cannot silently omit
+# its policy.
+TENANT_TABLES = [
+    "universal_artifacts",
+    "orbit_entities",
+    "orbit_entity_aliases",
+    "orbit_conflicts",
+    "orbit_business_profiles",
+    "orbit_state_versions",
+    "orbit_semantic_mappings",
+    "jev_calls",
+]
+
 # Tables that carry business_id directly and therefore get the standard tenant
 # policy. `universal_artifacts.business_id` is nullable so a pre-tenant upload can
 # be recorded before it is claimed; those rows are invisible to the app role,

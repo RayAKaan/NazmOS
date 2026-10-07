@@ -569,20 +569,25 @@ class CanonicalOrbitIngestionPipeline:
                     )
                 column_map = replace(column_map, mappings=tuple(rewritten))
             column_map = self._apply_column_judgment(column_map)
-            if classification.artifact_kind is None:
-                # Re-classify now that columns are mapped: content beats format.
-                classification = self._classify(
-                    source_name, content, loaded=loaded, ctx=ctx,
-                    mapped_roles=column_map.roles,
+
+            # Always classify again after semantic mapping. The first pass only has
+            # format/filename evidence; a filename such as "pos_export.csv" is a
+            # useful prior but is not authoritative. Once canonical roles are known,
+            # content must be allowed to replace a weak filename-only classification.
+            # This also prevents a known filename hint from locking the pipeline in
+            # NEEDS_REVIEW before the actual columns are inspected.
+            classification = self._classify(
+                source_name, content, loaded=loaded, ctx=ctx,
+                mapped_roles=column_map.roles,
+            )
+            if classification.artifact_kind:
+                column_map = map_columns(
+                    _sheet_of(loaded).headers,
+                    rows=_sheet_of(loaded).rows,
+                    artifact_hint=classification.artifact_kind,
                 )
-                if classification.artifact_kind:
-                    column_map = map_columns(
-                        _sheet_of(loaded).headers,
-                        rows=_sheet_of(loaded).rows,
-                        artifact_hint=classification.artifact_kind,
-                    )
-                    if column_mapping_override:
-                        column_map = self._apply_column_judgment(column_map)
+                if column_mapping_override:
+                    column_map = self._apply_column_judgment(column_map)
 
             self._ingest_rows(loaded, column_map, classification, ctx, artifact)
         elif document is not None:

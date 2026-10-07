@@ -416,6 +416,15 @@ class Settings(BaseSettings):
                     raise ValueError(f"CORS origin must include scheme: {origin}")
         # Phase 1 Orbit does not require an LLM. Merchant-facing Intelligence/Loop
         # can enforce its own provider policy when those features are enabled.
+        # The full product includes Intelligence/Loop even while Orbit is the
+        # current implementation phase. Production must therefore never start
+        # with a mock-only or provider-less merchant-facing LLM configuration.
+        real_provider_configured = bool(self.GROQ_API_KEY or self.GOOGLE_AI_API_KEY)
+        if not real_provider_configured:
+            raise ValueError(
+                "At least one real LLM provider key (GROQ_API_KEY or GOOGLE_AI_API_KEY) "
+                "is required in production."
+            )
         if self.WHATSAPP_ENABLED == "live" and (
             not self.WHATSAPP_TOKEN or not self.WHATSAPP_PHONE_ID or not self.WHATSAPP_VERIFY_TOKEN
         ):

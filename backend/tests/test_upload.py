@@ -43,7 +43,7 @@ async def test_upload_invalid_file_type(authenticated_client: dict):
     text_file = BytesIO(b"This is not a CSV file")
     response = await ac["client"].post(
         "/api/v1/upload/",
-        files={"file": ("test.txt", text_file, "text/plain")},
+        files={"file": ("test.png", text_file, "image/png")},
         data={"business_id": ac["business_id"]},
         headers=ac["headers"],
     )

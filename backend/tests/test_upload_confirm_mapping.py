@@ -122,24 +122,16 @@ async def test_confirm_mapping_marks_upload_failed_on_pipeline_error(
             "product_name,quantity,unit_price\nx,1,1.0", encoding="utf-8"
         )
 
-        # Parse succeeds, but the ETL pipeline blows up at run().
+        # Parsing is no longer the truth-producing step: confirm_mapping dispatches
+        # the canonical Orbit ingestion operation. Inject the failure at that
+        # canonical boundary so the test verifies the actual Phase 1 failure path.
+        async def boom_ingest(*args, **kwargs):
+            raise RuntimeError("boom: ETL failure")
+
         monkeypatch.setattr(
-            "app.services.upload_service.UploadService.parse_file",
-            staticmethod(
-                lambda *a, **k: pd.DataFrame(
-                    {"product_name": ["x"], "quantity": [1], "unit_price": [1.0]}
-                )
-            ),
+            "app.services.orbit.ingestion.service.ingest_and_project",
+            boom_ingest,
         )
-
-        class BoomPipeline:
-            def __init__(self, *args, **kwargs):
-                pass
-
-            async def run(self, *args, **kwargs):
-                raise RuntimeError("boom: ETL failure")
-
-        monkeypatch.setattr("app.services.etl_pipeline.ETLPipeline", BoomPipeline)
 
         class FakeUser:
             id = user.id
